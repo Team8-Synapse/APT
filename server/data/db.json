@@ -1,0 +1,7095 @@
+{
+  "users": [
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": true,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-01T19:16:56.569Z",
+      "updatedAt": "2026-02-01T19:16:56.569Z"
+    },
+    {
+      "email": "aarav1@cb.students.amrita.edu",
+      "password": "$2b$10$GUnYBbQBICOpvuS.4VW4Fu94ZtSBYXqVSwX3eG4c9NSHFMSv1pQSq",
+      "role": "student",
+      "_isNew": true,
+      "_id": "tmvkf2ekg",
+      "createdAt": "2026-02-01T19:16:56.667Z",
+      "updatedAt": "2026-02-01T19:16:56.667Z"
+    },
+    {
+      "email": "vivaan2@cb.students.amrita.edu",
+      "password": "$2b$10$StfmU.gQCkOI18PQbM6BSuD83xijmV7s1VYljfhtbWdYI7IHtyOcW",
+      "role": "student",
+      "_isNew": true,
+      "_id": "b2jgpi89a",
+      "createdAt": "2026-02-01T19:16:56.757Z",
+      "updatedAt": "2026-02-01T19:16:56.757Z"
+    },
+    {
+      "email": "aditya3@cb.students.amrita.edu",
+      "password": "$2b$10$u57e.4Aqx6jXiQ1Iy8qL5elCUMk37lDGKTCWoc9cYNZZs0rzdJQOe",
+      "role": "student",
+      "_isNew": true,
+      "_id": "h7gtiop0x",
+      "createdAt": "2026-02-01T19:16:56.840Z",
+      "updatedAt": "2026-02-01T19:16:56.840Z"
+    },
+    {
+      "email": "vihaan4@cb.students.amrita.edu",
+      "password": "$2b$10$k.u6pX4CnqFvd3IWYj5P1OZqRM3XTVya2UI7nIRHKv.ne1Y9a1Cai",
+      "role": "student",
+      "_isNew": true,
+      "_id": "koj753k86",
+      "createdAt": "2026-02-01T19:16:56.914Z",
+      "updatedAt": "2026-02-01T19:16:56.914Z"
+    },
+    {
+      "email": "arjun5@cb.students.amrita.edu",
+      "password": "$2b$10$GMSxlsgwpMcU/bgNpzD7Qur7j116FnwE778W4MVrGJHDt69TZY08a",
+      "role": "student",
+      "_isNew": true,
+      "_id": "syw4dmm91",
+      "createdAt": "2026-02-01T19:16:56.990Z",
+      "updatedAt": "2026-02-01T19:16:56.990Z"
+    },
+    {
+      "email": "sai6@cb.students.amrita.edu",
+      "password": "$2b$10$Ymj5op.KcibSrDsQyvKQ3u25bzBd9wek6AEarvnwFFqrTYRDK.gy6",
+      "role": "student",
+      "_isNew": true,
+      "_id": "bf6rd033a",
+      "createdAt": "2026-02-01T19:16:57.067Z",
+      "updatedAt": "2026-02-01T19:16:57.067Z"
+    },
+    {
+      "email": "reyansh7@cb.students.amrita.edu",
+      "password": "$2b$10$Q98V2feM25d8Frwe2rfNg.u6Y.SOxGVEt1yZt40ZEhNmT0mZc4ZhG",
+      "role": "student",
+      "_isNew": true,
+      "_id": "9nxbpqr4l",
+      "createdAt": "2026-02-01T19:16:57.142Z",
+      "updatedAt": "2026-02-01T19:16:57.142Z"
+    },
+    {
+      "email": "ayaan8@cb.students.amrita.edu",
+      "password": "$2b$10$j.84NHcbkB.re9iu/wKrZ.4LG1Mh9dpcb5QqRnHfayT6RXoIiQQrK",
+      "role": "student",
+      "_isNew": true,
+      "_id": "gb1w35ptn",
+      "createdAt": "2026-02-01T19:16:57.216Z",
+      "updatedAt": "2026-02-01T19:16:57.216Z"
+    },
+    {
+      "email": "krishna9@cb.students.amrita.edu",
+      "password": "$2b$10$Z6mkPu18dhhlfYVFj/V9S.Tqhpp1VAljAyVtnjogx6yVjXmRu.o/O",
+      "role": "student",
+      "_isNew": true,
+      "_id": "sbu0y2jer",
+      "createdAt": "2026-02-01T19:16:57.290Z",
+      "updatedAt": "2026-02-01T19:16:57.290Z"
+    },
+    {
+      "email": "ishaan10@cb.students.amrita.edu",
+      "password": "$2b$10$1lcOICSeGGpiaF2RBfqPuO7jdWU3PQ/T3rgNlpqhTS2OOYvQd40BC",
+      "role": "student",
+      "_isNew": true,
+      "_id": "kun88sff5",
+      "createdAt": "2026-02-01T19:16:57.366Z",
+      "updatedAt": "2026-02-01T19:16:57.366Z"
+    },
+    {
+      "email": "rohan11@cb.students.amrita.edu",
+      "password": "$2b$10$A4/.jSZ2xXQj013I1YI9nOpk5dnYjEpr1d0Lu1ljjsYH.3lhYWW4K",
+      "role": "student",
+      "_isNew": true,
+      "_id": "reksz6ioo",
+      "createdAt": "2026-02-01T19:16:57.440Z",
+      "updatedAt": "2026-02-01T19:16:57.440Z"
+    },
+    {
+      "email": "kartik12@cb.students.amrita.edu",
+      "password": "$2b$10$Ff4uUH3tolP7XjH5xgW1ResdW/OrXFIbyixCt11qV0Ib4KVpyAZZG",
+      "role": "student",
+      "_isNew": true,
+      "_id": "8v9r8534u",
+      "createdAt": "2026-02-01T19:16:57.515Z",
+      "updatedAt": "2026-02-01T19:16:57.515Z"
+    },
+    {
+      "email": "dhruv13@cb.students.amrita.edu",
+      "password": "$2b$10$seGFFKdEDUgJKaYJl1IqEubLL/JsCpoKQd4VnP8MIaNKO0qCu9vRu",
+      "role": "student",
+      "_isNew": true,
+      "_id": "ofgjh8b5z",
+      "createdAt": "2026-02-01T19:16:57.603Z",
+      "updatedAt": "2026-02-01T19:16:57.603Z"
+    },
+    {
+      "email": "kabir14@cb.students.amrita.edu",
+      "password": "$2b$10$ls3UfN9v5YRQx36SD6NEwuXOjuISSUVsI3NBeyszFUljPOlD.ofH.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "yhsxaczrt",
+      "createdAt": "2026-02-01T19:16:57.705Z",
+      "updatedAt": "2026-02-01T19:16:57.705Z"
+    },
+    {
+      "email": "ritvik15@cb.students.amrita.edu",
+      "password": "$2b$10$Cjt3ofR5AAzErnzQlj4jQ.9btQ5ENVY7fx4NLzajF48tYVEAWhq2q",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pqa5vk9qt",
+      "createdAt": "2026-02-01T19:16:57.784Z",
+      "updatedAt": "2026-02-01T19:16:57.784Z"
+    },
+    {
+      "email": "pranav16@cb.students.amrita.edu",
+      "password": "$2b$10$pR1khzN2Ub9M8FHfXEcZ6e4UNd6RmqhWpmLWOiL7kYc8U5gIRD0A6",
+      "role": "student",
+      "_isNew": true,
+      "_id": "iy87ui1bo",
+      "createdAt": "2026-02-01T19:16:57.873Z",
+      "updatedAt": "2026-02-01T19:16:57.873Z"
+    },
+    {
+      "email": "arnav17@cb.students.amrita.edu",
+      "password": "$2b$10$qxuzDjRU8V03lblsEVSS/.33Nlu8tQ1fXLJIfv74QOdk8PnDb3MMy",
+      "role": "student",
+      "_isNew": true,
+      "_id": "ou8ptkthv",
+      "createdAt": "2026-02-01T19:16:57.948Z",
+      "updatedAt": "2026-02-01T19:16:57.948Z"
+    },
+    {
+      "email": "shaurya18@cb.students.amrita.edu",
+      "password": "$2b$10$6diCwXx585jPRMM/DYKdSe1.0dLy0ViNbcz.8HebEXnMd4Gx/1F9O",
+      "role": "student",
+      "_isNew": true,
+      "_id": "i6keth1sv",
+      "createdAt": "2026-02-01T19:16:58.022Z",
+      "updatedAt": "2026-02-01T19:16:58.022Z"
+    },
+    {
+      "email": "atharv19@cb.students.amrita.edu",
+      "password": "$2b$10$5TjCgZlRNOERL0VV1KXVSeLsOtP8xNVDbCvzQk2S3wRnFfOU7K7hW",
+      "role": "student",
+      "_isNew": true,
+      "_id": "bsphpoen1",
+      "createdAt": "2026-02-01T19:16:58.096Z",
+      "updatedAt": "2026-02-01T19:16:58.096Z"
+    },
+    {
+      "email": "advait20@cb.students.amrita.edu",
+      "password": "$2b$10$qrrsmLHUap6yr19dfCBEROUXmEK5yyoj34FEyQso41eh3ZZGPpAm.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pbbnymmho",
+      "createdAt": "2026-02-01T19:16:58.216Z",
+      "updatedAt": "2026-02-01T19:16:58.216Z"
+    },
+    {
+      "email": "ananya21@cb.students.amrita.edu",
+      "password": "$2b$10$Gkx6LcLIPy2AedaWuxWeme4UdhN/3.4HdPDN.comjxt/1sWabuq2C",
+      "role": "student",
+      "_isNew": true,
+      "_id": "30r3bofpp",
+      "createdAt": "2026-02-01T19:16:58.318Z",
+      "updatedAt": "2026-02-01T19:16:58.318Z"
+    },
+    {
+      "email": "diya22@cb.students.amrita.edu",
+      "password": "$2b$10$/Xin8L6E7/vUmMpGgGlwL.yJHvK1J4OOhoWcNH3XcL/RAjH3ZAJa2",
+      "role": "student",
+      "_isNew": true,
+      "_id": "bowv92max",
+      "createdAt": "2026-02-01T19:16:58.392Z",
+      "updatedAt": "2026-02-01T19:16:58.392Z"
+    },
+    {
+      "email": "saanvi23@cb.students.amrita.edu",
+      "password": "$2b$10$M5il0pomADtNjk/X6ymkW.sM8GA0AxxzXJVrL5Jt0wK5WbuleNpi.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "7ct1qm2h4",
+      "createdAt": "2026-02-01T19:16:58.462Z",
+      "updatedAt": "2026-02-01T19:16:58.462Z"
+    },
+    {
+      "email": "aanya24@cb.students.amrita.edu",
+      "password": "$2b$10$MpS.6U8nMnbnezasOewt4OvltE3.gCOhPzau5n4P7acHuNchHmznm",
+      "role": "student",
+      "_isNew": true,
+      "_id": "y5dwoeqcf",
+      "createdAt": "2026-02-01T19:16:58.539Z",
+      "updatedAt": "2026-02-01T19:16:58.539Z"
+    },
+    {
+      "email": "aadhya25@cb.students.amrita.edu",
+      "password": "$2b$10$aP5IcbU8A65Vh3XSXZ2e/OIj1IHrxQcn/UUM.O8GNO5xoJOUMXifq",
+      "role": "student",
+      "_isNew": true,
+      "_id": "vb1wikgu4",
+      "createdAt": "2026-02-01T19:16:58.612Z",
+      "updatedAt": "2026-02-01T19:16:58.612Z"
+    },
+    {
+      "email": "isha26@cb.students.amrita.edu",
+      "password": "$2b$10$8rgDoJd9EYhGRR5G4ZHsqOwChGH8qdGHq7sVt2gfScoFYjH5D/CQ2",
+      "role": "student",
+      "_isNew": true,
+      "_id": "oyscekmmr",
+      "createdAt": "2026-02-01T19:16:58.683Z",
+      "updatedAt": "2026-02-01T19:16:58.683Z"
+    },
+    {
+      "email": "avni27@cb.students.amrita.edu",
+      "password": "$2b$10$t1YG9Awj1TwdBT/HWtbiz.09DMqEIi7EgudacSqir/vOgawN8W26i",
+      "role": "student",
+      "_isNew": true,
+      "_id": "a53i9kj1r",
+      "createdAt": "2026-02-01T19:16:58.756Z",
+      "updatedAt": "2026-02-01T19:16:58.756Z"
+    },
+    {
+      "email": "mira28@cb.students.amrita.edu",
+      "password": "$2b$10$Py1g2yUwgZUp9QB//IwmX.kB.lHmZgQ5MfmuN3Qfn.O5nK/8X2sYO",
+      "role": "student",
+      "_isNew": true,
+      "_id": "rtjriihyw",
+      "createdAt": "2026-02-01T19:16:58.830Z",
+      "updatedAt": "2026-02-01T19:16:58.830Z"
+    },
+    {
+      "email": "priya29@cb.students.amrita.edu",
+      "password": "$2b$10$B5ExbDNWlVR57XiPLv3Mr.5OMji22qnQe89SI6MQZrR9LtEZJjwn.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "gm9l7rs19",
+      "createdAt": "2026-02-01T19:16:58.901Z",
+      "updatedAt": "2026-02-01T19:16:58.901Z"
+    },
+    {
+      "email": "shreya30@cb.students.amrita.edu",
+      "password": "$2b$10$ohMcmfZ3otPl5FTtIVwb1Ooui.yZsHprHX8VjSxPpgHUKRj6AEWxu",
+      "role": "student",
+      "_isNew": true,
+      "_id": "azpa46wzr",
+      "createdAt": "2026-02-01T19:16:58.965Z",
+      "updatedAt": "2026-02-01T19:16:58.965Z"
+    },
+    {
+      "email": "kavya31@cb.students.amrita.edu",
+      "password": "$2b$10$Qn4DVsAWNy7qGwvvqBR20uvsJuFTZ.yFcHviQFPyWBAbt2uI1NGr.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "upn070wd6",
+      "createdAt": "2026-02-01T19:16:59.031Z",
+      "updatedAt": "2026-02-01T19:16:59.031Z"
+    },
+    {
+      "email": "riya32@cb.students.amrita.edu",
+      "password": "$2b$10$yX.4cGfaCBmTC0tyovEgmuL6mmNkL8U9ztAR9A5kUu1HLA5EW4WTK",
+      "role": "student",
+      "_isNew": true,
+      "_id": "yninennbf",
+      "createdAt": "2026-02-01T19:16:59.095Z",
+      "updatedAt": "2026-02-01T19:16:59.095Z"
+    },
+    {
+      "email": "anika33@cb.students.amrita.edu",
+      "password": "$2b$10$0X/2fmwg562HhCmIiIBXkeWCY9bBm5L5twVUobiXlGna.NQNlIZZS",
+      "role": "student",
+      "_isNew": true,
+      "_id": "wkpjh3eha",
+      "createdAt": "2026-02-01T19:16:59.161Z",
+      "updatedAt": "2026-02-01T19:16:59.161Z"
+    },
+    {
+      "email": "tara34@cb.students.amrita.edu",
+      "password": "$2b$10$.wQFbhAzPOtSkhk.6zyP0uok7YZEFPKtRrfg9qVS8RpxZ.zDq9ln.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "f4o4sbnv1",
+      "createdAt": "2026-02-01T19:16:59.236Z",
+      "updatedAt": "2026-02-01T19:16:59.236Z"
+    },
+    {
+      "email": "neha35@cb.students.amrita.edu",
+      "password": "$2b$10$7hT9KE7uQRwjy/1cbr73WenxzyRH2m1yHaZknZwvKH8YCldX4wjy2",
+      "role": "student",
+      "_isNew": true,
+      "_id": "f3w4ikvnx",
+      "createdAt": "2026-02-01T19:16:59.315Z",
+      "updatedAt": "2026-02-01T19:16:59.315Z"
+    },
+    {
+      "email": "pooja36@cb.students.amrita.edu",
+      "password": "$2b$10$2/jibi3RJd0xGiwhjVlOi.GiiKDouI7WwT.iMLJdV1Plr4gFtZxuO",
+      "role": "student",
+      "_isNew": true,
+      "_id": "7ra2s5l53",
+      "createdAt": "2026-02-01T19:16:59.390Z",
+      "updatedAt": "2026-02-01T19:16:59.390Z"
+    },
+    {
+      "email": "divya37@cb.students.amrita.edu",
+      "password": "$2b$10$4Mb678QPeMgI2fSqSC5aaORnkMwyK6ywZqiPD3litxBlkgP.0X5aa",
+      "role": "student",
+      "_isNew": true,
+      "_id": "726tjg1p6",
+      "createdAt": "2026-02-01T19:16:59.462Z",
+      "updatedAt": "2026-02-01T19:16:59.462Z"
+    },
+    {
+      "email": "sneha38@cb.students.amrita.edu",
+      "password": "$2b$10$RUFVK6PIrwq2EG9l4Y0MPuaErsp9eMSvzhXP6szEDOG4.9njoa.jS",
+      "role": "student",
+      "_isNew": true,
+      "_id": "9cw6mjzow",
+      "createdAt": "2026-02-01T19:16:59.538Z",
+      "updatedAt": "2026-02-01T19:16:59.538Z"
+    },
+    {
+      "email": "kriti39@cb.students.amrita.edu",
+      "password": "$2b$10$qA8aZnKoN1mcb9BBVirZV.okb16rYiUog/EXbdqrj.qq/H.04BmHa",
+      "role": "student",
+      "_isNew": true,
+      "_id": "5px5cdsgp",
+      "createdAt": "2026-02-01T19:16:59.630Z",
+      "updatedAt": "2026-02-01T19:16:59.630Z"
+    },
+    {
+      "email": "tanvi40@cb.students.amrita.edu",
+      "password": "$2b$10$FFlxhrL35qYx6lGT/SyRY.rRDIILC2KcKLs9FM43YUlfA0y5cj0lO",
+      "role": "student",
+      "_isNew": true,
+      "_id": "je1togvj4",
+      "createdAt": "2026-02-01T19:16:59.730Z",
+      "updatedAt": "2026-02-01T19:16:59.730Z"
+    },
+    {
+      "email": "rahul41@cb.students.amrita.edu",
+      "password": "$2b$10$vygvdT9j3.m3JIojF.VkOeBUeORkTps1abHa1L3cbT84eT.K0pvtO",
+      "role": "student",
+      "_isNew": true,
+      "_id": "weuna76jh",
+      "createdAt": "2026-02-01T19:16:59.803Z",
+      "updatedAt": "2026-02-01T19:16:59.803Z"
+    },
+    {
+      "email": "vikram42@cb.students.amrita.edu",
+      "password": "$2b$10$mJb4CYWZo6xbG9Jq3zN/COCTmjnxyPoHcQQ9bh8uuTjDJxpwToyW.",
+      "role": "student",
+      "_isNew": true,
+      "_id": "c98tehmhz",
+      "createdAt": "2026-02-01T19:16:59.881Z",
+      "updatedAt": "2026-02-01T19:16:59.881Z"
+    },
+    {
+      "email": "amit43@cb.students.amrita.edu",
+      "password": "$2b$10$ZUMY1YjFQ3yFEZfHk/dJwucZqLpksRsS.gmAPGz5vsrA.hb9FwP5i",
+      "role": "student",
+      "_isNew": true,
+      "_id": "ff9fvwkru",
+      "createdAt": "2026-02-01T19:16:59.977Z",
+      "updatedAt": "2026-02-01T19:16:59.977Z"
+    },
+    {
+      "email": "suresh44@cb.students.amrita.edu",
+      "password": "$2b$10$UnWO517L/fV0hnqqco9jbeaunNPiT/CxNrNxGnaASBqJK4oCwNu1G",
+      "role": "student",
+      "_isNew": true,
+      "_id": "ytnizqa7z",
+      "createdAt": "2026-02-01T19:17:00.054Z",
+      "updatedAt": "2026-02-01T19:17:00.054Z"
+    },
+    {
+      "email": "rajesh45@cb.students.amrita.edu",
+      "password": "$2b$10$WnBhCyLD1TIIMq1JzcPZ2ewcYFb9r2zDDL0X7gGYYJ2wUOpY.YJZm",
+      "role": "student",
+      "_isNew": true,
+      "_id": "u4frvnzuk",
+      "createdAt": "2026-02-01T19:17:00.129Z",
+      "updatedAt": "2026-02-01T19:17:00.129Z"
+    },
+    {
+      "email": "karthik46@cb.students.amrita.edu",
+      "password": "$2b$10$ercmVLafkMj/7WZptECOJuWt3ZcktIPE5QeApCHfStGVunxssAC96",
+      "role": "student",
+      "_isNew": true,
+      "_id": "jhctulw64",
+      "createdAt": "2026-02-01T19:17:00.204Z",
+      "updatedAt": "2026-02-01T19:17:00.204Z"
+    },
+    {
+      "email": "mohan47@cb.students.amrita.edu",
+      "password": "$2b$10$N.vjnh66QjEGGXXi.PLlCuzBcALXgYzg2ncunjwFQxBS0ObFX/O2u",
+      "role": "student",
+      "_isNew": true,
+      "_id": "p99tz4505",
+      "createdAt": "2026-02-01T19:17:00.280Z",
+      "updatedAt": "2026-02-01T19:17:00.280Z"
+    },
+    {
+      "email": "girish48@cb.students.amrita.edu",
+      "password": "$2b$10$djWGMhoaRu6iXjL/JcAZEOey7MTHuYJ9f.NudKhuhRhWhyjq8qQKO",
+      "role": "student",
+      "_isNew": true,
+      "_id": "g2py5mthg",
+      "createdAt": "2026-02-01T19:17:00.357Z",
+      "updatedAt": "2026-02-01T19:17:00.357Z"
+    },
+    {
+      "email": "harsha49@cb.students.amrita.edu",
+      "password": "$2b$10$NopC0cESKykW9lrP6msCIO3AWUBdGuvV0JONbzvezfzUDDgBM.xLy",
+      "role": "student",
+      "_isNew": true,
+      "_id": "4zakxlcp8",
+      "createdAt": "2026-02-01T19:17:00.438Z",
+      "updatedAt": "2026-02-01T19:17:00.438Z"
+    },
+    {
+      "email": "tejas50@cb.students.amrita.edu",
+      "password": "$2b$10$nrNGQxQ.QoYHQgNEPghqMOFdVVG7gJraUfJC5y3KuJbLd4ZUJMPI6",
+      "role": "student",
+      "_isNew": true,
+      "_id": "zkjalg9ex",
+      "createdAt": "2026-02-01T19:17:00.538Z",
+      "updatedAt": "2026-02-01T19:17:00.538Z"
+    },
+    {
+      "email": "varun51@cb.students.amrita.edu",
+      "password": "$2b$10$ZBhrfC/wN8KolwPLVrLLTuj6HglA.Xd/qNXEd8bsjviKFpaUeagWa",
+      "role": "student",
+      "_isNew": true,
+      "_id": "fp32p3qry",
+      "createdAt": "2026-02-01T19:17:00.612Z",
+      "updatedAt": "2026-02-01T19:17:00.612Z"
+    },
+    {
+      "email": "nikhil52@cb.students.amrita.edu",
+      "password": "$2b$10$j8DnGFUfOUcO7PfHdKyL7.8M768icV78AztrpQpsauhrathVGbI3m",
+      "role": "student",
+      "_isNew": true,
+      "_id": "0nxlavtdy",
+      "createdAt": "2026-02-01T19:17:00.686Z",
+      "updatedAt": "2026-02-01T19:17:00.686Z"
+    },
+    {
+      "email": "sanjay53@cb.students.amrita.edu",
+      "password": "$2b$10$lpalKfp6T61.bgBL7RP.1ezVpHQZO6dBYhEyyzWXDxTsCmFVHWY8m",
+      "role": "student",
+      "_isNew": true,
+      "_id": "7ol4caqgb",
+      "createdAt": "2026-02-01T19:17:00.787Z",
+      "updatedAt": "2026-02-01T19:17:00.787Z"
+    },
+    {
+      "email": "deepak54@cb.students.amrita.edu",
+      "password": "$2b$10$Pp0/mKEFy1MOJMsfEDs4XeSPFcusGMmeZ8kivNbOpLe9a3fXr/dw2",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pblea1b77",
+      "createdAt": "2026-02-01T19:17:00.885Z",
+      "updatedAt": "2026-02-01T19:17:00.885Z"
+    },
+    {
+      "email": "ganesh55@cb.students.amrita.edu",
+      "password": "$2b$10$YEfk5c4999b6KzcKPwmB/OqxVWt7L2eZPLzSQ9WKpIlNb3Fnkj.9i",
+      "role": "student",
+      "_isNew": true,
+      "_id": "g1rvcm9is",
+      "createdAt": "2026-02-01T19:17:00.948Z",
+      "updatedAt": "2026-02-01T19:17:00.948Z"
+    },
+    {
+      "email": "naveen56@cb.students.amrita.edu",
+      "password": "$2b$10$EHQjg46/FwjNdbu.uAAfLeG5zrwimWT7lw8TpN0vIjiZ76nPOvqp2",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pnqg071xp",
+      "createdAt": "2026-02-01T19:17:01.015Z",
+      "updatedAt": "2026-02-01T19:17:01.015Z"
+    },
+    {
+      "email": "akash57@cb.students.amrita.edu",
+      "password": "$2b$10$KdDZAR5QRDCxYVZtqDOqUeMmnyTmtubrffKdkNHECdFoRIenGRnyy",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pv33pvkbs",
+      "createdAt": "2026-02-01T19:17:01.114Z",
+      "updatedAt": "2026-02-01T19:17:01.114Z"
+    },
+    {
+      "email": "ajay58@cb.students.amrita.edu",
+      "password": "$2b$10$f63.bSHcpWn5eRYd.c4izOu4sdq2P.xr9qJlueXz3.pys4MjPrMz6",
+      "role": "student",
+      "_isNew": true,
+      "_id": "clskb494l",
+      "createdAt": "2026-02-01T19:17:01.214Z",
+      "updatedAt": "2026-02-01T19:17:01.214Z"
+    },
+    {
+      "email": "vijay59@cb.students.amrita.edu",
+      "password": "$2b$10$jLFmrPz9CD8Wkn1nO4Ptnuo.CSAPfFa6PAcWcQVeZGQfqfp4q8TAq",
+      "role": "student",
+      "_isNew": true,
+      "_id": "axmswvgdc",
+      "createdAt": "2026-02-01T19:17:01.315Z",
+      "updatedAt": "2026-02-01T19:17:01.315Z"
+    },
+    {
+      "email": "manoj60@cb.students.amrita.edu",
+      "password": "$2b$10$dzhr1NzED02MOr1bQoOQ1uFH0Kyz5OMKocAC9VpO5mqIsDAlob0gW",
+      "role": "student",
+      "_isNew": true,
+      "_id": "335ehpkp5",
+      "createdAt": "2026-02-01T19:17:01.389Z",
+      "updatedAt": "2026-02-01T19:17:01.389Z"
+    },
+    {
+      "email": "lakshmi61@cb.students.amrita.edu",
+      "password": "$2b$10$Ma5x66r7XX7FEb5K8qfnhOsMpz8e3dRVqqO/wp8HreHFP6pjDFQei",
+      "role": "student",
+      "_isNew": true,
+      "_id": "esub3un3u",
+      "createdAt": "2026-02-01T19:17:01.466Z",
+      "updatedAt": "2026-02-01T19:17:01.466Z"
+    },
+    {
+      "email": "padma62@cb.students.amrita.edu",
+      "password": "$2b$10$B7Kkiivpo9GKp.Fxlu.eLuUw7r6C3QkwjMj5o6azKyVFsdDgQp0ei",
+      "role": "student",
+      "_isNew": true,
+      "_id": "nj92qwnrs",
+      "createdAt": "2026-02-01T19:17:01.540Z",
+      "updatedAt": "2026-02-01T19:17:01.540Z"
+    },
+    {
+      "email": "gayatri63@cb.students.amrita.edu",
+      "password": "$2b$10$9BAFZN2M0r.QaA3b1r3cn.SKtDCgUV6IQNSVDgp2gPc2/SFDX58aq",
+      "role": "student",
+      "_isNew": true,
+      "_id": "pqv69ghwy",
+      "createdAt": "2026-02-01T19:17:01.642Z",
+      "updatedAt": "2026-02-01T19:17:01.642Z"
+    },
+    {
+      "email": "meera64@cb.students.amrita.edu",
+      "password": "$2b$10$BmBWkvchRBDP05N0ICNu0OS1jBU.m4V2S//c6u95SM7fgii6fxpqm",
+      "role": "student",
+      "_isNew": true,
+      "_id": "e7j7urypd",
+      "createdAt": "2026-02-01T19:17:01.719Z",
+      "updatedAt": "2026-02-01T19:17:01.719Z"
+    },
+    {
+      "email": "radha65@cb.students.amrita.edu",
+      "password": "$2b$10$E4Ez/pMShFGkAlOjZpVGbejVWkcLnFcuIBdlY8bq4UzygIOzBvml6",
+      "role": "student",
+      "_isNew": true,
+      "_id": "e6m9njvxr",
+      "createdAt": "2026-02-01T19:17:01.813Z",
+      "updatedAt": "2026-02-01T19:17:01.813Z"
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": true,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:22:36.097Z",
+      "updatedAt": "2026-02-01T19:22:36.097Z"
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": false,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:22:41.263Z",
+      "updatedAt": "2026-02-01T19:22:41.263Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$tMmK6pWuNaVJ/nzzHY6ODO60V3K/4uEQ6Y702pnL85L0Umt7q6tRe",
+      "role": "admin",
+      "_isNew": true,
+      "_id": "pcy2vq392",
+      "createdAt": "2026-02-01T19:23:16.027Z",
+      "updatedAt": "2026-02-01T19:23:16.027Z"
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": false,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:23:20.901Z",
+      "updatedAt": "2026-02-01T19:23:20.901Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$l8MGzpQSQ326PUf/JN6ejuO1jeBUSUBJ29CdeGPzlYQ3jyltQEm4C",
+      "role": "admin",
+      "_isNew": true,
+      "_id": "jtvc7y4uh",
+      "createdAt": "2026-02-01T19:23:31.321Z",
+      "updatedAt": "2026-02-01T19:23:31.321Z"
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": false,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:23:37.119Z",
+      "updatedAt": "2026-02-01T19:23:37.119Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": false,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:23:41.376Z",
+      "updatedAt": "2026-02-01T19:23:41.376Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": true,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-01T19:24:26.345Z",
+      "updatedAt": "2026-02-01T19:24:26.345Z"
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-01T19:24:33.473Z",
+      "updatedAt": "2026-02-01T19:24:33.473Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "harinin006@gmail.com",
+      "password": "$2b$10$zKeUhzQMIVYw8hCc9L9IweNCcXScB5/szF1/GYqHKWbOe9UVqtuVS",
+      "role": "student",
+      "_isNew": false,
+      "_id": "la5m2exhl",
+      "createdAt": "2026-02-01T19:25:48.998Z",
+      "updatedAt": "2026-02-01T19:25:48.998Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-02T06:19:59.533Z",
+      "updatedAt": "2026-02-02T06:19:59.534Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "aarav1@cb.students.amrita.edu",
+      "password": "$2b$10$GUnYBbQBICOpvuS.4VW4Fu94ZtSBYXqVSwX3eG4c9NSHFMSv1pQSq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "tmvkf2ekg",
+      "createdAt": "2026-02-02T06:21:12.832Z",
+      "updatedAt": "2026-02-02T06:21:12.832Z",
+      "failedAttempts": 0
+    }
+  ],
+  "studentprofiles": [
+    {
+      "userId": "tmvkf2ekg",
+      "rollNumber": "CB.SC.U4CSE22801",
+      "firstName": "Aarav",
+      "lastName": "Chatterjee",
+      "email": "aarav1@cb.students.amrita.edu",
+      "phone": "+91 9800000001",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.59,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA",
+        "AWS Cloud Practitioner",
+        "CompTIA Security+"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/aaravchatterjee1",
+      "github": "https://github.com/aarav1",
+      "placementStatus": "in_process",
+      "tenthPercentage": 97.8,
+      "twelfthPercentage": 88.4,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Java",
+            "MongoDB",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/aarav1/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1741487,
+      "_isNew": true,
+      "_id": "18avxua49",
+      "createdAt": "2026-02-01T19:16:56.668Z",
+      "updatedAt": "2026-02-01T19:16:56.668Z"
+    },
+    {
+      "userId": "b2jgpi89a",
+      "rollNumber": "CB.SC.U4CSE22802",
+      "firstName": "Vivaan",
+      "lastName": "Venkatesh",
+      "email": "vivaan2@cb.students.amrita.edu",
+      "phone": "+91 9800000002",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.03,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer",
+        "AWS Cloud Practitioner",
+        "Cisco CCNA"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/vivaanvenkatesh2",
+      "github": "https://github.com/vivaan2",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 87.2,
+      "twelfthPercentage": 91.9,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "SDE Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "SQL",
+            "JavaScript"
+          ],
+          "link": "https://github.com/vivaan2/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1287845,
+      "_isNew": true,
+      "_id": "f3oqzd16f",
+      "createdAt": "2026-02-01T19:16:56.757Z",
+      "updatedAt": "2026-02-01T19:16:56.757Z"
+    },
+    {
+      "userId": "h7gtiop0x",
+      "rollNumber": "CB.SC.U4CSE22803",
+      "firstName": "Aditya",
+      "lastName": "Menon",
+      "email": "aditya3@cb.students.amrita.edu",
+      "phone": "+91 9800000003",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Google Cloud Engineer",
+        "Oracle Java SE",
+        "TensorFlow Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/adityamenon3",
+      "github": "https://github.com/aditya3",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 95.7,
+      "twelfthPercentage": 92.1,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "SDE Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "MongoDB",
+            "Node.js"
+          ],
+          "link": "https://github.com/aditya3/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1688468,
+      "_isNew": true,
+      "_id": "6lgh39vdo",
+      "createdAt": "2026-02-01T19:16:56.841Z",
+      "updatedAt": "2026-02-01T19:16:56.841Z"
+    },
+    {
+      "userId": "koj753k86",
+      "rollNumber": "CB.SC.U4CSE22804",
+      "firstName": "Vihaan",
+      "lastName": "Naidu",
+      "email": "vihaan4@cb.students.amrita.edu",
+      "phone": "+91 9800000004",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 8.12,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/vihaannaidu4",
+      "github": "https://github.com/vihaan4",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 87.7,
+      "twelfthPercentage": 83.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "ML Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "MongoDB",
+            "JavaScript"
+          ],
+          "link": "https://github.com/vihaan4/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1650397,
+      "_isNew": true,
+      "_id": "ec04upk7x",
+      "createdAt": "2026-02-01T19:16:56.915Z",
+      "updatedAt": "2026-02-01T19:16:56.915Z"
+    },
+    {
+      "userId": "syw4dmm91",
+      "rollNumber": "CB.SC.U4CSE22805",
+      "firstName": "Arjun",
+      "lastName": "Das",
+      "email": "arjun5@cb.students.amrita.edu",
+      "phone": "+91 9800000005",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.7,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Kubernetes Administrator",
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/arjundas5",
+      "github": "https://github.com/arjun5",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 94.9,
+      "twelfthPercentage": 86.9,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "MongoDB",
+            "Data Structures",
+            "Java"
+          ],
+          "link": "https://github.com/arjun5/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1780125,
+      "_isNew": true,
+      "_id": "vfsdvzapw",
+      "createdAt": "2026-02-01T19:16:56.991Z",
+      "updatedAt": "2026-02-01T19:16:56.991Z"
+    },
+    {
+      "userId": "bf6rd033a",
+      "rollNumber": "CB.SC.U4CSE22806",
+      "firstName": "Sai",
+      "lastName": "Joshi",
+      "email": "sai6@cb.students.amrita.edu",
+      "phone": "+91 9800000006",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.61,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Kubernetes Administrator",
+        "CompTIA Security+"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/saijoshi6",
+      "github": "https://github.com/sai6",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 95.5,
+      "twelfthPercentage": 80,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "MongoDB",
+            "SQL",
+            "Node.js"
+          ],
+          "link": "https://github.com/sai6/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1965529,
+      "_isNew": true,
+      "_id": "7gxfvx9p8",
+      "createdAt": "2026-02-01T19:16:57.068Z",
+      "updatedAt": "2026-02-01T19:16:57.068Z"
+    },
+    {
+      "userId": "9nxbpqr4l",
+      "rollNumber": "CB.SC.U4CSE22807",
+      "firstName": "Reyansh",
+      "lastName": "Krishnan",
+      "email": "reyansh7@cb.students.amrita.edu",
+      "phone": "+91 9800000007",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.7,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Oracle Java SE"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/reyanshkrishnan7",
+      "github": "https://github.com/reyansh7",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 97.2,
+      "twelfthPercentage": 80.5,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "TypeScript",
+            "Data Structures"
+          ],
+          "link": "https://github.com/reyansh7/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1276123,
+      "_isNew": true,
+      "_id": "fts2j4acs",
+      "createdAt": "2026-02-01T19:16:57.142Z",
+      "updatedAt": "2026-02-01T19:16:57.142Z"
+    },
+    {
+      "userId": "gb1w35ptn",
+      "rollNumber": "CB.SC.U4CSE22808",
+      "firstName": "Ayaan",
+      "lastName": "Dutta",
+      "email": "ayaan8@cb.students.amrita.edu",
+      "phone": "+91 9800000008",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 8.48,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        }
+      ],
+      "certifications": [
+        "Microsoft Azure Fundamentals",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ayaandutta8",
+      "github": "https://github.com/ayaan8",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 91.7,
+      "twelfthPercentage": 86.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "Web Developer Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "AWS",
+            "Git",
+            "Python"
+          ],
+          "link": "https://github.com/ayaan8/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1119108,
+      "_isNew": true,
+      "_id": "qs6n3jhwm",
+      "createdAt": "2026-02-01T19:16:57.217Z",
+      "updatedAt": "2026-02-01T19:16:57.217Z"
+    },
+    {
+      "userId": "sbu0y2jer",
+      "rollNumber": "CB.SC.U4CSE22809",
+      "firstName": "Krishna",
+      "lastName": "Chakraborty",
+      "email": "krishna9@cb.students.amrita.edu",
+      "phone": "+91 9800000009",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.1,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA",
+        "Oracle Java SE",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/krishnachakraborty9",
+      "github": "https://github.com/krishna9",
+      "placementStatus": "placed",
+      "tenthPercentage": 98.6,
+      "twelfthPercentage": 91.9,
+      "gap": 1,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "Web Developer Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Machine Learning",
+            "SQL",
+            "System Design"
+          ],
+          "link": "https://github.com/krishna9/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 944743,
+      "offeredCompany": "Amazon",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3498733,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "mwgnjhupb",
+      "createdAt": "2026-02-01T19:16:57.291Z",
+      "updatedAt": "2026-02-01T19:16:57.291Z"
+    },
+    {
+      "userId": "kun88sff5",
+      "rollNumber": "CB.SC.U4CSE22810",
+      "firstName": "Ishaan",
+      "lastName": "Patel",
+      "email": "ishaan10@cb.students.amrita.edu",
+      "phone": "+91 9800000010",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.78,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ishaanpatel10",
+      "github": "https://github.com/ishaan10",
+      "placementStatus": "placed",
+      "tenthPercentage": 92.1,
+      "twelfthPercentage": 98.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "Data Analyst Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "Java",
+            "JavaScript"
+          ],
+          "link": "https://github.com/ishaan10/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1761250,
+      "offeredCompany": "Microsoft",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2390753,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "wjow2ekii",
+      "createdAt": "2026-02-01T19:16:57.366Z",
+      "updatedAt": "2026-02-01T19:16:57.366Z"
+    },
+    {
+      "userId": "reksz6ioo",
+      "rollNumber": "CB.SC.U4CSE22811",
+      "firstName": "Rohan",
+      "lastName": "Naidu",
+      "email": "rohan11@cb.students.amrita.edu",
+      "phone": "+91 9800000011",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 8.83,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/rohannaidu11",
+      "github": "https://github.com/rohan11",
+      "placementStatus": "placed",
+      "tenthPercentage": 94.5,
+      "twelfthPercentage": 86.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Microsoft",
+          "role": "Web Developer Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Docker",
+            "Java",
+            "Python"
+          ],
+          "link": "https://github.com/rohan11/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1649470,
+      "offeredCompany": "Amazon",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 1608818,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "b77iegdge",
+      "createdAt": "2026-02-01T19:16:57.441Z",
+      "updatedAt": "2026-02-01T19:16:57.441Z"
+    },
+    {
+      "userId": "8v9r8534u",
+      "rollNumber": "CB.SC.U4CSE22812",
+      "firstName": "Kartik",
+      "lastName": "Mukherjee",
+      "email": "kartik12@cb.students.amrita.edu",
+      "phone": "+91 9800000012",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 8.72,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/kartikmukherjee12",
+      "github": "https://github.com/kartik12",
+      "placementStatus": "placed",
+      "tenthPercentage": 89.4,
+      "twelfthPercentage": 93,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Google",
+          "role": "Data Analyst Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Machine Learning",
+            "Git",
+            "Python"
+          ],
+          "link": "https://github.com/kartik12/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 894850,
+      "offeredCompany": "Amazon",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2948195,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "ih0czevcp",
+      "createdAt": "2026-02-01T19:16:57.516Z",
+      "updatedAt": "2026-02-01T19:16:57.516Z"
+    },
+    {
+      "userId": "ofgjh8b5z",
+      "rollNumber": "CB.SC.U4CSE22813",
+      "firstName": "Dhruv",
+      "lastName": "Iyer",
+      "email": "dhruv13@cb.students.amrita.edu",
+      "phone": "+91 9800000013",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.5,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/dhruviyer13",
+      "github": "https://github.com/dhruv13",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 86.1,
+      "twelfthPercentage": 94.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Data Analyst Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "AWS",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/dhruv13/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1084800,
+      "_isNew": true,
+      "_id": "uihx62dhr",
+      "createdAt": "2026-02-01T19:16:57.604Z",
+      "updatedAt": "2026-02-01T19:16:57.604Z"
+    },
+    {
+      "userId": "yhsxaczrt",
+      "rollNumber": "CB.SC.U4CSE22814",
+      "firstName": "Kabir",
+      "lastName": "Krishnan",
+      "email": "kabir14@cb.students.amrita.edu",
+      "phone": "+91 9800000014",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.6,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/kabirkrishnan14",
+      "github": "https://github.com/kabir14",
+      "placementStatus": "in_process",
+      "tenthPercentage": 86.4,
+      "twelfthPercentage": 97.8,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Microsoft",
+          "role": "Data Analyst Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Java",
+            "Python",
+            "Docker"
+          ],
+          "link": "https://github.com/kabir14/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1240363,
+      "_isNew": true,
+      "_id": "pnw2cekkf",
+      "createdAt": "2026-02-01T19:16:57.706Z",
+      "updatedAt": "2026-02-01T19:16:57.706Z"
+    },
+    {
+      "userId": "pqa5vk9qt",
+      "rollNumber": "CB.SC.U4CSE22815",
+      "firstName": "Ritvik",
+      "lastName": "Gupta",
+      "email": "ritvik15@cb.students.amrita.edu",
+      "phone": "+91 9800000015",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.4,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ritvikgupta15",
+      "github": "https://github.com/ritvik15",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 93.5,
+      "twelfthPercentage": 91.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "SDE Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "System Design",
+            "TypeScript",
+            "JavaScript"
+          ],
+          "link": "https://github.com/ritvik15/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 908346,
+      "_isNew": true,
+      "_id": "n8buvrez3",
+      "createdAt": "2026-02-01T19:16:57.784Z",
+      "updatedAt": "2026-02-01T19:16:57.784Z"
+    },
+    {
+      "userId": "iy87ui1bo",
+      "rollNumber": "CB.SC.U4CSE22816",
+      "firstName": "Pranav",
+      "lastName": "Roy",
+      "email": "pranav16@cb.students.amrita.edu",
+      "phone": "+91 9800000016",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.1,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/pranavroy16",
+      "github": "https://github.com/pranav16",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 87.2,
+      "twelfthPercentage": 87.3,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "ML Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "C++",
+            "Node.js",
+            "Data Structures"
+          ],
+          "link": "https://github.com/pranav16/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1239641,
+      "_isNew": true,
+      "_id": "sy1ew9bvk",
+      "createdAt": "2026-02-01T19:16:57.874Z",
+      "updatedAt": "2026-02-01T19:16:57.874Z"
+    },
+    {
+      "userId": "ou8ptkthv",
+      "rollNumber": "CB.SC.U4CSE22817",
+      "firstName": "Arnav",
+      "lastName": "Mukherjee",
+      "email": "arnav17@cb.students.amrita.edu",
+      "phone": "+91 9800000017",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.75,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/arnavmukherjee17",
+      "github": "https://github.com/arnav17",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 91.1,
+      "twelfthPercentage": 82.8,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Git",
+            "JavaScript",
+            "System Design"
+          ],
+          "link": "https://github.com/arnav17/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1887319,
+      "_isNew": true,
+      "_id": "xp5vnmczf",
+      "createdAt": "2026-02-01T19:16:57.948Z",
+      "updatedAt": "2026-02-01T19:16:57.948Z"
+    },
+    {
+      "userId": "i6keth1sv",
+      "rollNumber": "CB.SC.U4CSE22818",
+      "firstName": "Shaurya",
+      "lastName": "Bose",
+      "email": "shaurya18@cb.students.amrita.edu",
+      "phone": "+91 9800000018",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.52,
+      "batch": "2026",
+      "backlogs": 1,
+      "skills": [
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/shauryabose18",
+      "github": "https://github.com/shaurya18",
+      "placementStatus": "placed",
+      "tenthPercentage": 95.6,
+      "twelfthPercentage": 90.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "ML Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "TypeScript",
+            "JavaScript",
+            "Docker"
+          ],
+          "link": "https://github.com/shaurya18/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1397648,
+      "offeredCompany": "Adobe",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2060933,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "8hoererwd",
+      "createdAt": "2026-02-01T19:16:58.023Z",
+      "updatedAt": "2026-02-01T19:16:58.023Z"
+    },
+    {
+      "userId": "bsphpoen1",
+      "rollNumber": "CB.SC.U4CSE22819",
+      "firstName": "Atharv",
+      "lastName": "Naidu",
+      "email": "atharv19@cb.students.amrita.edu",
+      "phone": "+91 9800000019",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.01,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Oracle Java SE",
+        "Kubernetes Administrator",
+        "Cisco CCNA"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/atharvnaidu19",
+      "github": "https://github.com/atharv19",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 95.3,
+      "twelfthPercentage": 88.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "System Design",
+            "JavaScript",
+            "C++"
+          ],
+          "link": "https://github.com/atharv19/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1215328,
+      "_isNew": true,
+      "_id": "88na9l4sz",
+      "createdAt": "2026-02-01T19:16:58.097Z",
+      "updatedAt": "2026-02-01T19:16:58.097Z"
+    },
+    {
+      "userId": "pbbnymmho",
+      "rollNumber": "CB.SC.U4CSE22820",
+      "firstName": "Advait",
+      "lastName": "Chakraborty",
+      "email": "advait20@cb.students.amrita.edu",
+      "phone": "+91 9800000020",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.06,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "CompTIA Security+",
+        "TensorFlow Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/advaitchakraborty20",
+      "github": "https://github.com/advait20",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 86,
+      "twelfthPercentage": 98,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "MongoDB",
+            "AWS",
+            "System Design"
+          ],
+          "link": "https://github.com/advait20/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1880417,
+      "_isNew": true,
+      "_id": "uzd56jonq",
+      "createdAt": "2026-02-01T19:16:58.217Z",
+      "updatedAt": "2026-02-01T19:16:58.217Z"
+    },
+    {
+      "userId": "30r3bofpp",
+      "rollNumber": "CB.SC.U4CSE22821",
+      "firstName": "Ananya",
+      "lastName": "Bose",
+      "email": "ananya21@cb.students.amrita.edu",
+      "phone": "+91 9800000021",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.74,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ananyabose21",
+      "github": "https://github.com/ananya21",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 93.2,
+      "twelfthPercentage": 94.4,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "TypeScript",
+            "Git",
+            "React"
+          ],
+          "link": "https://github.com/ananya21/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1208063,
+      "_isNew": true,
+      "_id": "ygh0ul610",
+      "createdAt": "2026-02-01T19:16:58.319Z",
+      "updatedAt": "2026-02-01T19:16:58.319Z"
+    },
+    {
+      "userId": "bowv92max",
+      "rollNumber": "CB.SC.U4CSE22822",
+      "firstName": "Diya",
+      "lastName": "Joshi",
+      "email": "diya22@cb.students.amrita.edu",
+      "phone": "+91 9800000022",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.48,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Oracle Java SE"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/diyajoshi22",
+      "github": "https://github.com/diya22",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 85.8,
+      "twelfthPercentage": 89.9,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Google",
+          "role": "SDE Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "MongoDB",
+            "System Design",
+            "Data Structures"
+          ],
+          "link": "https://github.com/diya22/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1011466,
+      "_isNew": true,
+      "_id": "1447gipd0",
+      "createdAt": "2026-02-01T19:16:58.392Z",
+      "updatedAt": "2026-02-01T19:16:58.392Z"
+    },
+    {
+      "userId": "7ct1qm2h4",
+      "rollNumber": "CB.SC.U4CSE22823",
+      "firstName": "Saanvi",
+      "lastName": "Kumar",
+      "email": "saanvi23@cb.students.amrita.edu",
+      "phone": "+91 9800000023",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.96,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "CompTIA Security+",
+        "Google Data Analytics"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/saanvikumar23",
+      "github": "https://github.com/saanvi23",
+      "placementStatus": "in_process",
+      "tenthPercentage": 87.3,
+      "twelfthPercentage": 83.2,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Docker",
+            "AWS",
+            "MongoDB"
+          ],
+          "link": "https://github.com/saanvi23/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1319050,
+      "_isNew": true,
+      "_id": "dd9pbp57t",
+      "createdAt": "2026-02-01T19:16:58.463Z",
+      "updatedAt": "2026-02-01T19:16:58.463Z"
+    },
+    {
+      "userId": "y5dwoeqcf",
+      "rollNumber": "CB.SC.U4CSE22824",
+      "firstName": "Aanya",
+      "lastName": "Srinivasan",
+      "email": "aanya24@cb.students.amrita.edu",
+      "phone": "+91 9800000024",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.37,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/aanyasrinivasan24",
+      "github": "https://github.com/aanya24",
+      "placementStatus": "placed",
+      "tenthPercentage": 89.5,
+      "twelfthPercentage": 88,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Microsoft",
+          "role": "Data Analyst Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "C++",
+            "JavaScript",
+            "React"
+          ],
+          "link": "https://github.com/aanya24/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1866599,
+      "offeredCompany": "Cisco",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3473707,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "bwdjn7mim",
+      "createdAt": "2026-02-01T19:16:58.539Z",
+      "updatedAt": "2026-02-01T19:16:58.539Z"
+    },
+    {
+      "userId": "vb1wikgu4",
+      "rollNumber": "CB.SC.U4CSE22825",
+      "firstName": "Aadhya",
+      "lastName": "Srinivasan",
+      "email": "aadhya25@cb.students.amrita.edu",
+      "phone": "+91 9800000025",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.02,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer",
+        "Kubernetes Administrator",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/aadhyasrinivasan25",
+      "github": "https://github.com/aadhya25",
+      "placementStatus": "in_process",
+      "tenthPercentage": 98.3,
+      "twelfthPercentage": 95.6,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "Web Developer Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "Python",
+            "Git"
+          ],
+          "link": "https://github.com/aadhya25/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1358853,
+      "_isNew": true,
+      "_id": "xges1q5hx",
+      "createdAt": "2026-02-01T19:16:58.613Z",
+      "updatedAt": "2026-02-01T19:16:58.613Z"
+    },
+    {
+      "userId": "oyscekmmr",
+      "rollNumber": "CB.SC.U4CSE22826",
+      "firstName": "Isha",
+      "lastName": "Bose",
+      "email": "isha26@cb.students.amrita.edu",
+      "phone": "+91 9800000026",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 8.06,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer",
+        "Google Cloud Engineer",
+        "Oracle Java SE"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ishabose26",
+      "github": "https://github.com/isha26",
+      "placementStatus": "placed",
+      "tenthPercentage": 91.2,
+      "twelfthPercentage": 93.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "SQL",
+            "AWS",
+            "TypeScript"
+          ],
+          "link": "https://github.com/isha26/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 971021,
+      "offeredCompany": "Microsoft",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3926844,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "uvgwgxqee",
+      "createdAt": "2026-02-01T19:16:58.684Z",
+      "updatedAt": "2026-02-01T19:16:58.684Z"
+    },
+    {
+      "userId": "a53i9kj1r",
+      "rollNumber": "CB.SC.U4CSE22827",
+      "firstName": "Avni",
+      "lastName": "Roy",
+      "email": "avni27@cb.students.amrita.edu",
+      "phone": "+91 9800000027",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.78,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Google Data Analytics",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/avniroy27",
+      "github": "https://github.com/avni27",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 99,
+      "twelfthPercentage": 92,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Web Developer Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "TypeScript",
+            "MongoDB"
+          ],
+          "link": "https://github.com/avni27/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1034320,
+      "_isNew": true,
+      "_id": "o1nvmp55f",
+      "createdAt": "2026-02-01T19:16:58.757Z",
+      "updatedAt": "2026-02-01T19:16:58.757Z"
+    },
+    {
+      "userId": "rtjriihyw",
+      "rollNumber": "CB.SC.U4CSE22828",
+      "firstName": "Mira",
+      "lastName": "Gupta",
+      "email": "mira28@cb.students.amrita.edu",
+      "phone": "+91 9800000028",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.75,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/miragupta28",
+      "github": "https://github.com/mira28",
+      "placementStatus": "placed",
+      "tenthPercentage": 94.2,
+      "twelfthPercentage": 98.3,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Docker",
+            "SQL",
+            "Java"
+          ],
+          "link": "https://github.com/mira28/project"
+        }
+      ],
+      "achievements": "Dean's List",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 850820,
+      "offeredCompany": "Adobe",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 1612848,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "qrx78aqde",
+      "createdAt": "2026-02-01T19:16:58.831Z",
+      "updatedAt": "2026-02-01T19:16:58.831Z"
+    },
+    {
+      "userId": "gm9l7rs19",
+      "rollNumber": "CB.SC.U4CSE22829",
+      "firstName": "Priya",
+      "lastName": "Iyer",
+      "email": "priya29@cb.students.amrita.edu",
+      "phone": "+91 9800000029",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.85,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/priyaiyer29",
+      "github": "https://github.com/priya29",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 93.8,
+      "twelfthPercentage": 90,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Machine Learning",
+            "TypeScript",
+            "Node.js"
+          ],
+          "link": "https://github.com/priya29/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 911515,
+      "_isNew": true,
+      "_id": "clyd657u1",
+      "createdAt": "2026-02-01T19:16:58.902Z",
+      "updatedAt": "2026-02-01T19:16:58.902Z"
+    },
+    {
+      "userId": "azpa46wzr",
+      "rollNumber": "CB.SC.U4CSE22830",
+      "firstName": "Shreya",
+      "lastName": "Ramesh",
+      "email": "shreya30@cb.students.amrita.edu",
+      "phone": "+91 9800000030",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.17,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Oracle Java SE",
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/shreyaramesh30",
+      "github": "https://github.com/shreya30",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 92.8,
+      "twelfthPercentage": 81.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "SDE Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Node.js",
+            "React",
+            "TypeScript"
+          ],
+          "link": "https://github.com/shreya30/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1524077,
+      "_isNew": true,
+      "_id": "yl49vf0c1",
+      "createdAt": "2026-02-01T19:16:58.966Z",
+      "updatedAt": "2026-02-01T19:16:58.966Z"
+    },
+    {
+      "userId": "upn070wd6",
+      "rollNumber": "CB.SC.U4CSE22831",
+      "firstName": "Kavya",
+      "lastName": "Banerjee",
+      "email": "kavya31@cb.students.amrita.edu",
+      "phone": "+91 9800000031",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 8.29,
+      "batch": "2026",
+      "backlogs": 1,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Cisco CCNA",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/kavyabanerjee31",
+      "github": "https://github.com/kavya31",
+      "placementStatus": "placed",
+      "tenthPercentage": 93.8,
+      "twelfthPercentage": 89.9,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "Web Developer Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "Java",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/kavya31/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1229900,
+      "offeredCompany": "Cisco",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2192864,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "1quo0cefu",
+      "createdAt": "2026-02-01T19:16:59.032Z",
+      "updatedAt": "2026-02-01T19:16:59.032Z"
+    },
+    {
+      "userId": "yninennbf",
+      "rollNumber": "CB.SC.U4CSE22832",
+      "firstName": "Riya",
+      "lastName": "Joshi",
+      "email": "riya32@cb.students.amrita.edu",
+      "phone": "+91 9800000032",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.51,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/riyajoshi32",
+      "github": "https://github.com/riya32",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 96.8,
+      "twelfthPercentage": 84.8,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "ML Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "TypeScript",
+            "MongoDB",
+            "Docker"
+          ],
+          "link": "https://github.com/riya32/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1850668,
+      "_isNew": true,
+      "_id": "7f1g2e3ku",
+      "createdAt": "2026-02-01T19:16:59.095Z",
+      "updatedAt": "2026-02-01T19:16:59.095Z"
+    },
+    {
+      "userId": "wkpjh3eha",
+      "rollNumber": "CB.SC.U4CSE22833",
+      "firstName": "Anika",
+      "lastName": "Bose",
+      "email": "anika33@cb.students.amrita.edu",
+      "phone": "+91 9800000033",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.16,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Google Data Analytics",
+        "Cisco CCNA"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/anikabose33",
+      "github": "https://github.com/anika33",
+      "placementStatus": "placed",
+      "tenthPercentage": 85.5,
+      "twelfthPercentage": 98.5,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "Git",
+            "Java"
+          ],
+          "link": "https://github.com/anika33/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 977548,
+      "offeredCompany": "Google",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2868056,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "9qu2mr7kk",
+      "createdAt": "2026-02-01T19:16:59.162Z",
+      "updatedAt": "2026-02-01T19:16:59.162Z"
+    },
+    {
+      "userId": "f4o4sbnv1",
+      "rollNumber": "CB.SC.U4CSE22834",
+      "firstName": "Tara",
+      "lastName": "Kumar",
+      "email": "tara34@cb.students.amrita.edu",
+      "phone": "+91 9800000034",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.45,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/tarakumar34",
+      "github": "https://github.com/tara34",
+      "placementStatus": "in_process",
+      "tenthPercentage": 97.8,
+      "twelfthPercentage": 91.2,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Git",
+            "React",
+            "Python"
+          ],
+          "link": "https://github.com/tara34/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1320425,
+      "_isNew": true,
+      "_id": "y5k72ys2e",
+      "createdAt": "2026-02-01T19:16:59.237Z",
+      "updatedAt": "2026-02-01T19:16:59.237Z"
+    },
+    {
+      "userId": "f3w4ikvnx",
+      "rollNumber": "CB.SC.U4CSE22835",
+      "firstName": "Neha",
+      "lastName": "Mukherjee",
+      "email": "neha35@cb.students.amrita.edu",
+      "phone": "+91 9800000035",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.97,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Google Cloud Engineer",
+        "AWS Cloud Practitioner",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/nehamukherjee35",
+      "github": "https://github.com/neha35",
+      "placementStatus": "in_process",
+      "tenthPercentage": 90.2,
+      "twelfthPercentage": 82.2,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Node.js",
+            "JavaScript",
+            "Java"
+          ],
+          "link": "https://github.com/neha35/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1293626,
+      "_isNew": true,
+      "_id": "bf6fgp4v5",
+      "createdAt": "2026-02-01T19:16:59.316Z",
+      "updatedAt": "2026-02-01T19:16:59.316Z"
+    },
+    {
+      "userId": "7ra2s5l53",
+      "rollNumber": "CB.SC.U4CSE22836",
+      "firstName": "Pooja",
+      "lastName": "Krishnan",
+      "email": "pooja36@cb.students.amrita.edu",
+      "phone": "+91 9800000036",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.58,
+      "batch": "2026",
+      "backlogs": 1,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/poojakrishnan36",
+      "github": "https://github.com/pooja36",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 97,
+      "twelfthPercentage": 95.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "ML Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "TypeScript",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/pooja36/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1855068,
+      "_isNew": true,
+      "_id": "lyvtsozne",
+      "createdAt": "2026-02-01T19:16:59.391Z",
+      "updatedAt": "2026-02-01T19:16:59.391Z"
+    },
+    {
+      "userId": "726tjg1p6",
+      "rollNumber": "CB.SC.U4CSE22837",
+      "firstName": "Divya",
+      "lastName": "Nair",
+      "email": "divya37@cb.students.amrita.edu",
+      "phone": "+91 9800000037",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.34,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Cisco CCNA",
+        "Microsoft Azure Fundamentals",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/divyanair37",
+      "github": "https://github.com/divya37",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 95.7,
+      "twelfthPercentage": 97,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "MongoDB",
+            "C++"
+          ],
+          "link": "https://github.com/divya37/project"
+        }
+      ],
+      "achievements": "Dean's List",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1254706,
+      "_isNew": true,
+      "_id": "u40skrsap",
+      "createdAt": "2026-02-01T19:16:59.463Z",
+      "updatedAt": "2026-02-01T19:16:59.463Z"
+    },
+    {
+      "userId": "9cw6mjzow",
+      "rollNumber": "CB.SC.U4CSE22838",
+      "firstName": "Sneha",
+      "lastName": "Ramesh",
+      "email": "sneha38@cb.students.amrita.edu",
+      "phone": "+91 9800000038",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.86,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "TensorFlow Developer",
+        "Google Data Analytics",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/sneharamesh38",
+      "github": "https://github.com/sneha38",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 91.2,
+      "twelfthPercentage": 96.2,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "SQL",
+            "Python",
+            "Java"
+          ],
+          "link": "https://github.com/sneha38/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1386742,
+      "_isNew": true,
+      "_id": "iztlizmn5",
+      "createdAt": "2026-02-01T19:16:59.539Z",
+      "updatedAt": "2026-02-01T19:16:59.539Z"
+    },
+    {
+      "userId": "5px5cdsgp",
+      "rollNumber": "CB.SC.U4CSE22839",
+      "firstName": "Kriti",
+      "lastName": "Srinivasan",
+      "email": "kriti39@cb.students.amrita.edu",
+      "phone": "+91 9800000039",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.54,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/kritisrinivasan39",
+      "github": "https://github.com/kriti39",
+      "placementStatus": "placed",
+      "tenthPercentage": 90.4,
+      "twelfthPercentage": 88.7,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "Python",
+            "MongoDB"
+          ],
+          "link": "https://github.com/kriti39/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1159072,
+      "offeredCompany": "Cisco",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2537500,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "vzpzzj06h",
+      "createdAt": "2026-02-01T19:16:59.631Z",
+      "updatedAt": "2026-02-01T19:16:59.631Z"
+    },
+    {
+      "userId": "je1togvj4",
+      "rollNumber": "CB.SC.U4CSE22840",
+      "firstName": "Tanvi",
+      "lastName": "Dutta",
+      "email": "tanvi40@cb.students.amrita.edu",
+      "phone": "+91 9800000040",
+      "department": "CSE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.54,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Microsoft Azure Fundamentals"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/tanvidutta40",
+      "github": "https://github.com/tanvi40",
+      "placementStatus": "in_process",
+      "tenthPercentage": 92.4,
+      "twelfthPercentage": 82.4,
+      "gap": 1,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "ML Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Git",
+            "AWS",
+            "JavaScript"
+          ],
+          "link": "https://github.com/tanvi40/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 826331,
+      "_isNew": true,
+      "_id": "b8bdgh2eb",
+      "createdAt": "2026-02-01T19:16:59.731Z",
+      "updatedAt": "2026-02-01T19:16:59.731Z"
+    },
+    {
+      "userId": "weuna76jh",
+      "rollNumber": "CB.SC.U4CSE22841",
+      "firstName": "Rahul",
+      "lastName": "Verma",
+      "email": "rahul41@cb.students.amrita.edu",
+      "phone": "+91 9800000041",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.71,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/rahulverma41",
+      "github": "https://github.com/rahul41",
+      "placementStatus": "placed",
+      "tenthPercentage": 97.3,
+      "twelfthPercentage": 87.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "ML Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "Git",
+            "SQL"
+          ],
+          "link": "https://github.com/rahul41/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1086826,
+      "offeredCompany": "Microsoft",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3444561,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "j9sufzdsb",
+      "createdAt": "2026-02-01T19:16:59.805Z",
+      "updatedAt": "2026-02-01T19:16:59.805Z"
+    },
+    {
+      "userId": "c98tehmhz",
+      "rollNumber": "CB.SC.U4CSE22842",
+      "firstName": "Vikram",
+      "lastName": "Gupta",
+      "email": "vikram42@cb.students.amrita.edu",
+      "phone": "+91 9800000042",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.7,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Kubernetes Administrator",
+        "Google Data Analytics"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/vikramgupta42",
+      "github": "https://github.com/vikram42",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 86.9,
+      "twelfthPercentage": 86.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Java",
+            "Docker",
+            "Python"
+          ],
+          "link": "https://github.com/vikram42/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1914430,
+      "_isNew": true,
+      "_id": "8eoap1m3d",
+      "createdAt": "2026-02-01T19:16:59.882Z",
+      "updatedAt": "2026-02-01T19:16:59.882Z"
+    },
+    {
+      "userId": "ff9fvwkru",
+      "rollNumber": "CB.SC.U4CSE22843",
+      "firstName": "Amit",
+      "lastName": "Gupta",
+      "email": "amit43@cb.students.amrita.edu",
+      "phone": "+91 9800000043",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.65,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/amitgupta43",
+      "github": "https://github.com/amit43",
+      "placementStatus": "in_process",
+      "tenthPercentage": 90.6,
+      "twelfthPercentage": 81.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Web Developer Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "MongoDB",
+            "Node.js",
+            "AWS"
+          ],
+          "link": "https://github.com/amit43/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1659731,
+      "_isNew": true,
+      "_id": "ljx68d4fk",
+      "createdAt": "2026-02-01T19:16:59.979Z",
+      "updatedAt": "2026-02-01T19:16:59.979Z"
+    },
+    {
+      "userId": "ytnizqa7z",
+      "rollNumber": "CB.SC.U4CSE22844",
+      "firstName": "Suresh",
+      "lastName": "Bose",
+      "email": "suresh44@cb.students.amrita.edu",
+      "phone": "+91 9800000044",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.58,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Oracle Java SE"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/sureshbose44",
+      "github": "https://github.com/suresh44",
+      "placementStatus": "placed",
+      "tenthPercentage": 92.9,
+      "twelfthPercentage": 87.3,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Google",
+          "role": "ML Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Machine Learning",
+            "TypeScript",
+            "SQL"
+          ],
+          "link": "https://github.com/suresh44/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1418950,
+      "offeredCompany": "Microsoft",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2220043,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "y4xfk0h1n",
+      "createdAt": "2026-02-01T19:17:00.055Z",
+      "updatedAt": "2026-02-01T19:17:00.055Z"
+    },
+    {
+      "userId": "u4frvnzuk",
+      "rollNumber": "CB.SC.U4CSE22845",
+      "firstName": "Rajesh",
+      "lastName": "Krishnan",
+      "email": "rajesh45@cb.students.amrita.edu",
+      "phone": "+91 9800000045",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.85,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "CompTIA Security+"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/rajeshkrishnan45",
+      "github": "https://github.com/rajesh45",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 87.2,
+      "twelfthPercentage": 85.4,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "Python",
+            "TypeScript"
+          ],
+          "link": "https://github.com/rajesh45/project"
+        }
+      ],
+      "achievements": "Dean's List",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1833023,
+      "_isNew": true,
+      "_id": "qlev2ndlq",
+      "createdAt": "2026-02-01T19:17:00.130Z",
+      "updatedAt": "2026-02-01T19:17:00.130Z"
+    },
+    {
+      "userId": "jhctulw64",
+      "rollNumber": "CB.SC.U4CSE22846",
+      "firstName": "Karthik",
+      "lastName": "Krishnan",
+      "email": "karthik46@cb.students.amrita.edu",
+      "phone": "+91 9800000046",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.5,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Google Data Analytics",
+        "MongoDB Developer",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/karthikkrishnan46",
+      "github": "https://github.com/karthik46",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 93.7,
+      "twelfthPercentage": 94.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Data Analyst Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "TypeScript",
+            "System Design",
+            "Data Structures"
+          ],
+          "link": "https://github.com/karthik46/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1539646,
+      "_isNew": true,
+      "_id": "9oc29b6p5",
+      "createdAt": "2026-02-01T19:17:00.205Z",
+      "updatedAt": "2026-02-01T19:17:00.205Z"
+    },
+    {
+      "userId": "p99tz4505",
+      "rollNumber": "CB.SC.U4CSE22847",
+      "firstName": "Mohan",
+      "lastName": "Reddy",
+      "email": "mohan47@cb.students.amrita.edu",
+      "phone": "+91 9800000047",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 8.68,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/mohanreddy47",
+      "github": "https://github.com/mohan47",
+      "placementStatus": "in_process",
+      "tenthPercentage": 90.2,
+      "twelfthPercentage": 85.3,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Google",
+          "role": "Web Developer Intern",
+          "duration": "2 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "IoT Home Automation",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "Node.js",
+            "Data Structures"
+          ],
+          "link": "https://github.com/mohan47/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 884725,
+      "_isNew": true,
+      "_id": "dyj2tc3qk",
+      "createdAt": "2026-02-01T19:17:00.281Z",
+      "updatedAt": "2026-02-01T19:17:00.281Z"
+    },
+    {
+      "userId": "g2py5mthg",
+      "rollNumber": "CB.SC.U4CSE22848",
+      "firstName": "Girish",
+      "lastName": "Singh",
+      "email": "girish48@cb.students.amrita.edu",
+      "phone": "+91 9800000048",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 7.09,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/girishsingh48",
+      "github": "https://github.com/girish48",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 94.7,
+      "twelfthPercentage": 88.3,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "AWS",
+            "TypeScript"
+          ],
+          "link": "https://github.com/girish48/project"
+        }
+      ],
+      "achievements": "Dean's List",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1724168,
+      "_isNew": true,
+      "_id": "yozweqdz4",
+      "createdAt": "2026-02-01T19:17:00.358Z",
+      "updatedAt": "2026-02-01T19:17:00.358Z"
+    },
+    {
+      "userId": "4zakxlcp8",
+      "rollNumber": "CB.SC.U4CSE22849",
+      "firstName": "Harsha",
+      "lastName": "Roy",
+      "email": "harsha49@cb.students.amrita.edu",
+      "phone": "+91 9800000049",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.41,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Kubernetes Administrator",
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/harsharoy49",
+      "github": "https://github.com/harsha49",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 87,
+      "twelfthPercentage": 98.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "ML Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "SQL",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/harsha49/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1519178,
+      "_isNew": true,
+      "_id": "76g51jwzg",
+      "createdAt": "2026-02-01T19:17:00.439Z",
+      "updatedAt": "2026-02-01T19:17:00.439Z"
+    },
+    {
+      "userId": "zkjalg9ex",
+      "rollNumber": "CB.SC.U4CSE22850",
+      "firstName": "Tejas",
+      "lastName": "Dutta",
+      "email": "tejas50@cb.students.amrita.edu",
+      "phone": "+91 9800000050",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.93,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/tejasdutta50",
+      "github": "https://github.com/tejas50",
+      "placementStatus": "placed",
+      "tenthPercentage": 90.5,
+      "twelfthPercentage": 98.4,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "C++",
+            "System Design"
+          ],
+          "link": "https://github.com/tejas50/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1940614,
+      "offeredCompany": "Adobe",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3314308,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "r7easo1wz",
+      "createdAt": "2026-02-01T19:17:00.539Z",
+      "updatedAt": "2026-02-01T19:17:00.539Z"
+    },
+    {
+      "userId": "fp32p3qry",
+      "rollNumber": "CB.SC.U4CSE22851",
+      "firstName": "Varun",
+      "lastName": "Ramesh",
+      "email": "varun51@cb.students.amrita.edu",
+      "phone": "+91 9800000051",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 9.44,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        }
+      ],
+      "certifications": [
+        "TensorFlow Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/varunramesh51",
+      "github": "https://github.com/varun51",
+      "placementStatus": "placed",
+      "tenthPercentage": 85.5,
+      "twelfthPercentage": 84.2,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Microsoft",
+          "role": "SDE Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "JavaScript",
+            "AWS",
+            "MongoDB"
+          ],
+          "link": "https://github.com/varun51/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1070993,
+      "offeredCompany": "Amazon",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 1978551,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "b9brztnrj",
+      "createdAt": "2026-02-01T19:17:00.613Z",
+      "updatedAt": "2026-02-01T19:17:00.613Z"
+    },
+    {
+      "userId": "0nxlavtdy",
+      "rollNumber": "CB.SC.U4CSE22852",
+      "firstName": "Nikhil",
+      "lastName": "Bose",
+      "email": "nikhil52@cb.students.amrita.edu",
+      "phone": "+91 9800000052",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.89,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "TypeScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/nikhilbose52",
+      "github": "https://github.com/nikhil52",
+      "placementStatus": "in_process",
+      "tenthPercentage": 87.3,
+      "twelfthPercentage": 89.9,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "TCS",
+          "role": "SDE Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "SQL",
+            "Python",
+            "Machine Learning"
+          ],
+          "link": "https://github.com/nikhil52/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 985474,
+      "_isNew": true,
+      "_id": "86q0mxal1",
+      "createdAt": "2026-02-01T19:17:00.687Z",
+      "updatedAt": "2026-02-01T19:17:00.687Z"
+    },
+    {
+      "userId": "7ol4caqgb",
+      "rollNumber": "CB.SC.U4CSE22853",
+      "firstName": "Sanjay",
+      "lastName": "Srinivasan",
+      "email": "sanjay53@cb.students.amrita.edu",
+      "phone": "+91 9800000053",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 8.28,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/sanjaysrinivasan53",
+      "github": "https://github.com/sanjay53",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 94,
+      "twelfthPercentage": 97.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "Data Analyst Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "SQL",
+            "C++",
+            "Java"
+          ],
+          "link": "https://github.com/sanjay53/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1494268,
+      "_isNew": true,
+      "_id": "b1wvyb50h",
+      "createdAt": "2026-02-01T19:17:00.788Z",
+      "updatedAt": "2026-02-01T19:17:00.788Z"
+    },
+    {
+      "userId": "pblea1b77",
+      "rollNumber": "CB.SC.U4CSE22854",
+      "firstName": "Deepak",
+      "lastName": "Agarwal",
+      "email": "deepak54@cb.students.amrita.edu",
+      "phone": "+91 9800000054",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.84,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "React",
+          "level": "Advanced"
+        }
+      ],
+      "certifications": [
+        "Google Cloud Engineer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/deepakagarwal54",
+      "github": "https://github.com/deepak54",
+      "placementStatus": "placed",
+      "tenthPercentage": 96.7,
+      "twelfthPercentage": 84.6,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Data Structures",
+            "SQL",
+            "Python"
+          ],
+          "link": "https://github.com/deepak54/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 932829,
+      "offeredCompany": "Cisco",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 2291706,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "x6tu6ybwz",
+      "createdAt": "2026-02-01T19:17:00.887Z",
+      "updatedAt": "2026-02-01T19:17:00.887Z"
+    },
+    {
+      "userId": "g1rvcm9is",
+      "rollNumber": "CB.SC.U4CSE22855",
+      "firstName": "Ganesh",
+      "lastName": "Roy",
+      "email": "ganesh55@cb.students.amrita.edu",
+      "phone": "+91 9800000055",
+      "department": "ECE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.23,
+      "batch": "2026",
+      "backlogs": 2,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Oracle Java SE"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ganeshroy55",
+      "github": "https://github.com/ganesh55",
+      "placementStatus": "in_process",
+      "tenthPercentage": 98.9,
+      "twelfthPercentage": 81.3,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "AWS",
+            "JavaScript"
+          ],
+          "link": "https://github.com/ganesh55/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1591513,
+      "_isNew": true,
+      "_id": "0ruac2xzp",
+      "createdAt": "2026-02-01T19:17:00.949Z",
+      "updatedAt": "2026-02-01T19:17:00.949Z"
+    },
+    {
+      "userId": "pnqg071xp",
+      "rollNumber": "CB.SC.U4CSE22856",
+      "firstName": "Naveen",
+      "lastName": "Naidu",
+      "email": "naveen56@cb.students.amrita.edu",
+      "phone": "+91 9800000056",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.32,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "React",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Google Cloud Engineer",
+        "MongoDB Developer",
+        "Kubernetes Administrator"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/naveennaidu56",
+      "github": "https://github.com/naveen56",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 97.9,
+      "twelfthPercentage": 82.7,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "ML Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "ML Model for Prediction",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "React",
+            "System Design",
+            "JavaScript"
+          ],
+          "link": "https://github.com/naveen56/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1225122,
+      "_isNew": true,
+      "_id": "kw6svzaz1",
+      "createdAt": "2026-02-01T19:17:01.016Z",
+      "updatedAt": "2026-02-01T19:17:01.016Z"
+    },
+    {
+      "userId": "pv33pvkbs",
+      "rollNumber": "CB.SC.U4CSE22857",
+      "firstName": "Akash",
+      "lastName": "Gupta",
+      "email": "akash57@cb.students.amrita.edu",
+      "phone": "+91 9800000057",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 8.65,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/akashgupta57",
+      "github": "https://github.com/akash57",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 96.7,
+      "twelfthPercentage": 83.4,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "SDE Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "System Design",
+            "C++",
+            "JavaScript"
+          ],
+          "link": "https://github.com/akash57/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1111062,
+      "_isNew": true,
+      "_id": "3cjdyrn5b",
+      "createdAt": "2026-02-01T19:17:01.116Z",
+      "updatedAt": "2026-02-01T19:17:01.116Z"
+    },
+    {
+      "userId": "clskb494l",
+      "rollNumber": "CB.SC.U4CSE22858",
+      "firstName": "Ajay",
+      "lastName": "Das",
+      "email": "ajay58@cb.students.amrita.edu",
+      "phone": "+91 9800000058",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.38,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        }
+      ],
+      "certifications": [],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/ajaydas58",
+      "github": "https://github.com/ajay58",
+      "placementStatus": "in_process",
+      "tenthPercentage": 85,
+      "twelfthPercentage": 98.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "ML Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "Node.js",
+            "SQL"
+          ],
+          "link": "https://github.com/ajay58/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1932271,
+      "_isNew": true,
+      "_id": "csp4x9aeo",
+      "createdAt": "2026-02-01T19:17:01.216Z",
+      "updatedAt": "2026-02-01T19:17:01.216Z"
+    },
+    {
+      "userId": "axmswvgdc",
+      "rollNumber": "CB.SC.U4CSE22859",
+      "firstName": "Vijay",
+      "lastName": "Kumar",
+      "email": "vijay59@cb.students.amrita.edu",
+      "phone": "+91 9800000059",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "B",
+      "cgpa": 9.24,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "AWS",
+          "level": "Beginner"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "CompTIA Security+"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/vijaykumar59",
+      "github": "https://github.com/vijay59",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 85.7,
+      "twelfthPercentage": 94,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Startup XYZ",
+          "role": "ML Intern",
+          "duration": "6 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "Java",
+            "Git"
+          ],
+          "link": "https://github.com/vijay59/project"
+        }
+      ],
+      "achievements": "Research Paper Published",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1655676,
+      "_isNew": true,
+      "_id": "n8p4exxkg",
+      "createdAt": "2026-02-01T19:17:01.316Z",
+      "updatedAt": "2026-02-01T19:17:01.316Z"
+    },
+    {
+      "userId": "335ehpkp5",
+      "rollNumber": "CB.SC.U4CSE22860",
+      "firstName": "Manoj",
+      "lastName": "Pillai",
+      "email": "manoj60@cb.students.amrita.edu",
+      "phone": "+91 9800000060",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 9.63,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Microsoft Azure Fundamentals"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/manojpillai60",
+      "github": "https://github.com/manoj60",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 95.3,
+      "twelfthPercentage": 98.5,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Amazon",
+          "role": "SDE Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Git",
+            "Python",
+            "Java"
+          ],
+          "link": "https://github.com/manoj60/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1747651,
+      "_isNew": true,
+      "_id": "3aiodfs18",
+      "createdAt": "2026-02-01T19:17:01.390Z",
+      "updatedAt": "2026-02-01T19:17:01.390Z"
+    },
+    {
+      "userId": "esub3un3u",
+      "rollNumber": "CB.SC.U4CSE22861",
+      "firstName": "Lakshmi",
+      "lastName": "Agarwal",
+      "email": "lakshmi61@cb.students.amrita.edu",
+      "phone": "+91 9800000061",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 8.76,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/lakshmiagarwal61",
+      "github": "https://github.com/lakshmi61",
+      "placementStatus": "in_process",
+      "tenthPercentage": 88.9,
+      "twelfthPercentage": 89.8,
+      "gap": 0,
+      "internships": [
+        {
+          "company": "Infosys",
+          "role": "Web Developer Intern",
+          "duration": "3 months",
+          "description": "Worked on cutting-edge technology projects"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "System Design",
+            "Docker",
+            "Node.js"
+          ],
+          "link": "https://github.com/lakshmi61/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1843662,
+      "_isNew": true,
+      "_id": "wi0eq6tq6",
+      "createdAt": "2026-02-01T19:17:01.467Z",
+      "updatedAt": "2026-02-01T19:17:01.467Z"
+    },
+    {
+      "userId": "nj92qwnrs",
+      "rollNumber": "CB.SC.U4CSE22862",
+      "firstName": "Padma",
+      "lastName": "Menon",
+      "email": "padma62@cb.students.amrita.edu",
+      "phone": "+91 9800000062",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.35,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        },
+        {
+          "name": "JavaScript",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "AWS Cloud Practitioner",
+        "Google Data Analytics"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/padmamenon62",
+      "github": "https://github.com/padma62",
+      "placementStatus": "not_placed",
+      "tenthPercentage": 94.8,
+      "twelfthPercentage": 85,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "Java",
+            "System Design"
+          ],
+          "link": "https://github.com/padma62/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1603504,
+      "_isNew": true,
+      "_id": "w23ses5ef",
+      "createdAt": "2026-02-01T19:17:01.542Z",
+      "updatedAt": "2026-02-01T19:17:01.542Z"
+    },
+    {
+      "userId": "pqv69ghwy",
+      "rollNumber": "CB.SC.U4CSE22863",
+      "firstName": "Gayatri",
+      "lastName": "Krishnan",
+      "email": "gayatri63@cb.students.amrita.edu",
+      "phone": "+91 9800000063",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "C",
+      "cgpa": 7.14,
+      "batch": "2026",
+      "backlogs": 1,
+      "skills": [
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "MongoDB",
+          "level": "Beginner"
+        },
+        {
+          "name": "Git",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/gayatrikrishnan63",
+      "github": "https://github.com/gayatri63",
+      "placementStatus": "in_process",
+      "tenthPercentage": 96.4,
+      "twelfthPercentage": 87.1,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Portfolio Website",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "C++",
+            "Data Structures",
+            "MongoDB"
+          ],
+          "link": "https://github.com/gayatri63/project"
+        }
+      ],
+      "achievements": "Hackathon Winner",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1079873,
+      "_isNew": true,
+      "_id": "3wloka8nm",
+      "createdAt": "2026-02-01T19:17:01.644Z",
+      "updatedAt": "2026-02-01T19:17:01.644Z"
+    },
+    {
+      "userId": "e7j7urypd",
+      "rollNumber": "CB.SC.U4CSE22864",
+      "firstName": "Meera",
+      "lastName": "Rao",
+      "email": "meera64@cb.students.amrita.edu",
+      "phone": "+91 9800000064",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.76,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "C++",
+          "level": "Advanced"
+        },
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Java",
+          "level": "Advanced"
+        },
+        {
+          "name": "System Design",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "Microsoft Azure Fundamentals"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/meerarao64",
+      "github": "https://github.com/meera64",
+      "placementStatus": "placed",
+      "tenthPercentage": 85.4,
+      "twelfthPercentage": 96.4,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "Chat Application",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "C++",
+            "Python",
+            "Java"
+          ],
+          "link": "https://github.com/meera64/project"
+        }
+      ],
+      "achievements": "Dean's List",
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1936641,
+      "offeredCompany": "Google",
+      "offeredRole": "Software Engineer",
+      "offeredCTC": 3543578,
+      "offerDate": "2026-01-15T00:00:00.000Z",
+      "_isNew": true,
+      "_id": "rn6objizh",
+      "createdAt": "2026-02-01T19:17:01.720Z",
+      "updatedAt": "2026-02-01T19:17:01.721Z"
+    },
+    {
+      "userId": "e6m9njvxr",
+      "rollNumber": "CB.SC.U4CSE22865",
+      "firstName": "Radha",
+      "lastName": "Agarwal",
+      "email": "radha65@cb.students.amrita.edu",
+      "phone": "+91 9800000065",
+      "department": "EEE",
+      "course": "B.Tech",
+      "section": "A",
+      "cgpa": 7.09,
+      "batch": "2026",
+      "backlogs": 0,
+      "skills": [
+        {
+          "name": "Python",
+          "level": "Advanced"
+        },
+        {
+          "name": "Machine Learning",
+          "level": "Intermediate"
+        },
+        {
+          "name": "SQL",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Data Structures",
+          "level": "Advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "Intermediate"
+        },
+        {
+          "name": "Node.js",
+          "level": "Intermediate"
+        }
+      ],
+      "certifications": [
+        "MongoDB Developer",
+        "CompTIA Security+",
+        "Cisco CCNA"
+      ],
+      "isEligible": true,
+      "linkedIn": "https://linkedin.com/in/radhaagarwal65",
+      "github": "https://github.com/radha65",
+      "placementStatus": "in_process",
+      "tenthPercentage": 94.3,
+      "twelfthPercentage": 98.5,
+      "gap": 0,
+      "internships": [],
+      "projects": [
+        {
+          "title": "E-commerce Platform",
+          "description": "A comprehensive project showcasing technical skills",
+          "technologies": [
+            "Python",
+            "Machine Learning",
+            "SQL"
+          ],
+          "link": "https://github.com/radha65/project"
+        }
+      ],
+      "achievements": [],
+      "preferredRoles": [
+        "Software Engineer",
+        "Full Stack Developer"
+      ],
+      "preferredLocations": [
+        "Bangalore",
+        "Hyderabad"
+      ],
+      "expectedCTC": 1580992,
+      "_isNew": true,
+      "_id": "6a4hn0gnf",
+      "createdAt": "2026-02-01T19:17:01.814Z",
+      "updatedAt": "2026-02-01T19:17:01.814Z"
+    }
+  ],
+  "placementdrives": [
+    {
+      "companyName": "Google",
+      "companyLogo": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "companyWebsite": "https://careers.google.com",
+      "companyDescription": "Google LLC is an American multinational technology company focusing on AI, online advertising, and cloud computing.",
+      "industry": "Technology",
+      "jobProfile": "Software Engineer L3",
+      "jobDescription": "Design and develop scalable systems for Google products used by billions.",
+      "jobType": "Full Time",
+      "date": "2026-03-15T00:00:00.000Z",
+      "registrationDeadline": "2026-03-10T00:00:00.000Z",
+      "venue": "Main Auditorium",
+      "mode": "Hybrid",
+      "requirements": [
+        "Java/C++/Python",
+        "Data Structures",
+        "Algorithms",
+        "System Design"
+      ],
+      "eligibility": {
+        "minCgpa": 8.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE"
+        ],
+        "maxBacklogs": 0,
+        "minTenthPercentage": 80,
+        "minTwelfthPercentage": 75
+      },
+      "ctcDetails": {
+        "ctc": 4500000,
+        "baseSalary": 2800000,
+        "bonus": 700000,
+        "stocks": 1000000
+      },
+      "benefits": [
+        "Health Insurance",
+        "RSUs",
+        "Relocation Bonus",
+        "Learning Budget"
+      ],
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "Online Assessment",
+          "description": "Coding + MCQs",
+          "duration": "90 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Technical Interview 1",
+          "description": "DSA + Problem Solving",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "Technical Interview 2",
+          "description": "System Design",
+          "duration": "45 mins"
+        },
+        {
+          "roundNumber": 4,
+          "roundName": "HR Round",
+          "description": "Behavioral Interview",
+          "duration": "30 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 5,
+      "workLocation": "Bangalore/Hyderabad",
+      "coordinator": "Dr. Ramesh Kumar",
+      "_id": "1wkd4p2ok",
+      "createdAt": "2026-02-01T19:17:01.816Z",
+      "updatedAt": "2026-02-01T19:17:01.816Z"
+    },
+    {
+      "companyName": "Microsoft",
+      "companyLogo": "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b",
+      "companyWebsite": "https://careers.microsoft.com",
+      "companyDescription": "Microsoft Corporation develops, licenses, and sells computer software, consumer electronics, and personal computers.",
+      "industry": "Technology",
+      "jobProfile": "Software Development Engineer",
+      "jobDescription": "Build products that millions of people use every day in Azure, Office, and Windows.",
+      "jobType": "Full Time",
+      "date": "2026-03-22T00:00:00.000Z",
+      "registrationDeadline": "2026-03-18T00:00:00.000Z",
+      "venue": "Seminar Hall A",
+      "mode": "Offline",
+      "requirements": [
+        "C#/.NET/Java",
+        "Cloud Computing",
+        "SQL",
+        "Problem Solving"
+      ],
+      "eligibility": {
+        "minCgpa": 8,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 4200000,
+        "baseSalary": 2600000,
+        "bonus": 600000,
+        "stocks": 1000000
+      },
+      "benefits": [
+        "Health Insurance",
+        "Stock Options",
+        "Wellness Programs",
+        "Free Certifications"
+      ],
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "Online Coding Test",
+          "description": "3 coding problems",
+          "duration": "75 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Group Fly",
+          "description": "Coding on paper",
+          "duration": "2 hours"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "Technical Interview",
+          "description": "Problem solving",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 4,
+          "roundName": "AA Round",
+          "description": "As Appropriate Interview",
+          "duration": "45 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 8,
+      "workLocation": "Hyderabad",
+      "coordinator": "Prof. Anitha Menon",
+      "_id": "s9au77wyc",
+      "createdAt": "2026-02-01T19:17:01.837Z",
+      "updatedAt": "2026-02-01T19:17:01.837Z"
+    },
+    {
+      "companyName": "Amazon",
+      "companyLogo": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+      "companyWebsite": "https://amazon.jobs",
+      "companyDescription": "Amazon.com, Inc. is an American multinational technology company focusing on e-commerce, cloud computing, and AI.",
+      "industry": "E-commerce/Cloud",
+      "jobProfile": "SDE-1",
+      "jobDescription": "Build highly scalable systems for Amazon retail and AWS.",
+      "jobType": "Full Time",
+      "date": "2026-04-05T00:00:00.000Z",
+      "registrationDeadline": "2026-04-01T00:00:00.000Z",
+      "venue": "CS Block Seminar Hall",
+      "mode": "Offline",
+      "requirements": [
+        "Java/Python",
+        "Distributed Systems",
+        "Go",
+        "AWS"
+      ],
+      "eligibility": {
+        "minCgpa": 7.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE"
+        ],
+        "maxBacklogs": 1
+      },
+      "ctcDetails": {
+        "ctc": 4000000,
+        "baseSalary": 2400000,
+        "bonus": 600000,
+        "stocks": 1000000
+      },
+      "benefits": [
+        "Signing Bonus",
+        "RSUs",
+        "Relocation",
+        "Prime Membership"
+      ],
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "Online Assessment",
+          "description": "2 coding + Work Simulation",
+          "duration": "90 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Phone Screen",
+          "description": "LP focused",
+          "duration": "45 mins"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "Loop Interviews",
+          "description": "4 rounds of interviews",
+          "duration": "4 hours"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 12,
+      "workLocation": "Bangalore/Chennai",
+      "coordinator": "Dr. Vijay Nair",
+      "_id": "gf0w98r2r",
+      "createdAt": "2026-02-01T19:17:01.862Z",
+      "updatedAt": "2026-02-01T19:17:01.862Z"
+    },
+    {
+      "companyName": "Adobe",
+      "companyWebsite": "https://adobe.wd5.myworkdayjobs.com",
+      "companyDescription": "Adobe Inc. is a multinational software company focused on creativity and digital marketing solutions.",
+      "industry": "Software",
+      "jobProfile": "Member of Technical Staff",
+      "jobDescription": "Work on Creative Cloud, Document Cloud, and Experience Cloud products.",
+      "jobType": "Full Time",
+      "date": "2026-03-28T00:00:00.000Z",
+      "registrationDeadline": "2026-03-24T00:00:00.000Z",
+      "venue": "Virtual",
+      "mode": "Online",
+      "requirements": [
+        "C++/Java",
+        "OOPS",
+        "DSA",
+        "Problem Solving"
+      ],
+      "eligibility": {
+        "minCgpa": 7.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 2100000,
+        "baseSalary": 1800000,
+        "bonus": 300000
+      },
+      "benefits": [
+        "Health Insurance",
+        "Free Creative Cloud",
+        "Gym Membership"
+      ],
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "HackerRank Test",
+          "description": "MCQ + Coding",
+          "duration": "90 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Technical Round 1",
+          "description": "DSA focus",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "Technical Round 2",
+          "description": "System Design",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 4,
+          "roundName": "HR Round",
+          "description": "Cultural Fit",
+          "duration": "30 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 6,
+      "workLocation": "Noida/Bangalore",
+      "coordinator": "Prof. Kavitha Iyer",
+      "_id": "mgrn85y6m",
+      "createdAt": "2026-02-01T19:17:01.888Z",
+      "updatedAt": "2026-02-01T19:17:01.888Z"
+    },
+    {
+      "companyName": "Cisco",
+      "companyWebsite": "https://jobs.cisco.com",
+      "companyDescription": "Cisco Systems develops networking hardware, software, and telecommunications equipment.",
+      "industry": "Networking",
+      "jobProfile": "Software Engineer",
+      "jobDescription": "Develop next-generation networking solutions and security products.",
+      "jobType": "Full Time",
+      "date": "2026-04-12T00:00:00.000Z",
+      "registrationDeadline": "2026-04-08T00:00:00.000Z",
+      "venue": "Main Building Auditorium",
+      "mode": "Offline",
+      "requirements": [
+        "C/C++",
+        "Networking",
+        "Linux",
+        "Python"
+      ],
+      "eligibility": {
+        "minCgpa": 7.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 1800000,
+        "baseSalary": 1500000,
+        "bonus": 300000
+      },
+      "benefits": [
+        "Health Insurance",
+        "Stock Options",
+        "Work from Home"
+      ],
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "Online Test",
+          "description": "Aptitude + Technical",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Technical Interview",
+          "description": "Networking + Coding",
+          "duration": "60 mins"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "HR Round",
+          "description": "HR Discussion",
+          "duration": "30 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 10,
+      "workLocation": "Bangalore",
+      "coordinator": "Dr. Suresh Pillai",
+      "_id": "xxx74ztoj",
+      "createdAt": "2026-02-01T19:17:01.905Z",
+      "updatedAt": "2026-02-01T19:17:01.905Z"
+    },
+    {
+      "companyName": "Oracle",
+      "companyWebsite": "https://oracle.com/careers",
+      "industry": "Enterprise Software",
+      "jobProfile": "Application Developer",
+      "jobDescription": "Build enterprise-grade cloud applications.",
+      "jobType": "Full Time",
+      "date": "2026-04-18T00:00:00.000Z",
+      "registrationDeadline": "2026-04-14T00:00:00.000Z",
+      "mode": "Hybrid",
+      "requirements": [
+        "Java",
+        "SQL",
+        "Cloud",
+        "OOPS"
+      ],
+      "eligibility": {
+        "minCgpa": 7,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE",
+          "ME"
+        ],
+        "maxBacklogs": 1
+      },
+      "ctcDetails": {
+        "ctc": 1600000,
+        "baseSalary": 1400000,
+        "bonus": 200000
+      },
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "Online Assessment",
+          "description": "MCQ + SQL queries",
+          "duration": "90 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Technical Interview",
+          "description": "Java + SQL",
+          "duration": "45 mins"
+        },
+        {
+          "roundNumber": 3,
+          "roundName": "HR Round",
+          "description": "Discussion",
+          "duration": "30 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 15,
+      "workLocation": "Hyderabad/Bangalore",
+      "_id": "gpf74ushq",
+      "createdAt": "2026-02-01T19:17:01.922Z",
+      "updatedAt": "2026-02-01T19:17:01.922Z"
+    },
+    {
+      "companyName": "Salesforce",
+      "companyWebsite": "https://salesforce.com/careers",
+      "industry": "CRM/Cloud",
+      "jobProfile": "Associate Member of Technical Staff",
+      "description": "Join the #1 CRM company.",
+      "jobType": "Full Time",
+      "date": "2026-04-25T00:00:00.000Z",
+      "registrationDeadline": "2026-04-20T00:00:00.000Z",
+      "mode": "Online",
+      "requirements": [
+        "Java/Apex",
+        "Web Technologies",
+        "Problem Solving"
+      ],
+      "eligibility": {
+        "minCgpa": 8,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 2500000,
+        "baseSalary": 2000000,
+        "bonus": 500000
+      },
+      "status": "upcoming",
+      "totalPositions": 4,
+      "workLocation": "Hyderabad",
+      "_id": "7bsyjtq8e",
+      "createdAt": "2026-02-01T19:17:01.935Z",
+      "updatedAt": "2026-02-01T19:17:01.935Z"
+    },
+    {
+      "companyName": "Infosys",
+      "industry": "IT Services",
+      "jobProfile": "Systems Engineer",
+      "jobType": "Full Time",
+      "date": "2026-05-02T00:00:00.000Z",
+      "registrationDeadline": "2026-04-28T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "Any programming language",
+        "Aptitude",
+        "Communication"
+      ],
+      "eligibility": {
+        "minCgpa": 6.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE",
+          "ME",
+          "CE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 360000,
+        "baseSalary": 340000,
+        "bonus": 20000
+      },
+      "selectionProcess": [
+        {
+          "roundNumber": 1,
+          "roundName": "InfyTQ",
+          "description": "Online test",
+          "duration": "180 mins"
+        },
+        {
+          "roundNumber": 2,
+          "roundName": "Interview",
+          "description": "Technical + HR",
+          "duration": "45 mins"
+        }
+      ],
+      "status": "upcoming",
+      "totalPositions": 50,
+      "workLocation": "Multiple",
+      "_id": "bilgn41jk",
+      "createdAt": "2026-02-01T19:17:01.957Z",
+      "updatedAt": "2026-02-01T19:17:01.957Z"
+    },
+    {
+      "companyName": "TCS",
+      "industry": "IT Services",
+      "jobProfile": "Assistant System Engineer",
+      "jobType": "Full Time",
+      "date": "2026-05-10T00:00:00.000Z",
+      "registrationDeadline": "2026-05-05T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "Coding",
+        "Aptitude",
+        "English"
+      ],
+      "eligibility": {
+        "minCgpa": 6,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE",
+          "ME",
+          "CE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 350000,
+        "baseSalary": 330000,
+        "bonus": 20000
+      },
+      "status": "upcoming",
+      "totalPositions": 100,
+      "workLocation": "Multiple",
+      "_id": "yfvzoz5kk",
+      "createdAt": "2026-02-01T19:17:01.979Z",
+      "updatedAt": "2026-02-01T19:17:01.979Z"
+    },
+    {
+      "companyName": "Wipro",
+      "industry": "IT Services",
+      "jobProfile": "Project Engineer",
+      "jobType": "Full Time",
+      "date": "2026-05-15T00:00:00.000Z",
+      "registrationDeadline": "2026-05-10T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "Programming",
+        "Communication"
+      ],
+      "eligibility": {
+        "minCgpa": 6,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE",
+          "ME",
+          "CE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 380000,
+        "baseSalary": 350000,
+        "bonus": 30000
+      },
+      "status": "upcoming",
+      "totalPositions": 80,
+      "workLocation": "Multiple",
+      "_id": "xx29j0gou",
+      "createdAt": "2026-02-01T19:17:02.000Z",
+      "updatedAt": "2026-02-01T19:17:02.000Z"
+    },
+    {
+      "companyName": "Bosch",
+      "industry": "Engineering/Automotive",
+      "jobProfile": "Software Developer",
+      "jobType": "Full Time",
+      "date": "2026-04-08T00:00:00.000Z",
+      "registrationDeadline": "2026-04-04T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "C/C++",
+        "Embedded Systems",
+        "Automotive"
+      ],
+      "eligibility": {
+        "minCgpa": 7,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE",
+          "EEE",
+          "ME"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 1000000,
+        "baseSalary": 900000,
+        "bonus": 100000
+      },
+      "status": "upcoming",
+      "totalPositions": 20,
+      "workLocation": "Bangalore/Coimbatore",
+      "_id": "b1i03gg08",
+      "createdAt": "2026-02-01T19:17:02.023Z",
+      "updatedAt": "2026-02-01T19:17:02.023Z"
+    },
+    {
+      "companyName": "L&T Technology Services",
+      "industry": "Engineering Services",
+      "jobProfile": "Graduate Engineer Trainee",
+      "jobType": "Full Time",
+      "date": "2026-04-22T00:00:00.000Z",
+      "registrationDeadline": "2026-04-18T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "Core Engineering",
+        "CAD/CAM",
+        "Programming"
+      ],
+      "eligibility": {
+        "minCgpa": 7,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "ME",
+          "EEE",
+          "ECE",
+          "CSE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 650000,
+        "baseSalary": 600000,
+        "bonus": 50000
+      },
+      "status": "upcoming",
+      "totalPositions": 25,
+      "workLocation": "Chennai/Mumbai",
+      "_id": "1oiezq1fe",
+      "createdAt": "2026-02-01T19:17:02.046Z",
+      "updatedAt": "2026-02-01T19:17:02.046Z"
+    },
+    {
+      "companyName": "Meta",
+      "industry": "Technology/Social Media",
+      "jobProfile": "Software Engineer (University Grad)",
+      "jobType": "Full Time",
+      "date": "2026-03-18T00:00:00.000Z",
+      "registrationDeadline": "2026-03-14T00:00:00.000Z",
+      "mode": "Hybrid",
+      "requirements": [
+        "Python/C++",
+        "DSA",
+        "System Design",
+        "ML basics"
+      ],
+      "eligibility": {
+        "minCgpa": 8.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 5000000,
+        "baseSalary": 3000000,
+        "bonus": 800000,
+        "stocks": 1200000
+      },
+      "status": "upcoming",
+      "totalPositions": 3,
+      "workLocation": "London/Menlo Park",
+      "_id": "pntf5r37l",
+      "createdAt": "2026-02-01T19:17:02.069Z",
+      "updatedAt": "2026-02-01T19:17:02.069Z"
+    },
+    {
+      "companyName": "Goldman Sachs",
+      "industry": "Finance/Technology",
+      "jobProfile": "New Analyst",
+      "jobType": "Full Time",
+      "date": "2026-03-25T00:00:00.000Z",
+      "registrationDeadline": "2026-03-20T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "Java/Python",
+        "Data Structures",
+        "Problem Solving",
+        "Finance basics"
+      ],
+      "eligibility": {
+        "minCgpa": 8,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 2800000,
+        "baseSalary": 2200000,
+        "bonus": 600000
+      },
+      "status": "upcoming",
+      "totalPositions": 6,
+      "workLocation": "Bangalore",
+      "_id": "igccxs9dv",
+      "createdAt": "2026-02-01T19:17:02.093Z",
+      "updatedAt": "2026-02-01T19:17:02.093Z"
+    },
+    {
+      "companyName": "Samsung R&D",
+      "industry": "Electronics/R&D",
+      "jobProfile": "Software Engineer",
+      "jobType": "Full Time",
+      "date": "2026-04-02T00:00:00.000Z",
+      "registrationDeadline": "2026-03-28T00:00:00.000Z",
+      "mode": "Offline",
+      "requirements": [
+        "C/C++",
+        "Android",
+        "DSA"
+      ],
+      "eligibility": {
+        "minCgpa": 7.5,
+        "allowedBatches": [
+          "2026"
+        ],
+        "allowedDepartments": [
+          "CSE",
+          "ECE"
+        ],
+        "maxBacklogs": 0
+      },
+      "ctcDetails": {
+        "ctc": 1800000,
+        "baseSalary": 1500000,
+        "bonus": 300000
+      },
+      "status": "upcoming",
+      "totalPositions": 8,
+      "workLocation": "Bangalore/Noida",
+      "_id": "naw8jtkq2",
+      "createdAt": "2026-02-01T19:17:02.113Z",
+      "updatedAt": "2026-02-01T19:17:02.113Z"
+    }
+  ],
+  "alumniinsights": [
+    {
+      "company": "Google",
+      "year": 2025,
+      "alumniName": "Rahul Sharma",
+      "currentRole": "Software Engineer L4",
+      "department": "CSE",
+      "batch": "2025",
+      "experience": "The interview process was intense but fair. Focus heavily on LeetCode hard problems, especially dynamic programming and graphs. System design round was unexpected for fresh grads.",
+      "overallRating": 5,
+      "difficultyLevel": "Very Hard",
+      "preparationTips": [
+        "Complete Striver SDE Sheet",
+        "Practice system design basics",
+        "Mock interviews are crucial",
+        "Understand time complexity deeply"
+      ],
+      "resourcesUsed": [
+        "LeetCode Premium",
+        "Grokking System Design",
+        "Striver A2Z"
+      ],
+      "rounds": [
+        {
+          "name": "Online Assessment",
+          "type": "Coding",
+          "difficulty": "Hard",
+          "duration": "90 mins",
+          "topics": [
+            "Arrays",
+            "DP",
+            "Graphs"
+          ],
+          "tips": "Time management is key"
+        },
+        {
+          "name": "Technical Round 1",
+          "type": "Technical",
+          "difficulty": "Hard",
+          "duration": "60 mins",
+          "topics": [
+            "Dynamic Programming",
+            "Graphs"
+          ],
+          "questions": [
+            "LCS variant",
+            "Dijkstra modification"
+          ]
+        },
+        {
+          "name": "Technical Round 2",
+          "type": "Technical",
+          "difficulty": "Medium",
+          "duration": "45 mins",
+          "topics": [
+            "System Design"
+          ],
+          "questions": [
+            "Design URL shortener"
+          ]
+        },
+        {
+          "name": "HR Round",
+          "type": "HR",
+          "difficulty": "Easy",
+          "duration": "30 mins",
+          "topics": [
+            "Behavioral"
+          ],
+          "questions": [
+            "Tell me about a challenging project"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "Software Engineer L3",
+        "ctc": 4500000,
+        "location": "Bangalore",
+        "joiningBonus": 500000
+      },
+      "wouldRecommend": true,
+      "consentForContact": true,
+      "verified": true,
+      "_id": "kzeebvmnx",
+      "createdAt": "2026-02-01T19:17:02.135Z",
+      "updatedAt": "2026-02-01T19:17:02.135Z"
+    },
+    {
+      "company": "Microsoft",
+      "year": 2024,
+      "alumniName": "Priya Nair",
+      "currentRole": "Software Engineer II",
+      "department": "CSE",
+      "batch": "2024",
+      "experience": "Azure-related questions and system design were the highlights. They really test your problem-solving approach more than getting the perfect solution.",
+      "overallRating": 4,
+      "difficultyLevel": "Hard",
+      "preparationTips": [
+        "Learn Azure basics",
+        "Practice explaining your thought process",
+        "Brush up on OOPS concepts"
+      ],
+      "resourcesUsed": [
+        "InterviewBit",
+        "GeeksforGeeks",
+        "Microsoft Learn"
+      ],
+      "rounds": [
+        {
+          "name": "Online Coding",
+          "type": "Coding",
+          "difficulty": "Medium",
+          "duration": "75 mins",
+          "topics": [
+            "Arrays",
+            "Trees"
+          ],
+          "tips": "Focus on code quality"
+        },
+        {
+          "name": "Group Fly",
+          "type": "Coding",
+          "difficulty": "Medium",
+          "duration": "2 hours",
+          "topics": [
+            "DSA"
+          ],
+          "questions": [
+            "2 problems on paper"
+          ]
+        },
+        {
+          "name": "Technical Interview",
+          "type": "Technical",
+          "difficulty": "Hard",
+          "duration": "60 mins",
+          "topics": [
+            "System Design",
+            "Azure"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "SDE",
+        "ctc": 4200000,
+        "location": "Hyderabad"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "0wflngl8q",
+      "createdAt": "2026-02-01T19:17:02.154Z",
+      "updatedAt": "2026-02-01T19:17:02.154Z"
+    },
+    {
+      "company": "Amazon",
+      "year": 2025,
+      "alumniName": "Aditya Kumar",
+      "currentRole": "SDE-1",
+      "department": "CSE",
+      "batch": "2025",
+      "experience": "Leadership Principles are EVERYTHING at Amazon. Every single answer should demonstrate at least one LP. Prepare STAR method stories.",
+      "overallRating": 4,
+      "difficultyLevel": "Hard",
+      "preparationTips": [
+        "Memorize all 16 LPs with examples",
+        "Practice STAR method",
+        "Solve Amazon tagged problems on LeetCode"
+      ],
+      "rounds": [
+        {
+          "name": "Online Assessment",
+          "type": "Coding",
+          "difficulty": "Medium",
+          "duration": "90 mins",
+          "topics": [
+            "Arrays",
+            "Strings"
+          ],
+          "tips": "Work simulation is tricky"
+        },
+        {
+          "name": "Loop 1",
+          "type": "Technical",
+          "difficulty": "Hard",
+          "topics": [
+            "DSA",
+            "LP"
+          ]
+        },
+        {
+          "name": "Loop 2",
+          "type": "Technical",
+          "difficulty": "Hard",
+          "topics": [
+            "System Design",
+            "LP"
+          ]
+        },
+        {
+          "name": "Loop 3",
+          "type": "HR",
+          "difficulty": "Medium",
+          "topics": [
+            "LP",
+            "Behavioral"
+          ]
+        },
+        {
+          "name": "Bar Raiser",
+          "type": "Technical",
+          "difficulty": "Very Hard",
+          "topics": [
+            "Deep dive",
+            "LP"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "SDE-1",
+        "ctc": 4000000,
+        "location": "Bangalore"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "nibw59c8v",
+      "createdAt": "2026-02-01T19:17:02.172Z",
+      "updatedAt": "2026-02-01T19:17:02.172Z"
+    },
+    {
+      "company": "Adobe",
+      "year": 2024,
+      "alumniName": "Sneha Reddy",
+      "currentRole": "MTS",
+      "department": "ECE",
+      "batch": "2024",
+      "experience": "Very chill interview experience compared to FAANG. Focus on OOPS and clean code. They love creative problem solvers.",
+      "overallRating": 5,
+      "difficultyLevel": "Medium",
+      "preparationTips": [
+        "Strong OOPS fundamentals",
+        "Practice design patterns",
+        "Be creative in your solutions"
+      ],
+      "rounds": [
+        {
+          "name": "HackerRank",
+          "type": "Online Test",
+          "difficulty": "Medium",
+          "duration": "90 mins",
+          "topics": [
+            "MCQ",
+            "Coding"
+          ]
+        },
+        {
+          "name": "Technical 1",
+          "type": "Technical",
+          "difficulty": "Medium",
+          "topics": [
+            "DSA",
+            "OOPS"
+          ]
+        },
+        {
+          "name": "Technical 2",
+          "type": "Technical",
+          "difficulty": "Medium",
+          "topics": [
+            "Design Patterns",
+            "Projects"
+          ]
+        },
+        {
+          "name": "HR",
+          "type": "HR",
+          "difficulty": "Easy",
+          "topics": [
+            "Culture fit"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "Member of Technical Staff",
+        "ctc": 2100000,
+        "location": "Noida"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "15ftazp9s",
+      "createdAt": "2026-02-01T19:17:02.182Z",
+      "updatedAt": "2026-02-01T19:17:02.182Z"
+    },
+    {
+      "company": "Goldman Sachs",
+      "year": 2025,
+      "alumniName": "Vikram Menon",
+      "currentRole": "Analyst",
+      "department": "CSE",
+      "batch": "2025",
+      "experience": "Expect puzzles and probability questions along with DSA. They test your analytical thinking extensively.",
+      "overallRating": 4,
+      "difficultyLevel": "Hard",
+      "preparationTips": [
+        "Practice probability puzzles",
+        "Learn basic finance concepts",
+        "Brush up on mathematics"
+      ],
+      "rounds": [
+        {
+          "name": "HireVue",
+          "type": "Online Test",
+          "difficulty": "Hard",
+          "duration": "60 mins",
+          "topics": [
+            "Aptitude",
+            "Coding"
+          ]
+        },
+        {
+          "name": "Technical",
+          "type": "Technical",
+          "difficulty": "Hard",
+          "topics": [
+            "DSA",
+            "Puzzles",
+            "Finance"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "New Analyst",
+        "ctc": 2800000,
+        "location": "Bangalore"
+      },
+      "consentForContact": false,
+      "verified": true,
+      "_id": "nt3h8wo15",
+      "createdAt": "2026-02-01T19:17:02.190Z",
+      "updatedAt": "2026-02-01T19:17:02.190Z"
+    },
+    {
+      "company": "Cisco",
+      "year": 2024,
+      "alumniName": "Kavya Pillai",
+      "currentRole": "Software Engineer",
+      "department": "ECE",
+      "batch": "2024",
+      "experience": "Strong focus on networking concepts. If you're from ECE, you have an advantage. Practice CCNA level concepts.",
+      "overallRating": 4,
+      "difficultyLevel": "Medium",
+      "preparationTips": [
+        "Study OSI model thoroughly",
+        "Practice subnetting",
+        "Know TCP/IP inside out"
+      ],
+      "rounds": [
+        {
+          "name": "Online Test",
+          "type": "Online Test",
+          "difficulty": "Medium",
+          "topics": [
+            "Networking",
+            "Aptitude"
+          ]
+        },
+        {
+          "name": "Technical",
+          "type": "Technical",
+          "difficulty": "Medium",
+          "topics": [
+            "Networking",
+            "C/C++"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "Software Engineer",
+        "ctc": 1800000,
+        "location": "Bangalore"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "4dq1hwm4g",
+      "createdAt": "2026-02-01T19:17:02.213Z",
+      "updatedAt": "2026-02-01T19:17:02.213Z"
+    },
+    {
+      "company": "Infosys",
+      "year": 2024,
+      "alumniName": "Rohan Das",
+      "department": "CSE",
+      "batch": "2024",
+      "experience": "InfyTQ is key. If you clear it with good score, interview is mostly a formality. Focus on their training platform.",
+      "overallRating": 3,
+      "difficultyLevel": "Easy",
+      "preparationTips": [
+        "Complete InfyTQ certification",
+        "Basic programming is enough",
+        "Communication skills matter"
+      ],
+      "rounds": [
+        {
+          "name": "InfyTQ Test",
+          "type": "Online Test",
+          "difficulty": "Medium",
+          "topics": [
+            "Programming",
+            "Aptitude"
+          ]
+        },
+        {
+          "name": "Interview",
+          "type": "HR",
+          "difficulty": "Easy",
+          "topics": [
+            "Communication",
+            "Basic tech"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "Systems Engineer",
+        "ctc": 360000,
+        "location": "Mysore"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "3pe2bcujf",
+      "createdAt": "2026-02-01T19:17:02.243Z",
+      "updatedAt": "2026-02-01T19:17:02.243Z"
+    },
+    {
+      "company": "Samsung R&D",
+      "year": 2025,
+      "alumniName": "Ishaan Rao",
+      "department": "CSE",
+      "batch": "2025",
+      "experience": "Their coding test is unique - 3 hour single problem that requires complete solution. Practice complete implementations.",
+      "overallRating": 4,
+      "difficultyLevel": "Hard",
+      "preparationTips": [
+        "Practice coding for 3 hours straight",
+        "Focus on implementation, not just logic",
+        "Know Android basics"
+      ],
+      "rounds": [
+        {
+          "name": "Coding Test",
+          "type": "Coding",
+          "difficulty": "Hard",
+          "duration": "3 hours",
+          "topics": [
+            "Implementation"
+          ]
+        },
+        {
+          "name": "Technical",
+          "type": "Technical",
+          "difficulty": "Medium",
+          "topics": [
+            "C++",
+            "Android",
+            "OOPS"
+          ]
+        }
+      ],
+      "offerDetails": {
+        "role": "Software Engineer",
+        "ctc": 1800000,
+        "location": "Bangalore"
+      },
+      "consentForContact": true,
+      "verified": true,
+      "_id": "oqqky8a53",
+      "createdAt": "2026-02-01T19:17:02.263Z",
+      "updatedAt": "2026-02-01T19:17:02.263Z"
+    }
+  ],
+  "resources": [
+    {
+      "title": "Striver SDE Sheet",
+      "category": "Coding",
+      "content": "The ultimate guide for DSA preparation for top-tier companies. 191 most important problems.",
+      "links": [
+        "https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "m3xta17nz",
+      "createdAt": "2026-02-01T19:17:02.279Z",
+      "updatedAt": "2026-02-01T19:17:02.279Z"
+    },
+    {
+      "title": "NeetCode 150",
+      "category": "Coding",
+      "content": "Curated 150 problems covering all important patterns for FAANG interviews.",
+      "links": [
+        "https://neetcode.io/"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "sx4484vtp",
+      "createdAt": "2026-02-01T19:17:02.291Z",
+      "updatedAt": "2026-02-01T19:17:02.291Z"
+    },
+    {
+      "title": "System Design Primer",
+      "category": "System Design",
+      "content": "Comprehensive guide to system design interviews with examples.",
+      "links": [
+        "https://github.com/donnemartin/system-design-primer"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "8ck60ry1f",
+      "createdAt": "2026-02-01T19:17:02.307Z",
+      "updatedAt": "2026-02-01T19:17:02.307Z"
+    },
+    {
+      "title": "Indiabix Aptitude",
+      "category": "Aptitude",
+      "content": "Comprehensive practice for quantitative and logical reasoning.",
+      "links": [
+        "https://www.indiabix.com/"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "uo2bh6pnn",
+      "createdAt": "2026-02-01T19:17:02.323Z",
+      "updatedAt": "2026-02-01T19:17:02.323Z"
+    },
+    {
+      "title": "Operating Systems - Galvin",
+      "category": "Technical",
+      "content": "Complete concepts of OS for technical interviews.",
+      "links": [
+        "https://codex.cs.yale.edu/avi/os-book/"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "hl9x7620n",
+      "createdAt": "2026-02-01T19:17:02.343Z",
+      "updatedAt": "2026-02-01T19:17:02.343Z"
+    },
+    {
+      "title": "DBMS Gate Smashers",
+      "category": "Technical",
+      "content": "DBMS concepts explained in Hindi/English for interviews.",
+      "links": [
+        "https://youtube.com/gatesmashers"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "67gac2qjf",
+      "createdAt": "2026-02-01T19:17:02.364Z",
+      "updatedAt": "2026-02-01T19:17:02.364Z"
+    },
+    {
+      "title": "InterviewBit",
+      "category": "Coding",
+      "content": "Practice platform with guided learning paths for product companies.",
+      "links": [
+        "https://interviewbit.com/"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "snx4wpbvu",
+      "createdAt": "2026-02-01T19:17:02.386Z",
+      "updatedAt": "2026-02-01T19:17:02.386Z"
+    },
+    {
+      "title": "Resume Templates",
+      "category": "Career",
+      "content": "Professional resume templates used by students placed at FAANG.",
+      "links": [
+        "https://www.overleaf.com/gallery/tagged/cv"
+      ],
+      "addedBy": "ouqm8mp2x",
+      "_id": "i5x2xk6b6",
+      "createdAt": "2026-02-01T19:17:02.413Z",
+      "updatedAt": "2026-02-01T19:17:02.413Z"
+    }
+  ],
+  "applications": [],
+  "notifications": [
+    {
+      "targetRole": "all",
+      "title": "🎉 Welcome to Placement Tracker 2026!",
+      "message": "Your personalized placement journey starts here. Complete your profile to unlock AI-powered recommendations.",
+      "type": "announcement",
+      "priority": "high",
+      "actionRequired": true,
+      "actionLabel": "Complete Profile",
+      "actionUrl": "/profile",
+      "_isNew": true,
+      "_id": "g8l4yajht",
+      "createdAt": "2026-02-01T19:17:02.437Z",
+      "updatedAt": "2026-02-01T19:17:02.437Z"
+    },
+    {
+      "targetRole": "student",
+      "title": "🚀 Google is coming!",
+      "message": "Google placement drive is scheduled for March 15, 2026. Register before March 10.",
+      "type": "drive",
+      "priority": "urgent",
+      "actionRequired": true,
+      "actionLabel": "Register Now",
+      "actionUrl": "/drives",
+      "_isNew": true,
+      "_id": "4upcqee2m",
+      "createdAt": "2026-02-01T19:17:02.455Z",
+      "updatedAt": "2026-02-01T19:17:02.455Z"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const mongoose = require('./services/mockMongoose');
 
 dotenv.config();
 
@@ -18,6 +18,21 @@ app.use((req, res, next) => {
     next();
 });
 
+// Database connection
+mongoose.connect()
+    .then(() => {
+        console.log('Connected to Mock Database');
+        // Check if we need to seed
+        const mockDB = require('./services/mockDB');
+        const collections = Object.keys(mockDB.data);
+        if (collections.length === 0 || mockDB.getCollection('users').length === 0) {
+            console.log('Database empty, seeding...');
+            const seedData = require('./seedData');
+            seedData();
+        }
+    })
+    .catch(err => console.error('Could not connect to Mock Database', err));
+
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
@@ -27,6 +42,7 @@ const aiRoutes = require('./routes/aiRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
@@ -36,16 +52,11 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/applications', applicationRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Placement Tracker API is running...');
+    res.send('Placement Tracker API is running with Mock Database...');
 });
-
-// Database connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/placement_tracker';
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('Could not connect to MongoDB', err));
 
 // 404 Handler
 app.use((req, res) => {
@@ -55,3 +66,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+

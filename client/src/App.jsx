@@ -9,10 +9,12 @@ import AlumniInsights from './pages/AlumniInsights';
 import PrepHub from './pages/PrepHub';
 import StudentProfile from './pages/StudentProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import PlacementDrives from './pages/PlacementDrives';
+import MyApplications from './pages/MyApplications';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
   if (!user) return <Navigate to="/login" />;
   if (role && user.role !== role) return <Navigate to="/" />;
   return (
@@ -29,7 +31,7 @@ import Home from './pages/Home';
 
 const HomeRedirect = () => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
   if (!user) return <Navigate to="/login" />;
   return user.role === 'admin' ? <Navigate to="/admin" /> : <Navigate to="/dashboard" />;
 };
@@ -46,6 +48,8 @@ function App() {
           <Route path="/alumni" element={<PrivateRoute role="student"><AlumniInsights /></PrivateRoute>} />
           <Route path="/prephub" element={<PrivateRoute role="student"><PrepHub /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute role="student"><StudentProfile /></PrivateRoute>} />
+          <Route path="/drives" element={<PrivateRoute role="student"><PlacementDrives /></PrivateRoute>} />
+          <Route path="/applications" element={<PrivateRoute role="student"><MyApplications /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute role="admin"><AdminDashboard /></PrivateRoute>} />
           <Route path="/home" element={<HomeRedirect />} />
           <Route path="*" element={<Navigate to="/" />} />

@@ -1,11 +1,328 @@
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
-const { auth, authorize } = require('../middleware/auth');
+const StudentProfile = require('../models/StudentProfile');
+const PlacementDrive = require('../models/PlacementDrive');
+const AlumniInsight = require('../models/AlumniInsight');
+const Application = require('../models/Application');
+const User = require('../models/User');
 
-router.get('/dashboard-stats', auth, authorize('admin'), adminController.getDashboardStats);
-router.post('/shortlist', auth, authorize('admin'), adminController.shortlistStudents);
-router.post('/drives', auth, authorize('admin'), adminController.addPlacementDrive);
-router.delete('/drives/:id', auth, authorize('admin'), adminController.deleteDrive);
+// Get admin statistics
+router.get('/stats', async (req, res) => {
+    try {
+        const studentCount = await StudentProfile.countDocuments();
+        const driveCount = await PlacementDrive.countDocuments();
+        const alumniCount = await AlumniInsight.countDocuments();
+        const applicationCount = await Application.countDocuments();
+
+        const placedStudents = await StudentProfile.countDocuments({ placementStatus: 'placed' });
+        const inProcessStudents = await StudentProfile.countDocuments({ placementStatus: 'in_process' });
+
+        const recentDrives = await PlacementDrive.find()
+            .sort({ date: -1 })
+            .limit(5)
+            .select('companyName jobProfile date status ctcDetails');
+
+        // Department-wise statistics
+        const departmentStats = await StudentProfile.aggregate([
+            { $group: { _id: '$department', count: { $sum: 1 }, avgCgpa: { $avg: '$cgpa' } } }
+        ]);
+
+        // Placement status distribution
+        const placementStats = await StudentProfile.aggregate([
+            { $group: { _id: '$placementStatus', count: { $sum: 1 } } }
+        ]);
+
+        // CTC statistics for placed students
+        const ctcStats = await StudentProfile.aggregate([
+            { $match: { placementStatus: 'placed', offeredCTC: { $exists: true } } },
+            {
+                $group: {
+                    _id: null,
+                    avgCTC: { $avg: '$offeredCTC' },
+                    maxCTC: { $max: '$offeredCTC' },
+                    minCTC: { $min: '$offeredCTC' }
+                }
+            }
+        ]);
+
+        res.json({
+            studentCount,
+            driveCount,
+            alumniCount,
+            applicationCount,
+            placedStudents,
+            inProcessStudents,
+            placementPercentage: studentCount > 0 ? ((placedStudents / studentCount) * 100).toFixed(1) : 0,
+            recentDrives,
+            departmentStats,
+            placementStats,
+            ctcStats: ctcStats[0] || { avgCTC: 0, maxCTC: 0, minCTC: 0 }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get all students with filters
+router.get('/students', async (req, res) => {
+    try {
+        const { department, minCgpa, maxCgpa, placementStatus, batch, search, page = 1, limit = 20 } = req.query;
+
+        const query = {};
+
+        if (department) query.department = department;
+        if (batch) query.batch = batch;
+        if (placementStatus) query.placementStatus = placementStatus;
+        if (minCgpa) query.cgpa = { ...query.cgpa, $gte: parseFloat(minCgpa) };
+        if (maxCgpa) query.cgpa = { ...query.cgpa, $lte: parseFloat(maxCgpa) };
+        if (search) {
+            query.$or = [
+                { firstName: { $regex: search, $options: 'i' } },
+                { lastName: { $regex: search, $options: 'i' } },
+                { rollNumber: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const students = await StudentProfile.find(query)
+            .populate('userId', 'email')
+            .sort({ rollNumber: 1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const total = await StudentProfile.countDocuments(query);
+
+        res.json({
+            students,
+            pagination: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                totalPages: Math.ceil(total / parseInt(limit))
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Shortlist students based on criteria
+router.post('/shortlist', async (req, res) => {
+    try {
+        const { minCgpa = 0, maxBacklogs = 0, departments, skills } = req.body;
+
+        const query = {
+            cgpa: { $gte: parseFloat(minCgpa) },
+            backlogs: { $lte: parseInt(maxBacklogs) }
+        };
+
+        if (departments && departments.length > 0) {
+            query.department = { $in: departments };
+        }
+
+        if (skills && skills.length > 0) {
+            query['skills.name'] = { $in: skills };
+        }
+
+        const students = await StudentProfile.find(query)
+            .populate('userId', 'email')
+            .sort({ cgpa: -1 });
+
+        res.json(students);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get company-wise placement statistics
+router.get('/company-stats', async (req, res) => {
+    try {
+        const companyStats = await StudentProfile.aggregate([
+            { $match: { placementStatus: 'placed', offeredCompany: { $exists: true } } },
+            {
+                $group: {
+                    _id: '$offeredCompany',
+                    count: { $sum: 1 },
+                    avgCTC: { $avg: '$offeredCTC' },
+                    roles: { $addToSet: '$offeredRole' }
+                }
+            },
+            { $sort: { count: -1 } }
+        ]);
+
+        res.json(companyStats);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get drive analytics
+router.get('/drive-analytics', async (req, res) => {
+    try {
+        const drives = await PlacementDrive.find()
+            .select('companyName date status registeredStudents selectedStudents ctcDetails');
+
+        const analytics = drives.map(drive => ({
+            company: drive.companyName,
+            date: drive.date,
+            status: drive.status,
+            registered: drive.registeredStudents?.length || 0,
+            selected: drive.selectedStudents?.length || 0,
+            ctc: drive.ctcDetails?.ctc || 0,
+            selectionRate: drive.registeredStudents?.length > 0
+                ? ((drive.selectedStudents?.length || 0) / drive.registeredStudents.length * 100).toFixed(1)
+                : 0
+        }));
+
+        res.json(analytics);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Add/Update student
+router.post('/student', async (req, res) => {
+    try {
+        const studentData = req.body;
+
+        if (studentData._id) {
+            // Update existing
+            const student = await StudentProfile.findByIdAndUpdate(
+                studentData._id,
+                studentData,
+                { new: true }
+            );
+            res.json(student);
+        } else {
+            // Create new user and profile
+            const user = new User({
+                email: studentData.email,
+                password: 'password123',
+                role: 'student'
+            });
+            await user.save();
+
+            const student = new StudentProfile({
+                ...studentData,
+                userId: user._id
+            });
+            await student.save();
+            res.status(201).json(student);
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Delete student
+router.delete('/student/:id', async (req, res) => {
+    try {
+        const student = await StudentProfile.findById(req.params.id);
+        if (student) {
+            await User.findByIdAndDelete(student.userId);
+            await StudentProfile.findByIdAndDelete(req.params.id);
+            await Application.deleteMany({ studentId: req.params.id });
+        }
+        res.json({ message: 'Student deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CRUD for drives
+router.get('/drives', async (req, res) => {
+    try {
+        const drives = await PlacementDrive.find().sort({ date: -1 });
+        res.json(drives);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.post('/drive', async (req, res) => {
+    try {
+        const driveData = req.body;
+
+        if (driveData._id) {
+            const drive = await PlacementDrive.findByIdAndUpdate(driveData._id, driveData, { new: true });
+            res.json(drive);
+        } else {
+            const drive = new PlacementDrive(driveData);
+            await drive.save();
+            res.status(201).json(drive);
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.delete('/drive/:id', async (req, res) => {
+    try {
+        await PlacementDrive.findByIdAndDelete(req.params.id);
+        await Application.deleteMany({ driveId: req.params.id });
+        res.json({ message: 'Drive deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Update application status (for admin)
+router.patch('/application/:id', async (req, res) => {
+    try {
+        const { status, feedback, offeredCTC } = req.body;
+
+        const updateData = { status };
+        if (feedback) updateData.notes = feedback;
+        if (offeredCTC) updateData.offeredCTC = offeredCTC;
+
+        const application = await Application.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        ).populate('driveId studentId');
+
+        // Update student placement status if offered
+        if (status === 'offered' || status === 'accepted') {
+            await StudentProfile.findByIdAndUpdate(application.studentId._id, {
+                placementStatus: status === 'accepted' ? 'placed' : 'in_process',
+                offeredCompany: application.driveId.companyName,
+                offeredRole: application.driveId.jobProfile,
+                offeredCTC: offeredCTC || application.driveId.ctcDetails?.ctc
+            });
+        }
+
+        res.json(application);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get all applications for a drive
+router.get('/drive/:driveId/applications', async (req, res) => {
+    try {
+        const applications = await Application.find({ driveId: req.params.driveId })
+            .populate('studentId')
+            .sort({ appliedDate: -1 });
+
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Export data as JSON (can be converted to CSV on frontend)
+router.get('/export/students', async (req, res) => {
+    try {
+        const students = await StudentProfile.find()
+            .populate('userId', 'email')
+            .lean();
+
+        res.json(students);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;

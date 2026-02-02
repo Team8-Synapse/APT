@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('../services/mockMongoose');
 
 const resourceSchema = new mongoose.Schema({
     title: { type: String, required: true },
