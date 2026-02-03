@@ -709,6 +709,193 @@
       "createdAt": "2026-02-02T06:21:12.832Z",
       "updatedAt": "2026-02-02T06:21:12.832Z",
       "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23657@cb.students.amrita.edu",
+      "password": "$2b$10$sbuCmBt21UYIWdtGeyMCUunFNJOkJ1nkuI0BecBYOcBwfFtbVjJzG",
+      "role": "student",
+      "_isNew": true,
+      "_id": "b0gjqqqnd",
+      "createdAt": "2026-02-02T06:44:37.762Z",
+      "updatedAt": "2026-02-02T06:44:37.762Z"
+    },
+    {
+      "email": "cb.sc.u4cse23657@cb.students.amrita.edu",
+      "password": "$2b$10$sbuCmBt21UYIWdtGeyMCUunFNJOkJ1nkuI0BecBYOcBwfFtbVjJzG",
+      "role": "student",
+      "_isNew": false,
+      "_id": "b0gjqqqnd",
+      "createdAt": "2026-02-02T06:44:47.040Z",
+      "updatedAt": "2026-02-02T06:44:47.040Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": true,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-02T06:45:08.566Z",
+      "updatedAt": "2026-02-02T06:45:08.566Z"
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-02T06:45:11.319Z",
+      "updatedAt": "2026-02-02T06:45:11.319Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23657@cb.students.amrita.edu",
+      "password": "$2b$10$S5X6C/Eod68vTzsGuG6U/OhKYI/6qBssDy0/iTgX0UhMHKh4wj0la",
+      "role": "student",
+      "_isNew": true,
+      "_id": "ubxj2a08l",
+      "createdAt": "2026-02-03T08:04:33.483Z",
+      "updatedAt": "2026-02-03T08:04:33.483Z"
+    },
+    {
+      "email": "cb.sc.u4cse23657@cb.students.amrita.edu",
+      "password": "$2b$10$sbuCmBt21UYIWdtGeyMCUunFNJOkJ1nkuI0BecBYOcBwfFtbVjJzG",
+      "role": "student",
+      "_isNew": false,
+      "_id": "b0gjqqqnd",
+      "createdAt": "2026-02-03T08:04:34.684Z",
+      "updatedAt": "2026-02-03T08:04:34.684Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "cb.sc.u4cse23657@cb.students.amrita.edu",
+      "password": "$2b$10$sbuCmBt21UYIWdtGeyMCUunFNJOkJ1nkuI0BecBYOcBwfFtbVjJzG",
+      "role": "student",
+      "_isNew": false,
+      "_id": "b0gjqqqnd",
+      "createdAt": "2026-02-03T08:04:44.816Z",
+      "updatedAt": "2026-02-03T08:04:44.816Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:03.818Z",
+      "updatedAt": "2026-02-03T08:05:03.818Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:03.848Z",
+      "updatedAt": "2026-02-03T08:05:03.848Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:03.862Z",
+      "updatedAt": "2026-02-03T08:05:03.862Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:03.895Z",
+      "updatedAt": "2026-02-03T08:05:03.895Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:03.906Z",
+      "updatedAt": "2026-02-03T08:05:03.906Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:04.463Z",
+      "updatedAt": "2026-02-03T08:05:04.463Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.086Z",
+      "updatedAt": "2026-02-03T08:05:05.086Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.474Z",
+      "updatedAt": "2026-02-03T08:05:05.474Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.490Z",
+      "updatedAt": "2026-02-03T08:05:05.490Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.581Z",
+      "updatedAt": "2026-02-03T08:05:05.581Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.663Z",
+      "updatedAt": "2026-02-03T08:05:05.663Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "vijayadityarv2@gmail.com",
+      "password": "$2b$10$PJXBFk7zN1ExGrVVqvH5feiZSLHOK4UVfaw7.HU/ow5vV.34CNtdi",
+      "role": "student",
+      "_isNew": false,
+      "_id": "d81d797u2",
+      "createdAt": "2026-02-03T08:05:05.806Z",
+      "updatedAt": "2026-02-03T08:05:05.806Z",
+      "failedAttempts": 0
     }
   ],
   "studentprofiles": [
