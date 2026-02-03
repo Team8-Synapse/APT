@@ -1,4 +1,4 @@
-const mongoose = require('../services/mockMongoose');
+const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({
     studentId: {
