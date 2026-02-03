@@ -6,6 +6,8 @@ import {
     Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus
 } from 'lucide-react';
 
+import AddDriveModal from '../components/AddDriveModal';
+
 const AdminDashboard = () => {
     const [stats, setStats] = useState({
         studentCount: 0, driveCount: 0, alumniCount: 0,
@@ -17,6 +19,7 @@ const AdminDashboard = () => {
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchStats();
@@ -422,7 +425,7 @@ const AdminDashboard = () => {
                 <div className="glass-card p-8">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-black dark:text-white">Placement Drives</h2>
-                        <button className="btn-premium flex items-center gap-2">
+                        <button onClick={() => setIsModalOpen(true)} className="btn-premium flex items-center gap-2">
                             <Plus size={18} /> Add Drive
                         </button>
                     </div>
@@ -477,6 +480,15 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
+            <AddDriveModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSuccess={() => {
+                    fetchStats();
+                    setIsModalOpen(false);
+                }}
+            />
         </div>
     );
 };

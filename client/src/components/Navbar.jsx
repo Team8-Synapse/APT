@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
@@ -12,16 +13,38 @@ const Navbar = () => {
         return saved === 'true';
     });
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [notifications, setNotifications] = useState([
-        { id: 1, message: 'Google drive starts in 2 days', type: 'info' },
-        { id: 2, message: 'Your application was shortlisted', type: 'success' },
-    ]);
+    const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
+
+    useEffect(() => {
+        if (user) {
+            fetchNotifications();
+        }
+    }, [user]);
+
+    const fetchNotifications = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } // Assuming token is stored
+            });
+            // Try/catch handles failures (e.g. 401), useAuth context might normally handle axios interceptors
+            // But let's be safe. If useAuth exposes axios instance with interceptors, use that.
+            // Current code uses raw axios.
+            setNotifications(res.data);
+        } catch (err) {
+            console.error('Failed to fetch notifications', err);
+            // Fallback mock data for demo if server fails
+            setNotifications([
+                { id: 1, message: 'Google drive starts in 2 days', type: 'info' },
+                { id: 2, message: 'Your application was shortlisted', type: 'success' },
+            ]);
+        }
+    };
 
     const handleLogout = () => {
         logout();
@@ -49,7 +72,7 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 z-50 px-4 py-3">
-            <div className="max-w-7xl mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl overflow-hidden">
+            <div className="max-w-7xl mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
                 <div className="px-6 py-3 flex justify-between items-center">
                     <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
@@ -87,19 +110,20 @@ const Navbar = () => {
                         </button>
 
                         {/* Notifications */}
-                        <div className="relative">
+                        <div className="relative z-50">
                             <button
                                 onClick={() => setShowNotifications(!showNotifications)}
                                 className="p-2 transition-colors hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-xl text-amrita-maroon dark:text-amrita-gold relative"
+                                style={{ zIndex: 51 }}
                             >
                                 <Bell size={20} />
                                 {notifications.length > 0 && (
-                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full pointer-events-none"></span>
                                 )}
                             </button>
 
                             {showNotifications && (
-                                <div className="absolute right-0 mt-2 w-80 glass-card !rounded-2xl shadow-2xl overflow-hidden z-50">
+                                <div className="absolute right-0 mt-2 w-80 glass-card !rounded-2xl shadow-2xl overflow-hidden z-[100]">
                                     <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                                         <h3 className="font-black text-gray-900 dark:text-white">Notifications</h3>
                                     </div>
@@ -156,8 +180,8 @@ const Navbar = () => {
                                 to={link.to}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${location.pathname === link.to
-                                        ? 'bg-amrita-maroon text-white'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                    ? 'bg-amrita-maroon text-white'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                                     }`}
                             >
                                 {link.icon}

@@ -2,10 +2,17 @@ const Notification = require('../models/Notification');
 
 exports.getNotifications = async (req, res) => {
     try {
-        const notifications = await Notification.find({ userId: req.user._id }).sort({ createdAt: -1 });
+        const query = {
+            $or: [
+                { userId: req.user._id },
+                { targetRole: req.user.role },
+                { targetRole: 'all' }
+            ]
+        };
+        const notifications = await Notification.find(query).sort({ createdAt: -1 }).limit(20);
         res.send(notifications);
     } catch (e) {
-        res.status(500).send(e);
+        res.status(500).send({ error: e.message });
     }
 };
 
