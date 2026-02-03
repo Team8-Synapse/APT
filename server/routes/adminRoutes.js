@@ -340,6 +340,19 @@ router.get('/drive/:driveId/applications', async (req, res) => {
     }
 });
 
+// Alias for applicants (same as applications)
+router.get('/drive/:driveId/applicants', async (req, res) => {
+    try {
+        const applications = await Application.find({ driveId: req.params.driveId })
+            .populate('studentId')
+            .sort({ appliedDate: -1 });
+
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Export data as JSON (can be converted to CSV on frontend)
 router.get('/export/students', async (req, res) => {
     try {

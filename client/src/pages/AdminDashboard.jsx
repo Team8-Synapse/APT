@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 
 import AddDriveModal from '../components/AddDriveModal';
+import StudentDetailModal from '../components/StudentDetailModal';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState({
@@ -15,15 +16,21 @@ const AdminDashboard = () => {
         recentDrives: [], departmentStats: [], placementStats: [], ctcStats: {}
     });
     const [students, setStudents] = useState([]);
+    const [drives, setDrives] = useState([]);
     const [shortlist, setShortlist] = useState([]);
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editDrive, setEditDrive] = useState(null);
+    const [selectedDrive, setSelectedDrive] = useState(null);
+    const [driveApplicants, setDriveApplicants] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null);
 
     useEffect(() => {
         fetchStats();
         fetchStudents();
+        fetchDrives();
     }, []);
 
     const fetchStats = async () => {
@@ -75,6 +82,61 @@ const AdminDashboard = () => {
         } catch (err) {
             console.error(err);
         }
+    };
+
+    const fetchDrives = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drives`);
+            setDrives(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const fetchApplicants = async (driveId) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${driveId}/applicants`);
+            setDriveApplicants(res.data);
+        } catch (err) {
+            console.error(err);
+            setDriveApplicants([]);
+        }
+    };
+
+    const handleDeleteDrive = async (driveId) => {
+        if (!window.confirm('Are you sure you want to delete this drive? This action cannot be undone.')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${driveId}`);
+            fetchStats();
+            fetchDrives();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete drive');
+        }
+    };
+
+    const handleStatusChange = async (driveId, newStatus) => {
+        try {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive`, {
+                _id: driveId,
+                status: newStatus
+            });
+            fetchStats();
+            fetchDrives();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update status');
+        }
+    };
+
+    const openEditModal = (drive) => {
+        setEditDrive(drive);
+        setIsModalOpen(true);
+    };
+
+    const openViewApplicants = async (drive) => {
+        setSelectedDrive(drive);
+        await fetchApplicants(drive._id);
     };
 
     const handleExport = async () => {
@@ -310,7 +372,9 @@ const AdminDashboard = () => {
                                             {shortlist.length > 0 ? shortlist.slice(0, 10).map((student, i) => (
                                                 <tr key={i} className="group">
                                                     <td className="font-black text-gray-900 dark:text-white">
-                                                        {student.firstName} {student.lastName}
+                                                        <button onClick={() => setSelectedStudent(student)} className="text-left hover:text-amrita-maroon transition-colors">
+                                                            {student.firstName} {student.lastName}
+                                                        </button>
                                                         <p className="text-[10px] text-gray-400 font-medium">{student.email}</p>
                                                     </td>
                                                     <td className="text-sm font-bold text-gray-600 dark:text-gray-400">{student.rollNumber}</td>
@@ -318,7 +382,10 @@ const AdminDashboard = () => {
                                                     <td className="font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
                                                     <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
                                                     <td>
-                                                        <button className="p-2 hover:bg-amrita-maroon/10 rounded-lg text-amrita-maroon transition-all">
+                                                        <button
+                                                            onClick={() => setSelectedStudent(student)}
+                                                            className="p-2 hover:bg-amrita-maroon/10 rounded-lg text-amrita-maroon transition-all"
+                                                        >
                                                             <Eye size={18} />
                                                         </button>
                                                     </td>
@@ -422,35 +489,235 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'drives' && (
-                <div className="glass-card p-8">
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-black dark:text-white">Placement Drives</h2>
-                        <button onClick={() => setIsModalOpen(true)} className="btn-premium flex items-center gap-2">
-                            <Plus size={18} /> Add Drive
-                        </button>
+                <div className="space-y-6">
+                    {/* Drives Header */}
+                    <div className="glass-card p-6">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h2 className="text-xl font-black" style={{ color: '#1f2937' }}>Placement Drives</h2>
+                                <p className="text-sm" style={{ color: '#6b7280' }}>{drives.length} total drives</p>
+                            </div>
+                            <button
+                                onClick={() => { setEditDrive(null); setIsModalOpen(true); }}
+                                className="px-6 py-3 rounded-xl font-bold flex items-center gap-2 text-white transition-all hover:opacity-90"
+                                style={{ backgroundColor: '#A4123F' }}
+                            >
+                                <Plus size={18} /> Add New Drive
+                            </button>
+                        </div>
                     </div>
+
+                    {/* Applicants Modal */}
+                    {selectedDrive && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
+                                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm z-10">
+                                    <div>
+                                        <h2 className="text-xl font-black" style={{ color: '#1f2937' }}>
+                                            {selectedDrive.companyName} - Applicants
+                                        </h2>
+                                        <p className="text-sm" style={{ color: '#6b7280' }}>
+                                            {selectedDrive.jobProfile} • {driveApplicants.length} applicants
+                                        </p>
+                                    </div>
+                                    <button onClick={() => setSelectedDrive(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                                        <XCircle size={24} style={{ color: '#6b7280' }} />
+                                    </button>
+                                </div>
+                                <div className="p-6">
+                                    {driveApplicants.length > 0 ? (
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead>
+                                                    <tr className="border-b border-gray-200">
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Student</th>
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Department</th>
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>CGPA</th>
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Applied On</th>
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Status</th>
+                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {driveApplicants.map((app, i) => (
+                                                        <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                                                            <td className="py-4 px-4">
+                                                                <button
+                                                                    onClick={() => setSelectedStudent(app.studentId)}
+                                                                    className="text-left hover:opacity-70 transition-all"
+                                                                >
+                                                                    <p className="font-bold" style={{ color: '#1f2937' }}>
+                                                                        {app.studentId?.firstName} {app.studentId?.lastName}
+                                                                    </p>
+                                                                    <p className="text-xs flex items-center gap-1" style={{ color: '#A4123F' }}>
+                                                                        <Eye size={12} /> Click to view profile
+                                                                    </p>
+                                                                </button>
+                                                                <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{app.studentId?.rollNumber}</p>
+                                                            </td>
+                                                            <td className="py-4 px-4 font-medium" style={{ color: '#4b5563' }}>{app.studentId?.department}</td>
+                                                            <td className="py-4 px-4 font-bold" style={{ color: '#16a34a' }}>{app.studentId?.cgpa?.toFixed(2)}</td>
+                                                            <td className="py-4 px-4 text-sm" style={{ color: '#6b7280' }}>
+                                                                {new Date(app.appliedDate).toLocaleDateString()}
+                                                            </td>
+                                                            <td className="py-4 px-4">
+                                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${app.status === 'applied' ? 'bg-blue-100 text-blue-700' :
+                                                                    app.status === 'shortlisted' ? 'bg-green-100 text-green-700' :
+                                                                        app.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                                            app.status === 'offered' ? 'bg-purple-100 text-purple-700' :
+                                                                                'bg-gray-100 text-gray-700'
+                                                                    }`}>
+                                                                    {app.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="py-4 px-4">
+                                                                <select
+                                                                    className="text-sm px-2 py-1 border border-gray-200 rounded-lg focus:outline-none"
+                                                                    value={app.status}
+                                                                    onChange={async (e) => {
+                                                                        try {
+                                                                            await axios.patch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/application/${app._id}`, {
+                                                                                status: e.target.value
+                                                                            });
+                                                                            fetchApplicants(selectedDrive._id);
+                                                                        } catch (err) {
+                                                                            console.error(err);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <option value="applied">Applied</option>
+                                                                    <option value="shortlisted">Shortlisted</option>
+                                                                    <option value="round1">Round 1</option>
+                                                                    <option value="round2">Round 2</option>
+                                                                    <option value="hr_round">HR Round</option>
+                                                                    <option value="offered">Offered</option>
+                                                                    <option value="rejected">Rejected</option>
+                                                                    <option value="accepted">Accepted</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-12">
+                                            <Users size={48} className="mx-auto mb-4" style={{ color: '#d1d5db' }} />
+                                            <p className="font-medium" style={{ color: '#6b7280' }}>No applicants yet</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Drives Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {stats.recentDrives?.map((drive, i) => (
-                            <div key={i} className="p-6 bg-white/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-lg transition-all group">
+                        {(drives.length > 0 ? drives : stats.recentDrives || []).map((drive, i) => (
+                            <div key={drive._id || i} className="glass-card p-6 hover:shadow-xl transition-all group">
+                                {/* Header */}
                                 <div className="flex justify-between items-start mb-4">
-                                    <div className="w-12 h-12 bg-amrita-maroon text-white rounded-xl flex items-center justify-center font-black text-lg">
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg text-white" style={{ backgroundColor: '#A4123F' }}>
                                         {drive.companyName?.[0]}
                                     </div>
-                                    <span className={`text-[10px] font-black px-3 py-1 rounded-full ${drive.status === 'upcoming' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
-                                        {drive.status}
-                                    </span>
+                                    <select
+                                        className="text-xs font-bold px-2 py-1 rounded-full border-0 cursor-pointer focus:outline-none"
+                                        style={{
+                                            backgroundColor: drive.status === 'upcoming' ? '#dbeafe' : drive.status === 'ongoing' ? '#dcfce7' : drive.status === 'completed' ? '#f3f4f6' : '#fee2e2',
+                                            color: drive.status === 'upcoming' ? '#1d4ed8' : drive.status === 'ongoing' ? '#16a34a' : drive.status === 'completed' ? '#4b5563' : '#dc2626'
+                                        }}
+                                        value={drive.status}
+                                        onChange={(e) => handleStatusChange(drive._id, e.target.value)}
+                                    >
+                                        <option value="upcoming">Upcoming</option>
+                                        <option value="ongoing">Ongoing</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
                                 </div>
-                                <h3 className="font-black text-lg text-gray-900 dark:text-white mb-2">{drive.companyName}</h3>
-                                <p className="text-sm text-gray-500 mb-4">{drive.jobProfile}</p>
-                                <div className="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
-                                    <span className="text-xs text-gray-400">{new Date(drive.date).toLocaleDateString()}</span>
-                                    {drive.ctcDetails?.ctc && (
-                                        <span className="font-black text-amrita-maroon">₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L</span>
-                                    )}
+
+                                {/* Company Info */}
+                                <h3 className="font-black text-lg mb-1" style={{ color: '#1f2937' }}>{drive.companyName}</h3>
+                                <p className="text-sm mb-2" style={{ color: '#6b7280' }}>{drive.jobProfile}</p>
+                                {drive.jobType && (
+                                    <span className="text-xs font-bold px-2 py-1 rounded-full" style={{
+                                        backgroundColor: drive.jobType === 'Internship' ? '#dbeafe' : '#f3e8ff',
+                                        color: drive.jobType === 'Internship' ? '#2563eb' : '#7c3aed'
+                                    }}>
+                                        {drive.jobType}
+                                    </span>
+                                )}
+
+                                {/* Stats */}
+                                <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
+                                    <div>
+                                        <p className="text-xs" style={{ color: '#9ca3af' }}>Date</p>
+                                        <p className="font-bold text-sm" style={{ color: '#374151' }}>
+                                            {new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs" style={{ color: '#9ca3af' }}>CTC</p>
+                                        <p className="font-black text-sm" style={{ color: '#16a34a' }}>
+                                            ₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)}L
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs" style={{ color: '#9ca3af' }}>Applicants</p>
+                                        <p className="font-bold text-sm" style={{ color: '#374151' }}>
+                                            {drive.registeredStudents?.length || 0}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs" style={{ color: '#9ca3af' }}>Min CGPA</p>
+                                        <p className="font-bold text-sm" style={{ color: '#374151' }}>
+                                            {drive.eligibility?.minCgpa || 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+                                    <button
+                                        onClick={() => openViewApplicants(drive)}
+                                        className="flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all hover:opacity-80"
+                                        style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }}
+                                    >
+                                        <Eye size={14} /> Applicants
+                                    </button>
+                                    <button
+                                        onClick={() => openEditModal(drive)}
+                                        className="flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all hover:opacity-80"
+                                        style={{ backgroundColor: '#fef3c7', color: '#d97706' }}
+                                    >
+                                        <Edit size={14} /> Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteDrive(drive._id)}
+                                        className="py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all hover:opacity-80"
+                                        style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
                                 </div>
                             </div>
                         ))}
                     </div>
+
+                    {drives.length === 0 && stats.recentDrives?.length === 0 && (
+                        <div className="glass-card p-12 text-center">
+                            <Briefcase size={48} className="mx-auto mb-4" style={{ color: '#d1d5db' }} />
+                            <h3 className="font-bold text-lg mb-2" style={{ color: '#374151' }}>No drives yet</h3>
+                            <p className="text-sm mb-4" style={{ color: '#6b7280' }}>Create your first placement drive</p>
+                            <button
+                                onClick={() => { setEditDrive(null); setIsModalOpen(true); }}
+                                className="px-6 py-3 rounded-xl font-bold text-white"
+                                style={{ backgroundColor: '#A4123F' }}
+                            >
+                                Add Drive
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -483,12 +750,23 @@ const AdminDashboard = () => {
 
             <AddDriveModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => { setIsModalOpen(false); setEditDrive(null); }}
                 onSuccess={() => {
                     fetchStats();
+                    fetchDrives();
                     setIsModalOpen(false);
+                    setEditDrive(null);
                 }}
+                editDrive={editDrive}
             />
+
+            {/* Student Detail Modal */}
+            {selectedStudent && (
+                <StudentDetailModal
+                    student={selectedStudent}
+                    onClose={() => setSelectedStudent(null)}
+                />
+            )}
         </div>
     );
 };

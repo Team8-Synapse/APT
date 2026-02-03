@@ -7,26 +7,43 @@ const Application = require('../models/Application');
 // Get student profile
 router.get('/profile/:userId', async (req, res) => {
     try {
+        console.log(`[DEBUG] Fetching profile for userId: ${req.params.userId}`);
         const profile = await StudentProfile.findOne({ userId: req.params.userId });
+
         if (!profile) {
+            console.log(`[DEBUG] No profile found for userId: ${req.params.userId}`);
             return res.status(404).json({ error: 'Profile not found' });
         }
+
+        console.log(`[DEBUG] Profile found for userId: ${req.params.userId}, Email: ${profile.email}`);
         res.json(profile);
     } catch (err) {
+        console.error(`[DEBUG] Error fetching profile:`, err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// Update student profile
+// Update student profile (upsert - creates if not exists)
 router.put('/profile/:userId', async (req, res) => {
     try {
+        console.log(`[DEBUG] Updating profile for userId: ${req.params.userId}`);
+        // Remove immutable fields
+        const { _id, userId, createdAt, updatedAt, __v, ...updateFields } = req.body;
+        const updateData = { ...updateFields, userId: req.params.userId };
+        console.log(`[DEBUG] Update data sample:`, {
+            firstName: updateData.firstName,
+            skillsCount: updateData.skills?.length
+        });
+
         const profile = await StudentProfile.findOneAndUpdate(
             { userId: req.params.userId },
-            req.body,
-            { new: true, runValidators: true }
+            updateData,
+            { new: true, upsert: true, runValidators: true }
         );
+        console.log(`[DEBUG] Profile updated successfully. New ID: ${profile._id}`);
         res.json(profile);
     } catch (err) {
+        console.error(`[DEBUG] Error updating profile:`, err);
         res.status(500).json({ error: err.message });
     }
 });
