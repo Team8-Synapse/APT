@@ -709,6 +709,243 @@
       "createdAt": "2026-02-02T06:21:12.832Z",
       "updatedAt": "2026-02-02T06:21:12.832Z",
       "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": true,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T16:27:38.654Z",
+      "updatedAt": "2026-02-02T16:27:38.654Z"
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$5DVyjUqchgv/xzHaPATH9.uPxjMzuLGdoa9yFiDWck5wri.XTxOJC",
+      "role": "student",
+      "_isNew": true,
+      "_id": "xz29oz40y",
+      "createdAt": "2026-02-02T16:28:04.281Z",
+      "updatedAt": "2026-02-02T16:28:04.281Z"
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T16:28:08.655Z",
+      "updatedAt": "2026-02-02T16:28:08.655Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T16:59:42.657Z",
+      "updatedAt": "2026-02-02T16:59:42.657Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:01:00.940Z",
+      "updatedAt": "2026-02-02T17:01:00.940Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:01:01.542Z",
+      "updatedAt": "2026-02-02T17:01:01.542Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T17:02:10.282Z",
+      "updatedAt": "2026-02-02T17:02:10.282Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:02:40.786Z",
+      "updatedAt": "2026-02-02T17:02:40.786Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:04:38.487Z",
+      "updatedAt": "2026-02-02T17:04:38.487Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:05:29.036Z",
+      "updatedAt": "2026-02-02T17:05:29.036Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:05:37.538Z",
+      "updatedAt": "2026-02-02T17:05:37.538Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:05:38.115Z",
+      "updatedAt": "2026-02-02T17:05:38.115Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:05:38.580Z",
+      "updatedAt": "2026-02-02T17:05:38.580Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "admin@amrita.edu",
+      "password": "$2b$10$6PIkK/8h4h4jR23UFGuS/e1VCM8KVt6ZnHbRcbtidxF2rrek4o5uC",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "2su4tve8n",
+      "createdAt": "2026-02-02T17:05:38.777Z",
+      "updatedAt": "2026-02-02T17:05:38.777Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T17:05:48.451Z",
+      "updatedAt": "2026-02-02T17:05:48.451Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": true,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-02T17:06:31.266Z",
+      "updatedAt": "2026-02-02T17:06:31.266Z"
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-02T17:06:57.767Z",
+      "updatedAt": "2026-02-02T17:06:57.767Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T17:12:03.858Z",
+      "updatedAt": "2026-02-02T17:12:03.858Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-02T17:18:15.530Z",
+      "updatedAt": "2026-02-02T17:18:15.530Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-02T17:21:44.713Z",
+      "updatedAt": "2026-02-02T17:21:44.713Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-02T17:22:47.444Z",
+      "updatedAt": "2026-02-02T17:22:47.444Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-03T09:43:23.663Z",
+      "updatedAt": "2026-02-03T09:43:23.663Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cb.sc.u4cse23669@cb.students.amrita.edu",
+      "password": "$2b$10$2VJ3fT1KoH3BTA8yXh41xOu3hr7gALhuqOUwv7ofiJTbSNJSzw/Iq",
+      "role": "student",
+      "_isNew": false,
+      "_id": "a0goxr3s9",
+      "createdAt": "2026-02-03T09:53:02.533Z",
+      "updatedAt": "2026-02-03T09:53:02.533Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "admin1@amrita.edu",
+      "password": "$2b$10$p75ls6QVUIvFv.C2WWBha.utUpU5T6xE/hpjHCn6IWKzYaCpomq0K",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "uv2u44d9e",
+      "createdAt": "2026-02-03T10:00:31.933Z",
+      "updatedAt": "2026-02-03T10:00:31.933Z",
+      "failedAttempts": 0
     }
   ],
   "studentprofiles": [
@@ -7059,6 +7296,26 @@
       "_id": "i5x2xk6b6",
       "createdAt": "2026-02-01T19:17:02.413Z",
       "updatedAt": "2026-02-01T19:17:02.413Z"
+    },
+    {
+      "title": "DSA tutorials",
+      "category": "Technical",
+      "type": "Link",
+      "links": [
+        "https://www.w3schools.com/dsa/"
+      ],
+      "content": "DSA tutorial to get started with...",
+      "tags": [
+        "dsa",
+        "cse",
+        "coding",
+        "python"
+      ],
+      "addedBy": "uv2u44d9e",
+      "_isNew": true,
+      "_id": "9f11zpoyk",
+      "createdAt": "2026-02-02T17:11:50.697Z",
+      "updatedAt": "2026-02-02T17:11:50.697Z"
     }
   ],
   "applications": [],

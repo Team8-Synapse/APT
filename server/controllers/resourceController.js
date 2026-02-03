@@ -23,6 +23,7 @@ exports.addResource = async (req, res) => {
         await resource.save();
         res.status(201).send(resource);
     } catch (e) {
+        console.error('Add resource error:', e);
         res.status(400).send(e);
     }
 };

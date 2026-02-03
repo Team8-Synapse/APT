@@ -6,9 +6,10 @@ const PrepHub = () => {
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState('Coding');
+    const [searchTerm, setSearchTerm] = useState('');
 
     const categories = [
-        { id: 'Coding', icon: <Code size={18} />, label: 'Data Structures' },
+        { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
         { id: 'Aptitude', icon: <Cpu size={18} />, label: 'Aptitude & Logic' },
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR & Behavioral' },
@@ -29,6 +30,12 @@ const PrepHub = () => {
         fetchResources();
     }, [category]);
 
+    const filteredResources = resources.filter(res => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        return res.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+    });
+
     return (
         <div className="space-y-10 page-enter pb-12 font-bold">
             <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
@@ -38,7 +45,7 @@ const PrepHub = () => {
                         <span className="text-[10px] font-black tracking-[0.2em] text-amrita-maroon uppercase">Elite Training Material</span>
                     </div>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight">Prep <span className="text-gradient">Hub</span></h1>
-                    <p className="text-gray-500 font-medium mt-2">Curated preparation resources verified by Amrita Corporate Relations</p>
+                    <p className="text-gray-500 font-medium mt-2">Curated preparation resources verified by CIR, Amrita</p>
                 </div>
 
                 <div className="w-full lg:w-auto overflow-x-auto no-scrollbar pb-2">
@@ -60,13 +67,27 @@ const PrepHub = () => {
                 </div>
             </header>
 
+            {/* Search Bar Section */}
+            <div className="relative max-w-2xl mx-auto w-full group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Search className="text-gray-400 group-focus-within:text-amrita-maroon transition-colors" size={20} />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search by tags (e.g., dsa, oop, java)..."
+                    className="w-full pl-12 pr-4 py-4 bg-white/60 backdrop-blur-md border border-white/40 rounded-2xl shadow-sm focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none transition-all font-medium text-sm"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
             {loading ? (
                 <div className="flex h-64 items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {resources.length > 0 ? resources.map((res, i) => (
+                    {filteredResources.length > 0 ? filteredResources.map((res, i) => (
                         <div key={i} className="glass-card flex flex-col group h-full">
                             <div className="p-6 flex-1 space-y-6">
                                 <div className="flex justify-between items-start">
@@ -74,19 +95,31 @@ const PrepHub = () => {
                                         <div className="p-3 bg-amrita-maroon/10 rounded-2xl group-hover:bg-amrita-maroon/20 transition-colors">
                                             <BookOpen className="text-amrita-maroon" size={24} />
                                         </div>
-                                        <div className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:border-amrita-maroon/20">
-                                            {res.type}
+                                        <div className="flex flex-col gap-1">
+                                            <div className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:border-amrita-maroon/20 w-fit">
+                                                {res.type || 'Link'}
+                                            </div>
                                         </div>
                                     </div>
-                                    <button onClick={() => window.open(res.link, '_blank')} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
+                                    <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
                                         <ExternalLink size={18} />
                                     </button>
                                 </div>
 
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-black text-gray-900 group-hover:text-amrita-maroon transition-colors line-clamp-1">{res.title}</h3>
-                                    <p className="text-xs text-gray-500 font-medium leading-relaxed line-clamp-2">{res.description}</p>
+                                    <p className="text-xs text-gray-500 font-medium leading-relaxed line-clamp-2">{res.content || res.description}</p>
                                 </div>
+
+                                {res.tags && res.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {res.tags.map((tag, idx) => (
+                                            <span key={idx} className="text-[9px] font-black text-amrita-maroon bg-amrita-maroon/5 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                                                #{tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
 
                                 <div className="flex items-center gap-3 pt-6 border-t border-white/40">
                                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amrita-maroon to-amrita-burgundy flex items-center justify-center text-[10px] text-white font-black">
@@ -100,16 +133,16 @@ const PrepHub = () => {
                             </div>
 
                             <button
-                                onClick={() => window.open(res.link, '_blank')}
+                                onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
                                 className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem]"
                             >
-                                Initiate Learning Module
+                                Start Learning 
                             </button>
                         </div>
                     )) : (
                         <div className="col-span-full py-24 glass-card flex flex-col items-center justify-center text-gray-400 opacity-50">
                             <BookOpen size={64} className="mb-4" />
-                            <p className="text-xl font-black italic">Module currently in CIR verification phase.</p>
+                            <p className="text-xl font-black italic">No modules matching your search prefix.</p>
                         </div>
                     )}
                 </div>

@@ -17,10 +17,15 @@ const AdminDashboard = () => {
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
+    const [adminResources, setAdminResources] = useState([]);
+    const [newResource, setNewResource] = useState({
+        title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
+    });
 
     useEffect(() => {
         fetchStats();
         fetchStudents();
+        fetchAdminResources();
     }, []);
 
     const fetchStats = async () => {
@@ -90,6 +95,37 @@ const AdminDashboard = () => {
         }
     };
 
+    const fetchAdminResources = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            setAdminResources(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleResourceSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const tagsArray = newResource.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+            const payload = {
+                title: newResource.title,
+                category: newResource.category,
+                type: newResource.type,
+                links: [newResource.link],
+                content: newResource.content,
+                tags: tagsArray
+            };
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, payload);
+            alert('Resource deployed successfully!');
+            setNewResource({ title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
+            fetchAdminResources();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to deploy resource');
+        }
+    };
+
     const getStatusBadge = (status) => {
         const badges = {
             placed: 'status-badge status-placed',
@@ -132,7 +168,7 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 pb-4">
-                {['overview', 'students', 'drives', 'analytics'].map(tab => (
+                {['overview', 'students', 'drives', 'materials', 'analytics'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -474,6 +510,133 @@ const AdminDashboard = () => {
                     <div className="glass-card p-8">
                         <h3 className="font-black text-lg mb-6 dark:text-white">Detailed Analytics Coming Soon...</h3>
                         <p className="text-gray-500">Interactive charts and advanced analytics will be available here.</p>
+                    </div>
+                </div>
+            )}
+
+            {activeTab === 'materials' && (
+                <div className="space-y-8">
+                    <div className="glass-card p-8">
+                        <div className="flex items-center gap-3 mb-8">
+                            <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><BookOpen className="text-amrita-maroon" /></div>
+                            <div>
+                                <h2 className="text-xl font-black dark:text-white">Material Command Center</h2>
+                                <p className="text-xs text-gray-500 font-medium">Provision elite training resources to the Prep Hub</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleResourceSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Resource Title</label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="input-field"
+                                    placeholder="e.g. Advanced System Design"
+                                    value={newResource.title}
+                                    onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Category</label>
+                                <select
+                                    required
+                                    className="input-field"
+                                    value={newResource.category}
+                                    onChange={(e) => setNewResource({ ...newResource, category: e.target.value })}
+                                >
+                                    <option value="Coding">Practice</option>
+                                    <option value="Aptitude">Aptitude & Logic</option>
+                                    <option value="Technical">Core Technical</option>
+                                    <option value="HR">HR & Behavioral</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Content Type</label>
+                                <select
+                                    className="input-field"
+                                    value={newResource.type}
+                                    onChange={(e) => setNewResource({ ...newResource, type: e.target.value })}
+                                >
+                                    <option value="Link">External Link</option>
+                                    <option value="PDF">PDF Document</option>
+                                    <option value="PPT">PPT Presentation</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Resource URL / Link</label>
+                                <input
+                                    type="url"
+                                    required
+                                    className="input-field"
+                                    placeholder="https://..."
+                                    value={newResource.link}
+                                    onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
+                                />
+                            </div>
+                            <div className="md:col-span-2 space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Description</label>
+                                <textarea
+                                    className="input-field min-h-[100px]"
+                                    placeholder="Brief summary of the material..."
+                                    value={newResource.content}
+                                    onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
+                                />
+                            </div>
+                            <div className="md:col-span-2 space-y-2">
+                                <label className="text-[11px] font-black uppercase text-gray-400">Search Tags (comma separated)</label>
+                                <input
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="dsa, java, oop..."
+                                    value={newResource.tags}
+                                    onChange={(e) => setNewResource({ ...newResource, tags: e.target.value })}
+                                />
+                            </div>
+                            <div className="md:col-span-2 pt-4">
+                                <button type="submit" className="btn-premium w-full py-4 flex items-center justify-center gap-2">
+                                    <Plus size={20} /> PUBLISH RESOURCE
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="glass-card p-8">
+                        <h3 className="text-lg font-black dark:text-white mb-6">Active Resources</h3>
+                        <div className="overflow-x-auto">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Tags</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {adminResources.map((res, i) => (
+                                        <tr key={i}>
+                                            <td className="font-black text-gray-900 dark:text-white">{res.title}</td>
+                                            <td className="text-sm font-bold uppercase">{res.category}</td>
+                                            <td><span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-[10px] font-black">{res.type}</span></td>
+                                            <td>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {res.tags?.map((t, idx) => (
+                                                        <span key={idx} className="text-[8px] font-black text-amrita-maroon italic">#{t}</span>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 hover:bg-amrita-maroon/10 rounded-lg text-amrita-maroon transition-all">
+                                                    <Eye size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
