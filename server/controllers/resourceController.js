@@ -37,3 +37,23 @@ exports.getResourceById = async (req, res) => {
         res.status(500).send(e);
     }
 };
+
+exports.updateResource = async (req, res) => {
+    try {
+        const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!resource) return res.status(404).send();
+        res.send(resource);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+};
+
+exports.deleteResource = async (req, res) => {
+    try {
+        const resource = await Resource.findByIdAndDelete(req.params.id);
+        if (!resource) return res.status(404).send();
+        res.send(resource);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+};
