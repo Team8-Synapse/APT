@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     LayoutDashboard, Users, Briefcase, BookOpen, Search, ShieldCheck, TrendingUp, Sparkles,
     Filter, ChevronRight, Download, Calendar, Building2, GraduationCap, Award, Plus,
-    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus
+    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus, Megaphone
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -21,11 +21,15 @@ const AdminDashboard = () => {
     const [newResource, setNewResource] = useState({
         title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
     });
+    const [announcements, setAnnouncements] = useState([]);
+    const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
+    const [editingAnnouncement, setEditingAnnouncement] = useState(null);
 
     useEffect(() => {
         fetchStats();
         fetchStudents();
         fetchAdminResources();
+        fetchAnnouncements();
     }, []);
 
     const fetchStats = async () => {
@@ -124,6 +128,49 @@ const AdminDashboard = () => {
             console.error(err);
             alert('Failed to deploy resource');
         }
+    };
+
+    const fetchAnnouncements = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
+            setAnnouncements(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleAnnouncementSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (editingAnnouncement) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement);
+                alert('Announcement updated!');
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement);
+                alert('Announcement posted!');
+            }
+            setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+            setEditingAnnouncement(null);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to post announcement');
+        }
+    };
+
+    const handleAnnouncementDelete = async (id) => {
+        if (!window.confirm('Are you sure?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${id}`);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleEditAnnouncement = (ann) => {
+        setEditingAnnouncement(ann);
+        setNewAnnouncement({ content: ann.content, links: ann.links?.length ? ann.links : [{ title: '', url: '' }] });
     };
 
     const getStatusBadge = (status) => {
@@ -516,93 +563,208 @@ const AdminDashboard = () => {
 
             {activeTab === 'materials' && (
                 <div className="space-y-8">
-                    <div className="glass-card p-8">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><BookOpen className="text-amrita-maroon" /></div>
-                            <div>
-                                <h2 className="text-xl font-black dark:text-white">Material Command Center</h2>
-                                <p className="text-xs text-gray-500 font-medium">Provision elite training resources to the Prep Hub</p>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Announcements Management */}
+                        <div className="glass-card p-8">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><Megaphone className="text-amrita-maroon" /></div>
+                                <div>
+                                    <h2 className="text-xl font-black dark:text-black">Announcements</h2>
+                                    <p className="text-xs text-gray-500 font-medium">Post updates for students in Prep Hub</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleAnnouncementSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Announcement Content</label>
+                                    <textarea
+                                        required
+                                        className="input-field min-h-[120px]"
+                                        placeholder="Enter announcement text here..."
+                                        value={newAnnouncement.content}
+                                        onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Quick Links (Optional)</label>
+                                        <button
+                                            type="button"
+                                            onClick={() => setNewAnnouncement({ ...newAnnouncement, links: [...newAnnouncement.links, { title: '', url: '' }] })}
+                                            className="text-[10px] font-black text-amrita-maroon hover:underline uppercase"
+                                        >
+                                            + Add Link
+                                        </button>
+                                    </div>
+                                    {newAnnouncement.links.map((link, idx) => (
+                                        <div key={idx} className="grid grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                className="input-field !py-2 text-xs"
+                                                placeholder="Link Title"
+                                                value={link.title}
+                                                onChange={(e) => {
+                                                    const newLinks = [...newAnnouncement.links];
+                                                    newLinks[idx].title = e.target.value;
+                                                    setNewAnnouncement({ ...newAnnouncement, links: newLinks });
+                                                }}
+                                            />
+                                            <input
+                                                type="url"
+                                                className="input-field !py-2 text-xs"
+                                                placeholder="https://..."
+                                                value={link.url}
+                                                onChange={(e) => {
+                                                    const newLinks = [...newAnnouncement.links];
+                                                    newLinks[idx].url = e.target.value;
+                                                    setNewAnnouncement({ ...newAnnouncement, links: newLinks });
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button type="submit" className="btn-premium flex-1 py-4 flex items-center justify-center gap-2">
+                                        {editingAnnouncement ? <><Edit size={20} /> UPDATE POST</> : <><Megaphone size={20} /> POST UPDATE</>}
+                                    </button>
+                                    {editingAnnouncement && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingAnnouncement(null);
+                                                setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+                                            }}
+                                            className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-sm uppercase"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </div>
+                            </form>
+
+                            <div className="mt-8 space-y-4">
+                                <h4 className="text-xs font-black uppercase text-gray-400">Recent Posts</h4>
+                                <div className="max-h-[400px] overflow-y-auto pr-2 space-y-4 no-scrollbar">
+                                    {announcements.map((ann, i) => (
+                                        <div key={i} className="p-4 bg-gray-50 rounded-xl border border-gray-100 group relative">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <p className="text-sm font-bold text-gray-800 line-clamp-2">{ann.content}</p>
+                                                <div className="flex gap-2">
+                                                    <button onClick={() => handleEditAnnouncement(ann)} className="p-1.5 hover:bg-white rounded-lg text-blue-600 transition-all">
+                                                        <Edit size={14} />
+                                                    </button>
+                                                    <button onClick={() => handleAnnouncementDelete(ann._id)} className="p-1.5 hover:bg-white rounded-lg text-red-600 transition-all">
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {ann.links && ann.links.length > 0 && ann.links[0].url && (
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {ann.links.map((link, idx) => (
+                                                        link.url && <span key={idx} className="text-[10px] font-black text-amrita-maroon italic">#{link.title || 'Link'}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <p className="text-[10px] text-gray-400 mt-2">{new Date(ann.createdAt).toLocaleString()}</p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
-                        <form onSubmit={handleResourceSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Resource Title</label>
-                                <input
-                                    type="text"
-                                    required
-                                    className="input-field"
-                                    placeholder="e.g. Advanced System Design"
-                                    value={newResource.title}
-                                    onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
-                                />
+                        {/* Add Resources Form */}
+                        <div className="glass-card p-8">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><BookOpen className="text-amrita-maroon" /></div>
+                                <div>
+                                    <h2 className="text-xl font-black dark:text-black">Add Resources</h2>
+                                    <p className="text-xs text-gray-500 font-medium">Provision elite training resources to the Prep Hub</p>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Category</label>
-                                <select
-                                    required
-                                    className="input-field"
-                                    value={newResource.category}
-                                    onChange={(e) => setNewResource({ ...newResource, category: e.target.value })}
-                                >
-                                    <option value="Coding">Practice</option>
-                                    <option value="Aptitude">Aptitude & Logic</option>
-                                    <option value="Technical">Core Technical</option>
-                                    <option value="HR">HR & Behavioral</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Content Type</label>
-                                <select
-                                    className="input-field"
-                                    value={newResource.type}
-                                    onChange={(e) => setNewResource({ ...newResource, type: e.target.value })}
-                                >
-                                    <option value="Link">External Link</option>
-                                    <option value="PDF">PDF Document</option>
-                                    <option value="PPT">PPT Presentation</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Resource URL / Link</label>
-                                <input
-                                    type="url"
-                                    required
-                                    className="input-field"
-                                    placeholder="https://..."
-                                    value={newResource.link}
-                                    onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
-                                />
-                            </div>
-                            <div className="md:col-span-2 space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Description</label>
-                                <textarea
-                                    className="input-field min-h-[100px]"
-                                    placeholder="Brief summary of the material..."
-                                    value={newResource.content}
-                                    onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
-                                />
-                            </div>
-                            <div className="md:col-span-2 space-y-2">
-                                <label className="text-[11px] font-black uppercase text-gray-400">Search Tags (comma separated)</label>
-                                <input
-                                    type="text"
-                                    className="input-field"
-                                    placeholder="dsa, java, oop..."
-                                    value={newResource.tags}
-                                    onChange={(e) => setNewResource({ ...newResource, tags: e.target.value })}
-                                />
-                            </div>
-                            <div className="md:col-span-2 pt-4">
-                                <button type="submit" className="btn-premium w-full py-4 flex items-center justify-center gap-2">
-                                    <Plus size={20} /> PUBLISH RESOURCE
-                                </button>
-                            </div>
-                        </form>
+
+                            <form onSubmit={handleResourceSubmit} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Resource Title</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            className="input-field"
+                                            placeholder="e.g. Advanced System Design"
+                                            value={newResource.title}
+                                            onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Category</label>
+                                        <select
+                                            required
+                                            className="input-field"
+                                            value={newResource.category}
+                                            onChange={(e) => setNewResource({ ...newResource, category: e.target.value })}
+                                        >
+                                            <option value="Coding">Practice</option>
+                                            <option value="Aptitude">Aptitude & Logic</option>
+                                            <option value="Technical">Core Technical</option>
+                                            <option value="HR">HR & Behavioral</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Content Type</label>
+                                        <select
+                                            className="input-field"
+                                            value={newResource.type}
+                                            onChange={(e) => setNewResource({ ...newResource, type: e.target.value })}
+                                        >
+                                            <option value="Link">External Link</option>
+                                            <option value="PDF">PDF Document</option>
+                                            <option value="PPT">PPT Presentation</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Resource URL / Link</label>
+                                        <input
+                                            type="url"
+                                            required
+                                            className="input-field"
+                                            placeholder="https://..."
+                                            value={newResource.link}
+                                            onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Description</label>
+                                    <textarea
+                                        className="input-field min-h-[100px]"
+                                        placeholder="Brief summary of the material..."
+                                        value={newResource.content}
+                                        onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Search Tags (comma separated)</label>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        placeholder="dsa, java, oop..."
+                                        value={newResource.tags}
+                                        onChange={(e) => setNewResource({ ...newResource, tags: e.target.value })}
+                                    />
+                                </div>
+                                <div className="pt-4">
+                                    <button type="submit" className="btn-premium w-full py-4 flex items-center justify-center gap-2">
+                                        <Plus size={20} /> PUBLISH RESOURCE
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <div className="glass-card p-8">
-                        <h3 className="text-lg font-black dark:text-white mb-6">Active Resources</h3>
+                        <h3 className="text-lg font-black dark:text-black mb-6">Active Resources</h3>
                         <div className="overflow-x-auto">
                             <table className="data-table">
                                 <thead>
@@ -611,25 +773,25 @@ const AdminDashboard = () => {
                                         <th>Category</th>
                                         <th>Type</th>
                                         <th>Tags</th>
-                                        <th>Action</th>
+                                        <th>Preview</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {adminResources.map((res, i) => (
                                         <tr key={i}>
-                                            <td className="font-black text-gray-900 dark:text-white">{res.title}</td>
+                                            <td className="font-black text-gray-900 dark:text-black-400">{res.title}</td>
                                             <td className="text-sm font-bold uppercase">{res.category}</td>
-                                            <td><span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-[10px] font-black">{res.type}</span></td>
+                                            <td><span className=" text-[12px] font-black">{res.type}</span></td>
                                             <td>
                                                 <div className="flex flex-wrap gap-1">
                                                     {res.tags?.map((t, idx) => (
-                                                        <span key={idx} className="text-[8px] font-black text-amrita-maroon italic">#{t}</span>
+                                                        <span key={idx} className="text-[12px] font-black text-amrita-maroon italic">#{t}</span>
                                                     ))}
                                                 </div>
                                             </td>
                                             <td>
                                                 <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 hover:bg-amrita-maroon/10 rounded-lg text-amrita-maroon transition-all">
-                                                    <Eye size={16} />
+                                                    <Eye size={18} />
                                                 </button>
                                             </td>
                                         </tr>
@@ -640,7 +802,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </div >
     );
 };
 
