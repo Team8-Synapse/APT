@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     LayoutDashboard, Users, Briefcase, BookOpen, Search, ShieldCheck, TrendingUp, Sparkles,
     Filter, ChevronRight, Download, Calendar, Building2, GraduationCap, Award, Plus,
-    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus, Linkedin, Mail
+    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus, Megaphone
 } from 'lucide-react';
 
 import AddDriveModal from '../components/AddDriveModal';
@@ -25,22 +25,20 @@ const AdminDashboard = () => {
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editDrive, setEditDrive] = useState(null);
-    const [selectedDrive, setSelectedDrive] = useState(null);
-    const [driveApplicants, setDriveApplicants] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(null);
-    const [isKanbanView, setIsKanbanView] = useState(false);
-    const [isAlumniModalOpen, setIsAlumniModalOpen] = useState(false);
-    const [selectedAlumniMember, setSelectedAlumniMember] = useState(null);
-    const [alumniList, setAlumniList] = useState([]);
-
-    // ... (methods) ...
+    const [adminResources, setAdminResources] = useState([]);
+    const [newResource, setNewResource] = useState({
+        title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
+    });
+    const [announcements, setAnnouncements] = useState([]);
+    const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
+    const [editingAnnouncement, setEditingAnnouncement] = useState(null);
+    const [editingResource, setEditingResource] = useState(null);
 
     useEffect(() => {
         fetchStats();
         fetchStudents();
-        fetchDrives();
+        fetchAdminResources();
+        fetchAnnouncements();
     }, []);
 
     const fetchAlumni = async () => {
@@ -178,6 +176,112 @@ const AdminDashboard = () => {
         }
     };
 
+    const fetchAdminResources = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            setAdminResources(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleResourceSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const tagsArray = newResource.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+            const payload = {
+                title: newResource.title,
+                category: newResource.category,
+                type: newResource.type,
+                links: [newResource.link],
+                content: newResource.content,
+                tags: tagsArray
+            };
+
+            if (editingResource) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, payload);
+                alert('Resource updated successfully!');
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, payload);
+                alert('Resource deployed successfully!');
+            }
+
+            setNewResource({ title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
+            setEditingResource(null);
+            fetchAdminResources();
+        } catch (err) {
+            console.error(err);
+            alert(`Failed to ${editingResource ? 'update' : 'deploy'} resource`);
+        }
+    };
+
+    const handleResourceDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this resource?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${id}`);
+            alert('Resource deleted!');
+            fetchAdminResources();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete resource');
+        }
+    };
+
+    const handleEditResource = (res) => {
+        setEditingResource(res);
+        setNewResource({
+            title: res.title,
+            category: res.category,
+            type: res.type,
+            link: res.links?.[0] || res.link || '',
+            content: res.content || '',
+            tags: res.tags?.join(', ') || ''
+        });
+    };
+
+    const fetchAnnouncements = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
+            setAnnouncements(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleAnnouncementSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (editingAnnouncement) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement);
+                alert('Announcement updated!');
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement);
+                alert('Announcement posted!');
+            }
+            setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+            setEditingAnnouncement(null);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to post announcement');
+        }
+    };
+
+    const handleAnnouncementDelete = async (id) => {
+        if (!window.confirm('Are you sure?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${id}`);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleEditAnnouncement = (ann) => {
+        setEditingAnnouncement(ann);
+        setNewAnnouncement({ content: ann.content, links: ann.links?.length ? ann.links : [{ title: '', url: '' }] });
+    };
+
     const getStatusBadge = (status) => {
         const badges = {
             placed: 'status-badge status-placed',
@@ -220,7 +324,7 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 pb-4">
-                {['overview', 'students', 'drives', 'analytics', 'alumni'].map(tab => (
+                {['overview', 'students', 'drives', 'materials', 'analytics'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -780,92 +884,271 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {activeTab === 'alumni' && (
-                <div className="space-y-6">
-                    <div className="flex justify-between items-center bg-white/40 dark:bg-gray-800/40 p-6 rounded-3xl shadow-sm border border-white/20 dark:border-gray-700/50 backdrop-blur-md" style={{ backgroundColor: '#ffffff' }}>
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2" style={{ color: '#000000' }}><Users className="text-amrita-maroon" /> Alumni Directory Management</h2>
-                            <p className="text-sm text-gray-500 font-medium">Manually update the placement network database</p>
+            {activeTab === 'materials' && (
+                <div className="space-y-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Announcements Management */}
+                        <div className="glass-card p-8">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><Megaphone className="text-amrita-maroon" /></div>
+                                <div>
+                                    <h2 className="text-xl font-black dark:text-black">Announcements</h2>
+                                    <p className="text-xs text-gray-500 font-medium">Post updates for students in Prep Hub</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleAnnouncementSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Announcement Content</label>
+                                    <textarea
+                                        required
+                                        className="input-field min-h-[120px]"
+                                        placeholder="Enter announcement text here..."
+                                        value={newAnnouncement.content}
+                                        onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
+                                    />
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Quick Links (Optional)</label>
+                                        <button
+                                            type="button"
+                                            onClick={() => setNewAnnouncement({ ...newAnnouncement, links: [...newAnnouncement.links, { title: '', url: '' }] })}
+                                            className="text-[10px] font-black text-amrita-maroon hover:underline uppercase"
+                                        >
+                                            + Add Link
+                                        </button>
+                                    </div>
+                                    {newAnnouncement.links.map((link, idx) => (
+                                        <div key={idx} className="grid grid-cols-2 gap-4">
+                                            <input
+                                                type="text"
+                                                className="input-field !py-2 text-xs"
+                                                placeholder="Link Title"
+                                                value={link.title}
+                                                onChange={(e) => {
+                                                    const newLinks = [...newAnnouncement.links];
+                                                    newLinks[idx].title = e.target.value;
+                                                    setNewAnnouncement({ ...newAnnouncement, links: newLinks });
+                                                }}
+                                            />
+                                            <input
+                                                type="url"
+                                                className="input-field !py-2 text-xs"
+                                                placeholder="https://..."
+                                                value={link.url}
+                                                onChange={(e) => {
+                                                    const newLinks = [...newAnnouncement.links];
+                                                    newLinks[idx].url = e.target.value;
+                                                    setNewAnnouncement({ ...newAnnouncement, links: newLinks });
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button type="submit" className="btn-premium flex-1 py-4 flex items-center justify-center gap-2">
+                                        {editingAnnouncement ? <><Edit size={20} /> UPDATE POST</> : <><Megaphone size={20} /> POST UPDATE</>}
+                                    </button>
+                                    {editingAnnouncement && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingAnnouncement(null);
+                                                setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+                                            }}
+                                            className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-sm uppercase"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </div>
+                            </form>
+
+                            <div className="mt-8 space-y-4">
+                                <h4 className="text-xs font-black uppercase text-gray-400">Recent Posts</h4>
+                                <div className="max-h-[400px] overflow-y-auto pr-2 space-y-4 no-scrollbar">
+                                    {announcements.map((ann, i) => (
+                                        <div key={i} className="p-4 bg-gray-50 rounded-xl border border-gray-100 group relative">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <p className="text-sm font-bold text-gray-800 line-clamp-2">{ann.content}</p>
+                                                <div className="flex gap-2">
+                                                    <button onClick={() => handleEditAnnouncement(ann)} className="p-1.5 hover:bg-white rounded-lg text-blue-600 transition-all">
+                                                        <Edit size={14} />
+                                                    </button>
+                                                    <button onClick={() => handleAnnouncementDelete(ann._id)} className="p-1.5 hover:bg-white rounded-lg text-red-600 transition-all">
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {ann.links && ann.links.length > 0 && ann.links[0].url && (
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {ann.links.map((link, idx) => (
+                                                        link.url && <span key={idx} className="text-[10px] font-black text-amrita-maroon italic">#{link.title || 'Link'}</span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <p className="text-[10px] text-gray-400 mt-2">{new Date(ann.createdAt).toLocaleString()}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                        <button
-                            onClick={() => { setSelectedAlumniMember(null); setIsAlumniModalOpen(true); }}
-                            className="btn-premium flex items-center gap-2"
-                        >
-                            <Plus size={18} /> Add Alumni Member
-                        </button>
+
+                        {/* Add Resources Form */}
+                        <div className="glass-card p-8">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="p-3 bg-amrita-maroon/10 rounded-2xl"><BookOpen className="text-amrita-maroon" /></div>
+                                <div>
+                                    <h2 className="text-xl font-black dark:text-black">Add Resources</h2>
+                                    <p className="text-xs text-gray-500 font-medium">Provision elite training resources to the Prep Hub</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleResourceSubmit} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Resource Title</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            className="input-field"
+                                            placeholder="e.g. Advanced System Design"
+                                            value={newResource.title}
+                                            onChange={(e) => setNewResource({ ...newResource, title: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Category</label>
+                                        <select
+                                            required
+                                            className="input-field"
+                                            value={newResource.category}
+                                            onChange={(e) => setNewResource({ ...newResource, category: e.target.value })}
+                                        >
+                                            <option value="Coding">Practice</option>
+                                            <option value="Aptitude">Aptitude & Logic</option>
+                                            <option value="Technical">Core Technical</option>
+                                            <option value="HR">HR & Behavioral</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Content Type</label>
+                                        <select
+                                            className="input-field"
+                                            value={newResource.type}
+                                            onChange={(e) => setNewResource({ ...newResource, type: e.target.value })}
+                                        >
+                                            <option value="Link">External Link</option>
+                                            <option value="PDF">PDF Document</option>
+                                            <option value="PPT">PPT Presentation</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[11px] font-black uppercase text-[#5B081F]">Resource URL / Link</label>
+                                        <input
+                                            type="url"
+                                            required
+                                            className="input-field"
+                                            placeholder="https://..."
+                                            value={newResource.link}
+                                            onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Description</label>
+                                    <textarea
+                                        className="input-field min-h-[100px]"
+                                        placeholder="Brief summary of the material..."
+                                        value={newResource.content}
+                                        onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-black uppercase text-[#5B081F]">Search Tags (comma separated)</label>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        placeholder="dsa, java, oop..."
+                                        value={newResource.tags}
+                                        onChange={(e) => setNewResource({ ...newResource, tags: e.target.value })}
+                                    />
+                                </div>
+                                <div className="pt-4 flex gap-4">
+                                    <button type="submit" className="btn-premium flex-1 py-4 flex items-center justify-center gap-2">
+                                        {editingResource ? <><Edit size={20} /> UPDATE RESOURCE</> : <><Plus size={20} /> PUBLISH RESOURCE</>}
+                                    </button>
+                                    {editingResource && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingResource(null);
+                                                setNewResource({ title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
+                                            }}
+                                            className="px-6 py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-sm uppercase"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {alumniList.length > 0 ? alumniList.map((alum, i) => (
-                            <div key={i} className="glass-card p-6 flex flex-col gap-4 relative group hover:scale-[1.02] transition-all">
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => { setSelectedAlumniMember(alum); setIsAlumniModalOpen(true); }}
-                                        className="p-1 text-gray-400 hover:text-amrita-maroon"
-                                    >
-                                        <Edit size={14} />
-                                    </button>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-amrita-maroon/10 flex items-center justify-center text-amrita-maroon font-black text-lg">
-                                        {alum.name ? alum.name[0] : 'A'}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight" style={{ color: '#000000' }}>{alum.name}</h3>
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-amrita-maroon">{alum.role}</p>
-                                    </div>
-                                </div>
-                                <div className="pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2">
-                                    <div className="flex items-center gap-2 text-sm font-bold text-gray-600 dark:text-gray-300" style={{ color: '#4b5563' }}>
-                                        <Building2 size={14} className="text-gray-400" /> {alum.company}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
-                                        <Calendar size={14} className="text-gray-400" /> Batch {alum.batch} • {alum.department}
-                                    </div>
-                                    <div className="flex gap-2 mt-2">
-                                        {alum.linkedin && <a href={alum.linkedin} target="_blank" className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100"><Linkedin size={14} /></a>}
-                                        {alum.email && <a href={`mailto:${alum.email}`} className="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100"><Mail size={14} /></a>}
-                                    </div>
-                                </div>
-                            </div>
-                        )) : (
-                            <div className="col-span-full py-12 text-center text-gray-400">
-                                <Users size={48} className="mx-auto mb-4 opacity-50" />
-                                <p className="font-bold">Directory is empty</p>
-                                <p className="text-xs">Add the first alumni using the button above.</p>
-                            </div>
-                        )}
+                    <div className="glass-card p-8">
+                        <h3 className="text-lg font-black dark:text-black mb-6">Active Resources</h3>
+                        <div className="overflow-x-auto">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Tags</th>
+                                        <th>Preview</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {adminResources.map((res, i) => (
+                                        <tr key={i}>
+                                            <td className="font-black text-gray-900 dark:text-black-400">{res.title}</td>
+                                            <td className="text-sm font-bold uppercase">{res.category}</td>
+                                            <td><span className=" text-[12px] font-black">{res.type}</span></td>
+                                            <td>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {res.tags?.map((t, idx) => (
+                                                        <span key={idx} className="text-[12px] font-black text-amrita-maroon italic">#{t}</span>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 hover:bg-amrita-maroon/10 rounded-lg text-amrita-maroon transition-all">
+                                                    <Eye size={18} />
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <div className="flex gap-2">
+                                                    <button onClick={() => handleEditResource(res)} className="p-2 hover:bg-blue-100 rounded-lg text-blue-600 transition-all">
+                                                        <Edit size={18} />
+                                                    </button>
+                                                    <button onClick={() => handleResourceDelete(res._id)} className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-all">
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
-
-            <AddDriveModal
-                isOpen={isModalOpen}
-                onClose={() => { setIsModalOpen(false); setEditDrive(null); }}
-                onSuccess={() => {
-                    fetchStats();
-                    fetchDrives();
-                    setIsModalOpen(false);
-                    setEditDrive(null);
-                }}
-                editDrive={editDrive}
-            />
-
-            <AddAlumniModal
-                isOpen={isAlumniModalOpen}
-                onClose={() => { setIsAlumniModalOpen(false); setSelectedAlumniMember(null); }}
-                onRefresh={fetchAlumni}
-                editAlumni={selectedAlumniMember}
-            />
-
-            {/* Student Detail Modal */}
-            {selectedStudent && (
-                <StudentDetailModal
-                    student={selectedStudent}
-                    onClose={() => setSelectedStudent(null)}
-                />
-            )}
-        </div>
+        </div >
     );
 };
 
