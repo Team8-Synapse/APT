@@ -77,10 +77,10 @@ const Navbar = () => {
     const links = isAdmin ? adminLinks : studentLinks;
 
     return (
-        <nav className="sticky top-0 z-50 px-2 py-3">
-            <div className="mx-2 lg:mx-4 glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
-                <div className="px-3 py-2 flex justify-between items-center">
-                    <div className="flex items-center gap-2 lg:gap-6">
+        <nav className="sticky top-0 z-50 px-4 py-3">
+            <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl overflow-hidden">
+                <div className="px-6 py-3 flex justify-between items-center">
+                    <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
                             <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                                 <Sparkles className="text-amrita-gold" size={20} />
