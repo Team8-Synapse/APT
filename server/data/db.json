@@ -729,6 +729,56 @@
       "createdAt": "2026-02-03T19:08:51.251Z",
       "updatedAt": "2026-02-03T19:08:51.251Z",
       "failedAttempts": 0
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-04T14:50:40.402Z",
+      "updatedAt": "2026-02-04T14:50:40.402Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-04T17:37:50.808Z",
+      "updatedAt": "2026-02-04T17:37:50.808Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-04T17:46:17.351Z",
+      "updatedAt": "2026-02-04T17:46:17.351Z",
+      "failedAttempts": null
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-04T18:14:25.106Z",
+      "updatedAt": "2026-02-04T18:14:25.106Z",
+      "failedAttempts": 0
+    },
+    {
+      "email": "cir@amrita.edu",
+      "password": "$2b$10$gCsfrpvi50igDawWsnXr3.lUruc15bSIcqZbsy4pCMRLn4G6Jv4Cu",
+      "role": "admin",
+      "_isNew": false,
+      "_id": "ouqm8mp2x",
+      "createdAt": "2026-02-04T18:15:17.936Z",
+      "updatedAt": "2026-02-04T18:15:17.936Z",
+      "failedAttempts": 0
     }
   ],
   "studentprofiles": [

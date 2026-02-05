@@ -49,7 +49,7 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 z-50 px-4 py-3">
-            <div className="max-w-7xl mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl overflow-hidden">
+            <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl overflow-hidden">
                 <div className="px-6 py-3 flex justify-between items-center">
                     <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
@@ -156,8 +156,8 @@ const Navbar = () => {
                                 to={link.to}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all ${location.pathname === link.to
-                                        ? 'bg-amrita-maroon text-white'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                    ? 'bg-amrita-maroon text-white'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                                     }`}
                             >
                                 {link.icon}

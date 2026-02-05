@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import dashboardHeroImg from '../assets/dashboard_hero.png';
+import logoImg from '../assets/logo.png';
 import {
     TrendingUp, Award, Users, ArrowRight, ShieldCheck,
     Building2, Globe, Star, CheckCircle, BarChart3,
@@ -672,7 +672,7 @@ const Home = () => {
                     background: rgba(255, 255, 255, 0.95);
                     backdrop-filter: blur(20px);
                     box-shadow: var(--shadow-md);
-                    padding: 1rem 5%;
+                    padding: 0.000001rem 5%;
                 }
 
                 .nav-brand {
@@ -687,39 +687,32 @@ const Home = () => {
                     transform: scale(1.05);
                 }
 
-                .nav-logo {
-                    width: 48px;
-                    height: 48px;
-                    background: var(--maroon-gradient);
-                    border-radius: var(--radius-md);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: var(--beige-primary);
-                    font-weight: 800;
-                    font-size: 1.25rem;
-                    box-shadow: var(--shadow-md);
+
+
+                .nav-logo-img {
+                    width: 180px;
+                    height: 180px;
+                    object-fit: contain;
                     transition: all var(--transition-bounce);
                 }
 
-                .nav-brand:hover .nav-logo {
-                    transform: rotate(-8deg);
-                    box-shadow: var(--shadow-lg);
+                .nav-brand:hover .nav-logo-img {
+                    transform: scale(1.1) rotate(-5deg);
                 }
 
                 .nav-brand-text h3 {
                     font-size: 1.25rem;
-                    font-weight: 800;
+                    font-weight: 700;
                     color: var(--maroon-primary);
                     letter-spacing: -0.02em;
                 }
 
                 .nav-brand-text p {
-                    font-size: 0.7rem;
+                    font-size: 1.0rem;
                     color: var(--text-secondary);
                     text-transform: uppercase;
                     letter-spacing: 0.1em;
-                    font-weight: 600;
+                    font-weight: 700;
                 }
 
                 .nav-menu {
@@ -1767,7 +1760,7 @@ const Home = () => {
                 }
 
                 .footer-column h4 {
-                    font-size: 1.1rem;
+                    font-size: 2.0rem;
                     font-weight: 700;
                     margin-bottom: 1.5rem;
                 }
@@ -1851,7 +1844,7 @@ const Home = () => {
             {/* NAVIGATION */}
             <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
                 <Link to="/" className="nav-brand">
-                    <div className="nav-logo">A</div>
+                    <img src={logoImg} alt="Amrita Logo" className="nav-logo-img" />
                     <div className="nav-brand-text">
                         <h3>AMRITA</h3>
                         <p>Placement Tracker</p>
@@ -1868,16 +1861,11 @@ const Home = () => {
                 </ul>
 
                 <div className="nav-actions">
-                    {token ? (
-                        <Link to="/dashboard" className="btn btn-primary">
-                            Dashboard <ArrowRight size={18} />
-                        </Link>
-                    ) : (
-                        <>
-                            <Link to="/login" className="btn btn-secondary">Sign In</Link>
-                            <Link to="/register" className="btn btn-primary">Enroll Now</Link>
-                        </>
-                    )}
+                    <>
+                        <Link to="/login" className="btn btn-secondary">Sign In</Link>
+                        <Link to="/register" className="btn btn-primary">Register Now</Link>
+                    </>
+
                 </div>
             </nav>
 
@@ -2072,7 +2060,7 @@ const Home = () => {
                 <div className="section-header">
                     <FadeIn>
                         <div className="section-subtitle">Outcomes & Impact</div>
-                        <h2 className="section-title">By The <span>Numbers</span></h2>
+                        <h2 className="section-title">By The Numbers</h2>
                         <p className="section-description">
                             Real measurable outcomes from structured placement management
                         </p>

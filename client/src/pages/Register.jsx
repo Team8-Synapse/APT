@@ -4,61 +4,68 @@ import axios from 'axios';
 import emailjs from "emailjs-com";
 import {
     Mail, Lock, ArrowRight, ShieldCheck, ArrowLeft,
-    CheckCircle2, Sparkles, GraduationCap, Award, TrendingUp, Users,
-    Building2, RefreshCw, Loader2, CheckCircle, Shield, User
+    CheckCircle2, GraduationCap, Award, TrendingUp, Users,
+    Building2, RefreshCw, Loader2, CheckCircle, Shield, User, Calendar, BarChart3, Target, Briefcase
 } from 'lucide-react';
 
-// ============= THEME & ANIMATIONS (Matching Home.jsx) =============
-const AnimatedBackground = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-amrita-maroon/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-amrita-pink/10 rounded-full blur-[100px] animate-pulse delay-700" />
-    </div>
-);
+import campusBg from '../assets/AB1_cbe.png';
 
-const GlowingOrbs = () => (
-    <>
-        <div className="absolute top-[20%] left-[10%] w-4 h-4 bg-amrita-maroon rounded-full blur-[4px] animate-ping opacity-20" />
-        <div className="absolute bottom-[30%] right-[15%] w-3 h-3 bg-amrita-gold rounded-full blur-[3px] animate-ping opacity-20 delay-500" />
-    </>
-);
+// ============= THEME DEFINITION =============
+const theme = {
+    maroon: {
+        primary: '#8B0000',
+        secondary: '#A52A2A',
+        light: '#C04040',
+        dark: '#5A0000',
+        gradient: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
+        subtle: 'rgba(139, 0, 0, 0.08)',
+        medium: 'rgba(139, 0, 0, 0.15)',
+        strong: 'rgba(139, 0, 0, 0.25)'
+    },
+    beige: {
+        primary: '#FFFFFF',
+        secondary: '#F8F9FA',
+        light: '#FFFFFF',
+        dark: '#F0F2F5',
+        gradient: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(248, 249, 250, 0.1) 100%)',
+        subtle: 'rgba(255, 255, 255, 0.2)'
+    }
+};
 
-const TiltCard = ({ children, className = '' }) => {
-    const [tilt, setTilt] = useState({ x: 0, y: 0 });
-    const handleMouseMove = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
-        setTilt({ x: y, y: x });
-    };
-    const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
+// ============= ANIMATION COMPONENTS =============
+const AnimatedBackground = () => {
+    return (
+        <div className="fixed inset-0 z-0">
+            <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                style={{
+                    backgroundImage: `url(${campusBg})`,
+                    filter: 'brightness(0.9)'
+                }}
+            />
+            <div className="absolute inset-0 bg-maroon-dark/10" />
+
+            <div className="animated-bg opacity-30">
+                <div className="gradient-orb orb-1"></div>
+                <div className="gradient-orb orb-2"></div>
+            </div>
+        </div>
+    );
+};
+
+const FloatingElement = ({ children, delay = 0 }) => {
     return (
         <div
-            className={`transition-transform duration-300 ease-out ${className}`}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
+            className="animate-float"
+            style={{ animationDelay: `${delay}s` }}
         >
             {children}
         </div>
     );
 };
 
-const FadeIn = ({ children, delay = 0 }) => {
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-        const timer = setTimeout(() => setVisible(true), delay);
-        return () => clearTimeout(timer);
-    }, [delay]);
-    return (
-        <div className={`transition-all duration-1000 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            {children}
-        </div>
-    );
-};
-
 const Register = () => {
-    const [step, setStep] = useState(0); // 0: Email, 1: OTP, 2: Password
+    const [step, setStep] = useState(0);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [generatedOtp, setGeneratedOtp] = useState('');
@@ -74,8 +81,14 @@ const Register = () => {
 
     const navigate = useNavigate();
 
-    // Regex for Amrita institutional email
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)?amrita\.edu$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)*amrita\.edu$/;
+
+    const features = [
+        { icon: <Target size={20} />, title: 'Smart Job Matching', description: 'AI-powered placement recommendations' },
+        { icon: <BarChart3 size={20} />, title: 'Real-Time Analytics', description: 'Live placement statistics and trends' },
+        { icon: <Calendar size={20} />, title: 'Drive Management', description: 'Never miss placement opportunities' },
+        { icon: <Briefcase size={20} />, title: 'Career Guidance', description: 'Expert mentorship and support' }
+    ];
 
     useEffect(() => {
         let timer;
@@ -110,8 +123,6 @@ const Register = () => {
         setError('');
 
         try {
-            // First check if user already exists (optional but good for UX)
-            // For now, we'll just send OTP
             const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
             setGeneratedOtp(newOtp);
 
@@ -185,311 +196,502 @@ const Register = () => {
         }
     };
 
-    const quickFacts = [
-        { icon: <TrendingUp size={20} />, label: 'Highest Package', value: '₹56 LPA' },
-        { icon: <Building2 size={20} />, label: 'Top Recruiters', value: '500+' },
-        { icon: <Award size={20} />, label: 'Dream Offers', value: '1500+' },
-        { icon: <Users size={20} />, label: 'Alumni Network', value: '50k+' },
-    ];
-
     if (success) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center p-6 relative overflow-hidden">
+            <div className="min-h-screen font-sans bg-white">
+                <style>{`
+                    :root {
+                        --maroon-primary: ${theme.maroon.primary};
+                        --maroon-gradient: ${theme.maroon.gradient};
+                    }
+                    .text-maroon { color: var(--maroon-primary); }
+                    .gradient-maroon { background: var(--maroon-gradient); }
+                `}</style>
                 <AnimatedBackground />
-                <FadeIn>
-                    <div className="text-center space-y-8 relative z-10 max-w-lg">
+                <div className="min-h-screen flex items-center justify-center p-4 relative z-10">
+                    <div className="text-center space-y-8 max-w-lg glass-effect p-16 rounded-[2.5rem]">
                         <div className="w-24 h-24 bg-green-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-green-500/30 animate-bounce">
                             <CheckCircle2 size={48} className="text-white" />
                         </div>
                         <div className="space-y-4">
-                            <h2 className="text-5xl font-black text-gray-900 tracking-tight">Account <span className="text-green-500">Ready!</span></h2>
-                            <p className="text-gray-500 text-xl font-medium">Your credentials are secured. Redirecting you to the portal...</p>
+                            <h2 className="text-5xl font-black text-maroon tracking-tight">Account <span className="text-green-500">Ready!</span></h2>
+                            <p className="text-maroon/60 text-xl font-medium">Your credentials are secured. Redirecting you to the portal...</p>
                         </div>
-                        <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                        <div className="w-full bg-maroon/10 h-2 rounded-full overflow-hidden">
                             <div className="bg-green-500 h-full animate-[progress_2.5s_linear]" />
                         </div>
                     </div>
-                </FadeIn>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white flex relative overflow-hidden font-inter text-gray-900">
+        <div className="min-h-screen font-sans bg-white">
+            <style>{`
+                :root {
+                    --maroon-primary: ${theme.maroon.primary};
+                    --maroon-secondary: ${theme.maroon.secondary};
+                    --maroon-light: ${theme.maroon.light};
+                    --maroon-dark: ${theme.maroon.dark};
+                    --maroon-gradient: ${theme.maroon.gradient};
+                    --maroon-subtle: ${theme.maroon.subtle};
+                    --maroon-medium: ${theme.maroon.medium};
+                    --maroon-strong: ${theme.maroon.strong};
+                    
+                    --beige-primary: ${theme.beige.primary};
+                    --beige-secondary: ${theme.beige.secondary};
+                    --beige-light: ${theme.beige.light};
+                    --beige-dark: ${theme.beige.dark};
+                    --beige-gradient: ${theme.beige.gradient};
+                    --beige-subtle: ${theme.beige.subtle};
+                }
+
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-float { animation: float 3s ease-in-out infinite; }
+                .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+
+                .animated-bg {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 0;
+                    overflow: hidden;
+                }
+
+                .gradient-orb {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(80px);
+                    opacity: 0.15;
+                    animation: float-orb 25s ease-in-out infinite;
+                }
+
+                .orb-1 {
+                    width: 600px;
+                    height: 600px;
+                    background: radial-gradient(circle, var(--maroon-primary) 0%, transparent 70%);
+                    top: -200px;
+                    right: -200px;
+                }
+
+                .orb-2 {
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, var(--maroon-secondary) 0%, transparent 70%);
+                    bottom: -150px;
+                    left: -150px;
+                    animation-delay: -8s;
+                }
+
+                @keyframes float-orb {
+                    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+                    33% { transform: translate(40px, -40px) scale(1.05) rotate(120deg); }
+                    66% { transform: translate(-40px, 40px) scale(0.95) rotate(240deg); }
+                }
+
+                .text-maroon { color: var(--maroon-primary); }
+                .bg-maroon { background-color: var(--maroon-primary); }
+                .border-maroon { border-color: var(--maroon-primary); }
+                .bg-maroon-subtle { background-color: var(--maroon-subtle); }
+                .gradient-maroon { background: var(--maroon-gradient); }
+                .gradient-white { background: var(--beige-gradient); }
+                .glass-effect {
+                    background: rgba(255, 255, 255, 0.4);
+                    backdrop-filter: blur(0px) saturate(150%);
+                    -webkit-backdrop-filter: blur(20px) saturate(180%);
+                    border: 1px solid rgba(255, 255, 255, 0.4);
+                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+                }
+            `}</style>
+
             <AnimatedBackground />
-            <GlowingOrbs />
 
-            {/* Left Side: Branding & Info */}
-            <div className="hidden lg:flex lg:w-1/2 relative z-10 flex-col justify-between p-16 bg-amrita-maroon/5 border-r border-amrita-maroon/10">
-                <FadeIn delay={200}>
-                    <div className="flex items-center gap-5 mb-16">
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-2xl shadow-amrita-maroon/20 transform hover:scale-110 transition-transform cursor-pointer">
-                            <GraduationCap className="text-amrita-maroon" size={36} />
+            <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 relative z-10">
+                {/* Universal Glass Pane */}
+                <div className="w-full max-w-7xl min-h-[85vh] glass-effect rounded-[2.5rem] overflow-hidden flex flex-col lg:flex-row shadow-2xl border border-white/20">
+                    {/* Left Panel - Branding & Information */}
+                    <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden border-r border-white/10">
+                        <div className="absolute inset-0 gradient-white" />
+
+                        {/* Decorative Elements */}
+                        <div className="absolute inset-0 opacity-10">
+                            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <circle cx="1" cy="1" r="1" fill="var(--maroon-primary)" />
+                                </pattern>
+                                <rect x="0" y="0" width="100%" height="100%" fill="url(#grid)" />
+                            </svg>
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-black text-amrita-maroon tracking-tighter uppercase">Amrita</h1>
-                            <p className="text-amrita-maroon/60 text-xs font-bold tracking-[0.2em] uppercase">Placement Portal</p>
-                        </div>
-                    </div>
 
-                    <div className="max-w-xl">
-                        <h2 className="text-6xl font-black text-gray-900 leading-tight mb-8">
-                            Join the <span className="text-amrita-maroon underline decoration-amrita-gold/40 decoration-wavy">Elite</span> Cluster.
-                        </h2>
-                        <p className="text-gray-600 text-xl font-medium leading-relaxed mb-12 border-l-4 border-amrita-gold pl-6">
-                            Register to access the unified placement system. Verified Amritian students get exclusive access to industry giants.
-                        </p>
-                    </div>
-                </FadeIn>
+                        {/* Floating Orbs */}
+                        <FloatingElement>
+                            <div className="absolute top-20 right-20 w-8 h-8 rounded-full bg-maroon-subtle border border-maroon/10" />
+                        </FloatingElement>
+                        <FloatingElement delay={1}>
+                            <div className="absolute bottom-40 left-20 w-6 h-6 rounded-full bg-maroon-subtle border border-maroon/10" />
+                        </FloatingElement>
 
-                <div className="grid grid-cols-2 gap-6">
-                    {quickFacts.map((fact, i) => (
-                        <FadeIn key={i} delay={400 + i * 100}>
-                            <div className="bg-white/60 backdrop-blur-md border border-amrita-maroon/10 p-6 rounded-3xl hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group">
-                                <div className="w-12 h-12 bg-amrita-maroon/10 rounded-2xl flex items-center justify-center text-amrita-maroon group-hover:bg-amrita-maroon group-hover:text-white transition-colors mb-4">
-                                    {fact.icon}
-                                </div>
-                                <p className="text-3xl font-black text-gray-900 mb-1">{fact.value}</p>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{fact.label}</p>
-                            </div>
-                        </FadeIn>
-                    ))}
-                </div>
-
-                <FadeIn delay={800}>
-                    <div className="flex items-center gap-6 text-amrita-maroon/40 text-[10px] font-black uppercase tracking-[0.3em]">
-                        <span>Verified Amritian</span>
-                        <div className="w-1 h-1 bg-amrita-maroon/20 rounded-full" />
-                        <span>NAAC A++</span>
-                        <div className="w-1 h-1 bg-amrita-maroon/20 rounded-full" />
-                        <span>Data Secured</span>
-                    </div>
-                </FadeIn>
-            </div>
-
-            {/* Right Side: Step-based Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
-                <FadeIn delay={300}>
-                    <TiltCard className="w-full max-w-md">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(185,14,80,0.15)] overflow-hidden">
-                            <div className="p-10 lg:p-12">
-                                <Link to="/" className="inline-flex items-center gap-2 text-amrita-maroon/40 hover:text-amrita-maroon text-[10px] font-black uppercase tracking-widest transition-all mb-8 group">
-                                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Home
-                                </Link>
-                                {/* Header */}
-                                <div className="mb-10 text-center">
-                                    <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-2">Build <span className="text-amrita-maroon">Profile</span></h2>
-                                    <p className="text-gray-500 text-sm font-medium">Step {step + 1} of 3: Verification</p>
+                        {/* Main Content */}
+                        <div className="relative z-10 flex-1 p-12 flex flex-col justify-between">
+                            <div className="space-y-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl gradient-maroon flex items-center justify-center shadow-lg">
+                                        <GraduationCap className="text-white" size={28} />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-2xl font-bold text-maroon tracking-tight">Amrita Vishwa Vidyapeetham</h1>
+                                        <p className="text-maroon/60 text-sm font-medium">Official Placement Intelligence System</p>
+                                    </div>
                                 </div>
 
-                                {/* Progress Indicator */}
-                                <div className="flex items-center justify-between mb-12 relative">
-                                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0 rounded-full" />
-                                    <div
-                                        className="absolute top-1/2 left-0 h-0.5 bg-amrita-maroon -translate-y-1/2 z-0 rounded-full transition-all duration-700 ease-out"
-                                        style={{ width: `${(step / 2) * 100}%` }}
-                                    />
-                                    {[0, 1, 2].map((i) => (
-                                        <div key={i} className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-[10px] z-10 transition-all duration-500 transform ${step >= i ? 'bg-amrita-maroon text-white scale-110 shadow-lg shadow-amrita-maroon/30' : 'bg-white border-2 border-gray-100 text-gray-300'}`}>
-                                            {step > i ? <CheckCircle size={16} /> : (i + 1)}
+                                <div className="max-w-lg">
+                                    <h2 className="text-4xl font-bold text-maroon leading-tight mb-8">
+                                        Join the <span className="text-maroon/90">Elite</span> Network
+                                    </h2>
+                                    <p className="text-maroon/70 text-base leading-relaxed">
+                                        Register to access the unified placement system. Verified Amritian students get exclusive access to industry giants.
+                                    </p>
+                                </div>
+
+                                {/* Platform Features */}
+                                <div className="flex flex-col gap-8">
+                                    {features.map((feature, i) => (
+                                        <div key={i} className="p-5 bg-white/60 backdrop-blur-sm rounded-xl border border-maroon/10 shadow-sm flex items-center gap-5 group hover:border-maroon/30 transition-all">
+                                            <div className="w-14 h-14 rounded-lg bg-maroon-subtle flex items-center justify-center flex-shrink-0 group-hover:bg-maroon/10 transition-colors">
+                                                {React.cloneElement(feature.icon, { size: 28, className: "text-maroon" })}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-maroon text-lg">{feature.title}</h3>
+                                                <p className="text-maroon/40 text-base leading-snug">{feature.description}</p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Form Sections */}
-                                <div className="min-h-[320px]">
-                                    {step === 0 && (
-                                        <FadeIn>
-                                            <form onSubmit={handleEmailSubmit} className="space-y-8">
-                                                <div className="space-y-3">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Institutional Identifier</label>
-                                                    <div className="relative group">
-                                                        <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-amrita-maroon transition-colors">
-                                                            <Mail size={18} />
-                                                        </div>
-                                                        <input
-                                                            type="email"
-                                                            placeholder="cb.en.u4cse23000@amrita.edu"
-                                                            className="w-full pl-14 pr-6 py-5 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:border-amrita-maroon/30 transition-all text-sm font-bold placeholder:text-gray-300"
-                                                            value={email}
-                                                            onChange={(e) => setEmail(e.target.value)}
-                                                            required
-                                                            disabled={isLoading}
-                                                        />
-                                                    </div>
-                                                    <p className="text-[9px] text-gray-400 font-bold px-1 uppercase tracking-tighter">Only @amrita.edu domain is permitted.</p>
-                                                </div>
-
-                                                {error && <p className="text-red-500 text-[11px] font-black bg-red-50 p-4 rounded-xl border-l-4 border-red-500 animate-shake">⚠️ {error}</p>}
-
-                                                <button
-                                                    type="submit"
-                                                    disabled={isLoading}
-                                                    className="w-full bg-amrita-maroon text-white h-16 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-amrita-maroon/25 transition-all disabled:opacity-70 group"
-                                                >
-                                                    {isLoading ? <Loader2 size={24} className="animate-spin" /> : (
-                                                        <><span>Send Code</span> <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" /></>
-                                                    )}
-                                                </button>
-                                            </form>
-                                        </FadeIn>
-                                    )}
-
-                                    {step === 1 && (
-                                        <FadeIn>
-                                            <form onSubmit={handleOTPSubmit} className="space-y-8">
-                                                <div className="text-center space-y-2">
-                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Verification Sent To</p>
-                                                    <p className="text-amrita-maroon font-black text-sm">{email}</p>
-                                                </div>
-
-                                                <div className="space-y-4 text-center">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Secure OTP</label>
-                                                    <input
-                                                        type="text"
-                                                        maxLength="6"
-                                                        placeholder="0 0 0 0 0 0"
-                                                        className="w-full text-center py-5 text-4xl font-black tracking-[0.4em] bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:border-amrita-maroon/30 transition-all outline-none"
-                                                        value={otp}
-                                                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                                                        required
-                                                    />
-                                                </div>
-
-                                                {error && <p className="text-red-500 text-[11px] font-black bg-red-50 p-4 rounded-xl border-l-4 border-red-500">⚠️ {error}</p>}
-
-                                                <div className="flex flex-col gap-5">
-                                                    <button
-                                                        type="submit"
-                                                        className="w-full bg-amrita-maroon text-white h-16 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-amrita-maroon/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                                                    >
-                                                        Confirm Identity
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        disabled={otpTimer > 0}
-                                                        onClick={handleEmailSubmit}
-                                                        className="text-[10px] font-black text-amrita-maroon uppercase tracking-widest hover:underline disabled:opacity-50 flex items-center justify-center gap-2"
-                                                    >
-                                                        <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
-                                                        {otpTimer > 0 ? `Resend Available in ${otpTimer}s` : 'Request New Code'}
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </FadeIn>
-                                    )}
-
-                                    {step === 2 && (
-                                        <FadeIn>
-                                            <form onSubmit={handleRegisterSubmit} className="space-y-5">
-                                                <div className="space-y-4">
-                                                    <div className="space-y-2">
-                                                        <div className="flex justify-between items-center ml-1">
-                                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Portal Username</label>
-                                                            <span className="text-[9px] font-black text-green-500 uppercase tracking-widest">Locked to Email ID</span>
-                                                        </div>
-                                                        <div className="relative group">
-                                                            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-gray-400">
-                                                                <User size={18} />
-                                                            </div>
-                                                            <input
-                                                                type="text"
-                                                                className="w-full pl-14 pr-6 py-4 bg-gray-100 border border-gray-100 rounded-2xl text-gray-500 font-black text-sm"
-                                                                value={username}
-                                                                readOnly
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <div className="flex justify-between items-center ml-1">
-                                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Master Password</label>
-                                                            <div className="flex gap-1">
-                                                                {[...Array(4)].map((_, i) => (
-                                                                    <div key={i} className={`w-3 h-1 rounded-full transition-colors ${i < getPasswordStrength(password) ? 'bg-amrita-maroon' : 'bg-gray-100'}`} />
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                        <div className="relative group">
-                                                            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-gray-400 group-focus-within:text-amrita-maroon transition-colors">
-                                                                <Lock size={18} />
-                                                            </div>
-                                                            <input
-                                                                type={showPassword ? 'text' : 'password'}
-                                                                placeholder="Strong & unique"
-                                                                className="w-full pl-14 pr-14 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:border-amrita-maroon/30 transition-all font-bold text-sm"
-                                                                value={password}
-                                                                onChange={(e) => setPassword(e.target.value)}
-                                                                required
-                                                            />
-                                                            <button
-                                                                type="button"
-                                                                className="absolute inset-y-0 right-5 flex items-center text-gray-400 hover:text-amrita-maroon transition-colors"
-                                                                onClick={() => setShowPassword(!showPassword)}
-                                                            >
-                                                                {showPassword ? <Shield className="text-amrita-maroon" size={18} /> : <Lock size={18} />}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirm Identity</label>
-                                                        <input
-                                                            type={showPassword ? 'text' : 'password'}
-                                                            placeholder="Repeat password"
-                                                            className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:border-amrita-maroon/30 transition-all font-bold text-sm"
-                                                            value={confirmPassword}
-                                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                                            required
-                                                        />
-                                                    </div>
-
-                                                    <label className="flex items-center gap-3 cursor-pointer group py-2">
-                                                        <div className="relative">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={agreeTerms}
-                                                                onChange={(e) => setAgreeTerms(e.target.checked)}
-                                                                className="sr-only peer"
-                                                            />
-                                                            <div className="w-4 h-4 border-2 border-gray-200 rounded-lg peer-checked:bg-amrita-maroon peer-checked:border-amrita-maroon transition-all" />
-                                                            <CheckCircle className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={12} />
-                                                        </div>
-                                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">I consent to the <button type="button" className="text-amrita-maroon font-black underline">Placement Privacy Terms</button></span>
-                                                    </label>
-                                                </div>
-
-                                                {error && <p className="text-red-500 text-[11px] font-black bg-red-50 p-4 rounded-xl border-l-4 border-red-500 animate-shake">⚠️ {error}</p>}
-
-                                                <button
-                                                    type="submit"
-                                                    disabled={isLoading}
-                                                    className="w-full bg-amrita-maroon text-white h-16 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-amrita-maroon/25 transition-all disabled:opacity-70 group overflow-hidden relative"
-                                                >
-                                                    {isLoading ? <Loader2 size={24} className="animate-spin" /> : (
-                                                        <><span>Establish Account</span> <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                                                            <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" /></>
-                                                    )}
-                                                </button>
-                                            </form>
-                                        </FadeIn>
-                                    )}
-                                </div>
-
-                                <div className="mt-8 text-center pt-8 border-t border-gray-100">
-                                    <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest">
-                                        Back to <Link to="/login" className="text-amrita-maroon underline decoration-2 underline-offset-4 ml-1">Secure Sign In</Link>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-50/80 px-10 py-5 flex items-center justify-center gap-3 border-t border-gray-100">
-                                <ShieldCheck className="text-green-500" size={16} />
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Institutional Security Protocol Verified</span>
                             </div>
                         </div>
-                    </TiltCard>
-                </FadeIn>
+                    </div>
+
+                    {/* Right Panel - Registration Form */}
+                    <div className="w-full lg:w-7/12 flex items-center justify-center p-8 lg:p-16 relative z-10 bg-white/5 backdrop-blur-[2px]">
+                        <div className="w-full max-w-md">
+                            {/* Mobile Header */}
+                            <div className="lg:hidden mb-12">
+                                <div className="flex items-center justify-between mb-8">
+                                    <Link to="/" className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-lg gradient-maroon flex items-center justify-center shadow-md">
+                                            <GraduationCap className="text-white" size={24} />
+                                        </div>
+                                        <div>
+                                            <h1 className="text-xl font-bold text-maroon">Amrita Placement</h1>
+                                            <p className="text-maroon/60 text-xs">Intelligence System</p>
+                                        </div>
+                                    </Link>
+                                </div>
+                                <h2 className="text-4xl font-black text-maroon">Create Account</h2>
+                                <p className="text-maroon/60 text-base mt-2">Register for exclusive placement access</p>
+                            </div>
+
+                            {/* Back Link - Desktop */}
+                            <div className="hidden lg:block mb-6">
+                                <Link
+                                    to="/"
+                                    className="inline-flex items-center gap-2 text-maroon/40 hover:text-maroon text-xs font-bold uppercase tracking-widest transition-all hover:gap-3"
+                                >
+                                    <ArrowLeft size={14} /> Return to Home
+                                </Link>
+                            </div>
+
+                            {/* Registration Content Area */}
+                            <div className="rounded-3xl overflow-hidden">
+                                {/* Card Header */}
+                                <div className="p-6 lg:p-8 pb-0">
+                                    <div className="text-center mb-1">
+                                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-maroon-subtle mb-2 transform rotate-3 hover:rotate-0 transition-transform">
+                                            <User className="text-maroon" size={32} />
+                                        </div>
+                                        <h2 className="text-3xl font-black text-maroon mb-0 tracking-tight">Build Profile</h2>
+                                        <p className="text-maroon/60 text-base leading-tight">
+                                            Step {step + 1} of 3: {step === 0 ? 'Email Verification' : step === 1 ? 'OTP Confirmation' : 'Set Password'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Progress Indicator */}
+                                <div className="p-6 lg:p-8 pt-4 pb-2">
+                                    <div className="flex items-center justify-between mb-4 relative">
+                                        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-maroon/10 -translate-y-1/2 z-0 rounded-full" />
+                                        <div
+                                            className="absolute top-1/2 left-0 h-0.5 gradient-maroon -translate-y-1/2 z-0 rounded-full transition-all duration-700 ease-out"
+                                            style={{ width: `${(step / 2) * 100}%` }}
+                                        />
+                                        {[0, 1, 2].map((i) => (
+                                            <div key={i} className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs z-10 transition-all duration-500 transform ${step >= i ? 'gradient-maroon text-white scale-110 shadow-lg' : 'bg-white border-2 border-maroon/10 text-maroon/30'}`}>
+                                                {step > i ? <CheckCircle size={16} /> : (i + 1)}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Form */}
+                                <div className="p-6 lg:p-8 pt-0">
+                                    {/* Step 0: Email */}
+                                    {step === 0 && (
+                                        <form onSubmit={handleEmailSubmit} className="space-y-8 animate-fade-in">
+                                            {error && (
+                                                <div className="p-3 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-600 text-sm font-medium flex items-start gap-3">
+                                                    <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <span className="text-red-600 text-xs font-bold">!</span>
+                                                    </div>
+                                                    <span>{error}</span>
+                                                </div>
+                                            )}
+
+                                            <div className="space-y-5">
+                                                <label className="text-sm font-bold text-maroon flex items-center gap-2">
+                                                    <Mail size={28} className="text-maroon" />
+                                                    Institutional Email
+                                                </label>
+                                                <div className="relative group">
+                                                    <input
+                                                        type="email"
+                                                        placeholder="cb.en.u4cse23000@cb.students.amrita.edu"
+                                                        className="w-full px-5 py-3.5 bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl text-maroon text-base placeholder-maroon/30 focus:outline-none focus:border-maroon focus:ring-4 focus:ring-maroon/5 transition-all shadow-sm group-hover:border-maroon/20"
+                                                        value={email}
+                                                        onChange={(e) => setEmail(e.target.value)}
+                                                        required
+                                                        disabled={isLoading}
+                                                    />
+                                                </div>
+                                                <p className="text-xs text-maroon/40 font-medium">Only @amrita.edu domain is permitted.</p>
+                                            </div>
+
+                                            <button
+                                                type="submit"
+                                                disabled={isLoading}
+                                                className="w-full gradient-maroon text-white py-4 rounded-xl font-bold hover:opacity-90 disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+                                            >
+                                                {isLoading ? (
+                                                    <>
+                                                        <Loader2 size={20} className="animate-spin" />
+                                                        <span>Sending Code...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span>Send Verification Code</span>
+                                                        <ArrowRight size={18} />
+                                                    </>
+                                                )}
+                                            </button>
+                                        </form>
+                                    )}
+
+                                    {/* Step 1: OTP */}
+                                    {step === 1 && (
+                                        <form onSubmit={handleOTPSubmit} className="space-y-8 animate-fade-in">
+                                            <div className="text-center space-y-2 p-4 bg-maroon-subtle rounded-xl">
+                                                <p className="text-xs font-bold text-maroon/60 uppercase tracking-widest">Verification Sent To</p>
+                                                <p className="text-maroon font-bold text-sm">{email}</p>
+                                            </div>
+
+                                            {error && (
+                                                <div className="p-3 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-600 text-sm font-medium flex items-start gap-3">
+                                                    <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <span className="text-red-600 text-xs font-bold">!</span>
+                                                    </div>
+                                                    <span>{error}</span>
+                                                </div>
+                                            )}
+
+                                            <div className="space-y-5 text-center">
+                                                <label className="text-sm font-bold text-maroon">Secure OTP</label>
+                                                <input
+                                                    type="text"
+                                                    maxLength="6"
+                                                    placeholder="0 0 0 0 0 0"
+                                                    className="w-full text-center py-4 text-3xl font-bold tracking-[0.4em] bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl focus:outline-none focus:border-maroon transition-all"
+                                                    value={otp}
+                                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                                                    required
+                                                />
+                                            </div>
+
+                                            <div className="flex flex-col gap-4">
+                                                <button
+                                                    type="submit"
+                                                    className="w-full gradient-maroon text-white py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+                                                >
+                                                    Confirm Identity
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    disabled={otpTimer > 0}
+                                                    onClick={handleEmailSubmit}
+                                                    className="text-xs font-bold text-maroon uppercase tracking-widest hover:underline disabled:opacity-50 flex items-center justify-center gap-2"
+                                                >
+                                                    <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
+                                                    {otpTimer > 0 ? `Resend in ${otpTimer}s` : 'Request New Code'}
+                                                </button>
+                                            </div>
+                                        </form>
+                                    )}
+
+                                    {/* Step 2: Password */}
+                                    {step === 2 && (
+                                        <form onSubmit={handleRegisterSubmit} className="space-y-6 animate-fade-in">
+                                            {error && (
+                                                <div className="p-3 bg-red-50 border-l-4 border-red-500 rounded-lg text-red-600 text-sm font-medium flex items-start gap-3">
+                                                    <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <span className="text-red-600 text-xs font-bold">!</span>
+                                                    </div>
+                                                    <span>{error}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Username (Readonly) */}
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between items-center">
+                                                    <label className="text-sm font-bold text-maroon flex items-center gap-2">
+                                                        <User size={28} className="text-maroon" />
+                                                        Portal Username
+                                                    </label>
+                                                    <span className="text-xs font-bold text-green-500">Locked</span>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    className="w-full px-5 py-3.5 bg-maroon/5 border-2 border-maroon/10 rounded-xl text-maroon/50 text-base font-bold"
+                                                    value={username}
+                                                    readOnly
+                                                />
+                                            </div>
+
+                                            {/* Password */}
+                                            <div className="space-y-2">
+                                                <div className="flex justify-between items-center">
+                                                    <label className="text-sm font-bold text-maroon flex items-center gap-2">
+                                                        <Lock size={28} className="text-maroon" />
+                                                        Master Password
+                                                    </label>
+                                                    <div className="flex gap-1">
+                                                        {[...Array(4)].map((_, i) => (
+                                                            <div key={i} className={`w-3 h-1 rounded-full transition-colors ${i < getPasswordStrength(password) ? 'gradient-maroon' : 'bg-maroon/10'}`} />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="relative group">
+                                                    <input
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        placeholder="Strong & unique"
+                                                        className="w-full px-5 py-3.5 bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl text-maroon text-base placeholder-maroon/30 focus:outline-none focus:border-maroon focus:ring-4 focus:ring-maroon/5 transition-all shadow-sm group-hover:border-maroon/20"
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        required
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="absolute inset-y-0 right-5 flex items-center text-maroon/20 hover:text-maroon transition-colors"
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                    >
+                                                        {showPassword ? <Shield size={18} className="text-maroon" /> : <Lock size={18} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Confirm Password */}
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-bold text-maroon flex items-center gap-2">
+                                                    <Lock size={28} className="text-maroon" />
+                                                    Confirm Password
+                                                </label>
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    placeholder="Repeat password"
+                                                    className="w-full px-5 py-3.5 bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl text-maroon text-base placeholder-maroon/30 focus:outline-none focus:border-maroon focus:ring-4 focus:ring-maroon/5 transition-all shadow-sm"
+                                                    value={confirmPassword}
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+
+                                            {/* Terms Checkbox */}
+                                            <label className="flex items-center gap-3 cursor-pointer group py-2">
+                                                <div className="relative">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={agreeTerms}
+                                                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                                                        className="sr-only peer"
+                                                    />
+                                                    <div className="w-5 h-5 border-2 border-maroon/20 rounded-lg peer-checked:gradient-maroon peer-checked:border-maroon transition-all" />
+                                                    <CheckCircle className="absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100 transition-opacity" size={14} />
+                                                </div>
+                                                <span className="text-xs font-bold text-maroon/60">I consent to the <button type="button" className="text-maroon font-bold underline">Placement Privacy Terms</button></span>
+                                            </label>
+
+                                            <button
+                                                type="submit"
+                                                disabled={isLoading}
+                                                className="w-full gradient-maroon text-white py-4 rounded-xl font-bold hover:opacity-90 disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl"
+                                            >
+                                                {isLoading ? (
+                                                    <>
+                                                        <Loader2 size={20} className="animate-spin" />
+                                                        <span>Creating Account...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span>Establish Account</span>
+                                                        <ArrowRight size={18} />
+                                                    </>
+                                                )}
+                                            </button>
+                                        </form>
+                                    )}
+
+                                    {/* Divider */}
+                                    <div className="relative my-7">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-maroon/10"></div>
+                                        </div>
+                                        <div className="relative flex justify-center">
+                                            <span className="px-4 bg-maroon text-xs text-white font-bold uppercase tracking-wider">Already have an account?</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Login Link */}
+                                    <div className="text-center">
+                                        <Link
+                                            to="/login"
+                                            className="inline-block w-full py-2 border-2 border-maroon text-maroon rounded-xl text-sm font-bold hover:bg-maroon-subtle transition-all"
+                                        >
+                                            Sign In to Portal
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Additional Links & Info */}
+                            <div className="mt-4 space-y-4">
+                                <p className="text-center text-xs text-maroon/30">
+                                    By registering, you agree to our{' '}
+                                    <button className="text-maroon hover:underline font-medium">Terms of Service</button>
+                                    {' '}and{' '}
+                                    <button className="text-maroon hover:underline font-medium">Privacy Policy</button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
