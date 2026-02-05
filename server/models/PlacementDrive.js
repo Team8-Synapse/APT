@@ -1,4 +1,4 @@
-const mongoose = require('../services/mockMongoose');
+const mongoose = require('mongoose');
 
 const placementDriveSchema = new mongoose.Schema({
     companyName: { type: String, required: true },

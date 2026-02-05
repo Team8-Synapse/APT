@@ -7,26 +7,43 @@ const Application = require('../models/Application');
 // Get student profile
 router.get('/profile/:userId', async (req, res) => {
     try {
+        console.log(`[DEBUG] Fetching profile for userId: ${req.params.userId}`);
         const profile = await StudentProfile.findOne({ userId: req.params.userId });
+
         if (!profile) {
+            console.log(`[DEBUG] No profile found for userId: ${req.params.userId}`);
             return res.status(404).json({ error: 'Profile not found' });
         }
+
+        console.log(`[DEBUG] Profile found for userId: ${req.params.userId}, Email: ${profile.email}`);
         res.json(profile);
     } catch (err) {
+        console.error(`[DEBUG] Error fetching profile:`, err);
         res.status(500).json({ error: err.message });
     }
 });
 
-// Update student profile
+// Update student profile (upsert - creates if not exists)
 router.put('/profile/:userId', async (req, res) => {
     try {
+        console.log(`[DEBUG] Updating profile for userId: ${req.params.userId}`);
+        // Remove immutable fields
+        const { _id, userId, createdAt, updatedAt, __v, ...updateFields } = req.body;
+        const updateData = { ...updateFields, userId: req.params.userId };
+        console.log(`[DEBUG] Update data sample:`, {
+            firstName: updateData.firstName,
+            skillsCount: updateData.skills?.length
+        });
+
         const profile = await StudentProfile.findOneAndUpdate(
             { userId: req.params.userId },
-            req.body,
-            { new: true, runValidators: true }
+            updateData,
+            { new: true, upsert: true, runValidators: true }
         );
+        console.log(`[DEBUG] Profile updated successfully. New ID: ${profile._id}`);
         res.json(profile);
     } catch (err) {
+        console.error(`[DEBUG] Error updating profile:`, err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -45,21 +62,46 @@ router.get('/eligibility', async (req, res) => {
     }
 });
 
+const mongoose = require('mongoose');
+
 // Get eligible drives for a specific student with application status
 router.get('/eligible-drives/:userId', async (req, res) => {
+    console.log(`[API] Entry eligible-drives for: ${req.params.userId}`);
     try {
-        const profile = await StudentProfile.findOne({ userId: req.params.userId });
-        if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
+        if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+            console.log(`[API] Invalid UserId format: ${req.params.userId}, treating as guest/no-profile`);
+            // Determine what to do. If ID is invalid, they definitely don't have a profile.
+            // We can proceed with profile = null logic.
         }
 
-        const allDrives = await PlacementDrive.find({
-            status: { $in: ['upcoming', 'ongoing'] }
-        }).sort({ date: 1 });
+        // Only attempt query if valid ID, otherwise profile stays undefined (which is handled below)
+        let profile = null;
+        if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
+            profile = await StudentProfile.findOne({ userId: req.params.userId });
+        }
 
-        // Get student's applications
-        const applications = await Application.find({ studentId: profile._id });
-        const appliedDriveIds = applications.map(a => a.driveId.toString());
+        // If no profile found, we can still return drives but without specific eligibility checks
+        // or create a dummy profile object with defaults
+        if (!profile) {
+            console.log(`Profile not found for user ${req.params.userId}, returning all drives without eligibility check`);
+            // Default generic profile for comparison
+            profile = {
+                cgpa: 0,
+                backlogs: 0,
+                department: 'Unknown'
+            };
+        }
+
+        const allDrives = await PlacementDrive.find({}).sort({ date: 1 });
+
+        // Get student's applications if profile exists
+        let appliedDriveIds = [];
+        let applications = [];
+
+        if (profile._id) {
+            applications = await Application.find({ studentId: profile._id });
+            appliedDriveIds = applications.map(a => a.driveId.toString());
+        }
 
         const drivesWithEligibility = allDrives.map(drive => {
             const driveObj = drive.toObject();
@@ -77,7 +119,7 @@ router.get('/eligible-drives/:userId', async (req, res) => {
                     isEligible = false;
                     reasons.push(`Backlogs exceed ${drive.eligibility.maxBacklogs}`);
                 }
-                if (drive.eligibility.allowedDepartments && drive.eligibility.allowedDepartments.length > 0) {
+                if (drive.eligibility.allowedDepartments && Array.isArray(drive.eligibility.allowedDepartments) && drive.eligibility.allowedDepartments.length > 0) {
                     if (!drive.eligibility.allowedDepartments.includes(profile.department)) {
                         isEligible = false;
                         reasons.push(`${profile.department} not eligible`);
@@ -100,6 +142,7 @@ router.get('/eligible-drives/:userId', async (req, res) => {
 
         res.json(drivesWithEligibility);
     } catch (err) {
+        console.error('Error in eligible-drives:', err);
         res.status(500).json({ error: err.message });
     }
 });

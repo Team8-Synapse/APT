@@ -1,4 +1,4 @@
-const mongoose = require('./services/mockMongoose');
+const mongoose = require('mongoose');
 const User = require('./models/User');
 const StudentProfile = require('./models/StudentProfile');
 const PlacementDrive = require('./models/PlacementDrive');
@@ -629,57 +629,73 @@ const seedData = async () => {
             {
                 title: 'Striver SDE Sheet',
                 category: 'Coding',
+                type: 'Link',
                 content: 'The ultimate guide for DSA preparation for top-tier companies. 191 most important problems.',
                 links: ['https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/'],
+                tags: ['dsa', 'coding', 'interviews', 'striver'],
                 addedBy: adminUser._id
             },
             {
                 title: 'NeetCode 150',
                 category: 'Coding',
+                type: 'Link',
                 content: 'Curated 150 problems covering all important patterns for FAANG interviews.',
                 links: ['https://neetcode.io/'],
+                tags: ['dsa', 'patterns', 'faang', 'neetcode'],
                 addedBy: adminUser._id
             },
             {
                 title: 'System Design Primer',
-                category: 'System Design',
+                category: 'Technical',
+                type: 'Link',
                 content: 'Comprehensive guide to system design interviews with examples.',
                 links: ['https://github.com/donnemartin/system-design-primer'],
+                tags: ['system design', 'architecture', 'scalability'],
                 addedBy: adminUser._id
             },
             {
                 title: 'Indiabix Aptitude',
                 category: 'Aptitude',
+                type: 'Link',
                 content: 'Comprehensive practice for quantitative and logical reasoning.',
                 links: ['https://www.indiabix.com/'],
+                tags: ['aptitude', 'logic', 'quantitative', 'reasoning'],
                 addedBy: adminUser._id
             },
             {
                 title: 'Operating Systems - Galvin',
                 category: 'Technical',
+                type: 'PDF',
                 content: 'Complete concepts of OS for technical interviews.',
                 links: ['https://codex.cs.yale.edu/avi/os-book/'],
+                tags: ['os', 'operating systems', 'fundamentals'],
                 addedBy: adminUser._id
             },
             {
                 title: 'DBMS Gate Smashers',
                 category: 'Technical',
+                type: 'Link',
                 content: 'DBMS concepts explained in Hindi/English for interviews.',
                 links: ['https://youtube.com/gatesmashers'],
+                tags: ['dbms', 'sql', 'databases'],
                 addedBy: adminUser._id
             },
             {
                 title: 'InterviewBit',
                 category: 'Coding',
+                type: 'Link',
                 content: 'Practice platform with guided learning paths for product companies.',
                 links: ['https://interviewbit.com/'],
+                tags: ['coding', 'dsa', 'practice'],
                 addedBy: adminUser._id
             },
             {
                 title: 'Resume Templates',
-                category: 'Career',
+                category: 'HR',
+                type: 'Link',
                 content: 'Professional resume templates used by students placed at FAANG.',
                 links: ['https://www.overleaf.com/gallery/tagged/cv'],
+                tags: ['resume', 'cv', 'job search', 'hr'],
                 addedBy: adminUser._id
             }
         ];

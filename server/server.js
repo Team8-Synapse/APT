@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const mongoose = require('./services/mockMongoose');
+const mongoose = require('mongoose');
 
 dotenv.config();
 
@@ -9,7 +9,10 @@ const app = express();
 const PORT = (process.env.PORT || '5005').toString().trim();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+    credentials: true
+}));
 app.use(express.json());
 
 // Request logging middleware
@@ -19,19 +22,11 @@ app.use((req, res, next) => {
 });
 
 // Database connection
-mongoose.connect()
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
-        console.log('Connected to Mock Database');
-        // Check if we need to seed
-        const mockDB = require('./services/mockDB');
-        const collections = Object.keys(mockDB.data);
-        if (collections.length === 0 || mockDB.getCollection('users').length === 0) {
-            console.log('Database empty, seeding...');
-            const seedData = require('./seedData');
-            seedData();
-        }
+        console.log('Connected to MongoDB');
     })
-    .catch(err => console.error('Could not connect to Mock Database', err));
+    .catch(err => console.error('Could not connect to MongoDB', err));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
@@ -57,7 +52,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Placement Tracker API is running with Mock Database...');
+    res.send('Placement Tracker API is running...');
 });
 
 // 404 Handler

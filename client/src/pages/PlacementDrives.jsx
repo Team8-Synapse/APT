@@ -4,8 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import {
     Calendar, Building2, Clock, MapPin, DollarSign, Users, Filter, Search,
     ChevronRight, CheckCircle, XCircle, AlertCircle, Briefcase, GraduationCap,
-    ExternalLink, ChevronDown, List, Grid3X3
+    ExternalLink, ChevronDown, List, Grid3X3, TrendingUp, Target, Award, Timer
 } from 'lucide-react';
+import CompanyLogo from '../components/CompanyLogo';
 
 const PlacementDrives = () => {
     const { user } = useAuth();
@@ -17,35 +18,79 @@ const PlacementDrives = () => {
         eligibility: 'all',
         search: ''
     });
+    const [sortBy, setSortBy] = useState('date'); // date, ctc, company
+
+    // Helper function to calculate days until deadline
+    const getDaysUntil = (date) => {
+        const today = new Date();
+        const driveDate = new Date(date);
+        const diffTime = driveDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
+    // Helper function to get deadline badge
+    const getDeadlineBadge = (date) => {
+        const days = getDaysUntil(date);
+        if (days < 0) return { text: 'Expired', color: '#6b7280', bg: '#f3f4f6' };
+        if (days === 0) return { text: 'Today!', color: '#dc2626', bg: '#fef2f2' };
+        if (days === 1) return { text: 'Tomorrow', color: '#ea580c', bg: '#fff7ed' };
+        if (days <= 3) return { text: `${days} days left`, color: '#d97706', bg: '#fffbeb' };
+        if (days <= 7) return { text: `${days} days left`, color: '#059669', bg: '#ecfdf5' };
+        return null;
+    };
 
     useEffect(() => {
-        fetchDrives();
-    }, []);
+        if (user) {
+            fetchDrives();
+        }
+    }, [user]);
 
     const fetchDrives = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`);
-            setDrives(res.data);
+            const token = localStorage.getItem('token');
+            // Ensure we have a fallback for ID if missing
+            const userObj = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = user?._id || user?.id || userObj._id || userObj.id;
+
+            console.log("Flux Debug: Fetching drives...", { userId, hasToken: !!token });
+
+            if (!userId) {
+                console.error("Flux Debug: No User ID found. Cannot fetch drives.");
+                setLoading(false);
+                return;
+            }
+
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            console.log("Flux Debug: API Response Success", res.data);
+
+            if (Array.isArray(res.data)) {
+                console.log(`Flux Debug: Setting ${res.data.length} drives to state.`);
+                setDrives(res.data);
+            } else {
+                console.error("Flux Debug: API returned non-array data", res.data);
+                setDrives([]);
+            }
             setLoading(false);
         } catch (err) {
-            console.error(err);
-            // Mock data
-            setDrives([
-                { _id: '1', companyName: 'Google', jobProfile: 'Software Engineer L3', date: '2026-03-15', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 4500000 }, eligibility: { minCgpa: 8.5, allowedDepartments: ['CSE', 'ECE'] }, selectionProcess: [{ roundName: 'Online Test' }, { roundName: 'Technical' }, { roundName: 'HR' }], workLocation: 'Bangalore', totalPositions: 5 },
-                { _id: '2', companyName: 'Microsoft', jobProfile: 'SDE', date: '2026-03-22', status: 'upcoming', isEligible: true, hasApplied: true, ctcDetails: { ctc: 4200000 }, eligibility: { minCgpa: 8.0, allowedDepartments: ['CSE', 'ECE', 'EEE'] }, workLocation: 'Hyderabad', totalPositions: 8 },
-                { _id: '3', companyName: 'Amazon', jobProfile: 'SDE-1', date: '2026-04-05', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 4000000 }, eligibility: { minCgpa: 7.5, allowedDepartments: ['CSE', 'ECE'] }, workLocation: 'Bangalore', totalPositions: 12 },
-                { _id: '4', companyName: 'Adobe', jobProfile: 'MTS', date: '2026-03-28', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 2100000 }, eligibility: { minCgpa: 7.5, allowedDepartments: ['CSE', 'ECE'] }, workLocation: 'Noida', totalPositions: 6 },
-                { _id: '5', companyName: 'Meta', jobProfile: 'Software Engineer', date: '2026-03-18', status: 'upcoming', isEligible: false, eligibilityReasons: ['CGPA below 8.5'], ctcDetails: { ctc: 5000000 }, eligibility: { minCgpa: 8.5, allowedDepartments: ['CSE'] }, workLocation: 'London', totalPositions: 3 },
-                { _id: '6', companyName: 'Infosys', jobProfile: 'Systems Engineer', date: '2026-05-02', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 360000 }, eligibility: { minCgpa: 6.5, allowedDepartments: ['CSE', 'ECE', 'EEE', 'ME', 'CE'] }, workLocation: 'Multiple', totalPositions: 50 },
-            ]);
+            console.error("Flux Debug: Fetch drives ERROR:", err);
+            if (err.response) {
+                console.error("Flux Debug: Server responded with", err.response.status, err.response.data);
+            }
+            // For debugging, if 404/500, we might want to alert the user
+            // alert(`Debug Error: ${err.message}`);
             setLoading(false);
         }
     };
 
     const handleApply = async (driveId) => {
         try {
+            const userId = user?._id || user?.id;
             await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/apply`, {
-                userId: user.id,
+                userId,
                 driveId
             });
             await fetchDrives();
@@ -56,14 +101,28 @@ const PlacementDrives = () => {
     };
 
     const filteredDrives = drives.filter(drive => {
-        if (filters.status !== 'all' && drive.status !== filters.status) return false;
+        // Case-insensitive status check
+        if (filters.status !== 'all' && drive.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
         if (filters.eligibility === 'eligible' && !drive.isEligible) return false;
         if (filters.eligibility === 'applied' && !drive.hasApplied) return false;
         if (filters.search && !drive.companyName.toLowerCase().includes(filters.search.toLowerCase())) return false;
         return true;
     });
 
-    const sortedDrives = [...filteredDrives].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedDrives = [...filteredDrives].sort((a, b) => {
+        if (sortBy === 'date') return new Date(a.date) - new Date(b.date);
+        if (sortBy === 'ctc') return (b.ctcDetails?.ctc || 0) - (a.ctcDetails?.ctc || 0);
+        if (sortBy === 'company') return (a.companyName || '').localeCompare(b.companyName || '');
+        return 0;
+    });
+
+    // Calculate stats
+    const stats = {
+        total: drives.length,
+        eligible: drives.filter(d => d.isEligible).length,
+        applied: drives.filter(d => d.hasApplied).length,
+        urgent: drives.filter(d => getDaysUntil(d.date) <= 3 && getDaysUntil(d.date) >= 0).length
+    };
 
     if (loading) return (
         <div className="space-y-8 page-enter">
@@ -76,13 +135,23 @@ const PlacementDrives = () => {
 
     return (
         <div className="space-y-8 page-enter">
+            {/* DEBUG SECTION: Show if validation fails but data exists */}
+            {drives.length > 0 && filteredDrives.length === 0 && (
+                <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
+                    <strong className="font-bold">Debug Info:</strong>
+                    <span className="block sm:inline"> Data fetched ({drives.length} drives), but hidden by filters.</span>
+                    <br />
+                    <small>Statuses found: {drives.map(d => d.status).join(', ')}</small>
+                </div>
+            )}
+
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-                        Placement <span className="text-gradient">Drives</span>
+                    <h1 className="text-4xl font-black tracking-tight">
+                        <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#A4123F' }}>Drives</span>
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">
-                        {sortedDrives.length} drives available • {sortedDrives.filter(d => d.isEligible).length} eligible for you
+                    <p style={{ color: '#6b7280' }} className="font-medium mt-1">
+                        Discover opportunities from top companies
                     </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -103,21 +172,63 @@ const PlacementDrives = () => {
                 </div>
             </header>
 
+            {/* Stats Summary Bar */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="glass-card p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => setFilters({ ...filters, eligibility: 'all' })}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#e0e7ff' }}>
+                        <Building2 size={24} style={{ color: '#4f46e5' }} />
+                    </div>
+                    <div>
+                        <p className="text-2xl font-black" style={{ color: '#1f2937' }}>{stats.total}</p>
+                        <p className="text-xs font-semibold" style={{ color: '#6b7280' }}>Total Drives</p>
+                    </div>
+                </div>
+                <div className="glass-card p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => setFilters({ ...filters, eligibility: 'eligible' })}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#d1fae5' }}>
+                        <Target size={24} style={{ color: '#059669' }} />
+                    </div>
+                    <div>
+                        <p className="text-2xl font-black" style={{ color: '#1f2937' }}>{stats.eligible}</p>
+                        <p className="text-xs font-semibold" style={{ color: '#6b7280' }}>Eligible</p>
+                    </div>
+                </div>
+                <div className="glass-card p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => setFilters({ ...filters, eligibility: 'applied' })}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fce7f3' }}>
+                        <Award size={24} style={{ color: '#db2777' }} />
+                    </div>
+                    <div>
+                        <p className="text-2xl font-black" style={{ color: '#1f2937' }}>{stats.applied}</p>
+                        <p className="text-xs font-semibold" style={{ color: '#6b7280' }}>Applied</p>
+                    </div>
+                </div>
+                <div className="glass-card p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform cursor-pointer">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fef3c7' }}>
+                        <Timer size={24} style={{ color: '#d97706' }} />
+                    </div>
+                    <div>
+                        <p className="text-2xl font-black" style={{ color: '#1f2937' }}>{stats.urgent}</p>
+                        <p className="text-xs font-semibold" style={{ color: '#6b7280' }}>Deadline Soon</p>
+                    </div>
+                </div>
+            </div>
+
             {/* Filters */}
             <div className="glass-card p-6">
                 <div className="flex flex-wrap gap-4 items-center">
                     <div className="relative flex-1 min-w-[200px]">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                         <input
                             type="text"
                             placeholder="Search companies..."
-                            className="input-field pl-12 !py-3"
+                            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                            style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                         />
                     </div>
                     <select
-                        className="input-field !w-auto"
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.status}
                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                     >
@@ -127,7 +238,8 @@ const PlacementDrives = () => {
                         <option value="completed">Completed</option>
                     </select>
                     <select
-                        className="input-field !w-auto"
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.eligibility}
                         onChange={(e) => setFilters({ ...filters, eligibility: e.target.value })}
                     >
@@ -135,66 +247,102 @@ const PlacementDrives = () => {
                         <option value="eligible">Eligible Only</option>
                         <option value="applied">Applied</option>
                     </select>
+                    <select
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                    >
+                        <option value="date">Sort by Date</option>
+                        <option value="ctc">Sort by CTC</option>
+                        <option value="company">Sort by Company</option>
+                    </select>
                 </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="flex items-center justify-between">
+                <p className="text-sm font-medium" style={{ color: '#6b7280' }}>
+                    Showing {sortedDrives.length} of {drives.length} drives
+                </p>
             </div>
 
             {/* Drives Grid/List */}
             {viewMode === 'cards' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedDrives.map((drive, i) => (
-                        <DriveCard key={i} drive={drive} onApply={handleApply} />
-                    ))}
+                    {sortedDrives.length > 0 ? sortedDrives.map((drive, i) => (
+                        <DriveCard key={i} drive={drive} onApply={handleApply} getDeadlineBadge={getDeadlineBadge} />
+                    )) : (
+                        <div className="col-span-full flex flex-col items-center justify-center py-16 glass-card">
+                            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#f3f4f6' }}>
+                                <Briefcase size={40} style={{ color: '#9ca3af' }} />
+                            </div>
+                            <h3 className="text-xl font-bold mb-2" style={{ color: '#374151' }}>No drives found</h3>
+                            <p className="text-sm" style={{ color: '#6b7280' }}>Try adjusting your filters or check back later</p>
+                            <button
+                                onClick={() => setFilters({ status: 'all', eligibility: 'all', search: '' })}
+                                className="mt-4 px-4 py-2 rounded-lg font-semibold text-sm"
+                                style={{ backgroundColor: '#A4123F', color: 'white' }}
+                            >
+                                Clear Filters
+                            </button>
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div className="glass-card overflow-hidden">
-                    <table className="data-table">
+                <div className="glass-card overflow-hidden overflow-x-auto">
+                    <table className="w-full min-w-[700px]">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-gray-800">
-                                <th className="!pl-6">Company</th>
-                                <th>Role</th>
-                                <th>Date</th>
-                                <th>CTC</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                            <tr className="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                <th className="text-left py-4 px-6 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Company</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Role</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">CTC</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Location</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th className="text-left py-4 px-4 text-xs font-black text-gray-600 dark:text-gray-300 uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {sortedDrives.map((drive, i) => (
-                                <tr key={i} className="hover:bg-gray-50/50 dark:hover:bg-white/5">
-                                    <td className="!pl-6">
+                        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                            {sortedDrives.length > 0 ? sortedDrives.map((drive, i) => (
+                                <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td className="py-4 px-6">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-black">
-                                                {drive.companyName[0]}
+                                            <div className="w-10 h-10 bg-gradient-to-br from-amrita-maroon to-amrita-burgundy text-white rounded-lg flex items-center justify-center font-black shadow-md">
+                                                {drive.companyName?.[0] || '?'}
                                             </div>
-                                            <span className="font-black text-gray-900 dark:text-white">{drive.companyName}</span>
+                                            <span className="font-bold" style={{ color: '#1f2937' }}>{drive.companyName}</span>
                                         </div>
                                     </td>
-                                    <td className="font-bold text-gray-600 dark:text-gray-400">{drive.jobProfile}</td>
-                                    <td className="font-bold">{new Date(drive.date).toLocaleDateString()}</td>
-                                    <td className="font-black text-amrita-maroon">₹{(drive.ctcDetails?.ctc / 100000).toFixed(1)}L</td>
-                                    <td className="font-bold text-gray-600 dark:text-gray-400">{drive.workLocation}</td>
-                                    <td>
+                                    <td className="py-4 px-4 font-medium" style={{ color: '#374151' }}>{drive.jobProfile}</td>
+                                    <td className="py-4 px-4 font-medium" style={{ color: '#374151' }}>{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</td>
+                                    <td className="py-4 px-4 font-black" style={{ color: '#16a34a' }}>₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)}L</td>
+                                    <td className="py-4 px-4 font-medium" style={{ color: '#374151' }}>{drive.workLocation || 'TBD'}</td>
+                                    <td className="py-4 px-4">
                                         {drive.hasApplied ? (
-                                            <span className="status-badge status-placed">Applied</span>
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400">Applied</span>
                                         ) : drive.isEligible ? (
-                                            <span className="status-badge status-in-process">Eligible</span>
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">Eligible</span>
                                         ) : (
-                                            <span className="status-badge status-not-placed">Not Eligible</span>
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">Not Eligible</span>
                                         )}
                                     </td>
-                                    <td>
+                                    <td className="py-4 px-4">
                                         {drive.isEligible && !drive.hasApplied && (
                                             <button
                                                 onClick={() => handleApply(drive._id)}
-                                                className="btn-premium !py-2 !px-4 text-xs"
+                                                className="px-4 py-2 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white text-xs font-bold rounded-lg hover:opacity-90 transition-opacity shadow-sm"
                                             >
                                                 Apply
                                             </button>
                                         )}
                                     </td>
                                 </tr>
-                            ))}
+                            )) : (
+                                <tr>
+                                    <td colSpan="7" className="text-center py-12 text-gray-500 dark:text-gray-400">No drives found.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -203,48 +351,70 @@ const PlacementDrives = () => {
     );
 };
 
-const DriveCard = ({ drive, onApply }) => {
+const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
     const [expanded, setExpanded] = useState(false);
+    const deadlineBadge = getDeadlineBadge ? getDeadlineBadge(drive.date) : null;
 
     return (
-        <div className={`glass-card overflow-hidden transition-all duration-300 ${expanded ? 'row-span-2' : ''}`}>
+        <div className={`glass-card overflow-hidden transition-all duration-300 hover:shadow-xl ${expanded ? 'row-span-2' : ''}`}>
+            {/* Deadline Badge - Top ribbon */}
+            {deadlineBadge && (
+                <div className="px-4 py-2 flex items-center gap-2" style={{ backgroundColor: deadlineBadge.bg }}>
+                    <Clock size={14} style={{ color: deadlineBadge.color }} />
+                    <span className="text-xs font-bold" style={{ color: deadlineBadge.color }}>{deadlineBadge.text}</span>
+                </div>
+            )}
+
             {/* Header */}
             <div className="p-6 border-b border-gray-100 dark:border-gray-700">
-                <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-amrita-maroon text-amrita-gold rounded-xl flex items-center justify-center font-black text-lg shadow-lg">
-                            {drive.companyName[0]}
+                <div className="flex flex-col gap-4 mb-4">
+                    <div className="flex items-start gap-3">
+                        <CompanyLogo name={drive.companyName} size="md" className="rounded-xl shadow-lg" />
+                        <div className="flex-1 min-w-0">
+                            <h3 className="font-black text-lg truncate" style={{ color: '#1f2937' }} title={drive.companyName}>
+                                {drive.companyName || 'Unknown Company'}
+                            </h3>
+                            <p className="text-sm font-medium truncate" style={{ color: '#6b7280' }}>{drive.jobProfile || 'Position'}</p>
                         </div>
-                        <div>
-                            <h3 className="font-black text-lg text-gray-900 dark:text-white">{drive.companyName}</h3>
-                            <p className="text-sm text-gray-500 font-medium">{drive.jobProfile}</p>
-                        </div>
+                        {drive.ctcDetails?.ctc && (
+                            <div className="text-right flex-shrink-0">
+                                <p className="text-xl font-black" style={{ color: '#16a34a' }}>₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L</p>
+                                <p className="text-[10px] font-bold uppercase" style={{ color: '#9ca3af' }}>CTC</p>
+                            </div>
+                        )}
                     </div>
-                    {drive.ctcDetails?.ctc && (
-                        <div className="text-right">
-                            <p className="text-2xl font-black text-amrita-maroon">₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L</p>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase">CTC</p>
-                        </div>
-                    )}
+                    {/* Job Type & Posted Date */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {drive.jobType && (
+                            <span className="px-2 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: drive.jobType === 'Internship' ? '#dbeafe' : '#f3e8ff', color: drive.jobType === 'Internship' ? '#2563eb' : '#7c3aed' }}>
+                                {drive.jobType}
+                            </span>
+                        )}
+                        {drive.createdAt && (
+                            <span className="text-xs" style={{ color: '#9ca3af' }}>
+                                Posted: {new Date(drive.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 {/* Quick Info */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <Calendar size={14} />
-                        <span>{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <div className="flex items-center gap-2">
+                        <Calendar size={14} style={{ color: '#6b7280' }} />
+                        <span style={{ color: '#4b5563' }}>{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <MapPin size={14} />
-                        <span>{drive.workLocation || 'TBD'}</span>
+                    <div className="flex items-center gap-2">
+                        <MapPin size={14} style={{ color: '#6b7280' }} />
+                        <span style={{ color: '#4b5563' }}>{drive.workLocation || 'TBD'}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <Users size={14} />
-                        <span>{drive.totalPositions || 'N/A'} positions</span>
+                    <div className="flex items-center gap-2">
+                        <Users size={14} style={{ color: '#6b7280' }} />
+                        <span style={{ color: '#4b5563' }}>{drive.totalPositions || 'N/A'} positions</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <GraduationCap size={14} />
-                        <span>Min {drive.eligibility?.minCgpa || 0} CGPA</span>
+                    <div className="flex items-center gap-2">
+                        <GraduationCap size={14} style={{ color: '#6b7280' }} />
+                        <span style={{ color: '#4b5563' }}>Min {drive.eligibility?.minCgpa || 0} CGPA</span>
                     </div>
                 </div>
             </div>
@@ -285,25 +455,25 @@ const DriveCard = ({ drive, onApply }) => {
                 <div className="px-6 pb-6 space-y-4 border-t border-gray-100 dark:border-gray-700 pt-4">
                     {drive.eligibility?.allowedDepartments && (
                         <div>
-                            <p className="text-xs font-black text-gray-400 uppercase mb-2">Eligible Departments</p>
+                            <p className="text-xs font-black uppercase mb-2" style={{ color: '#6b7280' }}>Eligible Departments</p>
                             <div className="flex flex-wrap gap-2">
                                 {drive.eligibility.allowedDepartments.map((dept, i) => (
-                                    <span key={i} className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-xs font-bold">{dept}</span>
+                                    <span key={i} className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#e5e7eb', color: '#374151' }}>{dept}</span>
                                 ))}
                             </div>
                         </div>
                     )}
-                    {drive.selectionProcess && (
+                    {drive.selectionProcess && drive.selectionProcess.length > 0 && (
                         <div>
-                            <p className="text-xs font-black text-gray-400 uppercase mb-2">Selection Process</p>
+                            <p className="text-xs font-black uppercase mb-2" style={{ color: '#6b7280' }}>Selection Process</p>
                             <div className="flex items-center gap-2 flex-wrap">
                                 {drive.selectionProcess.map((round, i) => (
                                     <React.Fragment key={i}>
-                                        <span className="px-3 py-1 bg-amrita-maroon/10 text-amrita-maroon rounded-full text-xs font-bold">
-                                            {round.roundName}
+                                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#fce4ec', color: '#A4123F' }}>
+                                            {round.roundName || round}
                                         </span>
                                         {i < drive.selectionProcess.length - 1 && (
-                                            <ChevronRight size={14} className="text-gray-400" />
+                                            <ChevronRight size={14} style={{ color: '#9ca3af' }} />
                                         )}
                                     </React.Fragment>
                                 ))}
@@ -319,10 +489,14 @@ const DriveCard = ({ drive, onApply }) => {
                     <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center font-black flex items-center justify-center gap-2">
                         <CheckCircle size={18} /> Applied Successfully
                     </div>
+                ) : deadlineBadge?.text === 'Expired' ? (
+                    <div className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-xl text-center font-black flex items-center justify-center gap-2 cursor-not-allowed border-2 border-dashed border-gray-300">
+                        <Clock size={18} /> Application Closed
+                    </div>
                 ) : drive.isEligible ? (
                     <button
                         onClick={() => onApply(drive._id)}
-                        className="w-full btn-premium py-3 flex items-center justify-center gap-2"
+                        className="w-full py-3 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg"
                     >
                         <Briefcase size={18} /> Apply Now
                     </button>

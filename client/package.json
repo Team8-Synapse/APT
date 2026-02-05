@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
+    "@react-pdf/renderer": "^4.3.2",
     "axios": "^1.13.4",
+    "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "emailjs-com": "^3.2.0",
     "framer-motion": "^12.29.2",

@@ -5,6 +5,7 @@ import {
     FileText, Clock, CheckCircle, XCircle, AlertCircle, ChevronRight, Building2,
     Calendar, ArrowRight, ExternalLink, Filter, Search, Briefcase
 } from 'lucide-react';
+import CompanyLogo from '../components/CompanyLogo';
 
 const MyApplications = () => {
     const { user } = useAuth();
@@ -15,13 +16,19 @@ const MyApplications = () => {
 
     useEffect(() => {
         fetchApplications();
-    }, []);
+    }, [user]);
 
     const fetchApplications = async () => {
+        const userId = user?._id || user?.id;
+        if (!userId) {
+            setLoading(false);
+            return;
+        }
+
         try {
             const [appsRes, statsRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`),
-                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/stats/${user.id}`)
+                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${userId}`),
+                axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/stats/${userId}`)
             ]);
             setApplications(appsRes.data);
             setStats(statsRes.data);
@@ -84,21 +91,36 @@ const MyApplications = () => {
     return (
         <div className="space-y-8 page-enter">
             <header>
-                <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-                    My <span className="text-gradient">Applications</span>
+                <h1 className="text-4xl font-black tracking-tight">
+                    <span style={{ color: '#1f2937' }}>My</span> <span style={{ color: '#A4123F' }}>Applications</span>
                 </h1>
-                <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">
+                <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                     Track your placement journey
                 </p>
             </header>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <StatBadge label="Total" value={stats.total} color="gray" />
-                <StatBadge label="In Progress" value={stats.inProgress} color="blue" />
-                <StatBadge label="Shortlisted" value={stats.shortlisted} color="purple" />
-                <StatBadge label="Offers" value={stats.offered} color="green" />
-                <StatBadge label="Rejected" value={stats.rejected} color="red" />
+                <div className="glass-card p-4 text-center">
+                    <p className="text-3xl font-black" style={{ color: '#374151' }}>{stats.total}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: '#9ca3af' }}>Total</p>
+                </div>
+                <div className="p-4 rounded-2xl text-center" style={{ backgroundColor: '#dbeafe' }}>
+                    <p className="text-3xl font-black" style={{ color: '#1d4ed8' }}>{stats.inProgress}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: '#3b82f6' }}>In Progress</p>
+                </div>
+                <div className="p-4 rounded-2xl text-center" style={{ backgroundColor: '#f3e8ff' }}>
+                    <p className="text-3xl font-black" style={{ color: '#7c3aed' }}>{stats.shortlisted}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: '#8b5cf6' }}>Shortlisted</p>
+                </div>
+                <div className="p-4 rounded-2xl text-center" style={{ backgroundColor: '#dcfce7' }}>
+                    <p className="text-3xl font-black" style={{ color: '#16a34a' }}>{stats.offered}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: '#22c55e' }}>Offers</p>
+                </div>
+                <div className="p-4 rounded-2xl text-center" style={{ backgroundColor: '#fee2e2' }}>
+                    <p className="text-3xl font-black" style={{ color: '#dc2626' }}>{stats.rejected}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider mt-1" style={{ color: '#ef4444' }}>Rejected</p>
+                </div>
             </div>
 
             {/* Filter Tabs */}
@@ -107,7 +129,11 @@ const MyApplications = () => {
                     <button
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-4 py-2 rounded-xl text-sm font-black uppercase tracking-wider transition-all ${filter === f ? 'bg-amrita-maroon text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+                        className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wider transition-all"
+                        style={{
+                            backgroundColor: filter === f ? '#A4123F' : '#f3f4f6',
+                            color: filter === f ? 'white' : '#6b7280'
+                        }}
                     >
                         {f}
                     </button>
@@ -121,23 +147,21 @@ const MyApplications = () => {
                     const StatusIcon = statusConfig.icon;
 
                     return (
-                        <div key={i} className="glass-card p-6 hover:shadow-lg transition-all">
+                        <div key={i} className="glass-card p-6 hover:shadow-xl transition-all">
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                                 {/* Company Info */}
                                 <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 bg-amrita-maroon text-amrita-gold rounded-2xl flex items-center justify-center font-black text-xl shadow-lg">
-                                        {app.driveId?.companyName?.[0] || 'C'}
-                                    </div>
+                                    <CompanyLogo name={app.driveId?.companyName} size="md" className="rounded-2xl shadow-lg" />
                                     <div>
-                                        <h3 className="font-black text-xl text-gray-900 dark:text-white">{app.driveId?.companyName}</h3>
-                                        <p className="text-gray-500 font-medium">{app.driveId?.jobProfile}</p>
-                                        <div className="flex items-center gap-4 mt-1 text-sm text-gray-400">
-                                            <span className="flex items-center gap-1">
+                                        <h3 className="font-black text-xl" style={{ color: '#1f2937' }}>{app.driveId?.companyName}</h3>
+                                        <p className="font-medium" style={{ color: '#6b7280' }}>{app.driveId?.jobProfile}</p>
+                                        <div className="flex items-center gap-4 mt-1 text-sm">
+                                            <span className="flex items-center gap-1" style={{ color: '#9ca3af' }}>
                                                 <Calendar size={14} />
                                                 Applied {new Date(app.appliedDate).toLocaleDateString()}
                                             </span>
                                             {app.driveId?.ctcDetails?.ctc && (
-                                                <span className="font-black text-amrita-maroon">
+                                                <span className="font-black" style={{ color: '#16a34a' }}>
                                                     ₹{(app.driveId.ctcDetails.ctc / 100000).toFixed(1)}L
                                                 </span>
                                             )}

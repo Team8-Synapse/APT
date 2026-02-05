@@ -23,6 +23,7 @@ exports.addResource = async (req, res) => {
         await resource.save();
         res.status(201).send(resource);
     } catch (e) {
+        console.error('Add resource error:', e);
         res.status(400).send(e);
     }
 };
@@ -30,6 +31,26 @@ exports.addResource = async (req, res) => {
 exports.getResourceById = async (req, res) => {
     try {
         const resource = await Resource.findById(req.params.id);
+        if (!resource) return res.status(404).send();
+        res.send(resource);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+};
+
+exports.updateResource = async (req, res) => {
+    try {
+        const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!resource) return res.status(404).send();
+        res.send(resource);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+};
+
+exports.deleteResource = async (req, res) => {
+    try {
+        const resource = await Resource.findByIdAndDelete(req.params.id);
         if (!resource) return res.status(404).send();
         res.send(resource);
     } catch (e) {

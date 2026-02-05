@@ -34,6 +34,7 @@ const theme = {
 };
 
 const AdminDashboard = () => {
+    // ... state ...
     const [stats, setStats] = useState({
         studentCount: 0, driveCount: 0, alumniCount: 0,
         placedStudents: 0, inProcessStudents: 0, placementPercentage: 0,
@@ -48,6 +49,14 @@ const AdminDashboard = () => {
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
+    const [adminResources, setAdminResources] = useState([]);
+    const [newResource, setNewResource] = useState({
+        title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
+    });
+    const [announcements, setAnnouncements] = useState([]);
+    const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
+    const [editingAnnouncement, setEditingAnnouncement] = useState(null);
+    const [editingResource, setEditingResource] = useState(null);
 
     // Calendar state
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -87,6 +96,19 @@ const AdminDashboard = () => {
         fetchAnnouncements();
         fetchAlumni();
     }, []);
+
+    const fetchAlumni = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/directory`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setAlumniList(res.data);
+        } catch (err) { console.error(err); }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'alumni') fetchAlumni();
+    }, [activeTab]);
 
     const fetchStats = async () => {
         try {
@@ -204,6 +226,112 @@ const AdminDashboard = () => {
             console.error(err);
             alert('Export failed');
         }
+    };
+
+    const fetchAdminResources = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            setAdminResources(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleResourceSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const tagsArray = newResource.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+            const payload = {
+                title: newResource.title,
+                category: newResource.category,
+                type: newResource.type,
+                links: [newResource.link],
+                content: newResource.content,
+                tags: tagsArray
+            };
+
+            if (editingResource) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, payload);
+                alert('Resource updated successfully!');
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, payload);
+                alert('Resource deployed successfully!');
+            }
+
+            setNewResource({ title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
+            setEditingResource(null);
+            fetchAdminResources();
+        } catch (err) {
+            console.error(err);
+            alert(`Failed to ${editingResource ? 'update' : 'deploy'} resource`);
+        }
+    };
+
+    const handleResourceDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this resource?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${id}`);
+            alert('Resource deleted!');
+            fetchAdminResources();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete resource');
+        }
+    };
+
+    const handleEditResource = (res) => {
+        setEditingResource(res);
+        setNewResource({
+            title: res.title,
+            category: res.category,
+            type: res.type,
+            link: res.links?.[0] || res.link || '',
+            content: res.content || '',
+            tags: res.tags?.join(', ') || ''
+        });
+    };
+
+    const fetchAnnouncements = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
+            setAnnouncements(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleAnnouncementSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (editingAnnouncement) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement);
+                alert('Announcement updated!');
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement);
+                alert('Announcement posted!');
+            }
+            setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+            setEditingAnnouncement(null);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to post announcement');
+        }
+    };
+
+    const handleAnnouncementDelete = async (id) => {
+        if (!window.confirm('Are you sure?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${id}`);
+            fetchAnnouncements();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleEditAnnouncement = (ann) => {
+        setEditingAnnouncement(ann);
+        setNewAnnouncement({ content: ann.content, links: ann.links?.length ? ann.links : [{ title: '', url: '' }] });
     };
 
     const getStatusBadge = (status) => {

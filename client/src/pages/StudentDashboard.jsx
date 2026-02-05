@@ -95,6 +95,9 @@ const StudentDashboard = () => {
     }, []);
 
     useEffect(() => {
+        const userId = user?._id || user?.id;
+        if (!userId) return;
+
         const fetchData = async () => {
             try {
                 const [dashboardRes, drivesRes, applicationsRes, notificationsRes] = await Promise.all([
@@ -161,9 +164,12 @@ const StudentDashboard = () => {
     }, [user.id]);
 
     const handleApply = async (driveId) => {
+        const userId = user?._id || user?.id;
+        if (!userId) return;
+
         try {
             await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/apply`, {
-                userId: user.id,
+                userId: userId,
                 driveId
             });
             const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`);
