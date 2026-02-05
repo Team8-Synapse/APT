@@ -5,6 +5,7 @@ const PlacementDrive = require('../models/PlacementDrive');
 const AlumniInsight = require('../models/AlumniInsight');
 const Application = require('../models/Application');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 // Get admin statistics
 router.get('/stats', async (req, res) => {
@@ -244,15 +245,42 @@ router.get('/drives', async (req, res) => {
 router.post('/drive', async (req, res) => {
     try {
         const driveData = req.body;
+        let drive;
+        let isNew = false;
 
         if (driveData._id) {
-            const drive = await PlacementDrive.findByIdAndUpdate(driveData._id, driveData, { new: true });
-            res.json(drive);
+            drive = await PlacementDrive.findByIdAndUpdate(driveData._id, driveData, { new: true });
         } else {
-            const drive = new PlacementDrive(driveData);
+            drive = new PlacementDrive(driveData);
             await drive.save();
-            res.status(201).json(drive);
+            isNew = true;
         }
+
+        // Create notification for students
+        if (isNew) {
+            const notification = new Notification({
+                targetRole: 'student',
+                title: 'New Placement Drive',
+                message: `New placement drive announced: ${drive.companyName} for ${drive.jobProfile} role.`,
+                type: 'drive',
+                priority: 'high',
+                relatedDrive: drive._id
+            });
+            await notification.save();
+        } else {
+            // Optional: Notify updates
+            const notification = new Notification({
+                targetRole: 'student',
+                title: 'Placement Drive Updated',
+                message: `Updates for ${drive.companyName} placement drive. Check details.`,
+                type: 'drive',
+                priority: 'medium',
+                relatedDrive: drive._id
+            });
+            await notification.save();
+        }
+
+        res.status(isNew ? 201 : 200).json(drive);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -280,7 +308,7 @@ router.patch('/application/:id', async (req, res) => {
         const application = await Application.findByIdAndUpdate(
             req.params.id,
             updateData,
-            { new: true }
+            { new: true, runValidators: true }
         ).populate('driveId studentId');
 
         // Update student placement status if offered
@@ -293,6 +321,20 @@ router.patch('/application/:id', async (req, res) => {
             });
         }
 
+        // Create Notification
+        try {
+            await Notification.create({
+                userId: application.studentId._id,
+                title: `Status Update: ${application.driveId.companyName}`,
+                message: `Your application status has been updated to ${status.replace('_', ' ').toUpperCase()}. Check your dashboard for details.`,
+                type: status === 'offered' ? 'success' : status === 'rejected' ? 'error' : 'info',
+                relatedDrive: application.driveId._id,
+                targetRole: 'student'
+            });
+        } catch (notifErr) {
+            console.error('Notification creation failed:', notifErr);
+        }
+
         res.json(application);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -301,6 +343,19 @@ router.patch('/application/:id', async (req, res) => {
 
 // Get all applications for a drive
 router.get('/drive/:driveId/applications', async (req, res) => {
+    try {
+        const applications = await Application.find({ driveId: req.params.driveId })
+            .populate('studentId')
+            .sort({ appliedDate: -1 });
+
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Alias for applicants (same as applications)
+router.get('/drive/:driveId/applicants', async (req, res) => {
     try {
         const applications = await Application.find({ driveId: req.params.driveId })
             .populate('studentId')

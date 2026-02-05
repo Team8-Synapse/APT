@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
         await user.save();
 
         const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '2h' });
-        res.json({ user: { email: user.email, role: user.role }, token });
+        res.json({ user: { _id: user._id, email: user.email, role: user.role }, token });
     } catch (e) {
         console.error('Login error:', e);
         res.status(400).json({ error: e.message || 'Login failed' });

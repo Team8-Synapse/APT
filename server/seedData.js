@@ -1,4 +1,4 @@
-const mongoose = require('./services/mockMongoose');
+const mongoose = require('mongoose');
 const User = require('./models/User');
 const StudentProfile = require('./models/StudentProfile');
 const PlacementDrive = require('./models/PlacementDrive');

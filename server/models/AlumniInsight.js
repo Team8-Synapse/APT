@@ -1,4 +1,4 @@
-const mongoose = require('../services/mockMongoose');
+const mongoose = require('mongoose');
 
 const alumniInsightSchema = new mongoose.Schema({
     company: { type: String, required: true },
