@@ -11,6 +11,9 @@ import StudentProfile from './pages/StudentProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import PlacementDrives from './pages/PlacementDrives';
 import MyApplications from './pages/MyApplications';
+import InterviewExperiences from './pages/InterviewExperiences';
+import CalendarPage from './pages/CalendarPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, loading } = useAuth();
@@ -50,6 +53,9 @@ function App() {
           <Route path="/profile" element={<PrivateRoute role="student"><StudentProfile /></PrivateRoute>} />
           <Route path="/drives" element={<PrivateRoute role="student"><PlacementDrives /></PrivateRoute>} />
           <Route path="/applications" element={<PrivateRoute role="student"><MyApplications /></PrivateRoute>} />
+          <Route path="/experiences" element={<PrivateRoute role="student"><InterviewExperiences /></PrivateRoute>} />
+          <Route path="/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
+          <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute role="admin"><AdminDashboard /></PrivateRoute>} />
           <Route path="/home" element={<HomeRedirect />} />
           <Route path="*" element={<Navigate to="/" />} />

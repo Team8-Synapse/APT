@@ -10,7 +10,7 @@ const PORT = (process.env.PORT || '5005').toString().trim();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
     credentials: true
 }));
 app.use(express.json());
@@ -48,6 +48,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/experiences', require('./routes/experienceRoutes'));
 
 app.get('/', (req, res) => {
     res.send('Placement Tracker API is running...');

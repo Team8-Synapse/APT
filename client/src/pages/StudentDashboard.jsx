@@ -21,12 +21,15 @@ const StudentDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const userId = user?._id || user?.id;
+        if (!userId) return;
+
         const fetchData = async () => {
             try {
                 const [dashboardRes, drivesRes, applicationsRes] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/dashboard-stats/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`)
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/dashboard-stats/${userId}`),
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${userId}`),
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${userId}`)
                 ]);
                 setStats(dashboardRes.data);
                 setDrives(drivesRes.data.slice(0, 5));
@@ -54,16 +57,19 @@ const StudentDashboard = () => {
             }
         };
         fetchData();
-    }, [user.id]);
+    }, [user]);
 
     const handleApply = async (driveId) => {
+        const userId = user?._id || user?.id;
+        if (!userId) return;
+
         try {
             await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/apply`, {
-                userId: user.id,
+                userId: userId,
                 driveId
             });
             // Refresh drives
-            const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`);
+            const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${userId}`);
             setDrives(drivesRes.data.slice(0, 5));
         } catch (err) {
             console.error('Failed to apply:', err);
