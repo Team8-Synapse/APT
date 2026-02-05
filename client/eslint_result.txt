@@ -1,0 +1,9 @@
+[0m[0m
+[0m[4mD:\AmritaPlacementTracker(updated)\client\src\pages\Register.jsx[24m[0m
+[0m   [2m13:8[22m   [31merror[39m  'emailjs' is defined but never used. Allowed unused vars must match /^[A-Z_]/u           [2mno-unused-vars[22m[0m
+[0m  [2m923:19[22m  [31merror[39m  'payload' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  [2mno-unused-vars[22m[0m
+[0m  [2m937:18[22m  [31merror[39m  'err' is defined but never used                                                          [2mno-unused-vars[22m[0m
+[0m  [2m969:18[22m  [31merror[39m  'err' is defined but never used                                                          [2mno-unused-vars[22m[0m
+[0m[0m
+[0m[31m[1m✖ 4 problems (4 errors, 0 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m
