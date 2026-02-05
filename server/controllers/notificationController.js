@@ -20,7 +20,7 @@ exports.markAsRead = async (req, res) => {
     try {
         const notification = await Notification.findOneAndUpdate(
             { _id: req.params.id, userId: req.user._id },
-            { read: true },
+            { isRead: true },
             { new: true }
         );
         if (!notification) return res.status(404).send();
@@ -37,5 +37,17 @@ exports.createNotification = async (req, res) => {
         res.status(201).send(notification);
     } catch (e) {
         res.status(400).send(e);
+    }
+};
+
+exports.markAllRead = async (req, res) => {
+    try {
+        await Notification.updateMany(
+            { userId: req.user._id, isRead: false },
+            { isRead: true }
+        );
+        res.send({ message: 'All marked as read' });
+    } catch (e) {
+        res.status(500).send(e);
     }
 };

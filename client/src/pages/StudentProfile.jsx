@@ -4,8 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import {
     User, Save, Plus, X, GraduationCap, Award, BookOpen, Sparkles,
     Briefcase, Link2, Github, Linkedin, MapPin, Phone, Mail, FileText,
-    Building2, Calendar, Star, ChevronDown, ChevronUp, CheckCircle, AlertCircle
+    Building2, Calendar, Star, ChevronDown, ChevronUp, CheckCircle, AlertCircle, Download
 } from 'lucide-react';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ResumeDocument from '../components/Resume/ResumeDocument';
 
 const StudentProfile = () => {
     const { user } = useAuth();
@@ -274,29 +276,51 @@ const StudentProfile = () => {
                     </p>
                 </div>
 
-                {/* Completion Score */}
-                <div className="glass-card p-4 flex items-center gap-4">
-                    <div className="relative w-16 h-16">
-                        <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="32" cy="32" r="28" stroke="#e5e7eb" strokeWidth="6" fill="none" />
-                            <circle
-                                cx="32" cy="32" r="28"
-                                stroke={completionScore >= 80 ? '#16a34a' : completionScore >= 50 ? '#f59e0b' : '#ef4444'}
-                                strokeWidth="6"
-                                fill="none"
-                                strokeDasharray={`${completionScore * 1.76} 176`}
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <span className="absolute inset-0 flex items-center justify-center text-lg font-black" style={{ color: '#1f2937' }}>
-                            {completionScore}%
-                        </span>
-                    </div>
-                    <div>
-                        <p className="font-bold text-sm" style={{ color: '#374151' }}>Profile Completion</p>
-                        <p className="text-xs" style={{ color: completionScore >= 80 ? '#16a34a' : completionScore >= 50 ? '#f59e0b' : '#ef4444' }}>
-                            {completionScore >= 80 ? 'Excellent!' : completionScore >= 50 ? 'Good progress' : 'Needs work'}
-                        </p>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <PDFDownloadLink
+                        document={<ResumeDocument profile={profile} />}
+                        fileName={`${profile.firstName || 'Student'}_Amrita_Resume.pdf`}
+                        className="no-underline"
+                    >
+                        {({ loading }) => (
+                            <button
+                                className="flex items-center gap-2 text-white px-5 py-3 rounded-xl transition-all shadow-md font-bold text-sm hover:scale-105 active:scale-95"
+                                style={{ backgroundColor: '#1f2937' }}
+                            >
+                                {loading ? (
+                                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                                ) : (
+                                    <Download size={18} />
+                                )}
+                                <span>Download PDF Resume</span>
+                            </button>
+                        )}
+                    </PDFDownloadLink>
+
+                    {/* Completion Score */}
+                    <div className="glass-card p-4 flex items-center gap-4 border border-white/40 shadow-sm">
+                        <div className="relative w-16 h-16">
+                            <svg className="w-full h-full transform -rotate-90">
+                                <circle cx="32" cy="32" r="28" stroke="#e5e7eb" strokeWidth="6" fill="none" />
+                                <circle
+                                    cx="32" cy="32" r="28"
+                                    stroke={completionScore >= 80 ? '#16a34a' : completionScore >= 50 ? '#f59e0b' : '#ef4444'}
+                                    strokeWidth="6"
+                                    fill="none"
+                                    strokeDasharray={`${completionScore * 1.76} 176`}
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                            <span className="absolute inset-0 flex items-center justify-center text-lg font-black" style={{ color: '#1f2937' }}>
+                                {completionScore}%
+                            </span>
+                        </div>
+                        <div>
+                            <p className="font-bold text-sm" style={{ color: '#374151' }}>Profile Strength</p>
+                            <p className="text-[10px] uppercase font-bold tracking-wider" style={{ color: completionScore >= 80 ? '#16a34a' : completionScore >= 50 ? '#f59e0b' : '#ef4444' }}>
+                                {completionScore >= 80 ? 'Excellent' : completionScore >= 50 ? 'Good' : 'Improve'}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </header>

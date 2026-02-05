@@ -308,7 +308,7 @@ router.patch('/application/:id', async (req, res) => {
         const application = await Application.findByIdAndUpdate(
             req.params.id,
             updateData,
-            { new: true }
+            { new: true, runValidators: true }
         ).populate('driveId studentId');
 
         // Update student placement status if offered
@@ -319,6 +319,20 @@ router.patch('/application/:id', async (req, res) => {
                 offeredRole: application.driveId.jobProfile,
                 offeredCTC: offeredCTC || application.driveId.ctcDetails?.ctc
             });
+        }
+
+        // Create Notification
+        try {
+            await Notification.create({
+                userId: application.studentId._id,
+                title: `Status Update: ${application.driveId.companyName}`,
+                message: `Your application status has been updated to ${status.replace('_', ' ').toUpperCase()}. Check your dashboard for details.`,
+                type: status === 'offered' ? 'success' : status === 'rejected' ? 'error' : 'info',
+                relatedDrive: application.driveId._id,
+                targetRole: 'student'
+            });
+        } catch (notifErr) {
+            console.error('Notification creation failed:', notifErr);
         }
 
         res.json(application);

@@ -5,6 +5,7 @@ import {
     FileText, Clock, CheckCircle, XCircle, AlertCircle, ChevronRight, Building2,
     Calendar, ArrowRight, ExternalLink, Filter, Search, Briefcase
 } from 'lucide-react';
+import CompanyLogo from '../components/CompanyLogo';
 
 const MyApplications = () => {
     const { user } = useAuth();
@@ -150,9 +151,7 @@ const MyApplications = () => {
                             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                                 {/* Company Info */}
                                 <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg text-white" style={{ backgroundColor: '#A4123F' }}>
-                                        {app.driveId?.companyName?.[0] || 'C'}
-                                    </div>
+                                    <CompanyLogo name={app.driveId?.companyName} size="md" className="rounded-2xl shadow-lg" />
                                     <div>
                                         <h3 className="font-black text-xl" style={{ color: '#1f2937' }}>{app.driveId?.companyName}</h3>
                                         <p className="font-medium" style={{ color: '#6b7280' }}>{app.driveId?.jobProfile}</p>

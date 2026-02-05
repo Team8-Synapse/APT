@@ -6,6 +6,7 @@ import {
     ChevronRight, CheckCircle, XCircle, AlertCircle, Briefcase, GraduationCap,
     ExternalLink, ChevronDown, List, Grid3X3, TrendingUp, Target, Award, Timer
 } from 'lucide-react';
+import CompanyLogo from '../components/CompanyLogo';
 
 const PlacementDrives = () => {
     const { user } = useAuth();
@@ -220,14 +221,14 @@ const PlacementDrives = () => {
                             type="text"
                             placeholder="Search companies..."
                             className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                            style={{ color: '#1f2937' }}
+                            style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                         />
                     </div>
                     <select
-                        className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ color: '#374151' }}
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.status}
                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                     >
@@ -237,8 +238,8 @@ const PlacementDrives = () => {
                         <option value="completed">Completed</option>
                     </select>
                     <select
-                        className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ color: '#374151' }}
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.eligibility}
                         onChange={(e) => setFilters({ ...filters, eligibility: e.target.value })}
                     >
@@ -247,8 +248,8 @@ const PlacementDrives = () => {
                         <option value="applied">Applied</option>
                     </select>
                     <select
-                        className="px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ color: '#374151' }}
+                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
+                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
@@ -368,9 +369,7 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
             <div className="p-6 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex flex-col gap-4 mb-4">
                     <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 min-w-[3rem] bg-gradient-to-br from-amrita-maroon to-amrita-burgundy text-white rounded-xl flex items-center justify-center font-black text-lg shadow-lg flex-shrink-0">
-                            {drive.companyName?.[0] || '?'}
-                        </div>
+                        <CompanyLogo name={drive.companyName} size="md" className="rounded-xl shadow-lg" />
                         <div className="flex-1 min-w-0">
                             <h3 className="font-black text-lg truncate" style={{ color: '#1f2937' }} title={drive.companyName}>
                                 {drive.companyName || 'Unknown Company'}
@@ -489,6 +488,10 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
                 {drive.hasApplied ? (
                     <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center font-black flex items-center justify-center gap-2">
                         <CheckCircle size={18} /> Applied Successfully
+                    </div>
+                ) : deadlineBadge?.text === 'Expired' ? (
+                    <div className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-xl text-center font-black flex items-center justify-center gap-2 cursor-not-allowed border-2 border-dashed border-gray-300">
+                        <Clock size={18} /> Application Closed
                     </div>
                 ) : drive.isEligible ? (
                     <button

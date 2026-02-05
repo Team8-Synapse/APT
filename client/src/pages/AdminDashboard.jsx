@@ -3,13 +3,17 @@ import axios from 'axios';
 import {
     LayoutDashboard, Users, Briefcase, BookOpen, Search, ShieldCheck, TrendingUp, Sparkles,
     Filter, ChevronRight, Download, Calendar, Building2, GraduationCap, Award, Plus,
-    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus
+    Edit, Trash2, Eye, CheckCircle, XCircle, BarChart3, PieChart, ArrowUpRight, UserPlus, Linkedin, Mail
 } from 'lucide-react';
 
 import AddDriveModal from '../components/AddDriveModal';
 import StudentDetailModal from '../components/StudentDetailModal';
+import AddAlumniModal from '../components/AddAlumniModal';
+import KanbanBoard from '../components/Admin/KanbanBoard';
+import CompanyLogo from '../components/CompanyLogo';
 
 const AdminDashboard = () => {
+    // ... state ...
     const [stats, setStats] = useState({
         studentCount: 0, driveCount: 0, alumniCount: 0,
         placedStudents: 0, placementPercentage: 0,
@@ -26,12 +30,31 @@ const AdminDashboard = () => {
     const [selectedDrive, setSelectedDrive] = useState(null);
     const [driveApplicants, setDriveApplicants] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [isKanbanView, setIsKanbanView] = useState(false);
+    const [isAlumniModalOpen, setIsAlumniModalOpen] = useState(false);
+    const [selectedAlumniMember, setSelectedAlumniMember] = useState(null);
+    const [alumniList, setAlumniList] = useState([]);
+
+    // ... (methods) ...
 
     useEffect(() => {
         fetchStats();
         fetchStudents();
         fetchDrives();
     }, []);
+
+    const fetchAlumni = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/directory`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setAlumniList(res.data);
+        } catch (err) { console.error(err); }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'alumni') fetchAlumni();
+    }, [activeTab]);
 
     const fetchStats = async () => {
         try {
@@ -197,7 +220,7 @@ const AdminDashboard = () => {
 
             {/* Tab Navigation */}
             <div className="flex gap-4 border-b border-gray-200 dark:border-gray-700 pb-4">
-                {['overview', 'students', 'drives', 'analytics'].map(tab => (
+                {['overview', 'students', 'drives', 'analytics', 'alumni'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -438,7 +461,7 @@ const AdminDashboard = () => {
             {activeTab === 'students' && (
                 <div className="glass-card p-8">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-black dark:text-white">All Students</h2>
+                        <h2 className="text-xl font-black dark:text-white" style={{ color: '#000000' }}>All Students</h2>
                         <div className="flex gap-4">
                             <div className="relative">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -446,6 +469,7 @@ const AdminDashboard = () => {
                                     type="text"
                                     placeholder="Search students..."
                                     className="input-field pl-12 !py-3"
+                                    style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                                     value={filters.search}
                                     onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                                 />
@@ -456,7 +480,7 @@ const AdminDashboard = () => {
                     <div className="overflow-x-auto">
                         <table className="data-table">
                             <thead>
-                                <tr>
+                                <tr style={{ color: '#000000' }}>
                                     <th>Roll Number</th>
                                     <th>Name</th>
                                     <th>Department</th>
@@ -469,12 +493,12 @@ const AdminDashboard = () => {
                             <tbody>
                                 {students.slice(0, 20).map((student, i) => (
                                     <tr key={i}>
-                                        <td className="font-bold text-gray-600 dark:text-gray-400">{student.rollNumber}</td>
-                                        <td className="font-black text-gray-900 dark:text-white">{student.firstName} {student.lastName}</td>
+                                        <td className="font-bold text-gray-600 dark:text-gray-400" style={{ color: '#4b5563' }}>{student.rollNumber}</td>
+                                        <td className="font-black text-gray-900 dark:text-white" style={{ color: '#000000' }}>{student.firstName} {student.lastName}</td>
                                         <td className="font-bold uppercase">{student.department}</td>
                                         <td className="font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
                                         <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
-                                        <td className="font-bold text-gray-600 dark:text-gray-400">{student.offeredCompany || '-'}</td>
+                                        <td className="font-bold text-gray-600 dark:text-gray-400" style={{ color: '#4b5563' }}>{student.offeredCompany || '-'}</td>
                                         <td className="flex gap-2">
                                             <button className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg text-blue-600 transition-all"><Eye size={16} /></button>
                                             <button className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg text-amber-600 transition-all"><Edit size={16} /></button>
@@ -520,86 +544,96 @@ const AdminDashboard = () => {
                                             {selectedDrive.jobProfile} • {driveApplicants.length} applicants
                                         </p>
                                     </div>
-                                    <button onClick={() => setSelectedDrive(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
-                                        <XCircle size={24} style={{ color: '#6b7280' }} />
-                                    </button>
-                                </div>
-                                <div className="p-6">
-                                    {driveApplicants.length > 0 ? (
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full">
-                                                <thead>
-                                                    <tr className="border-b border-gray-200">
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Student</th>
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Department</th>
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>CGPA</th>
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Applied On</th>
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Status</th>
-                                                        <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {driveApplicants.map((app, i) => (
-                                                        <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
-                                                            <td className="py-4 px-4">
-                                                                <button
-                                                                    onClick={() => setSelectedStudent(app.studentId)}
-                                                                    className="text-left hover:opacity-70 transition-all"
-                                                                >
-                                                                    <p className="font-bold" style={{ color: '#1f2937' }}>
-                                                                        {app.studentId?.firstName} {app.studentId?.lastName}
-                                                                    </p>
-                                                                    <p className="text-xs flex items-center gap-1" style={{ color: '#A4123F' }}>
-                                                                        <Eye size={12} /> Click to view profile
-                                                                    </p>
-                                                                </button>
-                                                                <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{app.studentId?.rollNumber}</p>
-                                                            </td>
-                                                            <td className="py-4 px-4 font-medium" style={{ color: '#4b5563' }}>{app.studentId?.department}</td>
-                                                            <td className="py-4 px-4 font-bold" style={{ color: '#16a34a' }}>{app.studentId?.cgpa?.toFixed(2)}</td>
-                                                            <td className="py-4 px-4 text-sm" style={{ color: '#6b7280' }}>
-                                                                {new Date(app.appliedDate).toLocaleDateString()}
-                                                            </td>
-                                                            <td className="py-4 px-4">
-                                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${app.status === 'applied' ? 'bg-blue-100 text-blue-700' :
-                                                                    app.status === 'shortlisted' ? 'bg-green-100 text-green-700' :
-                                                                        app.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                                                                            app.status === 'offered' ? 'bg-purple-100 text-purple-700' :
-                                                                                'bg-gray-100 text-gray-700'
-                                                                    }`}>
-                                                                    {app.status}
-                                                                </span>
-                                                            </td>
-                                                            <td className="py-4 px-4">
-                                                                <select
-                                                                    className="text-sm px-2 py-1 border border-gray-200 rounded-lg focus:outline-none"
-                                                                    value={app.status}
-                                                                    onChange={async (e) => {
-                                                                        try {
-                                                                            await axios.patch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/application/${app._id}`, {
-                                                                                status: e.target.value
-                                                                            });
-                                                                            fetchApplicants(selectedDrive._id);
-                                                                        } catch (err) {
-                                                                            console.error(err);
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    <option value="applied">Applied</option>
-                                                                    <option value="shortlisted">Shortlisted</option>
-                                                                    <option value="round1">Round 1</option>
-                                                                    <option value="round2">Round 2</option>
-                                                                    <option value="hr_round">HR Round</option>
-                                                                    <option value="offered">Offered</option>
-                                                                    <option value="rejected">Rejected</option>
-                                                                    <option value="accepted">Accepted</option>
-                                                                </select>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex bg-gray-100 rounded-lg p-1">
+                                            <button onClick={() => setIsKanbanView(false)} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${!isKanbanView ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}>List</button>
+                                            <button onClick={() => setIsKanbanView(true)} className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${isKanbanView ? 'bg-white shadow text-gray-800' : 'text-gray-500'}`}>Board</button>
                                         </div>
+                                        <button onClick={() => setSelectedDrive(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                                            <XCircle size={24} style={{ color: '#6b7280' }} />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="p-6 bg-gray-50/50 min-h-[500px]">
+                                    {driveApplicants.length > 0 ? (
+                                        isKanbanView ? (
+                                            <KanbanBoard applications={driveApplicants} driveId={selectedDrive._id} />
+                                        ) : (
+                                            <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-100">
+                                                <table className="w-full">
+                                                    <thead>
+                                                        <tr className="border-b border-gray-200">
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Student</th>
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Department</th>
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>CGPA</th>
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Applied On</th>
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Status</th>
+                                                            <th className="text-left py-3 px-4 text-sm font-bold" style={{ color: '#6b7280' }}>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {driveApplicants.map((app, i) => (
+                                                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                                                                <td className="py-4 px-4">
+                                                                    <button
+                                                                        onClick={() => setSelectedStudent(app.studentId)}
+                                                                        className="text-left hover:opacity-70 transition-all"
+                                                                    >
+                                                                        <p className="font-bold" style={{ color: '#1f2937' }}>
+                                                                            {app.studentId?.firstName} {app.studentId?.lastName}
+                                                                        </p>
+                                                                        <p className="text-xs flex items-center gap-1" style={{ color: '#A4123F' }}>
+                                                                            <Eye size={12} /> Click to view profile
+                                                                        </p>
+                                                                    </button>
+                                                                    <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>{app.studentId?.rollNumber}</p>
+                                                                </td>
+                                                                <td className="py-4 px-4 font-medium" style={{ color: '#4b5563' }}>{app.studentId?.department}</td>
+                                                                <td className="py-4 px-4 font-bold" style={{ color: '#16a34a' }}>{app.studentId?.cgpa?.toFixed(2)}</td>
+                                                                <td className="py-4 px-4 text-sm" style={{ color: '#6b7280' }}>
+                                                                    {new Date(app.appliedDate).toLocaleDateString()}
+                                                                </td>
+                                                                <td className="py-4 px-4">
+                                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${app.status === 'applied' ? 'bg-blue-100 text-blue-700' :
+                                                                        app.status === 'shortlisted' ? 'bg-green-100 text-green-700' :
+                                                                            app.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                                                app.status === 'offered' ? 'bg-purple-100 text-purple-700' :
+                                                                                    'bg-gray-100 text-gray-700'
+                                                                        }`}>
+                                                                        {app.status}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="py-4 px-4">
+                                                                    <select
+                                                                        className="text-sm px-2 py-1 border border-gray-200 rounded-lg focus:outline-none"
+                                                                        value={app.status}
+                                                                        onChange={async (e) => {
+                                                                            try {
+                                                                                await axios.patch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/application/${app._id}`, {
+                                                                                    status: e.target.value
+                                                                                });
+                                                                                fetchApplicants(selectedDrive._id);
+                                                                            } catch (err) {
+                                                                                console.error(err);
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        <option value="applied">Applied</option>
+                                                                        <option value="shortlisted">Shortlisted</option>
+                                                                        <option value="round1">Round 1</option>
+                                                                        <option value="round2">Round 2</option>
+                                                                        <option value="hr_round">HR Round</option>
+                                                                        <option value="offered">Offered</option>
+                                                                        <option value="rejected">Rejected</option>
+                                                                        <option value="accepted">Accepted</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )
                                     ) : (
                                         <div className="text-center py-12">
                                             <Users size={48} className="mx-auto mb-4" style={{ color: '#d1d5db' }} />
@@ -617,9 +651,7 @@ const AdminDashboard = () => {
                             <div key={drive._id || i} className="glass-card p-6 hover:shadow-xl transition-all group">
                                 {/* Header */}
                                 <div className="flex justify-between items-start mb-4">
-                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg text-white" style={{ backgroundColor: '#A4123F' }}>
-                                        {drive.companyName?.[0]}
-                                    </div>
+                                    <CompanyLogo name={drive.companyName} size="md" className="rounded-xl" />
                                     <select
                                         className="text-xs font-bold px-2 py-1 rounded-full border-0 cursor-pointer focus:outline-none"
                                         style={{
@@ -748,6 +780,65 @@ const AdminDashboard = () => {
                 </div>
             )}
 
+            {activeTab === 'alumni' && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center bg-white/40 dark:bg-gray-800/40 p-6 rounded-3xl shadow-sm border border-white/20 dark:border-gray-700/50 backdrop-blur-md" style={{ backgroundColor: '#ffffff' }}>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2" style={{ color: '#000000' }}><Users className="text-amrita-maroon" /> Alumni Directory Management</h2>
+                            <p className="text-sm text-gray-500 font-medium">Manually update the placement network database</p>
+                        </div>
+                        <button
+                            onClick={() => { setSelectedAlumniMember(null); setIsAlumniModalOpen(true); }}
+                            className="btn-premium flex items-center gap-2"
+                        >
+                            <Plus size={18} /> Add Alumni Member
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {alumniList.length > 0 ? alumniList.map((alum, i) => (
+                            <div key={i} className="glass-card p-6 flex flex-col gap-4 relative group hover:scale-[1.02] transition-all">
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => { setSelectedAlumniMember(alum); setIsAlumniModalOpen(true); }}
+                                        className="p-1 text-gray-400 hover:text-amrita-maroon"
+                                    >
+                                        <Edit size={14} />
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-amrita-maroon/10 flex items-center justify-center text-amrita-maroon font-black text-lg">
+                                        {alum.name ? alum.name[0] : 'A'}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg text-gray-900 dark:text-white leading-tight" style={{ color: '#000000' }}>{alum.name}</h3>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-amrita-maroon">{alum.role}</p>
+                                    </div>
+                                </div>
+                                <div className="pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2">
+                                    <div className="flex items-center gap-2 text-sm font-bold text-gray-600 dark:text-gray-300" style={{ color: '#4b5563' }}>
+                                        <Building2 size={14} className="text-gray-400" /> {alum.company}
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                                        <Calendar size={14} className="text-gray-400" /> Batch {alum.batch} • {alum.department}
+                                    </div>
+                                    <div className="flex gap-2 mt-2">
+                                        {alum.linkedin && <a href={alum.linkedin} target="_blank" className="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100"><Linkedin size={14} /></a>}
+                                        {alum.email && <a href={`mailto:${alum.email}`} className="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100"><Mail size={14} /></a>}
+                                    </div>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className="col-span-full py-12 text-center text-gray-400">
+                                <Users size={48} className="mx-auto mb-4 opacity-50" />
+                                <p className="font-bold">Directory is empty</p>
+                                <p className="text-xs">Add the first alumni using the button above.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             <AddDriveModal
                 isOpen={isModalOpen}
                 onClose={() => { setIsModalOpen(false); setEditDrive(null); }}
@@ -758,6 +849,13 @@ const AdminDashboard = () => {
                     setEditDrive(null);
                 }}
                 editDrive={editDrive}
+            />
+
+            <AddAlumniModal
+                isOpen={isAlumniModalOpen}
+                onClose={() => { setIsAlumniModalOpen(false); setSelectedAlumniMember(null); }}
+                onRefresh={fetchAlumni}
+                editAlumni={selectedAlumniMember}
             />
 
             {/* Student Detail Modal */}

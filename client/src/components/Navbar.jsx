@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
+import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -30,19 +30,22 @@ const Navbar = () => {
     const fetchNotifications = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } // Assuming token is stored
+                withCredentials: true // IMPORTANT for Auth
             });
-            // Try/catch handles failures (e.g. 401), useAuth context might normally handle axios interceptors
-            // But let's be safe. If useAuth exposes axios instance with interceptors, use that.
-            // Current code uses raw axios.
             setNotifications(res.data);
         } catch (err) {
             console.error('Failed to fetch notifications', err);
-            // Fallback mock data for demo if server fails
-            setNotifications([
-                { id: 1, message: 'Google drive starts in 2 days', type: 'info' },
-                { id: 2, message: 'Your application was shortlisted', type: 'success' },
-            ]);
+        }
+    };
+
+    const markAsRead = async (id) => {
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {
+                withCredentials: true
+            });
+            setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -57,36 +60,39 @@ const Navbar = () => {
 
     const studentLinks = [
         { to: '/dashboard', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
-        { to: '/drives', icon: <Calendar size={18} />, label: 'Drives' },
-        { to: '/applications', icon: <FileText size={18} />, label: 'Applications' },
-        { to: '/alumni', icon: <MessageSquare size={18} />, label: 'Insights' },
-        { to: '/prephub', icon: <BookOpen size={18} />, label: 'Prep Hub' },
+        { to: '/calendar', icon: <Calendar size={18} />, label: 'Schedule' },
+        { to: '/drives', icon: <Briefcase size={18} />, label: 'Drives' },
+        { to: '/applications', icon: <FileText size={18} />, label: 'Apps' },
+        { to: '/experiences', icon: <MessageSquare size={18} />, label: 'Stories' },
+        { to: '/alumni', icon: <Users size={18} />, label: 'Insights' },
+        { to: '/prephub', icon: <BookOpen size={18} />, label: 'Prep' },
         { to: '/profile', icon: <User size={18} />, label: 'Profile' },
     ];
 
     const adminLinks = [
         { to: '/admin', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
+        { to: '/calendar', icon: <Calendar size={18} />, label: 'Schedule' },
     ];
 
     const links = isAdmin ? adminLinks : studentLinks;
 
     return (
-        <nav className="sticky top-0 z-50 px-4 py-3">
-            <div className="max-w-7xl mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
-                <div className="px-6 py-3 flex justify-between items-center">
-                    <div className="flex items-center space-x-8">
+        <nav className="sticky top-0 z-50 px-2 py-3">
+            <div className="mx-2 lg:mx-4 glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
+                <div className="px-3 py-2 flex justify-between items-center">
+                    <div className="flex items-center gap-2 lg:gap-6">
                         <Link to="/" className="flex items-center group">
                             <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                                 <Sparkles className="text-amrita-gold" size={20} />
                             </div>
-                            <div className="ml-3">
+                            <div className="ml-2 hidden xl:block">
                                 <span className="block text-amrita-maroon dark:text-amrita-gold font-black text-xl leading-none">AMRITA</span>
                                 <span className="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1">Placement Tracker</span>
                             </div>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden lg:flex items-center space-x-1">
+                        <div className="hidden lg:flex items-center gap-1">
                             {links.map(link => (
                                 <NavLink
                                     key={link.to}
@@ -127,21 +133,37 @@ const Navbar = () => {
                                     <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                                         <h3 className="font-black text-gray-900 dark:text-white">Notifications</h3>
                                     </div>
-                                    <div className="max-h-64 overflow-y-auto">
+                                    <div className="max-h-80 overflow-y-auto custom-scrollbar">
                                         {notifications.length > 0 ? notifications.map(n => (
-                                            <div key={n.id} className="p-4 border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                                <p className="text-sm text-gray-700 dark:text-gray-300 font-medium">{n.message}</p>
+                                            <div
+                                                key={n._id || n.id}
+                                                onClick={() => markAsRead(n._id)}
+                                                className={`p-4 border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${!n.isRead ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}`}
+                                            >
+                                                <div className="flex gap-3">
+                                                    <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.type === 'success' ? 'bg-green-500' : n.type === 'error' ? 'bg-red-500' : 'bg-amrita-maroon'}`} />
+                                                    <div className="flex-1">
+                                                        <p className={`text-sm font-bold leading-tight mb-1 ${!n.isRead ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+                                                            {n.title || n.message}
+                                                        </p>
+                                                        {n.title && <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{n.message}</p>}
+                                                        <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                                                            {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Just now'}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )) : (
-                                            <div className="p-6 text-center text-gray-400">
-                                                <p className="text-sm">No new notifications</p>
+                                            <div className="p-12 text-center text-gray-400">
+                                                <Bell size={32} className="mx-auto mb-3 opacity-20" />
+                                                <p className="text-sm font-medium">No updates yet</p>
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800">
-                                        <button className="w-full text-xs font-bold text-amrita-maroon dark:text-amrita-gold hover:underline">
+                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 text-center">
+                                        <Link to="/notifications" onClick={() => setShowNotifications(false)} className="text-xs font-bold text-amrita-maroon dark:text-amrita-gold hover:underline">
                                             View All Notifications
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             )}
@@ -204,7 +226,7 @@ const Navbar = () => {
 const NavLink = ({ to, icon, label, active }) => (
     <Link
         to={to}
-        className={`flex items-center px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 space-x-2 ${active
+        className={`flex items-center px-3 py-2 rounded-xl text-sm font-bold transition-all duration-300 gap-2 ${active
             ? 'bg-amrita-maroon text-white shadow-lg'
             : 'text-gray-600 dark:text-gray-300 hover:bg-amrita-maroon/5 dark:hover:bg-amrita-maroon/20 hover:text-amrita-maroon dark:hover:text-amrita-gold'
             }`}
