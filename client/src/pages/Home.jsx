@@ -1875,12 +1875,6 @@ const Home = () => {
                 <div className="hero-content">
                     <FadeIn>
                         <div className="hero-text">
-                            <div className="hero-badge">
-                                <div className="hero-badge-dot"></div>
-                                <span>One Platform. Every Placement. Zero Confusion.</span>
-                                <Sparkles size={16} />
-                            </div>
-
                             <h1 className="hero-title">
                                 Shape Your <span>Career Destiny</span><br />
                                 with Precision

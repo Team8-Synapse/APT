@@ -30,8 +30,8 @@ const DailyChallenge = ({ streak = 0 }) => {
                         <p className="text-xs text-gray-500 mt-1">{challenge.category}</p>
                     </div>
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${challenge.difficulty === 'Easy' ? 'bg-green-100 text-green-700' :
-                            challenge.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-red-100 text-red-700'
+                        challenge.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
                         }`}>
                         {challenge.difficulty}
                     </span>

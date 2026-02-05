@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     Target, TrendingUp, AlertCircle, Calendar, ChevronRight, Brain, Sparkles, Zap, Award,
     Briefcase, Clock, CheckCircle, XCircle, Send, Users, Building2, GraduationCap, Star,
@@ -13,12 +13,12 @@ import {
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
     Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon
 } from 'lucide-react';
-import AIChatbot from '../components/AIChatbot';
-import DailyChallenge from '../components/DailyChallenge';
-import PlacementCountdown from '../components/PlacementCountdown';
-import SkillProgress from '../components/SkillProgress';
-import InterviewSchedule from '../components/InterviewSchedule';
-import ResourceRecommendations from '../components/ResourceRecommendations';
+import AIChatbot from '../../components/AIChatbot';
+import DailyChallenge from '../../components/DailyChallenge';
+import PlacementCountdown from '../../components/PlacementCountdown';
+import SkillProgress from '../../components/SkillProgress';
+import InterviewSchedule from '../../components/InterviewSchedule';
+import ResourceRecommendations from '../../components/ResourceRecommendations';
 
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
@@ -106,7 +106,7 @@ const StudentDashboard = () => {
                     axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`),
                     axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${user.id}`)
                 ]);
-                
+
                 setStats(dashboardRes.data);
                 setDrives(drivesRes.data.slice(0, 5));
                 setApplications(applicationsRes.data.slice(0, 5));
@@ -117,10 +117,10 @@ const StudentDashboard = () => {
                 // Enhanced mock data
                 setStats({
                     readinessScore: 78,
-                    profile: { 
-                        name: user.email.split('@')[0], 
-                        department: 'Computer Science', 
-                        cgpa: 8.5, 
+                    profile: {
+                        name: user.email.split('@')[0],
+                        department: 'Computer Science',
+                        cgpa: 8.5,
                         placementStatus: 'not_placed',
                         batch: '2026',
                         skills: ['React', 'Node.js', 'Python', 'MongoDB'],
@@ -157,7 +157,7 @@ const StudentDashboard = () => {
             }
         };
         fetchData();
-        
+
         // Auto-refresh data every 30 seconds
         const interval = setInterval(fetchData, 30000);
         return () => clearInterval(interval);
@@ -189,8 +189,8 @@ const StudentDashboard = () => {
     };
 
     const handleNotificationClick = (id) => {
-        setNotifications(prev => 
-            prev.map(notif => 
+        setNotifications(prev =>
+            prev.map(notif =>
                 notif.id === id ? { ...notif, read: true } : notif
             )
         );
@@ -210,7 +210,7 @@ const StudentDashboard = () => {
         return colors[status] || 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400';
     };
 
-    const filteredDrives = drives.filter(drive => 
+    const filteredDrives = drives.filter(drive =>
         drive.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         drive.jobProfile.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -236,7 +236,7 @@ const StudentDashboard = () => {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-black text-gray-900 dark:text-white">
-                        Good {timeOfDay}, {stats.profile?.name || user.email.split('@')[0]}! 
+                        Good {timeOfDay}, {stats.profile?.name || user.email.split('@')[0]}!
                         <span className="text-amrita-maroon dark:text-amrita-gold"> 👋</span>
                     </h1>
                     <p className="text-gray-500 text-sm">Track your placement journey and opportunities</p>
@@ -253,10 +253,10 @@ const StudentDashboard = () => {
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    
+
                     {/* Notification Bell */}
                     <div className="relative">
-                        <button 
+                        <button
                             onClick={() => setShowNotifications(!showNotifications)}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative"
                         >
@@ -267,7 +267,7 @@ const StudentDashboard = () => {
                                 </span>
                             )}
                         </button>
-                        
+
                         {/* Notification Dropdown */}
                         {showNotifications && (
                             <div className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50">
@@ -281,16 +281,16 @@ const StudentDashboard = () => {
                                 </div>
                                 <div className="max-h-96 overflow-y-auto">
                                     {notifications.map((notif) => (
-                                        <div 
+                                        <div
                                             key={notif.id}
                                             onClick={() => handleNotificationClick(notif.id)}
                                             className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 ${!notif.read ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
                                         >
                                             <div className="flex items-start gap-3">
                                                 <div className={`p-2 rounded-full ${notif.type === 'success' ? 'bg-green-100 text-green-600' : notif.type === 'warning' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
-                                                    {notif.type === 'success' ? <CheckCircle size={16} /> : 
-                                                     notif.type === 'warning' ? <AlertTriangle size={16} /> : 
-                                                     <Info size={16} />}
+                                                    {notif.type === 'success' ? <CheckCircle size={16} /> :
+                                                        notif.type === 'warning' ? <AlertTriangle size={16} /> :
+                                                            <Info size={16} />}
                                                 </div>
                                                 <div className="flex-1">
                                                     <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.message}</p>
@@ -311,15 +311,15 @@ const StudentDashboard = () => {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Dark Mode Toggle */}
-                    <button 
+                    <button
                         onClick={() => setDarkMode(!darkMode)}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"
                     >
                         {darkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
-                    
+
                     {/* User Menu */}
                     <div className="relative group">
                         <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl">
@@ -343,7 +343,7 @@ const StudentDashboard = () => {
                                 <a href="/help" className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm">
                                     <HelpCircle size={16} /> Help & Support
                                 </a>
-                                <button 
+                                <button
                                     onClick={logout}
                                     className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm text-red-600 w-full"
                                 >
@@ -508,9 +508,9 @@ const StudentDashboard = () => {
                         {applications.length > 0 ? (
                             <div className="space-y-3">
                                 {applications.map((app, i) => (
-                                    <ApplicationCard 
-                                        key={i} 
-                                        application={app} 
+                                    <ApplicationCard
+                                        key={i}
+                                        application={app}
                                         getStatusColor={getStatusColor}
                                     />
                                 ))}
@@ -563,9 +563,9 @@ const StudentDashboard = () => {
 
                         <div className="space-y-4">
                             {filteredDrives.map((drive, i) => (
-                                <DriveCard 
-                                    key={i} 
-                                    drive={drive} 
+                                <DriveCard
+                                    key={i}
+                                    drive={drive}
                                     handleApply={handleApply}
                                 />
                             ))}
@@ -626,29 +626,29 @@ const StudentDashboard = () => {
 
                     {/* Quick Actions Grid */}
                     <div className="grid grid-cols-2 gap-3">
-                        <QuickActionCard 
-                            icon={<Video size={18} />} 
+                        <QuickActionCard
+                            icon={<Video size={18} />}
                             title="Mock Interview"
                             description="Schedule now"
                             color="purple"
                             href="/mock-interview"
                         />
-                        <QuickActionCard 
-                            icon={<BookOpen size={18} />} 
+                        <QuickActionCard
+                            icon={<BookOpen size={18} />}
                             title="Prep Material"
                             description="Study resources"
                             color="blue"
                             href="/resources"
                         />
-                        <QuickActionCard 
-                            icon={<Users size={18} />} 
+                        <QuickActionCard
+                            icon={<Users size={18} />}
                             title="Alumni Connect"
                             description="Network now"
                             color="green"
                             href="/alumni"
                         />
-                        <QuickActionCard 
-                            icon={<BarChart3 size={18} />} 
+                        <QuickActionCard
+                            icon={<BarChart3 size={18} />}
                             title="Analytics"
                             description="View insights"
                             color="amber"
@@ -835,7 +835,7 @@ const QuickActionCard = ({ icon, title, description, color, href }) => {
         green: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200',
         amber: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-200'
     };
-    
+
     return (
         <a href={href} className={`${colorClasses[color]} p-4 rounded-2xl flex flex-col items-center justify-center text-center transition-all hover:scale-105 hover:shadow-lg`}>
             <div className="p-2 rounded-full bg-white/50 mb-2">
@@ -865,9 +865,9 @@ const DeadlineItem = ({ company, deadline, type }) => {
         drive: <Calendar size={12} />,
         test: <FileText size={12} />
     };
-    
+
     const daysLeft = Math.ceil((new Date(`2026-${deadline}`) - new Date()) / (1000 * 60 * 60 * 24));
-    
+
     return (
         <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
             <div className="flex items-center gap-3">
