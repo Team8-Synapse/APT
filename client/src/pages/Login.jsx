@@ -100,8 +100,8 @@ const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
 
 // ============= MAIN LOGIN COMPONENT =============
 const Login = () => {
-    const [identifier, setIdentifier] = useState('');
-    const [password, setPassword] = useState('');
+    const [identifier, setIdentifier] = useState('cb.sc.u4cse23621@cb.students.amrita.edu');
+    const [password, setPassword] = useState('Harini05');
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -141,6 +141,27 @@ const Login = () => {
         }
     ];
 
+
+    const handleQuickLogin = async (id, pwd) => {
+        setIsLoading(true);
+        setError('');
+        setIdentifier(id);
+        setPassword(pwd);
+
+        try {
+            const user = await login(id, pwd);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            if (user.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            setError(err.response?.data?.error || 'Quick login failed.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -444,7 +465,7 @@ const Login = () => {
                                             <div className="relative group">
                                                 <input
                                                     type="text"
-                                                    placeholder="Enter credentials"
+                                                    placeholder="Admin: cir@amrita.edu / Student Roll No"
                                                     className="w-full px-5 py-3.5 bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl text-maroon text-base placeholder-maroon/30 focus:outline-none focus:border-maroon focus:ring-4 focus:ring-maroon/5 transition-all shadow-sm group-hover:border-maroon/20"
                                                     value={identifier}
                                                     onChange={(e) => setIdentifier(e.target.value)}
@@ -474,7 +495,7 @@ const Login = () => {
                                             <div className="relative group">
                                                 <input
                                                     type={showPassword ? 'text' : 'password'}
-                                                    placeholder="••••••••"
+                                                    placeholder="Admin: password123 / Student Pwd"
                                                     className="w-full px-5 py-3.5 bg-white/70 backdrop-blur-sm border-2 border-maroon/10 rounded-xl text-maroon text-base placeholder-maroon/30 focus:outline-none focus:border-maroon focus:ring-4 focus:ring-maroon/5 transition-all shadow-sm group-hover:border-maroon/20"
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
@@ -512,6 +533,26 @@ const Login = () => {
                                                 </>
                                             )}
                                         </button>
+
+                                        {/* Temporary Auto-Login Buttons */}
+                                        <div className="grid grid-cols-2 gap-4 mt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleQuickLogin('cir@amrita.edu', 'password123')}
+                                                className="py-2.5 px-4 bg-maroon hover:bg-maroon-dark border border-maroon text-xs font-bold text-white transition-all flex items-center justify-center gap-2 shadow-md group/auto"
+                                            >
+                                                <ShieldCheck size={14} className="text-white group-hover/auto:scale-110 transition-transform" />
+                                                Auto Admin
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleQuickLogin('cb.sc.u4cse23621@cb.students.amrita.edu', 'Harini05')}
+                                                className="py-2.5 px-4 bg-maroon hover:bg-maroon-dark border border-maroon text-xs font-bold text-white transition-all flex items-center justify-center gap-2 shadow-md group/auto"
+                                            >
+                                                <User size={14} className="text-white group-hover/auto:scale-110 transition-transform" />
+                                                Auto Student
+                                            </button>
+                                        </div>
                                     </form>
 
                                     {/* Divider */}
@@ -549,7 +590,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

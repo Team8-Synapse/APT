@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     User, Save, Plus, X, GraduationCap, Award, BookOpen, Sparkles,
     Briefcase, Link2, Github, Linkedin, MapPin, Phone, Mail, FileText,
     Building2, Calendar, Star, ChevronDown, ChevronUp, CheckCircle, AlertCircle, Download
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import ResumeDocument from '../components/Resume/ResumeDocument';
+import ResumeDocument from '../../components/Resume/ResumeDocument';
 
 const StudentProfile = () => {
     const { user } = useAuth();

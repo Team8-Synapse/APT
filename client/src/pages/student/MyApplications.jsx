@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     FileText, Clock, CheckCircle, XCircle, AlertCircle, ChevronRight, Building2,
     Calendar, ArrowRight, ExternalLink, Filter, Search, Briefcase
 } from 'lucide-react';
-import CompanyLogo from '../components/CompanyLogo';
+import CompanyLogo from '../../components/CompanyLogo';
 
 const MyApplications = () => {
     const { user } = useAuth();

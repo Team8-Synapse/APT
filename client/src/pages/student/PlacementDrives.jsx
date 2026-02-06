@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     Calendar, Building2, Clock, MapPin, DollarSign, Users, Filter, Search,
     ChevronRight, CheckCircle, XCircle, AlertCircle, Briefcase, GraduationCap,
     ExternalLink, ChevronDown, List, Grid3X3, TrendingUp, Target, Award, Timer
 } from 'lucide-react';
-import CompanyLogo from '../components/CompanyLogo';
+import CompanyLogo from '../../components/CompanyLogo';
 
 const PlacementDrives = () => {
     const { user } = useAuth();

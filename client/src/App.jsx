@@ -4,33 +4,36 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import StudentDashboard from './pages/StudentDashboard';
-import AlumniInsights from './pages/AlumniInsights';
-import PrepHub from './pages/PrepHub';
-import StudentProfile from './pages/StudentProfile';
-import AdminDashboard from './pages/AdminDashboard';
-import PlacementDrives from './pages/PlacementDrives';
-import MyApplications from './pages/MyApplications';
-import InterviewExperiences from './pages/InterviewExperiences';
+import StudentDashboard from './pages/student/Dashboard';
+import AlumniInsights from './pages/student/AlumniInsights';
+import PrepHub from './pages/student/PrepHub';
+import StudentProfile from './pages/student/Profile';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminPrepHub from './pages/admin/AdminPrepHub';
+import AdminAnnouncements from './pages/admin/AdminAnnouncements';
+import PlacementDrives from './pages/student/PlacementDrives';
+import MyApplications from './pages/student/MyApplications';
+import InterviewExperiences from './pages/student/InterviewExperiences';
 import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
+import Home from './pages/Home';
 
-const PrivateRoute = ({ children, role }) => {
+
+const PrivateRoute = ({ children, role, hideNavbar = false }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
   if (!user) return <Navigate to="/login" />;
   if (role && user.role !== role) return <Navigate to="/" />;
   return (
     <>
-      <Navbar />
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {!hideNavbar && <Navbar />}
+      <div className={hideNavbar ? "w-full" : "max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8"}>
         {children}
       </div>
     </>
   );
 };
 
-import Home from './pages/Home';
 
 const HomeRedirect = () => {
   const { user, loading } = useAuth();
@@ -56,7 +59,9 @@ function App() {
           <Route path="/experiences" element={<PrivateRoute role="student"><InterviewExperiences /></PrivateRoute>} />
           <Route path="/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
           <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
-          <Route path="/admin" element={<PrivateRoute role="admin"><AdminDashboard /></PrivateRoute>} />
+          <Route path="/admin" element={<PrivateRoute role="admin" hideNavbar={true}><AdminDashboard /></PrivateRoute>} />
+          <Route path="/admin/prephub" element={<PrivateRoute role="admin" hideNavbar={true}><AdminPrepHub /></PrivateRoute>} />
+          <Route path="/admin/announcements" element={<PrivateRoute role="admin" hideNavbar={true}><AdminAnnouncements /></PrivateRoute>} />
           <Route path="/home" element={<HomeRedirect />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
