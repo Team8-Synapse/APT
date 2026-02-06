@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
     User, Save, Plus, X, GraduationCap, Award, BookOpen, Sparkles,
     Briefcase, Link2, Github, Linkedin, MapPin, Phone, Mail, FileText,
-    Building2, Calendar, Star, ChevronDown, ChevronUp, CheckCircle, AlertCircle, Download
+    Building2, Calendar, Star, ChevronDown, ChevronUp, CheckCircle, AlertCircle, Download, Upload
 } from 'lucide-react';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ResumeDocument from '../../components/Resume/ResumeDocument';
@@ -199,6 +199,43 @@ const StudentProfile = () => {
 
     const handleRemoveLocation = (index) => {
         setProfile({ ...profile, preferredLocations: profile.preferredLocations.filter((_, i) => i !== index) });
+    };
+
+    const [uploading, setUploading] = useState(false);
+
+    const handleResumeUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!allowedTypes.includes(file.type)) {
+            setMessage({ type: 'error', text: 'Only PDF and Word documents are allowed' });
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('resume', file);
+        const userId = user?._id || user?.id;
+        formData.append('userId', userId);
+
+        setUploading(true);
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/upload/resume`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            setProfile(prev => ({ ...prev, resumeUrl: res.data.url }));
+            setMessage({ type: 'success', text: 'Resume uploaded successfully!' });
+            setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+        } catch (err) {
+            console.error(err);
+            setMessage({ type: 'error', text: err.response?.data?.error || 'Failed to upload resume' });
+        } finally {
+            setUploading(false);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -731,14 +768,70 @@ const StudentProfile = () => {
                                     placeholder="https://github.com/username"
                                     icon={<Github size={16} />}
                                 />
-                                <InputField
-                                    label="Resume URL"
-                                    name="resumeUrl"
-                                    value={profile.resumeUrl}
-                                    onChange={handleChange}
-                                    placeholder="https://drive.google.com/..."
-                                    icon={<FileText size={16} />}
-                                />
+                                <div>
+                                    <label className="text-xs font-bold uppercase tracking-wider mb-2 block" style={{ color: '#6b7280' }}>
+                                        Resume Upload
+                                    </label>
+                                    <div className="flex items-center gap-4">
+                                        <input
+                                            type="file"
+                                            id="resume-upload"
+                                            className="hidden"
+                                            accept=".pdf,.doc,.docx"
+                                            onChange={handleResumeUpload}
+                                        />
+
+                                        {profile.resumeUrl ? (
+                                            <div className="flex-1 flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="p-2 bg-green-100 rounded-lg text-green-700">
+                                                        <FileText size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-green-800">Resume Uploaded</p>
+                                                        <a
+                                                            href={profile.resumeUrl}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="text-xs text-green-600 hover:underline"
+                                                        >
+                                                            View Document
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => document.getElementById('resume-upload').click()}
+                                                    className="text-xs font-bold text-green-700 hover:text-green-900 bg-white px-3 py-1.5 rounded-lg border border-green-200 shadow-sm"
+                                                >
+                                                    Replace
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => document.getElementById('resume-upload').click()}
+                                                className="flex-1 py-3 border-2 border-dashed rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:bg-white group"
+                                                style={{ borderColor: '#A4123F', color: '#A4123F' }}
+                                                disabled={uploading}
+                                            >
+                                                {uploading ? (
+                                                    <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
+                                                ) : (
+                                                    <>
+                                                        <div className="p-1 bg-amrita-maroon/10 rounded-lg group-hover:bg-amrita-maroon/20 transition-colors">
+                                                            <Upload size={18} />
+                                                        </div>
+                                                        <span>Upload Resume (PDF)</span>
+                                                    </>
+                                                )}
+                                            </button>
+                                        )}
+                                    </div>
+                                    <p className="text-[10px] mt-1 text-gray-400">
+                                        Supported formats: PDF, DOC, DOCX. Max size: 5MB
+                                    </p>
+                                </div>
                                 <InputField
                                     label="Portfolio Website"
                                     name="portfolio"

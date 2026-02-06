@@ -40,6 +40,8 @@ const reportRoutes = require('./routes/reportRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const otpRoutes = require('./routes/otpRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const liveUpdateRoutes = require('./routes/liveUpdateRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
@@ -52,6 +54,9 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/announcements', announcementRoutes);
+console.log('Registering /api/live-updates route');
+app.use('/api/live-updates', liveUpdateRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
     res.send('Placement Tracker API is running...');
@@ -59,6 +64,7 @@ app.get('/', (req, res) => {
 
 // 404 Handler
 app.use((req, res) => {
+    console.log(`404 Hit: ${req.method} ${req.url}`);
     res.status(404).json({ error: 'Route not found' });
 });
 
