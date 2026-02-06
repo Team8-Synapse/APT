@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, Megaphone } from 'lucide-react';
+import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase } from 'lucide-react';
 
 const PrepHub = () => {
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState('Coding');
     const [searchTerm, setSearchTerm] = useState('');
-    const [announcements, setAnnouncements] = useState([]);
 
     const categories = [
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
@@ -15,15 +14,6 @@ const PrepHub = () => {
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR & Behavioral' },
     ];
-
-    const fetchAnnouncements = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
-            setAnnouncements(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     useEffect(() => {
         const fetchResources = async () => {
@@ -38,11 +28,6 @@ const PrepHub = () => {
             }
         };
         fetchResources();
-        fetchAnnouncements();
-
-        // Polling for real-time updates (every 30 seconds)
-        const pollInterval = setInterval(fetchAnnouncements, 30000);
-        return () => clearInterval(pollInterval);
     }, [category]);
 
     const filteredResources = resources.filter(res => {
@@ -167,46 +152,7 @@ const PrepHub = () => {
                     )}
                 </div>
 
-                {/* Sidebar - Announcements */}
-                <aside className="w-full lg:w-80 space-y-6">
-                    <div className="glass-card overflow-hidden">
-                        <div className="p-6 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white flex items-center gap-3">
-                            <Megaphone size={20} className="animate-bounce" />
-                            <h2 className="font-black uppercase tracking-widest text-xs">Admin Updates</h2>
-                        </div>
-                        <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto no-scrollbar">
-                            {announcements.length > 0 ? announcements.map((ann, i) => (
-                                <div key={i} className="space-y-3 pb-6 border-b border-gray-100 last:border-0 last:pb-0">
-                                    <p className="text-sm font-bold text-gray-800 leading-relaxed italic">
-                                        "{ann.content}"
-                                    </p>
-                                    {ann.links && ann.links.length > 0 && ann.links[0].url && (
-                                        <div className="flex flex-wrap gap-2">
-                                            {ann.links.map((link, idx) => (
-                                                link.url && (
-                                                    <a
-                                                        key={idx}
-                                                        href={link.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-[10px] font-black text-amrita-maroon flex items-center gap-1 hover:underline"
-                                                    >
-                                                        <ExternalLink size={10} /> {link.title || 'View Link'}
-                                                    </a>
-                                                )
-                                            ))}
-                                        </div>
-                                    )}
-                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest italic">
-                                        {new Date(ann.createdAt).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            )) : (
-                                <p className="text-center text-xs text-gray-400 font-bold py-10 italic">No updates available at this moment.</p>
-                            )}
-                        </div>
-                    </div>
-                </aside>
+
             </div>
         </div>
     );

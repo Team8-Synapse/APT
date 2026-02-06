@@ -13,876 +13,1403 @@ import {
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
     Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon
 } from 'lucide-react';
-import AIChatbot from '../../components/AIChatbot';
-import DailyChallenge from '../../components/DailyChallenge';
-import PlacementCountdown from '../../components/PlacementCountdown';
-import SkillProgress from '../../components/SkillProgress';
-import InterviewSchedule from '../../components/InterviewSchedule';
-import ResourceRecommendations from '../../components/ResourceRecommendations';
 
+// ============= MAROON-WHITE MODERN THEME =============
+const theme = {
+    maroon: {
+        primary: '#8B0000',
+        secondary: '#A52A2A',
+        light: '#C04040',
+        dark: '#5A0000',
+        gradient: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
+        subtle: 'rgba(139, 0, 0, 0.08)',
+        medium: 'rgba(139, 0, 0, 0.15)',
+        strong: 'rgba(139, 0, 0, 0.25)'
+    },
+    beige: {
+        primary: '#FFFFFF',
+        secondary: '#F8F9FA',
+        light: '#FFFFFF',
+        dark: '#F0F2F5'
+    }
+};
+
+// ============= ANIMATED BACKGROUND =============
+const AnimatedBackground = () => (
+    <div className="animated-bg-dashboard">
+        <div className="gradient-orb-d orb-d1"></div>
+        <div className="gradient-orb-d orb-d2"></div>
+        <div className="gradient-orb-d orb-d3"></div>
+    </div>
+);
+
+// ============= GLOWING ORBS =============
+const GlowingOrbs = () => (
+    <>
+        <div className="glowing-orb-d orba"></div>
+        <div className="glowing-orb-d orbb"></div>
+        <div className="glowing-orb-d orbc"></div>
+    </>
+);
+
+// ============= ANIMATED COUNTER =============
+const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
+    const [count, setCount] = useState(0);
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    setHasAnimated(true);
+                    const startTime = Date.now();
+                    const animate = () => {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easeOut = 1 - Math.pow(1 - progress, 3);
+                        setCount(Math.floor(easeOut * end));
+                        if (progress < 1) requestAnimationFrame(animate);
+                    };
+                    animate();
+                }
+            },
+            { threshold: 0.3 }
+        );
+
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, [end, duration, hasAnimated]);
+
+    return <span ref={ref}>{count}{suffix}</span>;
+};
+
+// ============= TILT CARD =============
+const TiltCard = ({ children, className = '' }) => {
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e) => {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * 8;
+        const rotateY = ((x - centerX) / centerX) * -8;
+        setTilt({ x: rotateX, y: rotateY });
+    };
+
+    const handleMouseLeave = () => {
+        setTilt({ x: 0, y: 0 });
+        setIsHovered(false);
+    };
+
+    return (
+        <div
+            className={`tilt-card-d ${className}`}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={handleMouseLeave}
+            style={{
+                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${isHovered ? 1.02 : 1})`,
+                transition: 'transform 0.3s ease-out'
+            }}
+        >
+            {isHovered && <div className="card-glow"></div>}
+            {children}
+        </div>
+    );
+};
+
+// ============= FADE IN ANIMATION =============
+const FadeIn = ({ children, delay = 0, direction = 'up' }) => {
+    const [isVisible, setIsVisible] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => setIsVisible(true), delay);
+                }
+            },
+            { threshold: 0.1, rootMargin: '-20px' }
+        );
+
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, [delay]);
+
+    const directions = {
+        up: 'translateY(40px)',
+        down: 'translateY(-40px)',
+        left: 'translateX(40px)',
+        right: 'translateX(-40px)'
+    };
+
+    return (
+        <div
+            ref={ref}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translate(0) scale(1)' : `${directions[direction]} scale(0.95)`,
+                transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                transitionDelay: `${delay}ms`
+            }}
+        >
+            {children}
+        </div>
+    );
+};
+
+// ============= ANIMATED SKILL BAR =============
+const AnimatedSkillBar = ({ skill, level, delay = 0, color = '#8B0000' }) => {
+    const [progress, setProgress] = useState(0);
+    const [hasAnimated, setHasAnimated] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !hasAnimated) {
+                    setHasAnimated(true);
+                    setTimeout(() => {
+                        let start = 0;
+                        const increment = level / 50;
+                        const timer = setInterval(() => {
+                            start += increment;
+                            if (start >= level) {
+                                setProgress(level);
+                                clearInterval(timer);
+                            } else {
+                                setProgress(Math.floor(start));
+                            }
+                        }, 20);
+                    }, delay);
+                }
+            },
+            { threshold: 0.3 }
+        );
+
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, [level, delay, hasAnimated]);
+
+    return (
+        <div ref={ref} className="skill-bar-container">
+            <div className="skill-bar-header">
+                <span className="skill-name">{skill}</span>
+                <span className="skill-level">{progress}%</span>
+            </div>
+            <div className="skill-bar-track">
+                <div
+                    className="skill-bar-fill"
+                    style={{
+                        width: `${progress}%`,
+                        background: `linear-gradient(90deg, ${color}, ${color}dd)`
+                    }}
+                >
+                    <div className="skill-bar-glow"></div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ============= PULSE NOTIFICATION =============
+const PulseNotification = ({ count }) => (
+    <div className="pulse-notification">
+        <span>{count}</span>
+        <div className="pulse-ring"></div>
+    </div>
+);
+
+// ============= MOCK DATA =============
+const mockNotifications = [
+    { id: 1, message: 'Google drive registration closes tomorrow!', type: 'urgent', time: '2h ago' },
+    { id: 2, message: 'You\'ve been shortlisted for Microsoft', type: 'success', time: '5h ago' },
+    { id: 3, message: 'New mock interview scheduled', type: 'info', time: '1d ago' },
+];
+
+// ============= MAIN DASHBOARD COMPONENT =============
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
     const [stats, setStats] = useState({
-        readinessScore: 0,
-        profile: {},
-        applications: { total: 0, inProgress: 0, offered: 0, rejected: 0 },
-        drives: { upcoming: 0, eligible: 0 },
-        skills: [],
-        mockInterviews: { completed: 0, scheduled: 0, averageScore: 0 },
-        resources: { viewed: 0, completed: 0 }
+        readinessScore: 78,
+        profile: { name: '', department: 'Computer Science', cgpa: 8.5, placementStatus: 'not_placed', batch: '2026' },
+        applications: { total: 5, inProgress: 2, offered: 1, rejected: 1 },
+        drives: { upcoming: 8, eligible: 6 },
+        skills: [
+            { name: 'Data Structures', level: 85 },
+            { name: 'Algorithms', level: 78 },
+            { name: 'System Design', level: 65 },
+            { name: 'React', level: 90 },
+            { name: 'Node.js', level: 82 }
+        ],
+        mockInterviews: { completed: 3, scheduled: 2, averageScore: 7.5 },
+        resources: { viewed: 12, completed: 8 }
     });
     const [drives, setDrives] = useState([]);
     const [applications, setApplications] = useState([]);
-    const [notifications, setNotifications] = useState([]);
+    const [notifications, setNotifications] = useState(mockNotifications);
+    const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentTip, setCurrentTip] = useState(0);
-    const [darkMode, setDarkMode] = useState(false);
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeSection, setActiveSection] = useState('overview');
     const [showNotifications, setShowNotifications] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [userStreak, setUserStreak] = useState(7);
-    const [timeOfDay, setTimeOfDay] = useState('');
 
-    // Initialize time of day
+    // Update time every minute
     useEffect(() => {
-        const hour = new Date().getHours();
-        if (hour < 12) setTimeOfDay('Morning');
-        else if (hour < 17) setTimeOfDay('Afternoon');
-        else setTimeOfDay('Evening');
+        const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+        return () => clearInterval(timer);
     }, []);
 
-    // Daily tips rotation
-    const dailyTips = [
-        "Practice at least 2 DSA problems daily to stay sharp 💪",
-        "Update your LinkedIn profile with recent projects 🔗",
-        "Review alumni interview experiences before your next interview 📚",
-        "Work on your communication skills - they matter! 🗣️",
-        "Build that side project you've been thinking about 🚀",
-        "Network with alumni on LinkedIn - ask for referrals 👥",
-        "Review system design concepts weekly 🏗️",
-        "Practice behavioral questions using STAR method ⭐",
-        "Update your resume with quantifiable achievements 📄",
-        "Participate in mock interviews for feedback 🎯"
-    ];
-
-    // Announcements ticker
-    const announcements = [
-        "🎉 Google hiring for SDE positions - Apply by March 15",
-        "📢 Mock interview sessions starting next week",
-        "🏆 Amazon offered highest package of ₹50 LPA this season",
-        "📝 Resume building workshop on Friday at 3 PM",
-        "💼 Microsoft on-campus drive scheduled for March 22",
-        "🌟 New: AI-powered interview simulator launched",
-        "📈 Placement stats: 85% of CSE students placed",
-        "🎓 Alumni talk: Senior Engineer at Google - March 18",
-        "💡 Tip: Update your GitHub with recent projects",
-        "📊 New feature: Real-time application tracking"
-    ];
-
-    // Notifications
-    const mockNotifications = [
-        { id: 1, type: 'success', message: 'Your application to Google has been shortlisted!', time: '2 min ago', read: false },
-        { id: 2, type: 'info', message: 'Microsoft drive application deadline tomorrow', time: '1 hour ago', read: false },
-        { id: 3, type: 'warning', message: 'Complete your profile for better opportunities', time: '2 hours ago', read: true },
-        { id: 4, type: 'success', message: 'You earned "Profile Pro" achievement', time: '5 hours ago', read: true },
-    ];
-
-    useEffect(() => {
-        const tipInterval = setInterval(() => {
-            setCurrentTip((prev) => (prev + 1) % dailyTips.length);
-        }, 8000);
-        return () => clearInterval(tipInterval);
-    }, []);
-
+    // Fetch data
     useEffect(() => {
         const userId = user?._id || user?.id;
         if (!userId) return;
+
+        const fetchAnnouncements = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
+                setAnnouncements(res.data || []);
+            } catch (err) {
+                console.error('Error fetching announcements:', err);
+            }
+        };
 
         const fetchData = async () => {
             try {
-                const [dashboardRes, drivesRes, applicationsRes, notificationsRes] = await Promise.all([
+                const [dashboardRes, drivesRes, applicationsRes] = await Promise.all([
                     axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/dashboard-stats/${user.id}`),
                     axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${user.id}`)
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`)
                 ]);
-
                 setStats(dashboardRes.data);
                 setDrives(drivesRes.data.slice(0, 5));
                 setApplications(applicationsRes.data.slice(0, 5));
-                setNotifications(notificationsRes.data || mockNotifications);
                 setLoading(false);
             } catch (err) {
-                console.error(err);
-                // Enhanced mock data
-                setStats({
-                    readinessScore: 78,
-                    profile: {
-                        name: user.email.split('@')[0],
-                        department: 'Computer Science',
-                        cgpa: 8.5,
-                        placementStatus: 'not_placed',
-                        batch: '2026',
-                        skills: ['React', 'Node.js', 'Python', 'MongoDB'],
-                        achievements: ['Profile Pro', 'First Apply', '7-Day Streak']
-                    },
-                    applications: { total: 5, inProgress: 2, offered: 1, rejected: 1 },
-                    drives: { upcoming: 8, eligible: 6 },
-                    skills: [
-                        { name: 'Data Structures', level: 85 },
-                        { name: 'Algorithms', level: 78 },
-                        { name: 'System Design', level: 65 },
-                        { name: 'React', level: 90 },
-                        { name: 'Node.js', level: 82 }
-                    ],
-                    mockInterviews: { completed: 3, scheduled: 2, averageScore: 7.5 },
-                    resources: { viewed: 12, completed: 8 }
-                });
+                // Use mock data on error
                 setDrives([
-                    { _id: '1', companyName: 'Google', jobProfile: 'Software Engineer L3', date: '2026-03-15', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 4500000 }, location: 'Bangalore', eligibility: { minCgpa: 7.5, backlog: 0 } },
-                    { _id: '2', companyName: 'Microsoft', jobProfile: 'SDE', date: '2026-03-22', status: 'upcoming', isEligible: true, hasApplied: true, ctcDetails: { ctc: 4200000 }, location: 'Hyderabad', eligibility: { minCgpa: 7.0, backlog: 0 } },
-                    { _id: '3', companyName: 'Amazon', jobProfile: 'SDE-1', date: '2026-04-05', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 4000000 }, location: 'Bangalore', eligibility: { minCgpa: 7.0, backlog: 1 } },
-                    { _id: '4', companyName: 'Adobe', jobProfile: 'MTS', date: '2026-04-12', status: 'upcoming', isEligible: false, hasApplied: false, ctcDetails: { ctc: 3800000 }, location: 'Noida', eligibility: { minCgpa: 8.0, backlog: 0 } },
-                    { _id: '5', companyName: 'Goldman Sachs', jobProfile: 'Technology Analyst', date: '2026-04-20', status: 'upcoming', isEligible: true, hasApplied: false, ctcDetails: { ctc: 2800000 }, location: 'Bengaluru', eligibility: { minCgpa: 7.5, backlog: 0 } },
+                    { _id: '1', companyName: 'Google', jobProfile: 'Software Engineer L3', date: '2026-03-15', ctcDetails: { ctc: 4500000 }, location: 'Bangalore' },
+                    { _id: '2', companyName: 'Microsoft', jobProfile: 'SDE', date: '2026-03-22', ctcDetails: { ctc: 4200000 }, location: 'Hyderabad' },
+                    { _id: '3', companyName: 'Amazon', jobProfile: 'SDE-1', date: '2026-04-05', ctcDetails: { ctc: 4000000 }, location: 'Bangalore' },
+                    { _id: '4', companyName: 'Adobe', jobProfile: 'MTS', date: '2026-04-12', ctcDetails: { ctc: 3800000 }, location: 'Noida' },
                 ]);
                 setApplications([
-                    { _id: '1', driveId: { companyName: 'Microsoft', jobProfile: 'SDE' }, status: 'shortlisted', appliedDate: '2026-02-01', lastUpdated: '2026-02-10' },
-                    { _id: '2', driveId: { companyName: 'Adobe', jobProfile: 'MTS' }, status: 'applied', appliedDate: '2026-01-28', lastUpdated: '2026-01-28' },
-                    { _id: '3', driveId: { companyName: 'TCS', jobProfile: 'System Engineer' }, status: 'offered', appliedDate: '2026-01-15', lastUpdated: '2026-01-30' },
-                    { _id: '4', driveId: { companyName: 'Infosys', jobProfile: 'Specialist Programmer' }, status: 'rejected', appliedDate: '2026-01-10', lastUpdated: '2026-01-25' },
-                    { _id: '5', driveId: { companyName: 'Wipro', jobProfile: 'Project Engineer' }, status: 'round1', appliedDate: '2026-02-05', lastUpdated: '2026-02-08' },
+                    { _id: '1', driveId: { companyName: 'Microsoft', jobProfile: 'SDE' }, status: 'shortlisted', appliedDate: '2026-02-01' },
+                    { _id: '2', driveId: { companyName: 'Adobe', jobProfile: 'MTS' }, status: 'applied', appliedDate: '2026-01-28' },
+                    { _id: '3', driveId: { companyName: 'TCS', jobProfile: 'System Engineer' }, status: 'offered', appliedDate: '2026-01-15' },
                 ]);
-                setNotifications(mockNotifications);
                 setLoading(false);
             }
         };
+
         fetchData();
-
-        // Auto-refresh data every 30 seconds
-        const interval = setInterval(fetchData, 30000);
+        fetchAnnouncements();
+        const interval = setInterval(fetchAnnouncements, 15000);
         return () => clearInterval(interval);
-    }, [user.id]);
+    }, [user]);
 
-    const handleApply = async (driveId) => {
-        const userId = user?._id || user?.id;
-        if (!userId) return;
-
-        try {
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/apply`, {
-                userId: userId,
-                driveId
-            });
-            const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`);
-            setDrives(drivesRes.data.slice(0, 5));
-            // Add notification
-            setNotifications(prev => [{
-                id: Date.now(),
-                type: 'success',
-                message: 'Application submitted successfully!',
-                time: 'Just now',
-                read: false
-            }, ...prev]);
-        } catch (err) {
-            console.error('Failed to apply:', err);
-            alert(err.response?.data?.error || 'Failed to apply');
-        }
+    const getGreeting = () => {
+        const hour = currentTime.getHours();
+        if (hour < 12) return { text: 'Good Morning', color: '#FFB347' };
+        if (hour < 17) return { text: 'Good Afternoon', color: '#87CEEB' };
+        if (hour < 20) return { text: 'Good Evening', color: '#FF6B6B' };
+        return { text: 'Good Night', color: '#6C5CE7' };
     };
 
-    const handleNotificationClick = (id) => {
-        setNotifications(prev =>
-            prev.map(notif =>
-                notif.id === id ? { ...notif, read: true } : notif
-            )
-        );
-    };
+    const greeting = getGreeting();
+    const userName = stats.profile?.name || user?.email?.split('@')[0] || 'Student';
 
     const getStatusColor = (status) => {
         const colors = {
-            applied: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400',
-            shortlisted: 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-400',
-            round1: 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-400',
-            round2: 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400',
-            round3: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-400',
-            offered: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400',
-            rejected: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400',
-            accepted: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'
+            offered: { bg: 'rgba(16, 185, 129, 0.15)', text: '#10B981', border: '#10B981' },
+            shortlisted: { bg: 'rgba(59, 130, 246, 0.15)', text: '#3B82F6', border: '#3B82F6' },
+            applied: { bg: 'rgba(245, 158, 11, 0.15)', text: '#F59E0B', border: '#F59E0B' },
+            rejected: { bg: 'rgba(239, 68, 68, 0.15)', text: '#EF4444', border: '#EF4444' },
+            round1: { bg: 'rgba(139, 92, 246, 0.15)', text: '#8B5CF6', border: '#8B5CF6' },
+            round2: { bg: 'rgba(14, 165, 233, 0.15)', text: '#0EA5E9', border: '#0EA5E9' },
         };
-        return colors[status] || 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400';
+        return colors[status] || colors.applied;
     };
 
-    const filteredDrives = drives.filter(drive =>
-        drive.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        drive.jobProfile.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (loading) return (
-        <div className="space-y-8 page-enter">
-            <div className="h-32 skeleton rounded-3xl animate-pulse"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="h-64 skeleton rounded-3xl animate-pulse"></div>
-                <div className="h-64 skeleton rounded-3xl lg:col-span-2 animate-pulse"></div>
+    if (loading) {
+        return (
+            <div className="loading-screen">
+                <div className="loading-spinner">
+                    <div className="spinner-ring"></div>
+                    <div className="spinner-ring"></div>
+                    <div className="spinner-ring"></div>
+                </div>
+                <p>Loading your dashboard...</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-32 skeleton rounded-2xl animate-pulse"></div>
-                ))}
-            </div>
-        </div>
-    );
+        );
+    }
 
     return (
-        <div className="space-y-8 page-enter pb-8">
-            {/* Top Bar */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-2xl font-black text-gray-900 dark:text-white">
-                        Good {timeOfDay}, {stats.profile?.name || user.email.split('@')[0]}!
-                        <span className="text-amrita-maroon dark:text-amrita-gold"> 👋</span>
-                    </h1>
-                    <p className="text-gray-500 text-sm">Track your placement journey and opportunities</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    {/* Search Bar */}
-                    <div className="relative hidden md:block">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search drives, resources..."
-                            className="pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amrita-maroon"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
+        <div className="dashboard-container">
+            <style>{`
+                /* ========== CSS VARIABLES ========== */
+                :root {
+                    --maroon-primary: #8B0000;
+                    --maroon-secondary: #A52A2A;
+                    --maroon-light: #C04040;
+                    --maroon-dark: #5A0000;
+                    --maroon-gradient: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
+                    --maroon-subtle: rgba(139, 0, 0, 0.08);
+                    --maroon-medium: rgba(139, 0, 0, 0.15);
+                    --text-primary: #1a1a1a;
+                    --text-secondary: #555;
+                    --text-light: #888;
+                    --bg-primary: #FFFFFF;
+                    --bg-secondary: #F8F9FA;
+                    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+                    --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+                    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+                    --shadow-glow: 0 0 30px rgba(139, 0, 0, 0.2);
+                    --radius-sm: 8px;
+                    --radius-md: 16px;
+                    --radius-lg: 24px;
+                    --radius-xl: 32px;
+                }
 
-                    {/* Notification Bell */}
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowNotifications(!showNotifications)}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative"
-                        >
-                            <BellRing size={20} />
-                            {notifications.filter(n => !n.read).length > 0 && (
-                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                                    {notifications.filter(n => !n.read).length}
-                                </span>
-                            )}
-                        </button>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
 
-                        {/* Notification Dropdown */}
-                        {showNotifications && (
-                            <div className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50">
-                                <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-                                    <div className="flex justify-between items-center">
-                                        <h3 className="font-bold text-gray-900 dark:text-white">Notifications</h3>
-                                        <button className="text-xs text-amrita-maroon hover:underline">
-                                            Mark all as read
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="max-h-96 overflow-y-auto">
-                                    {notifications.map((notif) => (
-                                        <div
-                                            key={notif.id}
-                                            onClick={() => handleNotificationClick(notif.id)}
-                                            className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 ${!notif.read ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
-                                        >
-                                            <div className="flex items-start gap-3">
-                                                <div className={`p-2 rounded-full ${notif.type === 'success' ? 'bg-green-100 text-green-600' : notif.type === 'warning' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'}`}>
-                                                    {notif.type === 'success' ? <CheckCircle size={16} /> :
-                                                        notif.type === 'warning' ? <AlertTriangle size={16} /> :
-                                                            <Info size={16} />}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.message}</p>
-                                                    <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
-                                                </div>
-                                                {!notif.read && (
-                                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="p-3 border-t border-gray-100 dark:border-gray-700">
-                                    <a href="/notifications" className="text-center block text-sm text-amrita-maroon hover:underline font-medium">
-                                        View all notifications
-                                    </a>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                .dashboard-container {
+                    min-height: 100vh;
+                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 50%, #F8F9FA 100%);
+                    position: relative;
+                    overflow-x: hidden;
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                }
 
-                    {/* Dark Mode Toggle */}
-                    <button
-                        onClick={() => setDarkMode(!darkMode)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"
-                    >
-                        {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                    </button>
+                /* ========== ANIMATED BACKGROUND ========== */
+                .animated-bg-dashboard {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 0;
+                    overflow: hidden;
+                }
 
-                    {/* User Menu */}
-                    <div className="relative group">
-                        <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl">
-                            <div className="w-8 h-8 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white rounded-full flex items-center justify-center font-bold">
-                                {stats.profile?.name?.[0] || user.email[0].toUpperCase()}
-                            </div>
-                            <ChevronRight size={16} className="text-gray-400 group-hover:rotate-90 transition-transform" />
-                        </button>
-                        <div className="absolute right-0 top-12 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-                                <p className="font-bold text-gray-900 dark:text-white">{stats.profile?.name}</p>
-                                <p className="text-sm text-gray-500">{user.email}</p>
-                            </div>
-                            <div className="p-2">
-                                <a href="/profile" className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm">
-                                    <UserCheck size={16} /> My Profile
-                                </a>
-                                <a href="/settings" className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm">
-                                    <Settings size={16} /> Settings
-                                </a>
-                                <a href="/help" className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm">
-                                    <HelpCircle size={16} /> Help & Support
-                                </a>
-                                <button
-                                    onClick={logout}
-                                    className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm text-red-600 w-full"
-                                >
-                                    <LogOut size={16} /> Logout
-                                </button>
-                            </div>
+                .gradient-orb-d {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(100px);
+                    opacity: 0.12;
+                    animation: float-orb-d 30s ease-in-out infinite;
+                }
+
+                .orb-d1 {
+                    width: 600px;
+                    height: 600px;
+                    background: radial-gradient(circle, #8B0000 0%, transparent 70%);
+                    top: -200px;
+                    right: -100px;
+                    animation-delay: 0s;
+                }
+
+                .orb-d2 {
+                    width: 500px;
+                    height: 500px;
+                    background: radial-gradient(circle, #A52A2A 0%, transparent 70%);
+                    bottom: -100px;
+                    left: -100px;
+                    animation-delay: -10s;
+                }
+
+                .orb-d3 {
+                    width: 400px;
+                    height: 400px;
+                    background: radial-gradient(circle, #C04040 0%, transparent 70%);
+                    top: 50%;
+                    left: 50%;
+                    animation-delay: -20s;
+                }
+
+                @keyframes float-orb-d {
+                    0%, 100% { transform: translate(0, 0) scale(1); }
+                    33% { transform: translate(50px, -50px) scale(1.1); }
+                    66% { transform: translate(-30px, 30px) scale(0.9); }
+                }
+
+                /* ========== GLOWING ORBS ========== */
+                .glowing-orb-d {
+                    position: fixed;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 1;
+                    animation: glow-pulse-d 4s ease-in-out infinite;
+                }
+
+                .orba {
+                    width: 16px;
+                    height: 16px;
+                    background: var(--maroon-primary);
+                    top: 15%;
+                    left: 8%;
+                    box-shadow: 0 0 30px var(--maroon-primary);
+                    animation-delay: 0s;
+                }
+
+                .orbb {
+                    width: 12px;
+                    height: 12px;
+                    background: var(--maroon-secondary);
+                    top: 55%;
+                    right: 10%;
+                    box-shadow: 0 0 25px var(--maroon-secondary);
+                    animation-delay: -1.5s;
+                }
+
+                .orbc {
+                    width: 20px;
+                    height: 20px;
+                    background: var(--maroon-light);
+                    bottom: 25%;
+                    left: 15%;
+                    box-shadow: 0 0 35px var(--maroon-light);
+                    animation-delay: -3s;
+                }
+
+                @keyframes glow-pulse-d {
+                    0%, 100% { opacity: 0.5; transform: scale(1); }
+                    50% { opacity: 1; transform: scale(1.3); }
+                }
+
+                /* ========== MAIN CONTENT ========== */
+                .main-content {
+                    position: relative;
+                    z-index: 10;
+                    padding: 2rem;
+                    max-width: 1600px;
+                    margin: 0 auto;
+                }
+
+                /* ========== HEADER ========== */
+                .dashboard-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 2rem;
+                    animation: slideDown 0.6s ease-out;
+                }
+
+                @keyframes slideDown {
+                    from { opacity: 0; transform: translateY(-30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                .greeting-section h1 {
+                    font-size: 2.5rem;
+                    font-weight: 800;
+                    color: var(--text-primary);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .greeting-section p {
+                    color: var(--text-light);
+                    font-size: 1rem;
+                }
+
+                .header-actions {
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+                }
+
+                .icon-btn {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: var(--radius-md);
+                    border: none;
+                    background: white;
+                    box-shadow: var(--shadow-sm);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                .icon-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: var(--shadow-md);
+                    background: var(--maroon-subtle);
+                }
+
+                .icon-btn svg {
+                    color: var(--text-secondary);
+                    transition: color 0.3s;
+                }
+
+                .icon-btn:hover svg {
+                    color: var(--maroon-primary);
+                }
+
+                .notification-badge {
+                    position: absolute;
+                    top: -4px;
+                    right: -4px;
+                    width: 20px;
+                    height: 20px;
+                    background: var(--maroon-gradient);
+                    border-radius: 50%;
+                    color: white;
+                    font-size: 11px;
+                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: pulse-badge 2s infinite;
+                }
+
+                @keyframes pulse-badge {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+
+                .logout-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: var(--radius-md);
+                    border: 2px solid var(--maroon-primary);
+                    background: transparent;
+                    color: var(--maroon-primary);
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+                .logout-btn:hover {
+                    background: var(--maroon-primary);
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+                /* ========== STATS CARDS ========== */
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+
+                .tilt-card-d {
+                    position: relative;
+                    transform-style: preserve-3d;
+                }
+
+                .card-glow {
+                    position: absolute;
+                    inset: 0;
+                    border-radius: var(--radius-lg);
+                    background: var(--maroon-gradient);
+                    opacity: 0.1;
+                    filter: blur(20px);
+                    z-index: -1;
+                }
+
+                .stat-card {
+                    background: white;
+                    border-radius: var(--radius-lg);
+                    padding: 1.75rem;
+                    box-shadow: var(--shadow-sm);
+                    border: 1px solid rgba(0,0,0,0.05);
+                    position: relative;
+                    overflow: hidden;
+                    transition: all 0.3s;
+                }
+
+                .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: var(--maroon-gradient);
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                }
+
+                .stat-card:hover::before {
+                    opacity: 1;
+                }
+
+                .stat-card-icon {
+                    width: 56px;
+                    height: 56px;
+                    border-radius: var(--radius-md);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 1rem;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .stat-card-icon::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: inherit;
+                    filter: blur(10px);
+                    opacity: 0.5;
+                }
+
+                .stat-card-icon svg {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .stat-value {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    color: var(--text-primary);
+                    line-height: 1;
+                    margin-bottom: 0.5rem;
+                }
+
+                .stat-label {
+                    font-size: 0.9rem;
+                    color: var(--text-secondary);
+                    font-weight: 500;
+                }
+
+                .stat-change {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    margin-top: 0.75rem;
+                    padding: 0.35rem 0.75rem;
+                    border-radius: 20px;
+                }
+
+                .stat-change.positive {
+                    background: rgba(16, 185, 129, 0.1);
+                    color: #10B981;
+                }
+
+                .stat-change.neutral {
+                    background: rgba(245, 158, 11, 0.1);
+                    color: #F59E0B;
+                }
+
+                /* ========== CONTENT GRID ========== */
+                .content-grid {
+                    display: grid;
+                    grid-template-columns: 2fr 1fr;
+                    gap: 2rem;
+                }
+
+                /* ========== GLASS CARD ========== */
+                .glass-card {
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(20px);
+                    border-radius: var(--radius-lg);
+                    padding: 1.75rem;
+                    box-shadow: var(--shadow-md);
+                    border: 1px solid rgba(255, 255, 255, 0.8);
+                    transition: all 0.3s;
+                }
+
+                .glass-card:hover {
+                    box-shadow: var(--shadow-lg);
+                }
+
+                .card-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 1.5rem;
+                }
+
+                .card-title {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                }
+
+                .card-title-icon {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: var(--radius-sm);
+                    background: var(--maroon-subtle);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .card-title-icon svg {
+                    color: var(--maroon-primary);
+                }
+
+                .view-all-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.35rem;
+                    padding: 0.5rem 1rem;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: var(--maroon-primary);
+                    background: var(--maroon-subtle);
+                    border: none;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                }
+
+                .view-all-btn:hover {
+                    background: var(--maroon-primary);
+                    color: white;
+                    transform: translateX(3px);
+                }
+
+                /* ========== ANNOUNCEMENTS ========== */
+                .announcements-section {
+                    margin-bottom: 2rem;
+                }
+
+                .announcement-card {
+                    background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(255,255,255,1) 100%);
+                    border: 1px solid rgba(139, 0, 0, 0.1);
+                    border-left: 4px solid var(--maroon-primary);
+                    padding: 1rem 1.25rem;
+                    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+                    margin-bottom: 1rem;
+                    transition: all 0.3s;
+                    cursor: pointer;
+                }
+
+                .announcement-card:hover {
+                    transform: translateX(5px);
+                    box-shadow: var(--shadow-md);
+                    border-left-width: 6px;
+                }
+
+                .announcement-content {
+                    font-size: 0.95rem;
+                    color: var(--text-primary);
+                    font-weight: 500;
+                    line-height: 1.5;
+                }
+
+                .announcement-meta {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 0.75rem;
+                    font-size: 0.8rem;
+                    color: var(--text-light);
+                }
+
+                .announcement-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    color: var(--maroon-primary);
+                    font-weight: 600;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                }
+
+                .announcement-link:hover {
+                    text-decoration: underline;
+                }
+
+                .no-announcements {
+                    text-align: center;
+                    padding: 2rem;
+                    color: var(--text-light);
+                }
+
+                .no-announcements svg {
+                    opacity: 0.3;
+                    margin-bottom: 1rem;
+                }
+
+                /* ========== DRIVES LIST ========== */
+                .drive-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1rem;
+                    background: var(--bg-secondary);
+                    border-radius: var(--radius-md);
+                    margin-bottom: 0.75rem;
+                    transition: all 0.3s;
+                    cursor: pointer;
+                    border: 1px solid transparent;
+                }
+
+                .drive-item:hover {
+                    background: white;
+                    border-color: var(--maroon-medium);
+                    transform: translateX(5px);
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .drive-logo {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: var(--radius-sm);
+                    background: var(--maroon-gradient);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.25rem;
+                    font-weight: 800;
+                    color: white;
+                    flex-shrink: 0;
+                }
+
+                .drive-info {
+                    flex: 1;
+                }
+
+                .drive-company {
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    font-size: 1rem;
+                    margin-bottom: 0.25rem;
+                }
+
+                .drive-role {
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                }
+
+                .drive-meta {
+                    text-align: right;
+                }
+
+                .drive-ctc {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: var(--maroon-primary);
+                }
+
+                .drive-date {
+                    font-size: 0.8rem;
+                    color: var(--text-light);
+                }
+
+                /* ========== APPLICATIONS LIST ========== */
+                .application-item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 1rem;
+                    background: var(--bg-secondary);
+                    border-radius: var(--radius-md);
+                    margin-bottom: 0.75rem;
+                    transition: all 0.3s;
+                }
+
+                .application-item:hover {
+                    background: white;
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .application-company {
+                    font-weight: 600;
+                    color: var(--text-primary);
+                    margin-bottom: 0.25rem;
+                }
+
+                .application-role {
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                }
+
+                .status-badge {
+                    padding: 0.4rem 0.9rem;
+                    border-radius: 20px;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border: 1px solid;
+                }
+
+                /* ========== SKILL BARS ========== */
+                .skill-bar-container {
+                    margin-bottom: 1.25rem;
+                }
+
+                .skill-bar-header {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 0.5rem;
+                }
+
+                .skill-name {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                }
+
+                .skill-level {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: var(--maroon-primary);
+                }
+
+                .skill-bar-track {
+                    height: 8px;
+                    background: var(--bg-secondary);
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+
+                .skill-bar-fill {
+                    height: 100%;
+                    border-radius: 10px;
+                    position: relative;
+                    transition: width 1s ease-out;
+                }
+
+                .skill-bar-glow {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 30px;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+                    animation: shimmer 2s infinite;
+                }
+
+                @keyframes shimmer {
+                    0% { opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+
+                /* ========== STREAK WIDGET ========== */
+                .streak-widget {
+                    background: var(--maroon-gradient);
+                    border-radius: var(--radius-lg);
+                    padding: 1.5rem;
+                    color: white;
+                    text-align: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .streak-widget::before {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+                    animation: rotate-bg 10s linear infinite;
+                }
+
+                @keyframes rotate-bg {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+
+                .streak-value {
+                    font-size: 3rem;
+                    font-weight: 800;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .streak-label {
+                    font-size: 0.9rem;
+                    opacity: 0.9;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .streak-flames {
+                    font-size: 1.5rem;
+                    margin-top: 0.5rem;
+                    position: relative;
+                    z-index: 1;
+                }
+
+                /* ========== QUICK ACTIONS ========== */
+                .quick-actions {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
+                }
+
+                .quick-action-btn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.75rem;
+                    padding: 1.25rem;
+                    background: white;
+                    border: 1px solid rgba(0,0,0,0.05);
+                    border-radius: var(--radius-md);
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    text-decoration: none;
+                }
+
+                .quick-action-btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: var(--shadow-md);
+                    border-color: var(--maroon-medium);
+                }
+
+                .quick-action-btn:hover svg {
+                    transform: scale(1.1);
+                    color: var(--maroon-primary);
+                }
+
+                .quick-action-btn svg {
+                    color: var(--text-secondary);
+                    transition: all 0.3s;
+                }
+
+                .quick-action-btn span {
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                }
+
+                /* ========== LOADING SCREEN ========== */
+                .loading-screen {
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
+                    gap: 2rem;
+                }
+
+                .loading-spinner {
+                    position: relative;
+                    width: 80px;
+                    height: 80px;
+                }
+
+                .spinner-ring {
+                    position: absolute;
+                    border-radius: 50%;
+                    border: 3px solid transparent;
+                    animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+                }
+
+                .spinner-ring:nth-child(1) {
+                    width: 80px;
+                    height: 80px;
+                    border-top-color: var(--maroon-primary);
+                    animation-delay: -0.3s;
+                }
+
+                .spinner-ring:nth-child(2) {
+                    width: 60px;
+                    height: 60px;
+                    top: 10px;
+                    left: 10px;
+                    border-top-color: var(--maroon-secondary);
+                    animation-delay: -0.15s;
+                }
+
+                .spinner-ring:nth-child(3) {
+                    width: 40px;
+                    height: 40px;
+                    top: 20px;
+                    left: 20px;
+                    border-top-color: var(--maroon-light);
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+
+                .loading-screen p {
+                    color: var(--text-secondary);
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                }
+
+                /* ========== RESPONSIVE ========== */
+                @media (max-width: 1200px) {
+                    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+                    .content-grid { grid-template-columns: 1fr; }
+                }
+
+                @media (max-width: 768px) {
+                    .main-content { padding: 1rem; }
+                    .stats-grid { grid-template-columns: 1fr; }
+                    .dashboard-header { flex-direction: column; gap: 1rem; }
+                    .greeting-section h1 { font-size: 1.75rem; }
+                }
+            `}</style>
+
+            <AnimatedBackground />
+            <GlowingOrbs />
+
+            <main className="main-content">
+                {/* Header */}
+                <FadeIn>
+                    <header className="dashboard-header">
+                        <div className="greeting-section">
+                            <h1>
+                                {greeting.emoji} {greeting.text}, {userName}!
+                            </h1>
+                            <p>
+                                {currentTime.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} •
+                                Let's make today productive!
+                            </p>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Announcements Ticker */}
-            <div className="announcement-bar rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center">
-                    <div className="bg-gradient-to-r from-amrita-maroon to-amrita-pink px-4 py-3 flex items-center gap-2">
-                        <Megaphone size={18} className="text-white" />
-                        <span className="font-black text-xs uppercase tracking-widest text-white">Live Updates</span>
-                    </div>
-                    <div className="overflow-hidden flex-1 bg-gray-50 dark:bg-gray-800">
-                        <div className="animate-ticker py-3 px-4">
-                            {[...announcements, ...announcements].map((item, i) => (
-                                <span key={i} className="whitespace-nowrap mx-8 font-medium text-sm text-gray-700 dark:text-gray-300">{item}</span>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <QuickStatCard
-                    icon={<Target size={24} />}
-                    label="Readiness Score"
-                    value={`${Math.round(stats.readinessScore)}%`}
-                    change="+2%"
-                    gradient="from-amrita-maroon to-amrita-pink"
-                />
-                <QuickStatCard
-                    icon={<Send size={24} />}
-                    label="Applications"
-                    value={stats.applications?.total || 0}
-                    change="+1 today"
-                    gradient="from-blue-500 to-cyan-400"
-                />
-                <QuickStatCard
-                    icon={<Calendar size={24} />}
-                    label="Upcoming Drives"
-                    value={stats.drives?.upcoming || 0}
-                    change="Next: 3 days"
-                    gradient="from-purple-500 to-pink-400"
-                />
-                <QuickStatCard
-                    icon={<Activity size={24} />}
-                    label="Daily Streak"
-                    value={`${userStreak} days`}
-                    change="Keep going!"
-                    gradient="from-amber-500 to-orange-400"
-                />
-            </div>
-
-            {/* Dashboard Tabs */}
-            <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-2xl">
-                {['overview', 'applications', 'preparation', 'analytics'].map((tab) => (
-                    <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold uppercase tracking-wider transition-all ${activeTab === tab ? 'bg-white dark:bg-gray-700 text-amrita-maroon shadow-lg' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
-                    >
-                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                ))}
-            </div>
-
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column */}
-                <div className="lg:col-span-2 space-y-8">
-                    {/* Readiness & Skills */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Readiness Score Card */}
-                        <div className="glass-card p-8 flex flex-col items-center justify-center space-y-6 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Zap size={80} className="text-amrita-maroon" />
-                            </div>
-
-                            <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest">Placement Readiness</h3>
-
-                            <div className="relative w-44 h-44">
-                                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                    <circle className="text-gray-100 dark:text-gray-700" strokeWidth="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50" />
-                                    <circle
-                                        className="text-amrita-maroon transition-all duration-1000 ease-out"
-                                        strokeWidth="8"
-                                        strokeDasharray={2 * Math.PI * 40}
-                                        strokeDashoffset={2 * Math.PI * 40 * (1 - stats.readinessScore / 100)}
-                                        strokeLinecap="round"
-                                        stroke="currentColor"
-                                        fill="transparent"
-                                        r="40"
-                                        cx="50"
-                                        cy="50"
-                                    />
-                                </svg>
-                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span className="text-5xl font-black text-amrita-maroon">{Math.round(stats.readinessScore)}%</span>
-                                    <span className="text-xs font-black text-gray-400 uppercase mt-1">Ready</span>
-                                </div>
-                            </div>
-
-                            <div className="text-center">
-                                <h4 className="text-lg font-black text-gray-800 dark:text-white">
-                                    {stats.readinessScore >= 80 ? '🔥 Excellent!' : stats.readinessScore >= 60 ? '💪 Good Progress' : '🚀 Keep Going'}
-                                </h4>
-                            </div>
-                        </div>
-
-                        {/* Skill Progress */}
-                        <div className="glass-card p-8">
-                            <h3 className="text-xl font-black mb-6 flex items-center gap-3 dark:text-white">
-                                <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                                    <Cpu className="text-amrita-maroon" size={20} />
-                                </div>
-                                Skill Progress
-                            </h3>
-                            <SkillProgress skills={stats.skills} />
-                            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className="text-sm text-gray-500">Target Skills</p>
-                                        <p className="font-bold text-gray-900 dark:text-white">5/8 completed</p>
-                                    </div>
-                                    <a href="/skills" className="text-sm text-amrita-maroon hover:underline font-bold">
-                                        Add more →
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Application Tracker */}
-                    <div className="glass-card p-8">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-black flex items-center gap-3 dark:text-white">
-                                <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                                    <FileText className="text-amrita-maroon" size={20} />
-                                </div>
-                                Application Tracker
-                            </h2>
-                            <div className="flex items-center gap-3">
-                                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-                                    <Filter size={16} />
-                                </button>
-                                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-                                    <Download size={16} />
-                                </button>
-                                <a href="/applications" className="text-xs font-black bg-amrita-maroon/10 text-amrita-maroon px-4 py-2 rounded-full uppercase tracking-widest hover:bg-amrita-maroon hover:text-white transition-all">
-                                    View All
-                                </a>
-                            </div>
-                        </div>
-
-                        {applications.length > 0 ? (
-                            <div className="space-y-3">
-                                {applications.map((app, i) => (
-                                    <ApplicationCard
-                                        key={i}
-                                        application={app}
-                                        getStatusColor={getStatusColor}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="py-16 flex flex-col items-center justify-center text-gray-400">
-                                <Briefcase size={48} className="mb-4 opacity-20" />
-                                <p className="font-bold">No applications yet</p>
-                                <p className="text-sm">Start applying to placement drives!</p>
-                                <a href="/drives" className="mt-4 btn-premium !text-sm !py-2 !px-6">
-                                    Browse Drives
-                                </a>
-                            </div>
-                        )}
-
-                        {/* Application Stats */}
-                        <div className="grid grid-cols-4 gap-3 mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-                            <MiniStat label="Applied" value={stats.applications?.total} color="maroon" icon={<Send size={14} />} />
-                            <MiniStat label="In Progress" value={stats.applications?.inProgress} color="blue" icon={<Clock size={14} />} />
-                            <MiniStat label="Offers" value={stats.applications?.offered} color="green" icon={<Trophy size={14} />} />
-                            <MiniStat label="Rejected" value={stats.applications?.rejected} color="red" icon={<XCircle size={14} />} />
-                        </div>
-                    </div>
-
-                    {/* Upcoming Drives */}
-                    <section className="glass-card p-8">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-black flex items-center gap-3 dark:text-white">
-                                <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                                    <CalendarDays className="text-amrita-maroon" size={20} />
-                                </div>
-                                Upcoming Drives
-                            </h2>
-                            <div className="flex items-center gap-3">
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                                    <input
-                                        type="text"
-                                        placeholder="Search drives..."
-                                        className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amrita-maroon"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                </div>
-                                <a href="/drives" className="text-xs font-black text-amrita-maroon hover:underline uppercase tracking-widest flex items-center gap-1">
-                                    View All <ArrowRight size={14} />
-                                </a>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            {filteredDrives.map((drive, i) => (
-                                <DriveCard
-                                    key={i}
-                                    drive={drive}
-                                    handleApply={handleApply}
-                                />
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Placement Countdown */}
-                    <PlacementCountdown />
-                </div>
-
-                {/* Right Sidebar */}
-                <div className="space-y-6">
-                    {/* Daily Challenge */}
-                    <DailyChallenge streak={userStreak} />
-
-                    {/* Tip of the Day */}
-                    <div className="glass-card p-6 bg-gradient-to-br from-amrita-gold/20 to-transparent">
-                        <div className="flex items-center gap-2 mb-4">
-                            <Lightbulb className="text-amrita-gold" size={20} />
-                            <h3 className="font-black text-gray-800 dark:text-white text-sm uppercase tracking-widest">Tip of the Day</h3>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
-                            {dailyTips[currentTip]}
-                        </p>
-                        <div className="flex items-center justify-between mt-4">
-                            <div className="flex gap-1">
-                                {dailyTips.map((_, i) => (
-                                    <div key={i} className={`h-1 rounded-full w-6 transition-all ${i === currentTip ? 'bg-amrita-gold' : 'bg-gray-200 dark:bg-gray-700'}`} />
-                                ))}
-                            </div>
-                            <button className="text-xs text-amrita-gold hover:underline font-bold">
-                                Save tip
+                        <div className="header-actions">
+                            <button className="icon-btn" onClick={() => setShowNotifications(!showNotifications)}>
+                                <Bell size={22} />
+                                <span className="notification-badge">{notifications.length}</span>
+                            </button>
+                            <button className="icon-btn">
+                                <Settings size={22} />
+                            </button>
+                            <button className="logout-btn" onClick={logout}>
+                                <LogOut size={18} />
+                                Logout
                             </button>
                         </div>
-                    </div>
+                    </header>
+                </FadeIn>
 
-                    {/* AI Assistant */}
-                    <div className="glass-card p-6">
-                        <div className="flex items-center gap-3 mb-6 p-3 bg-gradient-to-r from-amrita-maroon to-amrita-pink rounded-2xl">
-                            <div className="p-2 bg-white/20 rounded-xl">
-                                <Brain className="text-white" size={22} />
-                            </div>
-                            <div>
-                                <h3 className="text-white font-black text-sm uppercase tracking-widest">Placement AI</h3>
-                                <p className="text-white/70 text-[10px] font-bold">Your Career Advisor</p>
+                {/* Stats Cards */}
+                <div className="stats-grid">
+                    {[
+                        { icon: <Target size={26} />, value: stats.drives?.upcoming || 8, label: 'Upcoming Drives', change: '+3 this week', bg: 'rgba(139, 0, 0, 0.1)', color: '#8B0000' },
+                        { icon: <FileText size={26} />, value: stats.applications?.total || 5, label: 'Applications', change: '2 in progress', bg: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6' },
+                        { icon: <Trophy size={26} />, value: stats.applications?.offered || 1, label: 'Offers Received', change: '🎉 Great job!', bg: 'rgba(16, 185, 129, 0.1)', color: '#10B981' },
+                        { icon: <Flame size={26} />, value: userStreak, label: 'Day Streak', change: 'Keep it up!', bg: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }
+                    ].map((stat, i) => (
+                        <FadeIn key={i} delay={i * 100}>
+                            <TiltCard>
+                                <div className="stat-card">
+                                    <div className="stat-card-icon" style={{ background: stat.bg }}>
+                                        <div style={{ color: stat.color }}>{stat.icon}</div>
+                                    </div>
+                                    <div className="stat-value">
+                                        <AnimatedCounter end={stat.value} />
+                                    </div>
+                                    <div className="stat-label">{stat.label}</div>
+                                    <div className="stat-change positive">{stat.change}</div>
+                                </div>
+                            </TiltCard>
+                        </FadeIn>
+                    ))}
+                </div>
+
+                {/* Announcements Section */}
+                <FadeIn delay={400}>
+                    <div className="glass-card announcements-section">
+                        <div className="card-header">
+                            <div className="card-title">
+                                <div className="card-title-icon">
+                                    <Megaphone size={20} />
+                                </div>
+                                Announcements
+                                <span className="notification-badge" style={{ position: 'static', marginLeft: '0.5rem' }}>
+                                    {announcements.length}
+                                </span>
                             </div>
                         </div>
-                        <div className="h-[350px] overflow-hidden rounded-2xl">
-                            <AIChatbot />
-                        </div>
+                        {announcements.length > 0 ? (
+                            announcements.slice(0, 4).map((ann, i) => (
+                                <div key={i} className="announcement-card">
+                                    <div className="announcement-content">{ann.content}</div>
+                                    <div className="announcement-meta">
+                                        <span>{new Date(ann.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                                        {ann.links && ann.links[0]?.url && (
+                                            <a href={ann.links[0].url} target="_blank" rel="noopener noreferrer" className="announcement-link">
+                                                <ExternalLink size={12} /> View Link
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="no-announcements">
+                                <Megaphone size={48} />
+                                <p>No announcements yet. Check back soon!</p>
+                            </div>
+                        )}
+                    </div>
+                </FadeIn>
+
+                {/* Main Content Grid */}
+                <div className="content-grid">
+                    {/* Left Column */}
+                    <div>
+                        {/* Upcoming Drives */}
+                        <FadeIn delay={500}>
+                            <div className="glass-card" style={{ marginBottom: '2rem' }}>
+                                <div className="card-header">
+                                    <div className="card-title">
+                                        <div className="card-title-icon">
+                                            <Briefcase size={20} />
+                                        </div>
+                                        Upcoming Drives
+                                    </div>
+                                    <button className="view-all-btn">
+                                        View All <ArrowRight size={14} />
+                                    </button>
+                                </div>
+                                {drives.map((drive, i) => (
+                                    <div key={drive._id} className="drive-item">
+                                        <div className="drive-logo">
+                                            {drive.companyName?.charAt(0)}
+                                        </div>
+                                        <div className="drive-info">
+                                            <div className="drive-company">{drive.companyName}</div>
+                                            <div className="drive-role">{drive.jobProfile}</div>
+                                        </div>
+                                        <div className="drive-meta">
+                                            <div className="drive-ctc">₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)} LPA</div>
+                                            <div className="drive-date">{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </FadeIn>
+
+                        {/* My Applications */}
+                        <FadeIn delay={600}>
+                            <div className="glass-card">
+                                <div className="card-header">
+                                    <div className="card-title">
+                                        <div className="card-title-icon">
+                                            <FileText size={20} />
+                                        </div>
+                                        My Applications
+                                    </div>
+                                    <button className="view-all-btn">
+                                        View All <ArrowRight size={14} />
+                                    </button>
+                                </div>
+                                {applications.map((app, i) => {
+                                    const statusColors = getStatusColor(app.status);
+                                    return (
+                                        <div key={app._id} className="application-item">
+                                            <div>
+                                                <div className="application-company">{app.driveId?.companyName}</div>
+                                                <div className="application-role">{app.driveId?.jobProfile}</div>
+                                            </div>
+                                            <span
+                                                className="status-badge"
+                                                style={{
+                                                    background: statusColors.bg,
+                                                    color: statusColors.text,
+                                                    borderColor: statusColors.border
+                                                }}
+                                            >
+                                                {app.status}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </FadeIn>
                     </div>
 
-                    {/* Interview Schedule */}
-                    <InterviewSchedule />
+                    {/* Right Column */}
+                    <div>
+                        {/* Streak Widget */}
+                        <FadeIn delay={500}>
+                            <div className="streak-widget" style={{ marginBottom: '1.5rem' }}>
+                                <div className="streak-value">{userStreak}</div>
+                                <div className="streak-label">Day Streak</div>
+                                <div className="streak-flames">🔥🔥🔥</div>
+                            </div>
+                        </FadeIn>
 
-                    {/* Resource Recommendations */}
-                    <ResourceRecommendations stats={stats.resources} />
+                        {/* Skills Progress */}
+                        <FadeIn delay={600}>
+                            <div className="glass-card" style={{ marginBottom: '1.5rem' }}>
+                                <div className="card-header">
+                                    <div className="card-title">
+                                        <div className="card-title-icon">
+                                            <Cpu size={20} />
+                                        </div>
+                                        Skills
+                                    </div>
+                                </div>
+                                {stats.skills?.slice(0, 4).map((skill, i) => (
+                                    <AnimatedSkillBar
+                                        key={i}
+                                        skill={skill.name}
+                                        level={skill.level}
+                                        delay={i * 150}
+                                        color={i % 2 === 0 ? '#8B0000' : '#A52A2A'}
+                                    />
+                                ))}
+                            </div>
+                        </FadeIn>
 
-                    {/* Quick Actions Grid */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <QuickActionCard
-                            icon={<Video size={18} />}
-                            title="Mock Interview"
-                            description="Schedule now"
-                            color="purple"
-                            href="/mock-interview"
-                        />
-                        <QuickActionCard
-                            icon={<BookOpen size={18} />}
-                            title="Prep Material"
-                            description="Study resources"
-                            color="blue"
-                            href="/resources"
-                        />
-                        <QuickActionCard
-                            icon={<Users size={18} />}
-                            title="Alumni Connect"
-                            description="Network now"
-                            color="green"
-                            href="/alumni"
-                        />
-                        <QuickActionCard
-                            icon={<BarChart3 size={18} />}
-                            title="Analytics"
-                            description="View insights"
-                            color="amber"
-                            href="/analytics"
-                        />
+                        {/* Quick Actions */}
+                        <FadeIn delay={700}>
+                            <div className="glass-card">
+                                <div className="card-header">
+                                    <div className="card-title">
+                                        <div className="card-title-icon">
+                                            <Zap size={20} />
+                                        </div>
+                                        Quick Actions
+                                    </div>
+                                </div>
+                                <div className="quick-actions">
+                                    <a href="/drives" className="quick-action-btn">
+                                        <Briefcase size={24} />
+                                        <span>View Drives</span>
+                                    </a>
+                                    <a href="/prephub" className="quick-action-btn">
+                                        <BookOpen size={24} />
+                                        <span>Prep Hub</span>
+                                    </a>
+                                    <a href="/profile" className="quick-action-btn">
+                                        <UserCheck size={24} />
+                                        <span>Edit Profile</span>
+                                    </a>
+                                    <a href="/alumni" className="quick-action-btn">
+                                        <GraduationCap size={24} />
+                                        <span>Alumni Insights</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </FadeIn>
                     </div>
                 </div>
-            </div>
-
-            {/* Bottom Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Achievement Badges */}
-                <div className="glass-card p-6">
-                    <h3 className="font-black text-gray-800 dark:text-white mb-4 flex items-center gap-2 text-sm">
-                        <Trophy className="text-amrita-gold" size={18} />
-                        Your Achievements
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                        {stats.profile?.achievements?.map((achievement, i) => (
-                            <span key={i} className="achievement-badge">
-                                {achievement.includes('Profile') && '🎯 '}
-                                {achievement.includes('First') && '📝 '}
-                                {achievement.includes('Streak') && '🔥 '}
-                                {achievement}
-                            </span>
-                        ))}
-                        <button className="achievement-badge !bg-transparent !border-dashed border-2 !text-gray-400 hover:!border-amrita-maroon hover:!text-amrita-maroon">
-                            + Explore more
-                        </button>
-                    </div>
-                </div>
-
-                {/* Performance Metrics */}
-                <div className="glass-card p-6">
-                    <h3 className="font-black text-gray-800 dark:text-white mb-4 flex items-center gap-2 text-sm">
-                        <TrendingUp className="text-amrita-gold" size={18} />
-                        Performance Metrics
-                    </h3>
-                    <div className="space-y-4">
-                        <MetricItem label="Profile Views" value="124" change="+12%" positive />
-                        <MetricItem label="Application Rate" value="68%" change="+5%" positive />
-                        <MetricItem label="Interview Success" value="42%" change="-3%" positive={false} />
-                    </div>
-                </div>
-
-                {/* Upcoming Deadlines */}
-                <div className="glass-card p-6">
-                    <h3 className="font-black text-gray-800 dark:text-white mb-4 flex items-center gap-2 text-sm">
-                        <Clock3 className="text-amrita-gold" size={18} />
-                        Upcoming Deadlines
-                    </h3>
-                    <div className="space-y-3">
-                        <DeadlineItem company="Google" deadline="Mar 15" type="application" />
-                        <DeadlineItem company="Microsoft" deadline="Mar 22" type="drive" />
-                        <DeadlineItem company="Amazon" deadline="Apr 5" type="test" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Component definitions
-const QuickStatCard = ({ icon, label, value, change, gradient }) => (
-    <div className={`bg-gradient-to-br ${gradient} p-6 rounded-2xl text-white relative overflow-hidden group cursor-default hover:scale-105 transition-transform duration-300 shadow-lg`}>
-        <div className="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-30 transition-opacity">
-            {React.cloneElement(icon, { size: 60 })}
-        </div>
-        <div className="relative z-10">
-            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
-            <p className="text-3xl font-black">{value}</p>
-            {change && (
-                <p className="text-xs font-bold mt-2 opacity-90">
-                    {change}
-                </p>
-            )}
-        </div>
-    </div>
-);
-
-const ApplicationCard = ({ application, getStatusColor }) => (
-    <div className="flex items-center justify-between p-4 bg-white/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl hover:bg-white dark:hover:bg-gray-700/50 transition-all group cursor-pointer hover:shadow-lg">
-        <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white rounded-xl flex items-center justify-center font-black text-lg shadow-lg group-hover:scale-110 transition-transform">
-                {application.driveId?.companyName?.[0] || 'C'}
-            </div>
-            <div>
-                <h4 className="font-black text-gray-900 dark:text-white">{application.driveId?.companyName}</h4>
-                <p className="text-sm text-gray-500 font-medium">{application.driveId?.jobProfile}</p>
-                <p className="text-xs text-gray-400 mt-1">
-                    Applied {new Date(application.appliedDate).toLocaleDateString()}
-                </p>
-            </div>
-        </div>
-        <div className="flex items-center gap-4">
-            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${getStatusColor(application.status)}`}>
-                {application.status?.replace('_', ' ')}
-            </span>
-            <ChevronRight className="text-gray-400 group-hover:text-amrita-maroon transition-colors" size={18} />
-        </div>
-    </div>
-);
-
-const DriveCard = ({ drive, handleApply }) => (
-    <div className="flex flex-col md:flex-row md:items-center justify-between p-5 bg-white/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-lg transition-all group hover:scale-[1.02]">
-        <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white rounded-xl flex items-center justify-center font-black text-xl shadow-lg group-hover:scale-110 transition-transform">
-                {drive.companyName[0]}
-            </div>
-            <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-black text-gray-900 dark:text-white text-lg">{drive.companyName}</h4>
-                    {drive.ctcDetails?.ctc && (
-                        <span className="text-[10px] font-black text-white bg-gradient-to-r from-amrita-maroon to-amrita-pink px-2 py-0.5 rounded-full">
-                            ₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L
-                        </span>
-                    )}
-                    <span className="text-[10px] font-medium text-gray-500">
-                        <MapPin size={10} className="inline mr-1" />
-                        {drive.location}
-                    </span>
-                </div>
-                <p className="text-sm text-gray-500 font-bold">{drive.jobProfile}</p>
-                <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs font-medium text-gray-500">
-                        Min CGPA: {drive.eligibility?.minCgpa || 'N/A'}
-                    </span>
-                    <span className="text-xs font-medium text-gray-500">
-                        Backlogs: {drive.eligibility?.backlog || '0'}
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div className="mt-4 md:mt-0 flex items-center gap-4">
-            <div className="text-right">
-                <p className="text-[10px] font-black text-gray-400 uppercase">Date</p>
-                <p className="font-black text-gray-900 dark:text-white">{new Date(drive.date).toLocaleDateString()}</p>
-            </div>
-            {drive.isEligible ? (
-                drive.hasApplied ? (
-                    <span className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-black rounded-full flex items-center gap-1">
-                        <CheckCircle size={14} /> Applied
-                    </span>
-                ) : (
-                    <button
-                        onClick={() => handleApply(drive._id)}
-                        className="btn-premium text-xs !py-2 !px-4 hover:scale-105 transition-transform"
-                    >
-                        Apply Now
-                    </button>
-                )
-            ) : (
-                <div className="text-right">
-                    <p className="text-[10px] font-black text-red-500 uppercase">Not Eligible</p>
-                    <p className="text-xs text-gray-500">Check criteria</p>
-                </div>
-            )}
-        </div>
-    </div>
-);
-
-const MiniStat = ({ label, value, color, icon }) => {
-    const colors = {
-        maroon: 'text-amrita-maroon bg-amrita-maroon/10',
-        blue: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400',
-        green: 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400',
-        red: 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400'
-    };
-    return (
-        <div className={`text-center p-4 rounded-xl ${colors[color]} transition-all hover:scale-105 cursor-default`}>
-            <div className="flex items-center justify-center gap-2 mb-2">
-                {icon}
-                <p className="text-2xl font-black">{value}</p>
-            </div>
-            <p className="text-[10px] font-bold uppercase">{label}</p>
-        </div>
-    );
-};
-
-const QuickActionCard = ({ icon, title, description, color, href }) => {
-    const colorClasses = {
-        purple: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 hover:bg-purple-200',
-        blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 hover:bg-blue-200',
-        green: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200',
-        amber: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-200'
-    };
-
-    return (
-        <a href={href} className={`${colorClasses[color]} p-4 rounded-2xl flex flex-col items-center justify-center text-center transition-all hover:scale-105 hover:shadow-lg`}>
-            <div className="p-2 rounded-full bg-white/50 mb-2">
-                {icon}
-            </div>
-            <h4 className="font-bold text-sm">{title}</h4>
-            <p className="text-xs opacity-75 mt-1">{description}</p>
-        </a>
-    );
-};
-
-const MetricItem = ({ label, value, change, positive }) => (
-    <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600 dark:text-gray-300">{label}</span>
-        <div className="flex items-center gap-2">
-            <span className="font-bold text-gray-900 dark:text-white">{value}</span>
-            <span className={`text-xs font-bold ${positive ? 'text-green-600' : 'text-red-600'}`}>
-                {positive ? '↗' : '↘'} {change}
-            </span>
-        </div>
-    </div>
-);
-
-const DeadlineItem = ({ company, deadline, type }) => {
-    const typeIcons = {
-        application: <Send size={12} />,
-        drive: <Calendar size={12} />,
-        test: <FileText size={12} />
-    };
-
-    const daysLeft = Math.ceil((new Date(`2026-${deadline}`) - new Date()) / (1000 * 60 * 60 * 24));
-
-    return (
-        <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-            <div className="flex items-center gap-3">
-                <div className="p-2 bg-amrita-maroon/10 rounded-lg text-amrita-maroon">
-                    {typeIcons[type]}
-                </div>
-                <div>
-                    <p className="font-medium text-sm">{company}</p>
-                    <p className="text-xs text-gray-500">{type.charAt(0).toUpperCase() + type.slice(1)}</p>
-                </div>
-            </div>
-            <div className="text-right">
-                <p className="font-bold text-sm">{deadline}</p>
-                <p className="text-xs text-gray-500">{daysLeft} days left</p>
-            </div>
+            </main>
         </div>
     );
 };

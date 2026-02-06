@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const csv = require('csv-parser');
+const path = require('path');
 const User = require('./models/User');
 const StudentProfile = require('./models/StudentProfile');
 const PlacementDrive = require('./models/PlacementDrive');
@@ -71,20 +74,62 @@ const seedData = async () => {
         await adminUser.save();
         console.log('Admin created: cir@amrita.edu');
 
-        // 2. Create 65 Students (CB.SC.U4CSE22801 - CB.SC.U4CSE22865)
-        const students = [];
-        for (let i = 1; i <= 65; i++) {
-            const rollNumber = `CB.SC.U4CSE228${i.toString().padStart(2, '0')}`;
-            const firstName = firstNames[(i - 1) % firstNames.length];
-            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-            const email = `${firstName.toLowerCase()}${i}@cb.students.amrita.edu`;
-            const department = i <= 40 ? 'CSE' : (i <= 55 ? 'ECE' : 'EEE');
-            const cgpa = Math.round((7.0 + Math.random() * 2.8) * 100) / 100;
-            const section = sections[Math.floor(Math.random() * sections.length)];
+        // 2. Create Students from CSV
+        console.log('Reading students from CSV...');
+        const csvResults = [];
+        await new Promise((resolve, reject) => {
+            fs.createReadStream(path.join(__dirname, 'data', 'students.csv'))
+                .pipe(csv())
+                .on('data', (data) => csvResults.push(data))
+                .on('error', (err) => reject(err))
+                .on('end', () => resolve());
+        });
 
-            // Random placement status
-            const statuses = ['not_placed', 'not_placed', 'not_placed', 'in_process', 'in_process', 'placed'];
-            const placementStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        console.log(`Parsing ${csvResults.length} students from CSV...`);
+
+        // Ensure Harini's account is present even if not in CSV (added to front)
+        const hariniEmail = 'cb.sc.u4cse23621@cb.students.amrita.edu';
+        const hasHarini = csvResults.some(r => r.email === hariniEmail);
+        if (!hasHarini) {
+            console.log('Manually adding Harini\'s account to the front...');
+            csvResults.unshift({
+                roll_no: 'CB.SC.U4CSE23621',
+                full_name: 'Harini',
+                email: hariniEmail,
+                dept_code: 'CSE',
+                section: 'B',
+                batch_year: '2027',
+                cgpa: '9.5',
+                backlogs: '0',
+                placement_status: 'Not Placed'
+            });
+        }
+
+        for (let i = 0; i < csvResults.length; i++) {
+            const row = csvResults[i];
+            const rollNumber = row.roll_no;
+            const fullName = row.full_name;
+            const nameParts = fullName ? fullName.split(' ') : ['Student'];
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ') || ' ';
+            const email = row.email;
+            const department = row.dept_code;
+            const section = row.section;
+            const cgpa = parseFloat(row.cgpa) || 0;
+            const batch = row.batch_year;
+            const backlogs = parseInt(row.backlogs) || 0;
+
+            const placementStatusMap = {
+                'Placed': 'placed',
+                'Not Placed': 'not_placed',
+                'In Process': 'in_process'
+            };
+            const placementStatus = placementStatusMap[row.placement_status] || 'not_placed';
+
+            let password = 'password123';
+            if (email === 'cb.sc.u4cse23621@cb.students.amrita.edu') {
+                password = 'Harini05';
+            }
 
             // Random skills (3-6 skills per student)
             const numSkills = 3 + Math.floor(Math.random() * 4);
@@ -96,7 +141,7 @@ const seedData = async () => {
             const shuffledCerts = [...certifications].sort(() => Math.random() - 0.5);
             const studentCerts = shuffledCerts.slice(0, numCerts);
 
-            const user = new User({ email, password: 'password123', role: 'student' });
+            const user = new User({ email, password, role: 'student' });
             await user.save();
 
             const profileData = {
@@ -110,8 +155,8 @@ const seedData = async () => {
                 course: 'B.Tech',
                 section,
                 cgpa,
-                batch: '2026',
-                backlogs: Math.random() > 0.85 ? Math.floor(Math.random() * 2) + 1 : 0,
+                batch,
+                backlogs,
                 skills: studentSkills,
                 certifications: studentCerts,
                 isEligible: cgpa >= 7.0,
@@ -148,9 +193,8 @@ const seedData = async () => {
 
             const profile = new StudentProfile(profileData);
             await profile.save();
-            students.push(profile);
         }
-        console.log(`Created 65 students (CB.SC.U4CSE22801 - CB.SC.U4CSE22865)`);
+        console.log(`Created ${csvResults.length} students from CSV`);
 
         // 3. Create 15 Placement Drives
         const drivesToInsert = [
@@ -730,7 +774,7 @@ const seedData = async () => {
         console.log('\n✅ Seeding completed successfully!');
         console.log('📊 Summary:');
         console.log('   - 1 Admin (cir@amrita.edu)');
-        console.log('   - 65 Students (CB.SC.U4CSE22801 - CB.SC.U4CSE22865)');
+        console.log(`   - ${csvResults.length} Students (from students.csv)`);
         console.log(`   - ${drivesToInsert.length} Placement Drives`);
         console.log(`   - ${insightsToInsert.length} Alumni Insights`);
         console.log(`   - ${resourcesToInsert.length} Resources`);
