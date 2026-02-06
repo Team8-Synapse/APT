@@ -16,8 +16,25 @@ exports.getResources = async (req, res) => {
 
 exports.addResource = async (req, res) => {
     try {
+        const resourceData = { ...req.body };
+
+        if (req.file) {
+            resourceData.links = [`uploads/${req.file.filename}`];
+        } else if (req.body.link) {
+            resourceData.links = [req.body.link];
+        }
+
+        // Handle tags sent via FormData (often as a JSON string)
+        if (typeof resourceData.tags === 'string' && resourceData.tags.startsWith('[')) {
+            try {
+                resourceData.tags = JSON.parse(resourceData.tags);
+            } catch (e) {
+                resourceData.tags = resourceData.tags.split(',').map(t => t.trim());
+            }
+        }
+
         const resource = new Resource({
-            ...req.body,
+            ...resourceData,
             addedBy: req.user._id
         });
         await resource.save();
@@ -40,7 +57,22 @@ exports.getResourceById = async (req, res) => {
 
 exports.updateResource = async (req, res) => {
     try {
-        const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const resourceData = { ...req.body };
+        if (req.file) {
+            resourceData.links = [`uploads/${req.file.filename}`];
+        } else if (req.body.link) {
+            resourceData.links = [req.body.link];
+        }
+
+        if (typeof resourceData.tags === 'string' && resourceData.tags.startsWith('[')) {
+            try {
+                resourceData.tags = JSON.parse(resourceData.tags);
+            } catch (e) {
+                resourceData.tags = resourceData.tags.split(',').map(t => t.trim());
+            }
+        }
+
+        const resource = await Resource.findByIdAndUpdate(req.params.id, resourceData, { new: true });
         if (!resource) return res.status(404).send();
         res.send(resource);
     } catch (e) {

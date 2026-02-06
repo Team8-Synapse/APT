@@ -75,7 +75,7 @@ const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');
     const [adminResources, setAdminResources] = useState([]);
     const [newResource, setNewResource] = useState({
-        title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
+        title: '', description: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
     });
     const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
     const [editingAnnouncement, setEditingAnnouncement] = useState(null);
@@ -248,8 +248,10 @@ const AdminDashboard = () => {
             const tagsArray = newResource.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
             const payload = {
                 title: newResource.title,
+                description: newResource.description,
                 category: newResource.category,
                 type: newResource.type,
+                link: newResource.link,
                 links: [newResource.link],
                 content: newResource.content,
                 tags: tagsArray
@@ -263,7 +265,7 @@ const AdminDashboard = () => {
                 alert('Resource deployed successfully!');
             }
 
-            setNewResource({ title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
+            setNewResource({ title: '', description: '', category: 'Coding', type: 'Link', link: '', content: '', tags: '' });
             setEditingResource(null);
             fetchAdminResources();
         } catch (err) {
@@ -290,6 +292,7 @@ const AdminDashboard = () => {
             title: res.title,
             category: res.category,
             type: res.type,
+            description: res.description || '',
             link: res.links?.[0] || res.link || '',
             content: res.content || '',
             tags: res.tags?.join(', ') || ''

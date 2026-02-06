@@ -14,6 +14,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -40,6 +41,7 @@ const reportRoutes = require('./routes/reportRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const otpRoutes = require('./routes/otpRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const noteRoutes = require('./routes/noteRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
@@ -52,6 +54,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/notes', noteRoutes);
 
 app.get('/', (req, res) => {
     res.send('Placement Tracker API is running...');
@@ -65,4 +68,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
