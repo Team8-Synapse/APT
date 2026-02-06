@@ -40,10 +40,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
 const otpRoutes = require('./routes/otpRoutes');
-<<<<<<< Updated upstream
-=======
 const announcementRoutes = require('./routes/announcementRoutes');
->>>>>>> Stashed changes
 const noteRoutes = require('./routes/noteRoutes');
 
 app.use('/api/auth', authRoutes);
@@ -56,10 +53,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
-<<<<<<< Updated upstream
-=======
 app.use('/api/announcements', announcementRoutes);
->>>>>>> Stashed changes
 app.use('/api/notes', noteRoutes);
 
 app.get('/', (req, res) => {
@@ -74,4 +68,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
