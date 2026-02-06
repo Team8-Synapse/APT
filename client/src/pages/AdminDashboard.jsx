@@ -53,7 +53,6 @@ const AdminDashboard = () => {
     const [newResource, setNewResource] = useState({
         title: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
     });
-    const [announcements, setAnnouncements] = useState([]);
     const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
     const [editingAnnouncement, setEditingAnnouncement] = useState(null);
     const [editingResource, setEditingResource] = useState(null);
@@ -173,35 +172,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const fetchAnnouncements = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/announcements`);
-            setAnnouncements(res.data);
-        } catch (err) {
-            console.error(err);
-            setAnnouncements([
-                { title: 'Google Drive Registration', date: '2026-03-10', priority: 'high', category: 'drive' },
-                { title: 'Resume Workshop', date: '2026-03-12', priority: 'medium', category: 'prep' },
-                { title: 'Alumni Networking Event', date: '2026-03-15', priority: 'low', category: 'alumni' },
-                { title: 'Summer Internship Deadlines', date: '2026-03-08', priority: 'high', category: 'internship' },
-            ]);
-        }
-    };
 
-    const fetchAlumni = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/alumni`);
-            setAlumni(res.data);
-        } catch (err) {
-            console.error(err);
-            setAlumni([
-                { name: 'Arun Kumar', company: 'Google', role: 'Senior SDE', batch: '2018', ctc: 6500000 },
-                { name: 'Priya Sharma', company: 'Microsoft', role: 'Product Manager', batch: '2019', ctc: 5500000 },
-                { name: 'Rajesh Patel', company: 'Amazon', role: 'SDM', batch: '2017', ctc: 7000000 },
-                { name: 'Sneha Reddy', company: 'Adobe', role: 'Design Lead', batch: '2020', ctc: 4800000 },
-            ]);
-        }
-    };
 
     const handleShortlist = async () => {
         try {
@@ -291,14 +262,6 @@ const AdminDashboard = () => {
         });
     };
 
-    const fetchAnnouncements = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
-            setAnnouncements(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     const handleAnnouncementSubmit = async (e) => {
         e.preventDefault();

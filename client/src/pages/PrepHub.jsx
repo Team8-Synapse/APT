@@ -5,11 +5,12 @@ import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck,
 const PrepHub = () => {
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [category, setCategory] = useState('Coding');
+    const [category, setCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [announcements, setAnnouncements] = useState([]);
 
     const categories = [
+        { id: 'All', icon: <Sparkles size={18} />, label: 'All Resources' },
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
         { id: 'Aptitude', icon: <Cpu size={18} />, label: 'Aptitude & Logic' },
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
@@ -29,7 +30,13 @@ const PrepHub = () => {
         const fetchResources = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources?category=${category}`);
+                // If searching, fetch all resources to support global search
+                // Otherwise, fetch by category unless 'All' is selected
+                let url = `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`;
+                if (!searchTerm && category !== 'All') {
+                    url += `?category=${category}`;
+                }
+                const res = await axios.get(url);
                 setResources(res.data);
                 setLoading(false);
             } catch (err) {
@@ -43,13 +50,31 @@ const PrepHub = () => {
         // Polling for real-time updates (every 30 seconds)
         const pollInterval = setInterval(fetchAnnouncements, 30000);
         return () => clearInterval(pollInterval);
-    }, [category]);
+    }, [category, searchTerm]);
 
     const filteredResources = resources.filter(res => {
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
-        return res.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+        return (
+            res.title?.toLowerCase().includes(searchLower) ||
+            res.content?.toLowerCase().includes(searchLower) ||
+            res.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+        );
     });
+
+    const openLink = (link) => {
+        if (!link) return;
+        const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:5005';
+        let finalUrl = link;
+
+        if (link.startsWith('uploads/')) {
+            finalUrl = `${baseUrl}/${link}`;
+        } else if (!/^https?:\/\//i.test(link)) {
+            finalUrl = `https://${link}`;
+        }
+
+        window.open(finalUrl, '_blank');
+    };
 
     return (
         <div className="space-y-10 page-enter pb-12 font-bold">
@@ -95,7 +120,13 @@ const PrepHub = () => {
                             placeholder="Search by tags (e.g., dsa, oop, java)..."
                             className="w-full pl-12 pr-4 py-4 bg-white/60 backdrop-blur-md border border-white/40 rounded-2xl shadow-sm focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none transition-all font-medium text-sm"
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setSearchTerm(value);
+                                if (value.trim() !== '') {
+                                    setCategory('All');
+                                }
+                            }}
                         />
                     </div>
 
@@ -119,7 +150,10 @@ const PrepHub = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
+                                            <button
+                                                onClick={() => openLink(res.links?.[0] || res.link)}
+                                                className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon"
+                                            >
                                                 <ExternalLink size={18} />
                                             </button>
                                         </div>
@@ -151,7 +185,7 @@ const PrepHub = () => {
                                     </div>
 
                                     <button
-                                        onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
+                                        onClick={() => openLink(res.links?.[0] || res.link)}
                                         className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem]"
                                     >
                                         Start Learning
@@ -182,19 +216,22 @@ const PrepHub = () => {
                                     </p>
                                     {ann.links && ann.links.length > 0 && ann.links[0].url && (
                                         <div className="flex flex-wrap gap-2">
-                                            {ann.links.map((link, idx) => (
-                                                link.url && (
+                                            {ann.links.map((link, idx) => {
+                                                if (!link.url) return null;
+                                                const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:5005';
+                                                const href = link.url.startsWith('uploads/') ? `${baseUrl}/${link.url}` : (link.url.startsWith('http') ? link.url : `https://${link.url}`);
+                                                return (
                                                     <a
                                                         key={idx}
-                                                        href={link.url}
+                                                        href={href}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="text-[10px] font-black text-amrita-maroon flex items-center gap-1 hover:underline"
                                                     >
                                                         <ExternalLink size={10} /> {link.title || 'View Link'}
                                                     </a>
-                                                )
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     )}
                                     <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest italic">

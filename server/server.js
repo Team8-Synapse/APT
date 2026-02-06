@@ -14,6 +14,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Request logging middleware
 app.use((req, res, next) => {
