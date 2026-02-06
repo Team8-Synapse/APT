@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, Megaphone } from 'lucide-react';
+import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, Megaphone, FileText, Plus, X, Trash2, Edit2 } from 'lucide-react';
 
 const PrepHub = () => {
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
-    const [announcements, setAnnouncements] = useState([]);
+    const [notes, setNotes] = useState([]);
+    const [showNoteModal, setShowNoteModal] = useState(false);
+    const [editingNote, setEditingNote] = useState(null);
+    const [noteForm, setNoteForm] = useState({ title: '', content: '', tags: '' });
 
     const categories = [
         { id: 'All', icon: <Sparkles size={18} />, label: 'All Resources' },
@@ -15,29 +18,28 @@ const PrepHub = () => {
         { id: 'Aptitude', icon: <Cpu size={18} />, label: 'Aptitude & Logic' },
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR & Behavioral' },
+        { id: 'Notes', icon: <FileText size={18} />, label: 'My Notes' },
     ];
-
-    const fetchAnnouncements = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
-            setAnnouncements(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     useEffect(() => {
         const fetchResources = async () => {
             setLoading(true);
             try {
-                // If searching, fetch all resources to support global search
-                // Otherwise, fetch by category unless 'All' is selected
-                let url = `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`;
-                if (!searchTerm && category !== 'All') {
-                    url += `?category=${category}`;
+                if (category === 'Notes') {
+                    const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                    });
+                    setNotes(res.data);
+                } else {
+                    let url = `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`;
+                    if (!searchTerm && category !== 'All') {
+                        url += `?category=${category}`;
+                    }
+                    const res = await axios.get(url, {
+                        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                    });
+                    setResources(res.data);
                 }
-                const res = await axios.get(url);
-                setResources(res.data);
                 setLoading(false);
             } catch (err) {
                 console.error(err);
@@ -45,12 +47,58 @@ const PrepHub = () => {
             }
         };
         fetchResources();
-        fetchAnnouncements();
-
-        // Polling for real-time updates (every 30 seconds)
-        const pollInterval = setInterval(fetchAnnouncements, 30000);
-        return () => clearInterval(pollInterval);
     }, [category, searchTerm]);
+
+    const handleNoteSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const tagsArray = noteForm.tags.split(',').map(tag => tag.trim()).filter(t => t !== '');
+            const payload = { ...noteForm, tags: tagsArray };
+
+            if (editingNote) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${editingNote._id}`, payload, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                });
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, payload, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                });
+            }
+
+            setShowNoteModal(false);
+            setEditingNote(null);
+            setNoteForm({ title: '', content: '', tags: '' });
+            // Refresh notes
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setNotes(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const deleteNote = async (id) => {
+        if (!window.confirm('Delete this note?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setNotes(notes.filter(n => n._id !== id));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const filteredNotes = notes.filter(n => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            n.title?.toLowerCase().includes(searchLower) ||
+            n.content?.toLowerCase().includes(searchLower) ||
+            n.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+        );
+    });
 
     const filteredResources = resources.filter(res => {
         if (!searchTerm) return true;
@@ -107,10 +155,8 @@ const PrepHub = () => {
                 </div>
             </header>
 
-            <div className="flex flex-col lg:flex-row gap-10">
-                {/* Main Content */}
+            <div className="flex flex-col gap-10">
                 <div className="flex-1 space-y-10">
-                    {/* Search Bar Section */}
                     <div className="relative group">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <Search className="text-gray-400 group-focus-within:text-amrita-maroon transition-colors" size={20} />
@@ -123,7 +169,7 @@ const PrepHub = () => {
                             onChange={(e) => {
                                 const value = e.target.value;
                                 setSearchTerm(value);
-                                if (value.trim() !== '') {
+                                if (value.trim() !== '' && category !== 'Notes') {
                                     setCategory('All');
                                 }
                             }}
@@ -133,6 +179,69 @@ const PrepHub = () => {
                     {loading ? (
                         <div className="flex h-64 items-center justify-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div>
+                        </div>
+                    ) : category === 'Notes' ? (
+                        <div className="space-y-8">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-2xl font-black text-gray-900">Personal Insights</h2>
+                                <button
+                                    onClick={() => {
+                                        setEditingNote(null);
+                                        setNoteForm({ title: '', content: '', tags: '' });
+                                        setShowNoteModal(true);
+                                    }}
+                                    className="btn-premium flex items-center gap-2"
+                                >
+                                    <Plus size={18} /> New Note
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredNotes.length > 0 ? filteredNotes.map((note, i) => (
+                                    <div key={i} className="glass-card p-6 flex flex-col group h-full">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="p-3 bg-amrita-maroon/10 rounded-2xl">
+                                                <FileText className="text-amrita-maroon" size={20} />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingNote(note);
+                                                        setNoteForm({ title: note.title, content: note.content, tags: note.tags?.join(', ') || '' });
+                                                        setShowNoteModal(true);
+                                                    }}
+                                                    className="p-2 text-gray-400 hover:text-amrita-maroon hover:bg-amrita-maroon/5 rounded-lg transition-all"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => deleteNote(note._id)}
+                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-lg font-black text-gray-900 mb-2 truncate">{note.title}</h3>
+                                        <p className="text-sm text-gray-500 font-medium leading-relaxed line-clamp-4 flex-1 mb-4">
+                                            {note.content}
+                                        </p>
+                                        <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
+                                            {note.tags?.map((tag, idx) => (
+                                                <span key={idx} className="text-[10px] font-black text-amrita-maroon/60 bg-amrita-maroon/5 px-2 py-1 rounded-md uppercase">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )) : (
+                                    <div className="col-span-full py-24 glass-card flex flex-col items-center justify-center text-gray-300">
+                                        <FileText size={64} className="mb-4 opacity-20" />
+                                        <p className="text-xl font-black italic">Your knowledge base is empty.</p>
+                                        <p className="text-sm font-bold mt-2 opacity-50">Click "New Note" to start documenting your journey.</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -144,18 +253,7 @@ const PrepHub = () => {
                                                 <div className="p-3 bg-amrita-maroon/10 rounded-2xl group-hover:bg-amrita-maroon/20 transition-colors">
                                                     <BookOpen className="text-amrita-maroon" size={24} />
                                                 </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:border-amrita-maroon/20 w-fit">
-                                                        {res.type || 'Link'}
-                                                    </div>
-                                                </div>
                                             </div>
-                                            <button
-                                                onClick={() => openLink(res.links?.[0] || res.link)}
-                                                className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon"
-                                            >
-                                                <ExternalLink size={18} />
-                                            </button>
                                         </div>
 
                                         <div className="space-y-2">
@@ -200,51 +298,75 @@ const PrepHub = () => {
                         </div>
                     )}
                 </div>
-
-                {/* Sidebar - Announcements */}
-                <aside className="w-full lg:w-80 space-y-6">
-                    <div className="glass-card overflow-hidden">
-                        <div className="p-6 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white flex items-center gap-3">
-                            <Megaphone size={20} className="animate-bounce" />
-                            <h2 className="font-black uppercase tracking-widest text-xs">Admin Updates</h2>
-                        </div>
-                        <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto no-scrollbar">
-                            {announcements.length > 0 ? announcements.map((ann, i) => (
-                                <div key={i} className="space-y-3 pb-6 border-b border-gray-100 last:border-0 last:pb-0">
-                                    <p className="text-sm font-bold text-gray-800 leading-relaxed italic">
-                                        "{ann.content}"
-                                    </p>
-                                    {ann.links && ann.links.length > 0 && ann.links[0].url && (
-                                        <div className="flex flex-wrap gap-2">
-                                            {ann.links.map((link, idx) => {
-                                                if (!link.url) return null;
-                                                const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:5005';
-                                                const href = link.url.startsWith('uploads/') ? `${baseUrl}/${link.url}` : (link.url.startsWith('http') ? link.url : `https://${link.url}`);
-                                                return (
-                                                    <a
-                                                        key={idx}
-                                                        href={href}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-[10px] font-black text-amrita-maroon flex items-center gap-1 hover:underline"
-                                                    >
-                                                        <ExternalLink size={10} /> {link.title || 'View Link'}
-                                                    </a>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest italic">
-                                        {new Date(ann.createdAt).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            )) : (
-                                <p className="text-center text-xs text-gray-400 font-bold py-10 italic">No updates available at this moment.</p>
-                            )}
-                        </div>
-                    </div>
-                </aside>
             </div>
+
+            {showNoteModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+                        <div className="p-8 bg-gradient-to-br from-amrita-maroon to-amrita-burgundy text-white flex justify-between items-center">
+                            <div>
+                                <h2 className="text-2xl font-black tracking-tight">{editingNote ? 'Refine Note' : 'Capture Knowledge'}</h2>
+                                <p className="text-white/70 text-sm font-bold uppercase tracking-[0.2em] mt-1">Your personal growth archive</p>
+                            </div>
+                            <button
+                                onClick={() => setShowNoteModal(false)}
+                                className="p-3 hover:bg-white/20 rounded-2xl transition-all"
+                            >
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleNoteSubmit} className="p-8 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Document Title</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g., Dynamic Programming Strategy"
+                                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none transition-all font-bold text-gray-900"
+                                    value={noteForm.title}
+                                    onChange={(e) => setNoteForm({ ...noteForm, title: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Knowledge Content</label>
+                                <textarea
+                                    required
+                                    rows={6}
+                                    placeholder="Write your notes here..."
+                                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none transition-all font-bold text-gray-900 resize-none"
+                                    value={noteForm.content}
+                                    onChange={(e) => setNoteForm({ ...noteForm, content: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Classification Tags</label>
+                                <input
+                                    type="text"
+                                    placeholder="dsa, oop, interview (comma separated)"
+                                    className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none transition-all font-bold text-gray-900 font-mono text-sm"
+                                    value={noteForm.tags}
+                                    onChange={(e) => setNoteForm({ ...noteForm, tags: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNoteModal(false)}
+                                    className="flex-1 py-4 px-6 border border-gray-200 rounded-2xl font-black text-gray-500 hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex-[2] py-4 px-6 bg-amrita-maroon text-white rounded-2xl font-black hover:bg-amrita-burgundy transition-all shadow-lg shadow-amrita-maroon/20 uppercase tracking-widest text-xs"
+                                >
+                                    {editingNote ? 'Update Repository' : 'Secure Note'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
