@@ -18,14 +18,14 @@ import NotificationsPanel from '../../components/NotificationsPanel';
 // ============= MAROON-WHITE MODERN THEME =============
 const theme = {
     maroon: {
-        primary: '#8B0000',
-        secondary: '#A52A2A',
-        light: '#C04040',
-        dark: '#5A0000',
-        gradient: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
-        subtle: 'rgba(139, 0, 0, 0.08)',
-        medium: 'rgba(139, 0, 0, 0.15)',
-        strong: 'rgba(139, 0, 0, 0.25)'
+        primary: '#B1124A',
+        secondary: '#B1124A',
+        light: '#D14D72',
+        dark: '#7A0C32',
+        gradient: 'linear-gradient(135deg, #B1124A 0%, #D14D72 100%)',
+        subtle: 'rgba(177, 18, 74, 0.08)',
+        medium: 'rgba(177, 18, 74, 0.15)',
+        strong: 'rgba(177, 18, 74, 0.25)'
     },
     beige: {
         primary: '#FFFFFF',
@@ -44,14 +44,7 @@ const AnimatedBackground = () => (
     </div>
 );
 
-// ============= GLOWING ORBS =============
-const GlowingOrbs = () => (
-    <>
-        <div className="glowing-orb-d orba"></div>
-        <div className="glowing-orb-d orbb"></div>
-        <div className="glowing-orb-d orbc"></div>
-    </>
-);
+
 
 // ============= ANIMATED COUNTER =============
 const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
@@ -166,7 +159,7 @@ const FadeIn = ({ children, delay = 0, direction = 'up' }) => {
 };
 
 // ============= ANIMATED SKILL BAR =============
-const AnimatedSkillBar = ({ skill, level, delay = 0, color = '#8B0000' }) => {
+const AnimatedSkillBar = ({ skill, level, delay = 0, color = '#B1124A' }) => {
     const [progress, setProgress] = useState(0);
     const [hasAnimated, setHasAnimated] = useState(false);
     const ref = useRef(null);
@@ -357,13 +350,13 @@ const StudentDashboard = () => {
             <style>{`
                 /* ========== CSS VARIABLES ========== */
                 :root {
-                    --maroon-primary: #8B0000;
-                    --maroon-secondary: #A52A2A;
-                    --maroon-light: #C04040;
-                    --maroon-dark: #5A0000;
-                    --maroon-gradient: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
-                    --maroon-subtle: rgba(139, 0, 0, 0.08);
-                    --maroon-medium: rgba(139, 0, 0, 0.15);
+                    --maroon-primary: #B1124A;
+                    --maroon-secondary: #B1124A;
+                    --maroon-light: #D14D72;
+                    --maroon-dark: #7A0C32;
+                    --maroon-gradient: linear-gradient(135deg, #B1124A 0%, #D14D72 100%);
+                    --maroon-subtle: rgba(177, 18, 74, 0.08);
+                    --maroon-medium: rgba(177, 18, 74, 0.15);
                     --text-primary: #1a1a1a;
                     --text-secondary: #555;
                     --text-light: #888;
@@ -372,7 +365,7 @@ const StudentDashboard = () => {
                     --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
                     --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
                     --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-                    --shadow-glow: 0 0 30px rgba(139, 0, 0, 0.2);
+                    --shadow-glow: 0 0 30px rgba(177, 18, 74, 0.2);
                     --radius-sm: 8px;
                     --radius-md: 16px;
                     --radius-lg: 24px;
@@ -416,7 +409,7 @@ const StudentDashboard = () => {
                 .orb-d1 {
                     width: 600px;
                     height: 600px;
-                    background: radial-gradient(circle, #8B0000 0%, transparent 70%);
+                    background: radial-gradient(circle, #B1124A 0%, transparent 70%);
                     top: -200px;
                     right: -100px;
                     animation-delay: 0s;
@@ -425,7 +418,7 @@ const StudentDashboard = () => {
                 .orb-d2 {
                     width: 500px;
                     height: 500px;
-                    background: radial-gradient(circle, #A52A2A 0%, transparent 70%);
+                    background: radial-gradient(circle, #B1124A 0%, transparent 70%);
                     bottom: -100px;
                     left: -100px;
                     animation-delay: -10s;
@@ -434,7 +427,7 @@ const StudentDashboard = () => {
                 .orb-d3 {
                     width: 400px;
                     height: 400px;
-                    background: radial-gradient(circle, #C04040 0%, transparent 70%);
+                    background: radial-gradient(circle, #D14D72 0%, transparent 70%);
                     top: 50%;
                     left: 50%;
                     animation-delay: -20s;
@@ -446,49 +439,7 @@ const StudentDashboard = () => {
                     66% { transform: translate(-30px, 30px) scale(0.9); }
                 }
 
-                /* ========== GLOWING ORBS ========== */
-                .glowing-orb-d {
-                    position: fixed;
-                    border-radius: 50%;
-                    pointer-events: none;
-                    z-index: 1;
-                    animation: glow-pulse-d 4s ease-in-out infinite;
-                }
 
-                .orba {
-                    width: 16px;
-                    height: 16px;
-                    background: var(--maroon-primary);
-                    top: 15%;
-                    left: 8%;
-                    box-shadow: 0 0 30px var(--maroon-primary);
-                    animation-delay: 0s;
-                }
-
-                .orbb {
-                    width: 12px;
-                    height: 12px;
-                    background: var(--maroon-secondary);
-                    top: 55%;
-                    right: 10%;
-                    box-shadow: 0 0 25px var(--maroon-secondary);
-                    animation-delay: -1.5s;
-                }
-
-                .orbc {
-                    width: 20px;
-                    height: 20px;
-                    background: var(--maroon-light);
-                    bottom: 25%;
-                    left: 15%;
-                    box-shadow: 0 0 35px var(--maroon-light);
-                    animation-delay: -3s;
-                }
-
-                @keyframes glow-pulse-d {
-                    0%, 100% { opacity: 0.5; transform: scale(1); }
-                    50% { opacity: 1; transform: scale(1.3); }
-                }
 
                 /* ========== MAIN CONTENT ========== */
                 .main-content {
@@ -796,8 +747,8 @@ const StudentDashboard = () => {
                 }
 
                 .announcement-card {
-                    background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(255,255,255,1) 100%);
-                    border: 1px solid rgba(139, 0, 0, 0.1);
+                    background: linear-gradient(135deg, rgba(177, 18, 74, 0.05) 0%, rgba(255,255,255,1) 100%);
+                    border: 1px solid rgba(177, 18, 74, 0.1);
                     border-left: 4px solid var(--maroon-primary);
                     padding: 1rem 1.25rem;
                     border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -1108,7 +1059,7 @@ const StudentDashboard = () => {
                     flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
+                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF1F4 100%);
                     gap: 2rem;
                 }
 
@@ -1175,7 +1126,6 @@ const StudentDashboard = () => {
             `}</style>
 
             <AnimatedBackground />
-            <GlowingOrbs />
 
             <main className="main-content">
                 {/* Header */}
@@ -1212,7 +1162,7 @@ const StudentDashboard = () => {
                 {/* Stats Cards */}
                 <div className="stats-grid">
                     {[
-                        { icon: <Target size={26} />, value: stats.drives?.upcoming || 8, label: 'Upcoming Drives', change: '+3 this week', bg: 'rgba(139, 0, 0, 0.1)', color: '#8B0000' },
+                        { icon: <Target size={26} />, value: stats.drives?.upcoming || 8, label: 'Upcoming Drives', change: '+3 this week', bg: 'rgba(177, 18, 74, 0.1)', color: '#B1124A' },
                         { icon: <FileText size={26} />, value: stats.applications?.total || 5, label: 'Applications', change: '2 in progress', bg: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6' },
                         { icon: <Trophy size={26} />, value: stats.applications?.offered || 1, label: 'Offers Received', change: '🎉 Great job!', bg: 'rgba(16, 185, 129, 0.1)', color: '#10B981' },
                         { icon: <Flame size={26} />, value: userStreak, label: 'Day Streak', change: 'Keep it up!', bg: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }
@@ -1374,7 +1324,7 @@ const StudentDashboard = () => {
                                         skill={skill.name}
                                         level={skill.level}
                                         delay={i * 150}
-                                        color={i % 2 === 0 ? '#8B0000' : '#A52A2A'}
+                                        color={i % 2 === 0 ? '#B1124A' : '#D14D72'}
                                     />
                                 ))}
                             </div>

@@ -9,9 +9,9 @@ export default {
         extend: {
             colors: {
                 amrita: {
-                    primary: '#B90E50',
-                    maroon: '#B90E50',
-                    magenta: '#B90E50',
+                    primary: '#B1124A',
+                    maroon: '#B1124A',
+                    magenta: '#B1124A',
                     pink: '#D91A65',
                     rose: '#FF4081',
                     gold: '#FFD700',
@@ -21,7 +21,7 @@ export default {
                     cream: '#FFF8FA',
                 },
                 // Direct maroon and beige colors for Home.jsx
-                maroon: '#8B0000',
+                maroon: '#B1124A',
                 beige: {
                     50: '#FFF8F0',
                     100: '#F5F0E8',
@@ -54,8 +54,8 @@ export default {
                 },
             },
             backgroundImage: {
-                'amrita-gradient': 'linear-gradient(135deg, #B90E50 0%, #D91A65 50%, #FF4081 100%)',
-                'amrita-radial': 'radial-gradient(circle at 30% 50%, #B90E50, #8B0A3C)',
+                'amrita-gradient': 'linear-gradient(135deg, #B1124A 0%, #D91A65 50%, #FF4081 100%)',
+                'amrita-radial': 'radial-gradient(circle at 30% 50%, #B1124A, #8B0A3C)',
             }
         },
     },
