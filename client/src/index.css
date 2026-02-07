@@ -1,30 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-amrita-maroon: #B90E50;
-  --color-amrita-primary: #B90E50;
-  --color-amrita-magenta: #B90E50;
+  --color-amrita-maroon: #B1124A;
+  --color-amrita-primary: #B1124A;
+  --color-amrita-magenta: #B1124A;
   --color-amrita-pink: #D91A65;
   --color-amrita-rose: #FF4081;
   --color-amrita-gold: #FFD700;
-  --color-amrita-burgundy: #8B0A3C;
+  --color-amrita-burgundy: #7A0C32;
   --color-amrita-dark: #6B0835;
   --color-amrita-light: #FFF0F5;
   --color-glass: rgba(255, 255, 255, 0.8);
 }
 
 :root {
-  --amrita-primary: #B90E50;
-  --amrita-maroon: #B90E50;
-  --amrita-magenta: #B90E50;
+  --amrita-primary: #B1124A;
+  --amrita-maroon: #B1124A;
+  --amrita-magenta: #B1124A;
   --amrita-pink: #D91A65;
   --amrita-rose: #FF4081;
   --amrita-gold: #FFD700;
-  --amrita-burgundy: #8B0A3C;
+  --amrita-burgundy: #7A0C32;
   --amrita-dark: #6B0835;
   --amrita-light: #FFF0F5;
-  --amrita-gradient: linear-gradient(135deg, #B90E50 0%, #D91A65 50%, #FF4081 100%);
-  --amrita-gradient-dark: linear-gradient(135deg, #8B0A3C 0%, #B90E50 50%, #D91A65 100%);
+  --amrita-gradient: linear-gradient(135deg, #B1124A 0%, #D91A65 50%, #FF4081 100%);
+  --amrita-gradient-dark: linear-gradient(135deg, #7A0C32 0%, #B1124A 50%, #D91A65 100%);
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(255, 255, 255, 0.5);
 }
@@ -56,7 +56,7 @@ body.dark {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 8px 32px 0 rgba(185, 14, 80, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(177, 18, 74, 0.08);
   border-radius: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -69,24 +69,24 @@ body.dark {
 
 .glass-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 48px 0 rgba(185, 14, 80, 0.15);
+  box-shadow: 0 16px 48px 0 rgba(177, 18, 74, 0.15);
 }
 
 .dark .glass-card:hover {
-  box-shadow: 0 16px 48px 0 rgba(185, 14, 80, 0.2);
+  box-shadow: 0 16px 48px 0 rgba(177, 18, 74, 0.2);
 }
 
 /* Premium Buttons */
 .btn-premium {
   @apply relative overflow-hidden px-6 py-3 rounded-xl font-bold transition-all duration-300;
-  background: linear-gradient(135deg, #B90E50 0%, #D91A65 100%);
+  background: linear-gradient(135deg, #B1124A 0%, #D91A65 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(185, 14, 80, 0.3);
+  box-shadow: 0 4px 15px rgba(177, 18, 74, 0.3);
 }
 
 .btn-premium:hover {
   @apply scale-105;
-  box-shadow: 0 8px 25px rgba(185, 14, 80, 0.4);
+  box-shadow: 0 8px 25px rgba(177, 18, 74, 0.4);
 }
 
 .btn-premium:active {
@@ -149,7 +149,7 @@ body.dark {
 
 /* Gradient Text */
 .text-gradient {
-  background: linear-gradient(135deg, #B90E50 0%, #D91A65 50%, #FF4081 100%);
+  background: linear-gradient(135deg, #B1124A 0%, #D91A65 50%, #FF4081 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -163,7 +163,7 @@ body.dark {
 
 /* Animated Gradient Background */
 .animated-gradient {
-  background: linear-gradient(-45deg, #B90E50, #D91A65, #FF4081, #B90E50);
+  background: linear-gradient(-45deg, #B1124A, #D91A65, #FF4081, #B1124A);
   background-size: 400% 400%;
   animation: gradientShift 8s ease infinite;
 }
@@ -390,7 +390,7 @@ body.dark {
 
 .sidebar-link:hover,
 .sidebar-link.active {
-  background: rgba(185, 14, 80, 0.1);
+  background: rgba(177, 18, 74, 0.1);
   color: var(--amrita-primary);
 }
 
@@ -478,7 +478,7 @@ body.dark {
 
 .input-field:focus {
   @apply bg-white border-transparent;
-  box-shadow: 0 0 0 2px rgba(185, 14, 80, 0.2);
+  box-shadow: 0 0 0 2px rgba(177, 18, 74, 0.2);
 }
 
 .dark .input-field {
@@ -566,7 +566,7 @@ body.dark {
 }
 
 .calendar-day:hover {
-  background: rgba(185, 14, 80, 0.1);
+  background: rgba(177, 18, 74, 0.1);
 }
 
 .calendar-day.has-event {
@@ -580,7 +580,7 @@ body.dark {
 
 /* Stat card gradient backgrounds - Amrita themed */
 .stat-gradient-1 {
-  background: linear-gradient(135deg, #B90E50 0%, #D91A65 100%);
+  background: linear-gradient(135deg, #B1124A 0%, #D91A65 100%);
 }
 
 .stat-gradient-2 {
@@ -588,16 +588,16 @@ body.dark {
 }
 
 .stat-gradient-3 {
-  background: linear-gradient(135deg, #8B0A3C 0%, #B90E50 100%);
+  background: linear-gradient(135deg, #7A0C32 0%, #B1124A 100%);
 }
 
 .stat-gradient-4 {
-  background: linear-gradient(135deg, #6B0835 0%, #8B0A3C 100%);
+  background: linear-gradient(135deg, #6B0835 0%, #7A0C32 100%);
 }
 
 /* Glow effects */
 .glow-primary {
-  box-shadow: 0 0 30px rgba(185, 14, 80, 0.4);
+  box-shadow: 0 0 30px rgba(177, 18, 74, 0.4);
 }
 
 .glow-gold {
@@ -628,13 +628,13 @@ body.dark {
 
 /* Hero pattern overlay */
 .pattern-overlay {
-  background-image: radial-gradient(circle at 2px 2px, rgba(185, 14, 80, 0.1) 1px, transparent 0);
+  background-image: radial-gradient(circle at 2px 2px, rgba(177, 18, 74, 0.1) 1px, transparent 0);
   background-size: 32px 32px;
 }
 
 /* Amrita Wave Pattern */
 .wave-pattern {
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23B90E50' fill-opacity='0.1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23B1124A' fill-opacity='0.1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: 100%;
@@ -651,7 +651,7 @@ body.dark {
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(135deg, #B90E50, #D91A65, #FF4081);
+  background: linear-gradient(135deg, #B1124A, #D91A65, #FF4081);
   border-radius: inherit;
   z-index: -1;
 }
@@ -675,7 +675,7 @@ body.dark {
 
 /* News/Announcement Bar */
 .announcement-bar {
-  background: linear-gradient(90deg, #B90E50, #D91A65);
+  background: linear-gradient(90deg, #B1124A, #D91A65);
   color: white;
   overflow: hidden;
 }
@@ -688,7 +688,7 @@ body.dark {
 
 /* Selection Color */
 ::selection {
-  background: rgba(185, 14, 80, 0.2);
+  background: rgba(177, 18, 74, 0.2);
   color: inherit;
 }
 
@@ -702,19 +702,19 @@ body.dark {
 /* Quick Action Button */
 .quick-action {
   @apply flex flex-col items-center justify-center p-4 rounded-2xl transition-all;
-  background: rgba(185, 14, 80, 0.05);
-  border: 1px solid rgba(185, 14, 80, 0.1);
+  background: rgba(177, 18, 74, 0.05);
+  border: 1px solid rgba(177, 18, 74, 0.1);
 }
 
 .quick-action:hover {
-  background: rgba(185, 14, 80, 0.1);
+  background: rgba(177, 18, 74, 0.1);
   transform: translateY(-2px);
 }
 
 /* Countdown Timer Styling */
 .countdown-segment {
   @apply flex flex-col items-center justify-center p-3 rounded-xl;
-  background: linear-gradient(135deg, #B90E50, #D91A65);
+  background: linear-gradient(135deg, #B1124A, #D91A65);
   color: white;
   min-width: 60px;
 }

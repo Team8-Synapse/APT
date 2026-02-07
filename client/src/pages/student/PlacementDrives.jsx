@@ -148,7 +148,7 @@ const PlacementDrives = () => {
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 className="text-4xl font-black tracking-tight">
-                        <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#A4123F' }}>Drives</span>
+                        <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#B1124A' }}>Drives</span>
                     </h1>
                     <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                         Discover opportunities from top companies
@@ -282,7 +282,7 @@ const PlacementDrives = () => {
                             <button
                                 onClick={() => setFilters({ status: 'all', eligibility: 'all', search: '' })}
                                 className="mt-4 px-4 py-2 rounded-lg font-semibold text-sm"
-                                style={{ backgroundColor: '#A4123F', color: 'white' }}
+                                style={{ backgroundColor: '#B1124A', color: 'white' }}
                             >
                                 Clear Filters
                             </button>
@@ -469,7 +469,7 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
                             <div className="flex items-center gap-2 flex-wrap">
                                 {drive.selectionProcess.map((round, i) => (
                                     <React.Fragment key={i}>
-                                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#fce4ec', color: '#A4123F' }}>
+                                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#fce4ec', color: '#B1124A' }}>
                                             {round.roundName || round}
                                         </span>
                                         {i < drive.selectionProcess.length - 1 && (

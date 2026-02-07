@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 const StudentProfile = require('../models/StudentProfile');
 const PlacementDrive = require('../models/PlacementDrive');
 const AlumniInsight = require('../models/AlumniInsight');
@@ -64,39 +66,77 @@ router.get('/stats', async (req, res) => {
     }
 });
 
-// Get all students with filters
+// Get all students with filters - reads from CSV file
 router.get('/students', async (req, res) => {
     try {
-        const { department, minCgpa, maxCgpa, placementStatus, batch, search, page = 1, limit = 20 } = req.query;
+        const { department, minCgpa, maxCgpa, placementStatus, batch, search, page = 1, limit = 50 } = req.query;
 
-        const query = {};
+        // Read CSV file
+        const csvPath = path.join(__dirname, '../data/students.csv');
+        const csvContent = fs.readFileSync(csvPath, 'utf-8');
+        const lines = csvContent.split('\n').filter(line => line.trim());
 
-        if (department) query.department = department;
-        if (batch) query.batch = batch;
-        if (placementStatus) query.placementStatus = placementStatus;
-        if (minCgpa) query.cgpa = { ...query.cgpa, $gte: parseFloat(minCgpa) };
-        if (maxCgpa) query.cgpa = { ...query.cgpa, $lte: parseFloat(maxCgpa) };
+        // Parse header
+        const headers = lines[0].split(',').map(h => h.trim());
+
+        // Parse all students
+        let students = lines.slice(1).map((line, index) => {
+            const values = line.split(',').map(v => v.trim());
+            const student = {};
+            headers.forEach((header, i) => {
+                student[header] = values[i] || '';
+            });
+
+            // Map CSV fields to expected frontend format
+            return {
+                _id: `csv_${index}`,
+                rollNumber: student.roll_no,
+                firstName: student.full_name.split(' ')[0] || '',
+                lastName: student.full_name.split(' ').slice(1).join(' ') || '',
+                email: student.email,
+                department: student.dept_code,
+                section: student.section,
+                batch: student.batch_year,
+                cgpa: parseFloat(student.cgpa) || 0,
+                backlogs: parseInt(student.backlogs) || 0,
+                placementStatus: student.placement_status === 'Placed' ? 'placed' :
+                    student.placement_status === 'In Process' ? 'in_process' : 'not_placed'
+            };
+        });
+
+        // Apply filters
+        if (department) {
+            students = students.filter(s => s.department === department);
+        }
+        if (batch) {
+            students = students.filter(s => s.batch === batch);
+        }
+        if (placementStatus) {
+            students = students.filter(s => s.placementStatus === placementStatus);
+        }
+        if (minCgpa) {
+            students = students.filter(s => s.cgpa >= parseFloat(minCgpa));
+        }
+        if (maxCgpa) {
+            students = students.filter(s => s.cgpa <= parseFloat(maxCgpa));
+        }
         if (search) {
-            query.$or = [
-                { firstName: { $regex: search, $options: 'i' } },
-                { lastName: { $regex: search, $options: 'i' } },
-                { rollNumber: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } }
-            ];
+            const searchLower = search.toLowerCase();
+            students = students.filter(s =>
+                s.firstName.toLowerCase().includes(searchLower) ||
+                s.lastName.toLowerCase().includes(searchLower) ||
+                s.rollNumber.toLowerCase().includes(searchLower) ||
+                s.email.toLowerCase().includes(searchLower)
+            );
         }
 
+        // Pagination
+        const total = students.length;
         const skip = (parseInt(page) - 1) * parseInt(limit);
-
-        const students = await StudentProfile.find(query)
-            .populate('userId', 'email')
-            .sort({ rollNumber: 1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await StudentProfile.countDocuments(query);
+        const paginatedStudents = students.slice(skip, skip + parseInt(limit));
 
         res.json({
-            students,
+            students: paginatedStudents,
             pagination: {
                 total,
                 page: parseInt(page),
@@ -105,6 +145,7 @@ router.get('/students', async (req, res) => {
             }
         });
     } catch (err) {
+        console.error('Error reading CSV:', err);
         res.status(500).json({ error: err.message });
     }
 });

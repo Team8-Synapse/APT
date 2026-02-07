@@ -194,8 +194,8 @@ const StatCard3D = ({ icon, label, value, change, changeType = 'positive', gradi
                         </div>
                         {change && (
                             <div className={`flex items-center gap-1 text-xs font-black px-2 py-1 rounded-lg ${changeType === 'positive'
-                                    ? 'bg-green-100 text-green-600 dark:bg-green-900/50'
-                                    : 'bg-red-100 text-red-600 dark:bg-red-900/50'
+                                ? 'bg-green-100 text-green-600 dark:bg-green-900/50'
+                                : 'bg-red-100 text-red-600 dark:bg-red-900/50'
                                 } group-hover:bg-white/20 group-hover:text-white`}>
                                 {changeType === 'positive' ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                                 {change}
@@ -296,22 +296,26 @@ const DonutChart = ({ data, colors, size = 200 }) => {
 // Area Chart with Gradient
 const AreaChart = ({ data, height = 200 }) => {
     const max = Math.max(...data.map(d => Math.max(d.placements, d.offers)));
-    const width = 100;
+    const width = 600;
+    const chartHeight = height - 30; // Reserve space for x-axis labels
+    const padding = { top: 20, right: 20, bottom: 10, left: 20 };
+    const chartWidth = width - padding.left - padding.right;
+    const innerHeight = chartHeight - padding.top - padding.bottom;
 
     const getPoints = (key) => data.map((d, i) => ({
-        x: (i / (data.length - 1)) * width,
-        y: height - 20 - ((d[key] / max) * (height - 40))
+        x: padding.left + (i / (data.length - 1)) * chartWidth,
+        y: padding.top + innerHeight - ((d[key] / max) * innerHeight)
     }));
 
     const placementPoints = getPoints('placements');
     const offerPoints = getPoints('offers');
 
     const createPath = (points) => points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-    const createArea = (points) => createPath(points) + ` L ${width} ${height - 20} L 0 ${height - 20} Z`;
+    const createArea = (points) => createPath(points) + ` L ${padding.left + chartWidth} ${padding.top + innerHeight} L ${padding.left} ${padding.top + innerHeight} Z`;
 
     return (
         <div style={{ height }} className="relative">
-            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
+            <svg viewBox={`0 0 ${width} ${chartHeight}`} className="w-full" style={{ height: chartHeight }} preserveAspectRatio="xMidYMid meet">
                 <defs>
                     <linearGradient id="placementGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor="#B90E50" stopOpacity="0.4" />
@@ -325,8 +329,24 @@ const AreaChart = ({ data, height = 200 }) => {
 
                 {/* Grid lines */}
                 {[...Array(5)].map((_, i) => (
-                    <line key={i} x1="0" y1={20 + i * ((height - 40) / 4)} x2={width} y2={20 + i * ((height - 40) / 4)}
-                        stroke="currentColor" strokeWidth="0.3" className="text-gray-200 dark:text-gray-700" />
+                    <line key={i}
+                        x1={padding.left}
+                        y1={padding.top + i * (innerHeight / 4)}
+                        x2={padding.left + chartWidth}
+                        y2={padding.top + i * (innerHeight / 4)}
+                        stroke="currentColor" strokeWidth="1" className="text-gray-200 dark:text-gray-700" />
+                ))}
+
+                {/* Y-axis labels */}
+                {[...Array(5)].map((_, i) => (
+                    <text key={i}
+                        x={padding.left - 5}
+                        y={padding.top + i * (innerHeight / 4) + 4}
+                        textAnchor="end"
+                        className="text-gray-400 fill-current"
+                        style={{ fontSize: '10px', fontWeight: 'bold' }}>
+                        {Math.round(max - (i * max / 4))}
+                    </text>
                 ))}
 
                 {/* Areas */}
@@ -334,22 +354,22 @@ const AreaChart = ({ data, height = 200 }) => {
                 <path d={createArea(placementPoints)} fill="url(#placementGradient)" />
 
                 {/* Lines */}
-                <path d={createPath(offerPoints)} fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
-                <path d={createPath(placementPoints)} fill="none" stroke="#B90E50" strokeWidth="2.5" strokeLinecap="round" />
+                <path d={createPath(offerPoints)} fill="none" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={createPath(placementPoints)} fill="none" stroke="#B90E50" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
 
                 {/* Data points */}
                 {placementPoints.map((p, i) => (
                     <g key={i}>
-                        <circle cx={p.x} cy={p.y} r="4" fill="white" stroke="#B90E50" strokeWidth="2" className="transition-all hover:r-6" />
-                        <circle cx={offerPoints[i].x} cy={offerPoints[i].y} r="3" fill="white" stroke="#6366f1" strokeWidth="1.5" />
+                        <circle cx={p.x} cy={p.y} r="6" fill="white" stroke="#B90E50" strokeWidth="3" style={{ cursor: 'pointer' }} />
+                        <circle cx={offerPoints[i].x} cy={offerPoints[i].y} r="5" fill="white" stroke="#6366f1" strokeWidth="2" style={{ cursor: 'pointer' }} />
                     </g>
                 ))}
             </svg>
 
             {/* X-axis labels */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2">
+            <div className="flex justify-between px-5 mt-1">
                 {data.map((d, i) => (
-                    <span key={i} className="text-[10px] font-bold text-gray-400">{d.month}</span>
+                    <span key={i} className="text-xs font-bold text-gray-500">{d.month}</span>
                 ))}
             </div>
         </div>
@@ -368,9 +388,9 @@ const HorizontalBar = ({ data, dataKey, labelKey, maxValue, showRank = false }) 
                     <div className="flex items-center gap-3">
                         {showRank && (
                             <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-black ${i === 0 ? 'bg-amber-100 text-amber-600' :
-                                    i === 1 ? 'bg-gray-100 text-gray-500' :
-                                        i === 2 ? 'bg-orange-100 text-orange-600' :
-                                            'bg-gray-50 text-gray-400'
+                                i === 1 ? 'bg-gray-100 text-gray-500' :
+                                    i === 2 ? 'bg-orange-100 text-orange-600' :
+                                        'bg-gray-50 text-gray-400'
                                 }`}>
                                 {i + 1}
                             </span>
@@ -679,9 +699,9 @@ const AdminAnalytics = () => {
                         {data.companyStats.slice(0, 5).sort((a, b) => b.placements - a.placements).map((company, i) => (
                             <div key={i} className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all cursor-pointer group border border-transparent hover:border-amrita-maroon/20">
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-white ${i === 0 ? 'bg-gradient-to-br from-amber-400 to-amber-600' :
-                                        i === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
-                                            i === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
-                                                'bg-gradient-to-br from-amrita-maroon to-amrita-pink'
+                                    i === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
+                                        i === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
+                                            'bg-gradient-to-br from-amrita-maroon to-amrita-pink'
                                     } shadow-lg group-hover:scale-110 transition-transform`}>
                                     {company.company[0]}
                                 </div>
