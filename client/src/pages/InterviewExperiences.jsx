@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
     Search, Plus, ThumbsUp, MessageCircle, Briefcase, Calendar,
-    CheckCircle, XCircle, User, Award, BookOpen, Filter
+    CheckCircle, XCircle, User, Award, BookOpen, Filter, X
 } from 'lucide-react';
+import CompanyLogo from '../../components/CompanyLogo';
 
 const InterviewExperiences = () => {
     const [experiences, setExperiences] = useState([]);
@@ -14,6 +15,7 @@ const InterviewExperiences = () => {
         companyName: '', role: '', verdict: 'Selected', difficulty: 3, tips: '',
         questions: '' // Simplified for MVP: just a text block or multiline
     });
+    const [selectedStory, setSelectedStory] = useState(null);
 
     useEffect(() => {
         fetchExperiences();
@@ -114,8 +116,8 @@ const InterviewExperiences = () => {
                         <div key={exp._id} className="glass-card p-6 hover:translate-y-[-4px] transition-all duration-300">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-600">
-                                        {exp.companyName[0]}
+                                    <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center font-bold text-gray-600 overflow-hidden border border-gray-100 p-1">
+                                        <CompanyLogo name={exp.companyName} size="sm" className="!w-full !h-full" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-gray-800 dark:text-white">{exp.companyName}</h3>
@@ -161,7 +163,10 @@ const InterviewExperiences = () => {
                                 >
                                     <ThumbsUp size={16} /> {exp.likes?.length || 0}
                                 </button>
-                                <button className="text-sm font-bold text-amrita-maroon hover:underline">
+                                <button
+                                    onClick={() => setSelectedStory(exp)}
+                                    className="text-sm font-bold text-amrita-maroon hover:underline"
+                                >
                                     Read Full Story →
                                 </button>
                             </div>
@@ -226,8 +231,94 @@ const InterviewExperiences = () => {
                     </div>
                 </div>
             )}
+
+            {/* View Details Modal */}
+            {selectedStory && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden animate-scale-in max-h-[90vh] flex flex-col">
+                        <div className="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center sticky top-0 z-10">
+                            <div>
+                                <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                                    <CompanyLogo name={selectedStory.companyName} size="sm" />
+                                    {selectedStory.companyName}
+                                </h2>
+                                <p className="text-sm font-bold text-gray-500">{selectedStory.role} Role</p>
+                            </div>
+                            <button onClick={() => setSelectedStory(null)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                                <X size={20} className="text-gray-500" />
+                            </button>
+                        </div>
+
+                        <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
+                            {/* Verdict Badge */}
+                            <div className="flex items-center gap-4">
+                                <span className={`px-4 py-2 rounded-xl text-sm font-black uppercase tracking-wider flex items-center gap-2 ${selectedStory.verdict === 'Selected' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {selectedStory.verdict === 'Selected' ? <CheckCircle size={18} /> : <XCircle size={18} />}
+                                    {selectedStory.verdict}
+                                </span>
+                                <div className="flex items-center gap-2 text-sm font-bold text-gray-500">
+                                    <span>Difficulty:</span>
+                                    <div className="flex gap-1">
+                                        {[...Array(5)].map((_, i) => (
+                                            <div key={i} className={`h-2.5 w-2.5 rounded-full ${i < selectedStory.difficulty ? 'bg-orange-500' : 'bg-gray-200'}`} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Rounds & Questions */}
+                            <div className="space-y-4">
+                                <h3 className="text-lg font-black text-gray-900 border-b border-gray-100 pb-2">Interview Rounds</h3>
+                                {selectedStory.rounds?.map((round, idx) => (
+                                    <div key={idx} className="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                                        <h4 className="font-bold text-amrita-maroon mb-3 flex items-center gap-2">
+                                            <div className="w-6 h-6 bg-amrita-maroon text-white rounded-lg flex items-center justify-center text-xs">
+                                                {idx + 1}
+                                            </div>
+                                            {round.roundName}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {round.questions?.map((q, i) => (
+                                                <li key={i} className="flex gap-3 text-sm text-gray-700 font-medium">
+                                                    <span className="text-amrita-maroon font-bold">•</span>
+                                                    {q}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Tips */}
+                            {selectedStory.tips && (
+                                <div className="space-y-2">
+                                    <h3 className="text-lg font-black text-gray-900 border-b border-gray-100 pb-2 flex items-center gap-2">
+                                        <Sparkles size={18} className="text-yellow-500" />
+                                        Golden Advice
+                                    </h3>
+                                    <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-100 text-gray-800 italic leading-relaxed font-medium relative">
+                                        <span className="absolute top-4 left-4 text-4xl text-yellow-500/20 font-serif">"</span>
+                                        {selectedStory.tips}
+                                        <span className="absolute bottom-4 right-4 text-4xl text-yellow-500/20 font-serif">"</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                            <button
+                                onClick={() => handleLike(selectedStory._id)}
+                                className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 shadow-sm rounded-xl font-bold text-gray-600 hover:text-amrita-maroon hover:border-amrita-maroon transition-all"
+                            >
+                                <ThumbsUp size={18} /> Helpful ({selectedStory.likes?.length || 0})
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
+
 
 export default InterviewExperiences;

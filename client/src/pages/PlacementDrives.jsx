@@ -56,7 +56,6 @@ const PlacementDrives = () => {
             console.log("Flux Debug: Fetching drives...", { userId, hasToken: !!token });
 
             if (!userId) {
-                console.error("Flux Debug: No User ID found. Cannot fetch drives.");
                 setLoading(false);
                 return;
             }
@@ -65,23 +64,14 @@ const PlacementDrives = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            console.log("Flux Debug: API Response Success", res.data);
-
             if (Array.isArray(res.data)) {
-                console.log(`Flux Debug: Setting ${res.data.length} drives to state.`);
                 setDrives(res.data);
             } else {
-                console.error("Flux Debug: API returned non-array data", res.data);
                 setDrives([]);
             }
             setLoading(false);
         } catch (err) {
-            console.error("Flux Debug: Fetch drives ERROR:", err);
-            if (err.response) {
-                console.error("Flux Debug: Server responded with", err.response.status, err.response.data);
-            }
-            // For debugging, if 404/500, we might want to alert the user
-            // alert(`Debug Error: ${err.message}`);
+            console.error("Fetch drives ERROR:", err);
             setLoading(false);
         }
     };
@@ -97,6 +87,26 @@ const PlacementDrives = () => {
         } catch (err) {
             console.error('Failed to apply:', err);
             alert(err.response?.data?.error || 'Failed to apply');
+        }
+    };
+
+    const handleOfferResponse = async (applicationId, response) => {
+        if (!applicationId) {
+            alert("Error: Invalid Application ID. Please refresh the page.");
+            return;
+        }
+        console.log(`Handling offer response: ${response} for app ${applicationId}`);
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/respond`, {
+                applicationId,
+                response
+            });
+            console.log('Response success:', res.data);
+            await fetchDrives(); // Wait for fetch to complete
+            alert(response === 'accept' ? 'Offer Accepted Successfully! 🎉' : 'Offer Declined.');
+        } catch (err) {
+            console.error('Failed to respond to offer:', err);
+            alert('Failed to process response: ' + (err.response?.data?.error || err.message));
         }
     };
 
@@ -271,7 +281,13 @@ const PlacementDrives = () => {
             {viewMode === 'cards' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {sortedDrives.length > 0 ? sortedDrives.map((drive, i) => (
-                        <DriveCard key={i} drive={drive} onApply={handleApply} getDeadlineBadge={getDeadlineBadge} />
+                        <DriveCard
+                            key={i}
+                            drive={drive}
+                            onApply={handleApply}
+                            onRespond={handleOfferResponse}
+                            getDeadlineBadge={getDeadlineBadge}
+                        />
                     )) : (
                         <div className="col-span-full flex flex-col items-center justify-center py-16 glass-card">
                             <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: '#f3f4f6' }}>
@@ -351,7 +367,7 @@ const PlacementDrives = () => {
     );
 };
 
-const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
+const DriveCard = ({ drive, onApply, onRespond, getDeadlineBadge }) => {
     const [expanded, setExpanded] = useState(false);
     const deadlineBadge = getDeadlineBadge ? getDeadlineBadge(drive.date) : null;
 
@@ -486,9 +502,44 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
             {/* Action Button */}
             <div className="px-6 pb-6">
                 {drive.hasApplied ? (
-                    <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center font-black flex items-center justify-center gap-2">
-                        <CheckCircle size={18} /> Applied Successfully
-                    </div>
+                    drive.applicationStatus === 'offered' ? (
+                        <div className="flex items-center gap-3">
+                            <div className="px-4 py-3 bg-green-100 text-green-700 rounded-full text-sm font-black flex items-center gap-2 whitespace-nowrap">
+                                <CheckCircle size={16} /> Offered 🎉
+                            </div>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // alert(`Debug: Clicking Accept for App ID: ${drive.applicationId}`); // Debugging alert
+                                    onRespond(drive.applicationId, 'accept');
+                                }}
+                                className="flex-1 py-3 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white rounded-xl font-bold hover:shadow-lg transition-all text-sm"
+                            >
+                                Accept Offer
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onRespond(drive.applicationId, 'decline');
+                                }}
+                                className="px-6 py-3 bg-white border-2 border-amrita-maroon text-amrita-maroon rounded-xl font-bold hover:bg-red-50 transition-all text-sm"
+                            >
+                                Decline
+                            </button>
+                        </div>
+                    ) : drive.applicationStatus === 'accepted' ? (
+                        <div className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-center font-black flex items-center justify-center gap-2 shadow-lg">
+                            <CheckCircle size={18} /> Offer Accepted! 🎉
+                        </div>
+                    ) : drive.applicationStatus === 'declined' ? (
+                        <div className="w-full py-3 bg-gray-100 text-gray-500 rounded-xl text-center font-bold flex items-center justify-center gap-2 border-2 border-gray-200">
+                            <XCircle size={18} /> Offer Declined
+                        </div>
+                    ) : (
+                        <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center font-black flex items-center justify-center gap-2">
+                            <CheckCircle size={18} /> Applied Successfully
+                        </div>
+                    )
                 ) : deadlineBadge?.text === 'Expired' ? (
                     <div className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-xl text-center font-black flex items-center justify-center gap-2 cursor-not-allowed border-2 border-dashed border-gray-300">
                         <Clock size={18} /> Application Closed

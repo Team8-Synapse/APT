@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, Building2, MapPin, IndianRupee } from 'lucide-react';
 import CompanyLogo from '../components/CompanyLogo';
 
 const CalendarPage = () => {
+    const { user } = useAuth();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [events, setEvents] = useState([]);
@@ -13,12 +15,15 @@ const CalendarPage = () => {
     const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (user) {
+            fetchData();
+        }
+    }, [user]);
 
     const fetchData = async () => {
         try {
-            const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/drives`, {
+            const endpoint = user.role === 'admin' ? '/admin/drives' : '/student/drives';
+            const drivesRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}${endpoint}`, {
                 withCredentials: true
             });
 
@@ -77,7 +82,7 @@ const CalendarPage = () => {
         <div className="max-w-7xl mx-auto animate-fade-in pb-20">
             <h1 className="text-3xl font-black mb-6 flex items-center gap-2">
                 <CalendarIcon className="text-amrita-maroon" />
-                <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#A4123F' }}>Schedule</span>
+                <span style={{ color: '#1f2937' }}>{user?.role === 'admin' ? 'Master' : 'Placement'}</span> <span style={{ color: '#A4123F' }}>Schedule</span>
             </h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">

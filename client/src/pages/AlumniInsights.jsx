@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, MessageSquare, Building2, MapPin, Briefcase, Calendar, Sparkles, Filter, Linkedin, Mail, User, School, ExternalLink, Globe, Copy, Check, MessageCircle } from 'lucide-react';
+import CompanyLogo from '../../components/CompanyLogo';
 
 const AlumniInsights = () => {
     const [insights, setInsights] = useState([]);
@@ -121,9 +122,9 @@ const AlumniInsights = () => {
                             {directory.length > 0 ? directory.map((alum, i) => (
                                 <div key={i} className="glass-card p-6 hover:shadow-xl transition-all group flex flex-col items-center text-center">
                                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 mb-4 p-1 border-4 border-white shadow-lg relative">
-                                        {/* Avatar Placeholder */}
-                                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-2xl font-black text-amrita-maroon relative overflow-hidden">
-                                            {alum.name ? alum.name[0] : 'A'}
+                                        {/* Company Logo Avatar */}
+                                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center relative overflow-hidden">
+                                            <CompanyLogo name={alum.company} className="!w-full !h-full !rounded-none !p-4" size="xl" />
                                         </div>
                                         <div className="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-2 border-white" title="Placed"></div>
                                     </div>

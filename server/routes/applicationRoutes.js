@@ -137,6 +137,49 @@ router.get('/timeline/:applicationId', async (req, res) => {
     }
 });
 
+// Respond to offer (accept/decline)
+router.post('/respond', async (req, res) => {
+    try {
+        const { applicationId, response } = req.body; // response: 'accept' or 'decline'
+
+        const application = await Application.findById(applicationId).populate('driveId');
+        if (!application) {
+            return res.status(404).json({ error: 'Application not found' });
+        }
+
+        if (application.status !== 'offered') {
+            return res.status(400).json({ error: 'No pending offer to respond to' });
+        }
+
+        if (response === 'accept') {
+            application.status = 'accepted';
+            await application.save();
+
+            // Update student profile
+            await StudentProfile.findByIdAndUpdate(application.studentId, {
+                placementStatus: 'placed',
+                offeredCompany: application.driveId.companyName,
+                offeredCTC: application.driveId.ctcDetails?.ctc
+            });
+
+            // Add to selected students in drive
+            await PlacementDrive.findByIdAndUpdate(application.driveId._id, {
+                $addToSet: { selectedStudents: application.studentId }
+            });
+
+        } else if (response === 'decline') {
+            application.status = 'declined';
+            await application.save();
+        } else {
+            return res.status(400).json({ error: 'Invalid response' });
+        }
+
+        res.json({ message: `Offer ${response}ed successfully`, status: application.status });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Get application statistics for a student
 router.get('/stats/:userId', async (req, res) => {
     try {

@@ -12,12 +12,20 @@ const CompanyLogo = ({ name, size = "md", className = "" }) => {
 
     if (!name) return <div className={`${sizeClasses[size]} ${className} bg-gray-100 rounded-lg`} />;
 
+    if (error) {
+        return (
+            <div className={`${sizeClasses[size]} ${className} flex-shrink-0 bg-gradient-to-br from-amrita-maroon to-amrita-burgundy text-white flex items-center justify-center font-black uppercase shadow-sm`}>
+                {name[0]}
+            </div>
+        );
+    }
+
     // Improved domain guessing
     const cleanName = name.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
     const domain = `${cleanName}.com`;
 
-    // Using Google Favicons API - highly reliable for almost all domains
-    const logoUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    // Using DuckDuckGo Favicons (often more reliable/less 404s in console)
+    const logoUrl = `https://icons.duckduckgo.com/ip3/${domain}.ico`;
 
     if (error) {
         return (
@@ -32,11 +40,9 @@ const CompanyLogo = ({ name, size = "md", className = "" }) => {
             <img
                 src={logoUrl}
                 alt={`${name} logo`}
-                onError={(e) => {
-                    // Start of fallback chain logic if needed, but simplified to just show initial on error
-                    setError(true);
-                }}
+                onError={() => setError(true)}
                 className="w-full h-full object-contain"
+                loading="lazy"
             />
         </div>
     );

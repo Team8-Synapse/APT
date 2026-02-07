@@ -136,7 +136,7 @@ router.get('/eligible-drives/:userId', async (req, res) => {
                 eligibilityReasons: reasons,
                 hasApplied,
                 applicationStatus: application?.status,
-                applicationId: application?._id
+                applicationId: application?._id ? application._id.toString() : null
             };
         });
 

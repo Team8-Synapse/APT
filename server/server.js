@@ -38,6 +38,12 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+<<<<<<< Updated upstream
+=======
+const otpRoutes = require('./routes/otpRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
+const experienceRoutes = require('./routes/experienceRoutes');
+>>>>>>> Stashed changes
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
@@ -48,7 +54,13 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/applications', applicationRoutes);
+<<<<<<< Updated upstream
 app.use('/api/experiences', require('./routes/experienceRoutes'));
+=======
+app.use('/api/otp', otpRoutes);
+app.use('/api/announcements', announcementRoutes);
+app.use('/api/experiences', experienceRoutes);
+>>>>>>> Stashed changes
 
 app.get('/', (req, res) => {
     res.send('Placement Tracker API is running...');

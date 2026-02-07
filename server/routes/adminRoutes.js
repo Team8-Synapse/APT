@@ -286,6 +286,27 @@ router.post('/drive', async (req, res) => {
     }
 });
 
+router.put('/drive/:id', async (req, res) => {
+    try {
+        const drive = await PlacementDrive.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+        // Notify students about the update
+        const notification = new Notification({
+            targetRole: 'student',
+            title: 'Placement Drive Updated',
+            message: `Updates for ${drive.companyName} placement drive. Check details.`,
+            type: 'drive',
+            priority: 'medium',
+            relatedDrive: drive._id
+        });
+        await notification.save();
+
+        res.json(drive);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.delete('/drive/:id', async (req, res) => {
     try {
         await PlacementDrive.findByIdAndDelete(req.params.id);
@@ -324,7 +345,7 @@ router.patch('/application/:id', async (req, res) => {
         // Create Notification
         try {
             await Notification.create({
-                userId: application.studentId._id,
+                userId: application.studentId.userId, // Fixed: Use User ID, not Profile ID
                 title: `Status Update: ${application.driveId.companyName}`,
                 message: `Your application status has been updated to ${status.replace('_', ' ').toUpperCase()}. Check your dashboard for details.`,
                 type: status === 'offered' ? 'success' : status === 'rejected' ? 'error' : 'info',
@@ -344,12 +365,15 @@ router.patch('/application/:id', async (req, res) => {
 // Get all applications for a drive
 router.get('/drive/:driveId/applications', async (req, res) => {
     try {
+        console.log(`[Admin] Fetching applications for drive: ${req.params.driveId}`);
         const applications = await Application.find({ driveId: req.params.driveId })
             .populate('studentId')
             .sort({ appliedDate: -1 });
 
+        console.log(`[Admin] Found ${applications.length} applications from endpoint 1`);
         res.json(applications);
     } catch (err) {
+        console.error(`[Admin] Error fetching applications:`, err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -357,12 +381,18 @@ router.get('/drive/:driveId/applications', async (req, res) => {
 // Alias for applicants (same as applications)
 router.get('/drive/:driveId/applicants', async (req, res) => {
     try {
+        console.log(`[Admin] Fetching applicants for drive: ${req.params.driveId}`);
         const applications = await Application.find({ driveId: req.params.driveId })
             .populate('studentId')
             .sort({ appliedDate: -1 });
 
+        console.log(`[Admin] Found ${applications.length} applications`);
+        if (applications.length > 0) {
+            console.log(`[Admin] Sample application student:`, applications[0].studentId);
+        }
         res.json(applications);
     } catch (err) {
+        console.error(`[Admin] Error fetching applicants:`, err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -375,6 +405,50 @@ router.get('/export/students', async (req, res) => {
             .lean();
 
         res.json(students);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get all companies with stats
+router.get('/companies', async (req, res) => {
+    try {
+        // Aggregate drives by company
+        const driveStats = await PlacementDrive.aggregate([
+            {
+                $group: {
+                    _id: "$companyName",
+                    drivesCount: { $sum: 1 },
+                    lastDriveDate: { $max: "$date" }
+                }
+            }
+        ]);
+
+        // Aggregate hires by company
+        const hireStats = await StudentProfile.aggregate([
+            { $match: { placementStatus: 'placed' } },
+            {
+                $group: {
+                    _id: "$offeredCompany",
+                    hiredCount: { $sum: 1 }
+                }
+            }
+        ]);
+
+        // Merge results
+        const companies = driveStats.map(ds => {
+            const hireData = hireStats.find(hs => hs._id === ds._id);
+            return {
+                id: ds._id, // using name as id for list key
+                name: ds._id,
+                drives: ds.drivesCount,
+                hired: hireData ? hireData.hiredCount : 0,
+                status: new Date(ds.lastDriveDate) > new Date() ? 'active' : 'inactive',
+                lastActive: ds.lastDriveDate
+            };
+        });
+
+        res.json(companies);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

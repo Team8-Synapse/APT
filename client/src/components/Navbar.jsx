@@ -24,6 +24,8 @@ const Navbar = () => {
     useEffect(() => {
         if (user) {
             fetchNotifications();
+            const interval = setInterval(fetchNotifications, 30000); // Poll every 30 seconds
+            return () => clearInterval(interval);
         }
     }, [user]);
 
@@ -64,23 +66,32 @@ const Navbar = () => {
         { to: '/drives', icon: <Briefcase size={18} />, label: 'Drives' },
         { to: '/applications', icon: <FileText size={18} />, label: 'Apps' },
         { to: '/experiences', icon: <MessageSquare size={18} />, label: 'Stories' },
-        { to: '/alumni', icon: <Users size={18} />, label: 'Insights' },
+        { to: '/alumni', icon: <Users size={18} />, label: 'Alumni' },
         { to: '/prephub', icon: <BookOpen size={18} />, label: 'Prep' },
         { to: '/profile', icon: <User size={18} />, label: 'Profile' },
     ];
 
     const adminLinks = [
-        { to: '/admin', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
+        { to: '/admin?tab=overview', icon: <LayoutDashboard size={18} />, label: 'Dashboard' },
         { to: '/calendar', icon: <Calendar size={18} />, label: 'Schedule' },
+        { to: '/admin?tab=students', icon: <Users size={18} />, label: 'Students' },
+        { to: '/admin?tab=drives', icon: <Briefcase size={18} />, label: 'Drives' },
     ];
 
     const links = isAdmin ? adminLinks : studentLinks;
 
     return (
+<<<<<<< Updated upstream
         <nav className="sticky top-0 z-50 px-2 py-3">
             <div className="mx-2 lg:mx-4 glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
                 <div className="px-3 py-2 flex justify-between items-center">
                     <div className="flex items-center gap-2 lg:gap-6">
+=======
+        <nav className="sticky top-0 z-50 px-4 py-3">
+            <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
+                <div className="px-6 py-3 flex justify-between items-center">
+                    <div className="flex items-center space-x-8">
+>>>>>>> Stashed changes
                         <Link to="/" className="flex items-center group">
                             <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                                 <Sparkles className="text-amrita-gold" size={20} />
@@ -99,7 +110,7 @@ const Navbar = () => {
                                     to={link.to}
                                     icon={link.icon}
                                     label={link.label}
-                                    active={location.pathname === link.to}
+                                    active={location.pathname + location.search === link.to} // Strict match including query params
                                 />
                             ))}
                         </div>
