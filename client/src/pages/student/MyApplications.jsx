@@ -57,6 +57,30 @@ const MyApplications = () => {
         }
     };
 
+    const handleRespondOffer = async (applicationId, status) => {
+        if (!confirm(`Are you sure you want to ${status} this offer?`)) return;
+        try {
+            await axios.patch(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/respond-offer/${applicationId}`, { status });
+
+            if (status === 'accepted') {
+                import('canvas-confetti').then((module) => {
+                    const confetti = module.default;
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { y: 0.6 }
+                    });
+                });
+                alert('Congratulations! Offer Accepted 🎉');
+            }
+
+            await fetchApplications();
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.error || `Failed to ${status} offer`);
+        }
+    };
+
     const getStatusConfig = (status) => {
         const configs = {
             applied: { color: 'blue', icon: Clock, label: 'Applied' },
@@ -186,9 +210,19 @@ const MyApplications = () => {
                                     )}
 
                                     {app.status === 'offered' && (
-                                        <div className="flex gap-2">
-                                            <button className="btn-premium !py-2 !px-4 text-sm">Accept Offer</button>
-                                            <button className="btn-secondary !py-2 !px-4 text-sm">Decline</button>
+                                        <div className="flex gap-3">
+                                            <button
+                                                onClick={() => handleRespondOffer(app._id, 'accepted')}
+                                                className="px-6 py-2 bg-[#A4123F] hover:bg-[#8B0000] text-white text-sm font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                            >
+                                                Accept Offer
+                                            </button>
+                                            <button
+                                                onClick={() => handleRespondOffer(app._id, 'declined')}
+                                                className="px-6 py-2 border-2 border-[#A4123F] text-[#A4123F] hover:bg-pink-50 text-sm font-bold rounded-xl transition-all"
+                                            >
+                                                Decline
+                                            </button>
                                         </div>
                                     )}
                                 </div>

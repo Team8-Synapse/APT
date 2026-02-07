@@ -106,6 +106,47 @@ router.delete('/withdraw/:applicationId', async (req, res) => {
     }
 });
 
+// Respond to Offer (Accept/Decline)
+router.patch('/respond-offer/:applicationId', async (req, res) => {
+    try {
+        const { status } = req.body; // 'accepted' or 'declined'
+        if (!['accepted', 'declined'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        const application = await Application.findById(req.params.applicationId).populate('driveId');
+        if (!application) {
+            return res.status(404).json({ error: 'Application not found' });
+        }
+
+        if (application.status !== 'offered') {
+            return res.status(400).json({ error: 'Application is not in offered state' });
+        }
+
+        // Update application status
+        application.status = status;
+        await application.save();
+
+        if (status === 'accepted') {
+            // Update Student Profile
+            await StudentProfile.findByIdAndUpdate(application.studentId, {
+                placementStatus: 'placed',
+                offeredCompany: application.driveId.companyName,
+                offeredCTC: application.offeredCTC || application.driveId.ctcDetails.ctc
+            });
+
+            // Add to selected students in Drive
+            await PlacementDrive.findByIdAndUpdate(application.driveId._id, {
+                $addToSet: { selectedStudents: application.studentId }
+            });
+        }
+
+        res.json({ message: `Offer ${status} successfully`, application });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Get application status timeline
 router.get('/timeline/:applicationId', async (req, res) => {
     try {
@@ -152,7 +193,7 @@ router.get('/stats/:userId', async (req, res) => {
             applied: applications.filter(a => a.status === 'applied').length,
             shortlisted: applications.filter(a => a.status === 'shortlisted').length,
             inProgress: applications.filter(a => ['round1', 'round2', 'round3', 'hr_round'].includes(a.status)).length,
-            offered: applications.filter(a => a.status === 'offered').length,
+            offered: applications.filter(a => ['offered', 'accepted'].includes(a.status)).length,
             rejected: applications.filter(a => a.status === 'rejected').length,
             accepted: applications.filter(a => a.status === 'accepted').length
         };

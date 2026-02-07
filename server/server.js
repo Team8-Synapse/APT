@@ -55,6 +55,8 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/notes', noteRoutes);
+app.use('/api/experiences', require('./routes/experienceRoutes'));
+app.use('/api/schedule', require('./routes/eventRoutes'));
 
 app.get('/', (req, res) => {
     res.send('Placement Tracker API is running...');
