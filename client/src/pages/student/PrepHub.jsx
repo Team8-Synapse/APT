@@ -309,7 +309,7 @@ const PrepHub = () => {
                         )
                     ) : (
                         viewMode === 'grid' ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {filteredResources.length > 0 ? filteredResources.map((res, i) => (
                                     <div key={i} className="glass-card flex flex-col group h-full">
                                         <div className="p-6 flex-1 space-y-6">

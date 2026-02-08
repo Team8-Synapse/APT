@@ -302,7 +302,94 @@ const AdminPrepHub = () => {
                 <div className="py-20 flex justify-center items-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div>
                 </div>
+            ) : viewMode === 'grid' ? (
+                /* Gallery/Grid View */
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {filteredResources.length > 0 ? filteredResources.map((res) => {
+                        const openResource = () => {
+                            const url = res.links?.[0] || res.link;
+                            if (!url) {
+                                alert('No link available for this resource');
+                                return;
+                            }
+                            // For PPT files, use Google Docs Viewer
+                            if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                return;
+                            }
+                            window.open(url, '_blank');
+                        };
+                        return (
+                            <div key={res._id} className="glass-card flex flex-col group h-full">
+                                <div className="p-6 flex-1 space-y-6">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-3 bg-amrita-maroon/10 rounded-2xl group-hover:bg-amrita-maroon/20 transition-colors">
+                                                <BookOpen className="text-amrita-maroon" size={24} />
+                                            </div>
+                                            <div className="flex flex-col gap-1">
+                                                <div className="px-3 py-1 bg-white border border-gray-100 rounded-lg text-[8px] font-black text-gray-500 uppercase tracking-widest italic group-hover:border-amrita-maroon/20 w-fit">
+                                                    {res.type || 'Link'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            {res.link && (
+                                                <button onClick={openResource} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
+                                                    <ExternalLink size={18} />
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDelete(res._id)}
+                                                className="p-2 transition-colors hover:bg-red-50 rounded-full text-gray-400 hover:text-red-500"
+                                                title="Delete"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="text-lg font-black text-gray-900 group-hover:text-amrita-maroon transition-colors line-clamp-1">{res.title}</h3>
+                                        <p className="text-xs text-gray-500 font-medium leading-relaxed line-clamp-2">{res.description || res.content}</p>
+                                    </div>
+                                    {res.tags && res.tags.length > 0 && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {res.tags.map((tag, idx) => (
+                                                <span key={idx} className="text-[9px] font-black text-amrita-maroon bg-amrita-maroon/5 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className="flex items-center gap-3 pt-6 border-t border-white/40">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amrita-maroon to-amrita-burgundy flex items-center justify-center text-[10px] text-white font-black">
+                                            {res.addedBy?.email?.[0].toUpperCase() || 'A'}
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-gray-900 leading-none">Added by Admin</p>
+                                            <p className="text-[8px] font-medium text-gray-500 uppercase tracking-widest mt-1 italic">{res.category}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={openResource}
+                                    className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem] flex items-center justify-center gap-2"
+                                >
+                                    <ExternalLink size={14} />
+                                    View Resource
+                                </button>
+                            </div>
+                        );
+                    }) : (
+                        <div className="col-span-full py-24 glass-card flex flex-col items-center justify-center text-gray-400 opacity-50">
+                            <BookOpen size={64} className="mb-4" />
+                            <p className="text-xl font-black italic">No modules found.</p>
+                            <p className="text-xs font-bold mt-2 uppercase">Try adjusting your search or category filter</p>
+                        </div>
+                    )}
+                </div>
             ) : (
+                /* List/Table View */
                 <div className="glass-card overflow-hidden">
                     <table className="w-full">
                         <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
@@ -314,50 +401,60 @@ const AdminPrepHub = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                            {filteredResources.map((res) => (
-                                <tr key={res._id} className="hover:bg-gray-50/50 transition-colors group">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg">
-                                                <BookOpen size={16} />
+                            {filteredResources.map((res) => {
+                                const openResource = () => {
+                                    const url = res.links?.[0] || res.link;
+                                    if (!url) return;
+                                    // For PPT files, use Google Docs Viewer
+                                    if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                        window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                        return;
+                                    }
+                                    window.open(url, '_blank');
+                                };
+                                return (
+                                    <tr key={res._id} className="hover:bg-gray-50/50 transition-colors group">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg">
+                                                    <BookOpen size={16} />
+                                                </div>
+                                                <span className="font-black text-gray-900 dark:text-white text-sm">{res.title}</span>
                                             </div>
-                                            <span className="font-black text-gray-900 dark:text-white text-sm">{res.title}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 bg-amrita-maroon/10 text-amrita-maroon text-[10px] font-black uppercase tracking-widest rounded-full">
-                                            {res.category}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg flex items-center gap-1 w-fit">
-                                            {res.type === 'PDF' && <FileText size={12} />}
-                                            {res.type === 'Link' && <LinkIcon size={12} />}
-                                            {res.type === 'Video' && <BookOpen size={12} />}
-                                            {res.type === 'Article' && <BookOpen size={12} />}
-                                            {res.type}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex gap-1 justify-end">
-                                            {res.link && (
-                                                <a
-                                                    href={res.link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hover:text-amrita-maroon transition-colors"
-                                                    title="Open Link"
-                                                >
-                                                    <ExternalLink size={16} />
-                                                </a>
-                                            )}
-                                            <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-gray-500 hover:text-red-500 transition-colors" title="Delete">
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-3 py-1 bg-amrita-maroon/10 text-amrita-maroon text-[10px] font-black uppercase tracking-widest rounded-full">
+                                                {res.category}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg flex items-center gap-1 w-fit">
+                                                {res.type === 'PDF' && <FileText size={12} />}
+                                                {res.type === 'Link' && <LinkIcon size={12} />}
+                                                {res.type === 'Video' && <BookOpen size={12} />}
+                                                {res.type === 'Article' && <BookOpen size={12} />}
+                                                {res.type}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex gap-1 justify-end">
+                                                {res.link && (
+                                                    <button
+                                                        onClick={openResource}
+                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hover:text-amrita-maroon transition-colors"
+                                                        title="Open Link"
+                                                    >
+                                                        <ExternalLink size={16} />
+                                                    </button>
+                                                )}
+                                                <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-gray-500 hover:text-red-500 transition-colors" title="Delete">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                     {filteredResources.length === 0 && (
