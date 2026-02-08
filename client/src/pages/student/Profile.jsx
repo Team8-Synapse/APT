@@ -252,7 +252,7 @@ const StudentProfile = () => {
 
     if (loading) return (
         <div className="flex h-screen items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#A4123F' }}></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#B1124A' }}></div>
         </div>
     );
 
@@ -263,13 +263,13 @@ const StudentProfile = () => {
                 <div>
                     <div className="flex items-center gap-2 mb-2">
                         <Sparkles className="animate-pulse" size={20} style={{ color: '#D4AF37' }} />
-                        <span className="text-[10px] font-black tracking-[0.2em] uppercase" style={{ color: '#A4123F' }}>
+                        <span className="text-[10px] font-black tracking-[0.2em] uppercase" style={{ color: '#B1124A' }}>
                             Placement Profile
                         </span>
                     </div>
                     <h1 className="text-4xl font-black tracking-tight">
                         <span style={{ color: '#1f2937' }}>My</span>{' '}
-                        <span style={{ color: '#A4123F' }}>Profile</span>
+                        <span style={{ color: '#B1124A' }}>Profile</span>
                     </h1>
                     <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                         Complete your profile to apply for placement drives
@@ -380,7 +380,7 @@ const StudentProfile = () => {
                                         onClick={() => setActiveSection(section.id)}
                                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all"
                                         style={{
-                                            backgroundColor: activeSection === section.id ? '#A4123F' : 'transparent',
+                                            backgroundColor: activeSection === section.id ? '#B1124A' : 'transparent',
                                             color: activeSection === section.id ? 'white' : '#6b7280'
                                         }}
                                     >
@@ -396,7 +396,7 @@ const StudentProfile = () => {
                                 type="submit"
                                 disabled={saving}
                                 className="w-full py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white transition-all hover:opacity-90 disabled:opacity-50"
-                                style={{ backgroundColor: '#A4123F' }}
+                                style={{ backgroundColor: '#B1124A' }}
                             >
                                 <Save size={18} />
                                 {saving ? 'Saving...' : 'Save Profile'}
@@ -412,7 +412,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <User size={20} style={{ color: '#A4123F' }} />
+                                    <User size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Personal Information
                             </h2>
@@ -431,7 +431,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <GraduationCap size={20} style={{ color: '#A4123F' }} />
+                                    <GraduationCap size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Academic Details
                             </h2>
@@ -492,7 +492,7 @@ const StudentProfile = () => {
                             <section className="glass-card p-8 space-y-6">
                                 <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                     <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                        <BookOpen size={20} style={{ color: '#A4123F' }} />
+                                        <BookOpen size={20} style={{ color: '#B1124A' }} />
                                     </div>
                                     Technical Skills
                                 </h2>
@@ -517,7 +517,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddSkill}
                                         className="p-3 rounded-xl text-white transition-all hover:opacity-90"
-                                        style={{ backgroundColor: '#A4123F' }}
+                                        style={{ backgroundColor: '#B1124A' }}
                                     >
                                         <Plus size={24} />
                                     </button>
@@ -544,7 +544,7 @@ const StudentProfile = () => {
                             <section className="glass-card p-8 space-y-6">
                                 <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                     <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                        <Award size={20} style={{ color: '#A4123F' }} />
+                                        <Award size={20} style={{ color: '#B1124A' }} />
                                     </div>
                                     Certifications
                                 </h2>
@@ -560,7 +560,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddCert}
                                         className="p-3 rounded-xl text-white transition-all hover:opacity-90"
-                                        style={{ backgroundColor: '#A4123F' }}
+                                        style={{ backgroundColor: '#B1124A' }}
                                     >
                                         <Plus size={24} />
                                     </button>
@@ -582,7 +582,7 @@ const StudentProfile = () => {
                             <section className="glass-card p-8 space-y-6">
                                 <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                     <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                        <Star size={20} style={{ color: '#A4123F' }} />
+                                        <Star size={20} style={{ color: '#B1124A' }} />
                                     </div>
                                     Achievements
                                 </h2>
@@ -598,7 +598,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddAchievement}
                                         className="p-3 rounded-xl text-white transition-all hover:opacity-90"
-                                        style={{ backgroundColor: '#A4123F' }}
+                                        style={{ backgroundColor: '#B1124A' }}
                                     >
                                         <Plus size={24} />
                                     </button>
@@ -623,7 +623,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <Briefcase size={20} style={{ color: '#A4123F' }} />
+                                    <Briefcase size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Internship Experience
                             </h2>
@@ -638,7 +638,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddInternship}
                                         className="w-full py-3 border-2 border-dashed rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:bg-white"
-                                        style={{ borderColor: '#A4123F', color: '#A4123F' }}
+                                        style={{ borderColor: '#B1124A', color: '#B1124A' }}
                                     >
                                         <Plus size={18} /> Add Internship
                                     </button>
@@ -651,7 +651,7 @@ const StudentProfile = () => {
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <h4 className="font-bold" style={{ color: '#1f2937' }}>{intern.role}</h4>
-                                                <p className="text-sm" style={{ color: '#A4123F' }}>{intern.company}</p>
+                                                <p className="text-sm" style={{ color: '#B1124A' }}>{intern.company}</p>
                                                 <p className="text-xs mt-1" style={{ color: '#6b7280' }}>{intern.duration}</p>
                                                 {intern.description && <p className="text-sm mt-2" style={{ color: '#4b5563' }}>{intern.description}</p>}
                                             </div>
@@ -670,7 +670,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <Star size={20} style={{ color: '#A4123F' }} />
+                                    <Star size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Projects
                             </h2>
@@ -693,7 +693,7 @@ const StudentProfile = () => {
                                     type="button"
                                     onClick={handleAddProject}
                                     className="w-full py-3 border-2 border-dashed rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:bg-white"
-                                    style={{ borderColor: '#A4123F', color: '#A4123F' }}
+                                    style={{ borderColor: '#B1124A', color: '#B1124A' }}
                                 >
                                     <Plus size={18} /> Add Project
                                 </button>
@@ -707,7 +707,7 @@ const StudentProfile = () => {
                                                 <div className="flex items-center gap-2">
                                                     <h4 className="font-bold" style={{ color: '#1f2937' }}>{project.title}</h4>
                                                     {project.link && (
-                                                        <a href={project.link} target="_blank" rel="noreferrer" className="hover:opacity-70" style={{ color: '#A4123F' }}>
+                                                        <a href={project.link} target="_blank" rel="noreferrer" className="hover:opacity-70" style={{ color: '#B1124A' }}>
                                                             <Link2 size={14} />
                                                         </a>
                                                     )}
@@ -736,7 +736,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <Link2 size={20} style={{ color: '#A4123F' }} />
+                                    <Link2 size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Professional Links
                             </h2>
@@ -783,7 +783,7 @@ const StudentProfile = () => {
                         <section className="glass-card p-8 space-y-6">
                             <h2 className="text-xl font-black flex items-center gap-3" style={{ color: '#1f2937' }}>
                                 <div className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(164, 18, 63, 0.1)' }}>
-                                    <MapPin size={20} style={{ color: '#A4123F' }} />
+                                    <MapPin size={20} style={{ color: '#B1124A' }} />
                                 </div>
                                 Job Preferences
                             </h2>
@@ -814,7 +814,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddRole}
                                         className="p-3 rounded-xl text-white transition-all hover:opacity-90"
-                                        style={{ backgroundColor: '#A4123F' }}
+                                        style={{ backgroundColor: '#B1124A' }}
                                     >
                                         <Plus size={24} />
                                     </button>
@@ -845,7 +845,7 @@ const StudentProfile = () => {
                                         type="button"
                                         onClick={handleAddLocation}
                                         className="p-3 rounded-xl text-white transition-all hover:opacity-90"
-                                        style={{ backgroundColor: '#A4123F' }}
+                                        style={{ backgroundColor: '#B1124A' }}
                                     >
                                         <Plus size={24} />
                                     </button>

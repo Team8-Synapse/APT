@@ -116,7 +116,7 @@ const MyApplications = () => {
         <div className="space-y-8 page-enter">
             <header>
                 <h1 className="text-4xl font-black tracking-tight">
-                    <span style={{ color: '#1f2937' }}>My</span> <span style={{ color: '#A4123F' }}>Applications</span>
+                    <span style={{ color: '#1f2937' }}>My</span> <span style={{ color: '#B1124A' }}>Applications</span>
                 </h1>
                 <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                     Track your placement journey
@@ -155,7 +155,7 @@ const MyApplications = () => {
                         onClick={() => setFilter(f)}
                         className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wider transition-all"
                         style={{
-                            backgroundColor: filter === f ? '#A4123F' : '#f3f4f6',
+                            backgroundColor: filter === f ? '#B1124A' : '#f3f4f6',
                             color: filter === f ? 'white' : '#6b7280'
                         }}
                     >
@@ -213,13 +213,13 @@ const MyApplications = () => {
                                         <div className="flex gap-3">
                                             <button
                                                 onClick={() => handleRespondOffer(app._id, 'accepted')}
-                                                className="px-6 py-2 bg-[#A4123F] hover:bg-[#8B0000] text-white text-sm font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                                className="px-6 py-2 bg-[#B1124A] hover:bg-[#8B0000] text-white text-sm font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                                             >
                                                 Accept Offer
                                             </button>
                                             <button
                                                 onClick={() => handleRespondOffer(app._id, 'declined')}
-                                                className="px-6 py-2 border-2 border-[#A4123F] text-[#A4123F] hover:bg-pink-50 text-sm font-bold rounded-xl transition-all"
+                                                className="px-6 py-2 border-2 border-[#B1124A] text-[#B1124A] hover:bg-pink-50 text-sm font-bold rounded-xl transition-all"
                                             >
                                                 Decline
                                             </button>

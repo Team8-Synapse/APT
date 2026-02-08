@@ -538,39 +538,7 @@ const AdminDashboard = () => {
                     </div>
                     <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
                 </div>
-            </div>
-
-            {/* Command Center Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <QuickStatCard
-                    icon={<Users size={24} />}
-                    label="Total Students"
-                    value={stats.studentCount}
-                    change="+5 this week"
-                    gradient="from-[#8B0000] to-[#A52A2A]"
-                />
-                <QuickStatCard
-                    icon={<Briefcase size={24} />}
-                    label="Active Drives"
-                    value={stats.driveCount}
-                    change={`${stats.recentDrives?.length || 0} upcoming`}
-                    gradient="from-[#8B0000] to-[#A52A2A]"
-                />
-                <QuickStatCard
-                    icon={<CheckCircle size={24} />}
-                    label="Placed Students"
-                    value={stats.placedStudents}
-                    change={`${stats.placementPercentage}% placed`}
-                    gradient="from-[#8B0000] to-[#A52A2A]"
-                />
-                <QuickStatCard
-                    icon={<DollarSign size={24} />}
-                    label="Highest Package"
-                    value={`₹${(stats.ctcStats?.maxCTC / 100000 || 0).toFixed(1)}L`}
-                    change="This season"
-                    gradient="from-[#8B0000] to-[#A52A2A]"
-                />
-            </div>
+            )}
 
             {/* Main Content Pane */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 scroller-hide">
