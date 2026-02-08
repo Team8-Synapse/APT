@@ -4,7 +4,7 @@ import {
     BookOpen, Search, Plus, Edit3, Trash2, ExternalLink,
     Filter, LayoutGrid, List, FileText, Link as LinkIcon,
     Code, Cpu, UserCheck, Briefcase, PlusCircle, Save, X,
-    ChevronLeft, Sparkles, TrendingUp, Clock, Tag, ChevronDown, Upload
+    ChevronLeft, Sparkles, TrendingUp, Clock, Tag, ChevronDown, Upload, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -16,6 +16,8 @@ const AdminPrepHub = () => {
     const [category, setCategory] = useState('All');
     const [viewMode, setViewMode] = useState('grid');
     const [editingResource, setEditingResource] = useState(null);
+    const [uploadFile, setUploadFile] = useState(null);
+    const [deleteModal, setDeleteModal] = useState({ show: false, id: null, title: '' });
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -32,7 +34,7 @@ const AdminPrepHub = () => {
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
     ];
-    const types = ['Link', 'PDF', 'Video', 'Article'];
+    const types = ['Link', 'PDF', 'PPT'];
 
     useEffect(() => {
         fetchResources();
@@ -41,7 +43,10 @@ const AdminPrepHub = () => {
     const fetchResources = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
             setResources(res.data);
             setLoading(false);
         } catch (err) {
@@ -59,16 +64,53 @@ const AdminPrepHub = () => {
         e.preventDefault();
         try {
             const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-            const dataToSubmit = { ...formData, tags: tagsArray, addedBy: user.id };
+            const dataToSubmit = new FormData();
+            dataToSubmit.append('title', formData.title);
+            dataToSubmit.append('description', formData.description);
+            dataToSubmit.append('category', formData.category);
+            dataToSubmit.append('type', formData.type);
+            dataToSubmit.append('tags', JSON.stringify(tagsArray));
+
+            if (formData.type === 'PDF' || formData.type === 'PPT') {
+                // Only require file for new resources, not edits
+                if (!editingResource && !uploadFile) {
+                    alert('Please upload a file');
+                    return;
+                }
+                // Add file if one was selected (for new or updating file)
+                if (uploadFile) {
+                    dataToSubmit.append('file', uploadFile);
+                }
+            } else {
+                dataToSubmit.append('link', formData.link);
+            }
+
+            // Get token from localStorage to include in headers
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            };
 
             if (editingResource) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, dataToSubmit);
+                await axios.put(
+                    `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`,
+                    dataToSubmit,
+                    { headers }
+                );
+
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, dataToSubmit);
+                await axios.post(
+                    `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`,
+                    dataToSubmit,
+                    { headers }
+                );
+
+
             }
 
             setEditingResource(null);
             setFormData({ title: '', description: '', category: 'Coding', type: 'Link', link: '', tags: '' });
+            setUploadFile(null);
             fetchResources();
         } catch (err) {
             console.error('Error saving resource:', err);
@@ -89,14 +131,48 @@ const AdminPrepHub = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this resource?')) {
-            try {
-                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${id}`);
-                fetchResources();
-            } catch (err) {
-                console.error('Error deleting resource:', err);
-            }
+    const handleDelete = (resource) => {
+        setDeleteModal({ show: true, id: resource._id, title: resource.title });
+    };
+
+    const confirmDelete = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${deleteModal.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setDeleteModal({ show: false, id: null, title: '' });
+            fetchResources();
+        } catch (err) {
+            console.error('Error deleting resource:', err);
+            alert('Failed to delete resource');
+        }
+    };
+
+    const openResource = (res) => {
+        const url =
+            res.storageFileUrl ||
+            res.cloudinaryFileUrl ||
+            res.driveFileLink ||
+            res.resourceUrl ||
+            res.links?.[0] ||
+            res.link;
+
+        if (!url) {
+            alert('No valid link available for this resource');
+            return;
+        }
+
+        // Check if it's a PPT file - use Google Docs Viewer for in-browser viewing
+        const isPPT = res.type === 'PPT' ||
+            url.toLowerCase().endsWith('.ppt') ||
+            url.toLowerCase().endsWith('.pptx');
+
+        if (isPPT) {
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+            window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+        } else {
+            window.open(url, '_blank', 'noopener,noreferrer');
         }
     };
 
@@ -191,6 +267,7 @@ const AdminPrepHub = () => {
                                         <input
                                             type="file"
                                             accept={formData.type === 'PDF' ? '.pdf' : '.ppt,.pptx'}
+                                            onChange={(e) => setUploadFile(e.target.files[0])}
                                             className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-amrita-maroon/10 file:text-amrita-maroon hover:file:bg-amrita-maroon/20"
                                         />
                                         <Upload className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
@@ -315,7 +392,7 @@ const AdminPrepHub = () => {
                                         </div>
                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => handleEdit(res)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"><Edit3 size={16} /></button>
-                                            <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={16} /></button>
+                                            <button onClick={() => handleDelete(res)} className="p-2 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={16} /></button>
                                         </div>
                                     </div>
                                     <h3 className="font-black text-lg text-gray-900 dark:text-white group-hover:text-amrita-maroon transition-colors line-clamp-1">{res.title}</h3>
@@ -331,11 +408,16 @@ const AdminPrepHub = () => {
                                 </div>
                                 <div className="p-4 border-t border-gray-50 dark:border-gray-700 flex justify-between items-center">
                                     <span className="text-[10px] font-black text-amrita-maroon uppercase tracking-widest">{res.category}</span>
-                                    {res.link && (
-                                        <a href={res.link} target="_blank" rel="noopener noreferrer" className="p-2 text-amrita-maroon hover:bg-maroon-50 rounded-lg transition-all">
+                                    {(res.storageFileUrl || res.resourceUrl || res.driveFileLink || res.link || (res.links && res.links[0])) && (
+                                        <button
+                                            onClick={() => openResource(res)}
+                                            className="p-2 text-amrita-maroon hover:bg-maroon-50 rounded-lg transition-all"
+                                        >
                                             <ExternalLink size={16} />
-                                        </a>
+                                        </button>
                                     )}
+
+
                                 </div>
                             </div>
                         ))}
@@ -370,8 +452,17 @@ const AdminPrepHub = () => {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-1">
-                                                <button onClick={() => handleEdit(res)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"><Edit3 size={16} /></button>
-                                                <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={16} /></button>
+                                                {(res.storageFileUrl || res.resourceUrl || res.driveFileLink || res.link || (res.links && res.links[0])) && (
+                                                    <button
+                                                        onClick={() => openResource(res)}
+                                                        className="p-2 text-amrita-maroon hover:bg-maroon-50 rounded-lg transition-all"
+                                                        title="View Resource"
+                                                    >
+                                                        <ExternalLink size={16} />
+                                                    </button>
+                                                )}
+                                                <button onClick={() => handleEdit(res)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500" title="Edit"><Edit3 size={16} /></button>
+                                                <button onClick={() => handleDelete(res)} className="p-2 hover:bg-red-50 rounded-lg text-red-500" title="Delete"><Trash2 size={16} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -388,6 +479,38 @@ const AdminPrepHub = () => {
             )}
 
 
+
+            {/* Delete Confirmation Modal */}
+            {deleteModal.show && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fade-in">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-3 bg-red-100 rounded-xl">
+                                <AlertTriangle className="text-red-600" size={24} />
+                            </div>
+                            <h3 className="text-xl font-black text-gray-900">Delete Resource</h3>
+                        </div>
+                        <p className="text-gray-600 mb-2">
+                            Are you sure you want to delete <strong className="text-gray-900">"{deleteModal.title}"</strong>?
+                        </p>
+                        <p className="text-sm text-red-600 mb-6">This action cannot be undone.</p>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => setDeleteModal({ show: false, id: null, title: '' })}
+                                className="px-5 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-5 py-2.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

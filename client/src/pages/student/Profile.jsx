@@ -325,7 +325,6 @@ const StudentProfile = () => {
                 </div>
             </header>
 
-            {/* Message */}
             {message.text && (
                 <div
                     className="p-4 rounded-xl flex items-center gap-3 font-bold"
@@ -336,6 +335,34 @@ const StudentProfile = () => {
                 >
                     {message.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                     {message.text}
+                </div>
+            )}
+
+            {/* Placement Status Banner */}
+            {profile.placementStatus === 'placed' && (
+                <div className="glass-card p-8 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 dark:border-green-800 flex flex-col md:flex-row items-center justify-between gap-6 animate-fade-in-up shadow-lg shadow-green-100">
+                    <div className="flex items-center gap-6">
+                        <div className="p-4 bg-white rounded-full text-green-600 shadow-md animate-bounce">
+                            <Award size={40} strokeWidth={2.5} />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-black text-green-800 mb-1">Congratulations, {profile.firstName}! 🎉</h2>
+                            <p className="font-bold text-green-700 text-lg">
+                                You have secured a placement offer at <span className="text-3xl font-black text-green-900 ml-1">{profile.offeredCompany}</span>
+                            </p>
+                            {profile.offeredCTC && (
+                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-green-200/50 rounded-lg text-green-800 font-bold text-sm">
+                                    <span>Package:</span>
+                                    <span className="text-lg">₹{(profile.offeredCTC / 100000).toFixed(1)} LPA</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="hidden md:block">
+                        <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center opacity-50">
+                            <Briefcase size={40} className="text-green-600" />
+                        </div>
+                    </div>
                 </div>
             )}
 

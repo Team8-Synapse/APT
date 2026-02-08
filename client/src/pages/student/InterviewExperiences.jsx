@@ -10,9 +10,10 @@ const InterviewExperiences = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedExperience, setSelectedExperience] = useState(null);
     const [formData, setFormData] = useState({
         companyName: '', role: '', verdict: 'Selected', difficulty: 3, tips: '',
-        questions: '' // Simplified for MVP: just a text block or multiline
+        questions: '', description: ''
     });
 
     useEffect(() => {
@@ -44,7 +45,11 @@ const InterviewExperiences = () => {
         try {
             const payload = {
                 ...formData,
-                rounds: [{ roundName: 'General', questions: formData.questions.split('\n'), description: 'User Submitted' }]
+                rounds: [{
+                    roundName: 'Interview Rounds',
+                    questions: formData.questions.split('\n').filter(q => q.trim()),
+                    description: formData.description || 'User Submitted Experience'
+                }]
             };
             await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/experiences`, payload, { withCredentials: true });
             setIsModalOpen(false);
@@ -161,7 +166,10 @@ const InterviewExperiences = () => {
                                 >
                                     <ThumbsUp size={16} /> {exp.likes?.length || 0}
                                 </button>
-                                <button className="text-sm font-bold text-amrita-maroon hover:underline">
+                                <button
+                                    onClick={() => setSelectedExperience(exp)}
+                                    className="text-sm font-bold text-amrita-maroon hover:underline"
+                                >
                                     Read Full Story →
                                 </button>
                             </div>
@@ -208,9 +216,15 @@ const InterviewExperiences = () => {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interview Questions</label>
-                                <textarea required rows="4" className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none"
-                                    value={formData.questions} onChange={e => setFormData({ ...formData, questions: e.target.value })} placeholder="Describe the rounds and questions asked..." />
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interview Questions & Rounds</label>
+                                <textarea required rows="6" className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none"
+                                    value={formData.questions} onChange={e => setFormData({ ...formData, questions: e.target.value })} placeholder="Describe the rounds and questions asked (one per line)..." />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Overall Experience</label>
+                                <textarea rows="3" className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-amrita-maroon/20 focus:border-amrita-maroon outline-none"
+                                    value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="How was the overall process? (Virtual/Offline, difficulty, etc.)" />
                             </div>
 
                             <div>
@@ -223,6 +237,87 @@ const InterviewExperiences = () => {
                                 Submit Experience
                             </button>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* View Detail Modal */}
+            {selectedExperience && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center sticky top-0 z-10">
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                                    {selectedExperience.companyName} <span className="text-gray-400 font-medium">| {selectedExperience.role}</span>
+                                </h2>
+                                <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                                    <User size={14} /> Shared by {selectedExperience.studentId?.firstName} • {new Date(selectedExperience.createdAt).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <button onClick={() => setSelectedExperience(null)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                                <XCircle className="text-gray-400 hover:text-gray-600" size={24} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 space-y-8">
+                            {/* Verdict Banner */}
+                            <div className={`p-4 rounded-xl flex items-center gap-4 ${selectedExperience.verdict === 'Selected' ? 'bg-green-50 border border-green-100 text-green-800' : 'bg-red-50 border border-red-100 text-red-800'}`}>
+                                <div className={`p-3 rounded-full ${selectedExperience.verdict === 'Selected' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                    {selectedExperience.verdict === 'Selected' ? <Award size={24} /> : <XCircle size={24} />}
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">Verdict: {selectedExperience.verdict}</h3>
+                                    <p className="text-sm opacity-80">Difficulty Rating: {selectedExperience.difficulty}/5</p>
+                                </div>
+                            </div>
+
+                            {/* Rounds & Questions */}
+                            <div>
+                                <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+                                    <Briefcase className="text-amrita-maroon" size={20} /> Interview Rounds
+                                </h3>
+                                <div className="space-y-6">
+                                    {selectedExperience.rounds?.map((round, i) => (
+                                        <div key={i} className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                                            <h4 className="font-bold text-gray-800 mb-2">{round.roundName || `Round ${i + 1}`}</h4>
+                                            {round.description && <p className="text-sm text-gray-600 mb-4 italic">{round.description}</p>}
+
+                                            <div className="space-y-3">
+                                                {round.questions?.map((q, j) => (
+                                                    <div key={j} className="flex gap-3 items-start">
+                                                        <span className="min-w-[24px] h-6 rounded-full bg-amrita-maroon/10 text-amrita-maroon text-xs font-bold flex items-center justify-center mt-0.5">
+                                                            Q{j + 1}
+                                                        </span>
+                                                        <p className="text-gray-700 font-medium leading-relaxed">{q}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Tips */}
+                            {selectedExperience.tips && (
+                                <div>
+                                    <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+                                        <BookOpen className="text-yellow-600" size={20} /> Tips for Juniors
+                                    </h3>
+                                    <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-100 text-yellow-900 italic leading-relaxed">
+                                        "{selectedExperience.tips}"
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
+                            <button
+                                onClick={() => setSelectedExperience(null)}
+                                className="px-6 py-2 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

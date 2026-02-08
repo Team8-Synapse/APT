@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
+import NotificationsPanel from './NotificationsPanel';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -78,7 +79,7 @@ const Navbar = () => {
 
     return (
         <nav className="sticky top-0 z-50 px-4 py-3">
-            <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl overflow-hidden">
+            <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
                 <div className="px-6 py-3 flex justify-between items-center">
                     <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
@@ -128,45 +129,7 @@ const Navbar = () => {
                                 )}
                             </button>
 
-                            {showNotifications && (
-                                <div className="absolute right-0 mt-2 w-80 glass-card !rounded-2xl shadow-2xl overflow-hidden z-[100]">
-                                    <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-                                        <h3 className="font-black text-gray-900 dark:text-white">Notifications</h3>
-                                    </div>
-                                    <div className="max-h-80 overflow-y-auto custom-scrollbar">
-                                        {notifications.length > 0 ? notifications.map(n => (
-                                            <div
-                                                key={n._id || n.id}
-                                                onClick={() => markAsRead(n._id)}
-                                                className={`p-4 border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer ${!n.isRead ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}`}
-                                            >
-                                                <div className="flex gap-3">
-                                                    <div className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${n.type === 'success' ? 'bg-green-500' : n.type === 'error' ? 'bg-red-500' : 'bg-amrita-maroon'}`} />
-                                                    <div className="flex-1">
-                                                        <p className={`text-sm font-bold leading-tight mb-1 ${!n.isRead ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
-                                                            {n.title || n.message}
-                                                        </p>
-                                                        {n.title && <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{n.message}</p>}
-                                                        <p className="text-[10px] text-gray-400 mt-2 font-medium">
-                                                            {n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Just now'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )) : (
-                                            <div className="p-12 text-center text-gray-400">
-                                                <Bell size={32} className="mx-auto mb-3 opacity-20" />
-                                                <p className="text-sm font-medium">No updates yet</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-gray-800 text-center">
-                                        <Link to="/notifications" onClick={() => setShowNotifications(false)} className="text-xs font-bold text-amrita-maroon dark:text-amrita-gold hover:underline">
-                                            View All Notifications
-                                        </Link>
-                                    </div>
-                                </div>
-                            )}
+                            <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
                         </div>
 
                         <div className="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-2 hidden md:block" />
@@ -219,7 +182,7 @@ const Navbar = () => {
                     </div>
                 )}
             </div>
-        </nav>
+        </nav >
     );
 };
 

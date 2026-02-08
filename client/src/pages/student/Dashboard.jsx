@@ -13,6 +13,7 @@ import {
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
     Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon
 } from 'lucide-react';
+import NotificationsPanel from '../../components/NotificationsPanel';
 
 // ============= MAROON-WHITE MODERN THEME =============
 const theme = {
@@ -1194,6 +1195,9 @@ const StudentDashboard = () => {
                                 <Bell size={22} />
                                 <span className="notification-badge">{notifications.length}</span>
                             </button>
+                            {showNotifications && (
+                                <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
+                            )}
                             <button className="icon-btn">
                                 <Settings size={22} />
                             </button>

@@ -23,7 +23,11 @@ import AddAlumniModal from '../../components/admin/AddAlumniModal';
 import KanbanBoard from '../../components/admin/KanbanBoard';
 import AdminPrepHub from './AdminPrepHub';
 import AdminAnalytics from './AdminAnalytics';
+import AddEventModal from '../../components/admin/AddEventModal';
+import NotificationsPanel from '../../components/NotificationsPanel';
+
 import AdminReports from './AdminReports';
+import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
 
 const theme = {
     maroon: {
@@ -81,6 +85,25 @@ const AdminDashboard = () => {
     const [editingAnnouncement, setEditingAnnouncement] = useState(null);
     const [editingResource, setEditingResource] = useState(null);
 
+    // Drive Management State
+    const [allDrives, setAllDrives] = useState([]);
+    const [viewingDrive, setViewingDrive] = useState(null); // Drive selected for Kanban
+    const [driveApplications, setDriveApplications] = useState([]);
+    const [showAddDriveModal, setShowAddDriveModal] = useState(false);
+    const [selectedDrive, setSelectedDrive] = useState(null); // For editing drive details
+
+    // Student Detail Modal (Applicants View)
+    const [showStudentDetailModal, setShowStudentDetailModal] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+
+    // Alumni Modal State
+    const [showAddAlumniModal, setShowAddAlumniModal] = useState(false);
+
+    const [editingAlumni, setEditingAlumni] = useState(null);
+    const [alumniSearch, setAlumniSearch] = useState('');
+    const [showAddEventModal, setShowAddEventModal] = useState(false);
+    const [selectedEventDate, setSelectedEventDate] = useState('');
+
     // Calendar state
     const [currentDate, setCurrentDate] = useState(new Date());
     const [calendarEvents, setCalendarEvents] = useState([]);
@@ -94,14 +117,7 @@ const AdminDashboard = () => {
     ];
 
     // Calendar events
-    const calendarData = [
-        { date: '2026-03-15', title: 'Google Drive', type: 'drive', company: 'Google' },
-        { date: '2026-03-17', title: 'Mock Interview Workshop', type: 'prep', time: '10:00 AM' },
-        { date: '2026-03-18', title: 'Alumni Meet', type: 'alumni', time: '3:00 PM' },
-        { date: '2026-03-20', title: 'Microsoft Drive', type: 'drive', company: 'Microsoft' },
-        { date: '2026-03-22', title: 'Amazon Drive', type: 'drive', company: 'Amazon' },
-        { date: '2026-03-25', title: 'Resume Review Session', type: 'prep', time: '2:00 PM' },
-    ];
+    // const calendarData = fetched dynamically now
 
     useEffect(() => {
         fetchStats();
@@ -109,7 +125,21 @@ const AdminDashboard = () => {
         fetchCompanies();
         fetchAnnouncements();
         fetchAlumni();
+        fetchAlumni();
+        fetchAllDrives();
+        fetchSchedule();
     }, []);
+
+    const fetchSchedule = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/schedule`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setCalendarEvents(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     // Unified fetchAlumni moved below
 
@@ -199,12 +229,67 @@ const AdminDashboard = () => {
             setAlumni(res.data);
         } catch (err) {
             console.error(err);
-            setAlumni([
-                { name: 'Arun Kumar', company: 'Google', role: 'Senior SDE', batch: '2018', ctc: 6500000 },
-                { name: 'Priya Sharma', company: 'Microsoft', role: 'Product Manager', batch: '2019', ctc: 5500000 },
-                { name: 'Rajesh Patel', company: 'Amazon', role: 'SDM', batch: '2017', ctc: 7000000 },
-                { name: 'Sneha Reddy', company: 'Adobe', role: 'Design Lead', batch: '2020', ctc: 4800000 },
-            ]);
+            setAlumni([]);
+        }
+    };
+
+    const handleDeleteAlumni = async (id) => {
+        if (!window.confirm('Are you sure you want to remove this alumni member?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/member/${id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            fetchAlumni();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete alumni');
+        }
+    };
+
+    const handleEditAlumni = (alum) => {
+        setEditingAlumni(alum);
+        setShowAddAlumniModal(true);
+    };
+
+    const fetchAllDrives = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drives`);
+            setAllDrives(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const fetchDriveApplications = async (driveId) => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${driveId}/applications`);
+            setDriveApplications(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleViewApplicants = (drive) => {
+        setViewingDrive(drive);
+        fetchDriveApplications(drive._id);
+    };
+
+    const handleEditDrive = (drive) => {
+        setSelectedDrive(drive);
+        setShowAddDriveModal(true);
+    };
+
+
+
+    const handleDeleteDrive = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this drive?')) return;
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${id}`);
+            fetchAllDrives();
+            fetchStats(); // Update global stats
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete drive');
         }
     };
 
@@ -380,10 +465,10 @@ const AdminDashboard = () => {
                                     if (tab.id === 'announcements') {
                                         window.location.href = '/admin/announcements';
                                     } else {
-                                        setActiveTab(tab.id === 'schedule' ? 'overview' : tab.id);
+                                        setActiveTab(tab.id);
                                     }
                                 }}
-                                className={`flex items-center gap-3 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === tab.id || (tab.id === 'overview' && activeTab === 'overview')
+                                className={`flex items-center gap-3 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300 ${activeTab === tab.id
                                     ? 'bg-amrita-maroon text-white shadow-lg shadow-amrita-maroon/30 scale-105'
                                     : 'text-gray-500 hover:text-amrita-maroon hover:bg-amrita-maroon/5'
                                     }`}
@@ -411,8 +496,8 @@ const AdminDashboard = () => {
                     {/* Actions */}
                     <div className="flex items-center gap-1">
                         <button
-                            onClick={() => setShowNotifications(!showNotifications)}
-                            className="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative transition-colors text-gray-500"
+                            onClick={() => setShowNotifications(prev => !prev)}
+                            className="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative transition-colors text-gray-500 z-10"
                         >
                             <BellRing size={20} />
                             {stats.announcementCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>}
@@ -451,6 +536,7 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
+                    <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
                 </div>
             </div>
 
@@ -608,48 +694,50 @@ const AdminDashboard = () => {
 
                         {/* Right Sidebar */}
                         <div className="space-y-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                            {/* Calendar Intelligence */}
-                            <div className="glass-card p-6">
-                                <CalendarComponent
-                                    currentDate={currentDate}
-                                    setCurrentDate={setCurrentDate}
-                                    calendarData={stats.recentDrives || []}
-                                />
-                            </div>
+                            {/* Calendar */}
+                            <CalendarComponent
+                                currentDate={currentDate}
+                                setCurrentDate={setCurrentDate}
+                                calendarData={calendarEvents}
+                                onAddEvent={(date) => {
+                                    setSelectedEventDate(date || new Date().toISOString().split('T')[0]);
+                                    setShowAddEventModal(true);
+                                }}
+                            />
+                        </div>
 
-                            {/* Quick Stats Sidebar */}
-                            <div className="glass-card p-6 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-4 opacity-10">
-                                    <TrendingUp size={120} />
-                                </div>
-                                <h3 className="font-bold mb-6 flex items-center gap-2">
-                                    <Sparkles size={18} />
-                                    Seasonal Performance
-                                </h3>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-end">
-                                        <p className="text-xs opacity-70">Success Rate</p>
-                                        <p className="text-2xl font-black">{stats.placementPercentage}%</p>
-                                    </div>
-                                    <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-white rounded-full" style={{ width: `${stats.placementPercentage}%` }} />
-                                    </div>
-                                    <p className="text-[10px] font-bold opacity-70">
-                                        Outstanding performance in CSE & ECE departments this year.
-                                    </p>
-                                </div>
+                        {/* Quick Stats Sidebar */}
+                        <div className="glass-card p-6 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white overflow-hidden relative">
+                            <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <TrendingUp size={120} />
                             </div>
-
-                            {/* Shortlist Engine Preview */}
-                            <div className="glass-card p-6">
-                                <h3 className="font-black text-lg mb-4 dark:text-white">Shortlist Engine</h3>
-                                <p className="text-xs text-gray-500 mb-6 font-bold leading-relaxed">
-                                    Optimize your selection process using our automated shortlist recommendation engine.
+                            <h3 className="font-bold mb-6 flex items-center gap-2">
+                                <Sparkles size={18} />
+                                Seasonal Performance
+                            </h3>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-end">
+                                    <p className="text-xs opacity-70">Success Rate</p>
+                                    <p className="text-2xl font-black">{stats.placementPercentage}%</p>
+                                </div>
+                                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                                    <div className="h-full bg-white rounded-full" style={{ width: `${stats.placementPercentage}%` }} />
+                                </div>
+                                <p className="text-[10px] font-bold opacity-70">
+                                    Outstanding performance in CSE & ECE departments this year.
                                 </p>
-                                <button className="w-full py-3 bg-gray-50 dark:bg-gray-800 text-amrita-maroon font-black text-xs uppercase tracking-widest rounded-xl hover:bg-amrita-maroon hover:text-white transition-all">
-                                    Configure Engine
-                                </button>
                             </div>
+                        </div>
+
+                        {/* Shortlist Engine Preview */}
+                        <div className="glass-card p-6">
+                            <h3 className="font-black text-lg mb-4 dark:text-white">Shortlist Engine</h3>
+                            <p className="text-xs text-gray-500 mb-6 font-bold leading-relaxed">
+                                Optimize your selection process using our automated shortlist recommendation engine.
+                            </p>
+                            <button className="w-full py-3 bg-gray-50 dark:bg-gray-800 text-amrita-maroon font-black text-xs uppercase tracking-widest rounded-xl hover:bg-amrita-maroon hover:text-white transition-all">
+                                Configure Engine
+                            </button>
                         </div>
                     </>
                 )}
@@ -713,32 +801,154 @@ const AdminDashboard = () => {
 
                 {activeTab === 'drives' && (
                     <div className="lg:col-span-3 space-y-8 animate-fade-in-up">
-                        <div className="glass-card p-8">
-                            <div className="flex justify-between items-center mb-8">
-                                <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
-                                    <Briefcase className="text-amrita-maroon" size={24} />
-                                    Upcoming Company Drives
-                                </h2>
-                                <button className="btn-premium flex items-center gap-2 !py-2 !px-4 !text-xs">
-                                    <Plus size={14} /> Add New Drive
-                                </button>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {stats.recentDrives?.map((drive, i) => (
-                                    <div key={i} className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-transparent hover:border-amrita-maroon transition-all">
-                                        <div className="w-12 h-12 bg-amrita-maroon text-white rounded-xl flex items-center justify-center font-black text-xl mb-4">
-                                            {drive.companyName?.[0]}
-                                        </div>
-                                        <h3 className="font-black text-lg dark:text-white mb-1">{drive.companyName}</h3>
-                                        <p className="text-xs text-gray-500 font-bold mb-4">{drive.jobProfile}</p>
-                                        <div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs font-bold">
-                                            <span>{new Date(drive.date).toLocaleDateString()}</span>
-                                            <span className="text-amrita-maroon">₹{(drive.ctcDetails?.ctc / 100000).toFixed(1)}L</span>
+                        {viewingDrive ? (
+                            <div className="glass-card p-8 h-[calc(100vh-200px)] flex flex-col">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div>
+                                        <button
+                                            onClick={() => setViewingDrive(null)}
+                                            className="text-sm font-bold text-gray-500 hover:text-amrita-maroon flex items-center gap-1 mb-2"
+                                        >
+                                            <ChevronLeft size={16} /> Back to Drives
+                                        </button>
+                                        <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
+                                            {viewingDrive.companyName} <span className="text-gray-400 text-lg font-bold">| Applicants Manager</span>
+                                        </h2>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <div className="px-4 py-2 bg-gray-100 rounded-lg text-xs font-bold">
+                                            Total: {driveApplications.length}
                                         </div>
                                     </div>
-                                ))}
+                                </div>
+                                <KanbanBoard
+                                    applications={driveApplications}
+                                    driveId={viewingDrive._id}
+                                    fetchApplications={() => fetchDriveApplications(viewingDrive._id)}
+                                    onViewStudent={(student) => {
+                                        setSelectedStudent(student);
+                                        setShowStudentDetailModal(true);
+                                    }}
+                                />
                             </div>
-                        </div>
+                        ) : (
+                            <div className="glass-card p-8 !bg-white dark:!bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl rounded-[2rem]">
+                                <div className="flex justify-between items-center mb-8">
+                                    <div>
+                                        <h2 className="text-3xl font-black dark:text-white text-gray-900 tracking-tight">
+                                            Placement Drives
+                                        </h2>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                            <p className="text-sm text-gray-500 font-bold">
+                                                {(allDrives.length || stats.recentDrives?.length || 0)} active drives
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => { setSelectedDrive(null); setShowAddDriveModal(true); }}
+                                        className="bg-[#A4123F] hover:bg-[#8B0000] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-amrita-maroon/20 hover:shadow-xl hover:scale-105 transition-all duration-300"
+                                    >
+                                        <Plus size={20} /> Add New Drive
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                                    {(allDrives.length > 0 ? allDrives : stats.recentDrives)?.map((drive, i) => (
+                                        <div key={i} className="bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:shadow-amrita-maroon/5 transition-all duration-300 group overflow-hidden flex flex-col relative w-full">
+
+                                            {/* Status Badge Absolute */}
+                                            <div className="absolute top-6 right-6 z-10">
+                                                <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm ${drive.status === 'upcoming'
+                                                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'
+                                                    : drive.status === 'ongoing'
+                                                        ? 'bg-green-50 text-green-600 dark:bg-green-900/40 dark:text-green-300'
+                                                        : 'bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                                                    }`}>
+                                                    {drive.status === 'upcoming' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />}
+                                                    {drive.status === 'ongoing' && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
+                                                    {drive.status}
+                                                </span>
+                                            </div>
+
+                                            <div className="p-7 flex-1 flex flex-col">
+                                                {/* Header: Logo */}
+                                                <div className="mb-4">
+                                                    <div className="w-16 h-16 rounded-2xl p-1 bg-white shadow-lg border border-gray-50 mb-4 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
+                                                        <CompanyLogo name={drive.companyName} size="md" className="rounded-xl w-full h-full object-contain" />
+                                                    </div>
+
+                                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-amrita-maroon transition-colors line-clamp-1" title={drive.companyName}>
+                                                        {drive.companyName}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500 font-bold line-clamp-1" title={drive.jobProfile}>
+                                                        {drive.jobProfile}
+                                                    </p>
+
+                                                    {drive.jobType && (
+                                                        <div className="mt-3 flex gap-2">
+                                                            <span className="inline-block px-3 py-1 bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 rounded-lg text-[10px] uppercase font-black tracking-wider">
+                                                                {drive.jobType}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Details Grid */}
+                                                <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-dashed border-gray-200 dark:border-gray-700 mt-auto">
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Date</p>
+                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                                                            {new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">CTC</p>
+                                                        <p className="text-sm font-black text-[#16a34a]">
+                                                            ₹{(drive.ctcDetails?.ctc / 100000).toFixed(1)}L
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Applicants</p>
+                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200">
+                                                            {drive.registeredStudents?.length || 0}
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Min CGPA</p>
+                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200">
+                                                            {drive.eligibility?.minCgpa || 0}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Footer Actions */}
+                                            <div className="p-4 bg-gray-50/80 dark:bg-gray-800/80 flex gap-3 border-t border-gray-100 dark:border-gray-700 backdrop-blur-sm mt-auto">
+                                                <button
+                                                    onClick={() => handleViewApplicants(drive)}
+                                                    className="flex-1 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 dark:text-blue-400 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
+                                                >
+                                                    <Users size={14} strokeWidth={2.5} /> Applicants
+                                                </button>
+                                                <button
+                                                    onClick={() => handleEditDrive(drive)}
+                                                    className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 dark:text-amber-400 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
+                                                >
+                                                    <Edit3 size={14} strokeWidth={2.5} /> Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteDrive(drive._id)}
+                                                    className="px-4 bg-red-50 hover:bg-red-100 text-red-500 dark:bg-red-900/20 dark:hover:bg-red-900/30 dark:text-red-400 rounded-xl transition-all duration-300 flex items-center justify-center group-hover:shadow-md h-10"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -752,205 +962,351 @@ const AdminDashboard = () => {
                     <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl font-black dark:text-white">Alumni Intelligence</h2>
-                            <button className="btn-premium flex items-center gap-2 !py-2 !px-4 !text-xs">
-                                <Plus size={14} /> Invite Alumni
-                            </button>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Alumni Name</th>
-                                        <th>Company</th>
-                                        <th>Role</th>
-                                        <th>Batch</th>
-                                        <th>CTC</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {alumni.map((alum, i) => (
-                                        <tr key={i}>
-                                            <td className="font-black dark:text-white">{alum.name}</td>
-                                            <td className="text-sm text-gray-500">{alum.company}</td>
-                                            <td className="text-xs font-bold uppercase">{alum.role}</td>
-                                            <td className="text-xs text-gray-500">Class of {alum.batch}</td>
-                                            <td className="font-black text-amrita-maroon">₹{(alum.ctc / 100000).toFixed(1)}L</td>
-                                            <td><button className="p-2 hover:bg-gray-100 rounded-lg"><Mail size={16} /></button></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'announcements' && (
-                    <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
-                        <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
-                                <Megaphone className="text-amrita-maroon" size={24} />
-                                Communication Center
-                            </h2>
                             <button
                                 onClick={() => {
-                                    setEditingAnnouncement(null);
-                                    setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
-                                    document.getElementById('announcement-form').scrollIntoView({ behavior: 'smooth' });
+                                    setEditingAlumni(null);
+                                    setShowAddAlumniModal(true);
                                 }}
                                 className="btn-premium flex items-center gap-2 !py-2 !px-4 !text-xs"
                             >
-                                <Send size={14} /> New Announcement
+                                <Plus size={14} /> Add Alumni Member
                             </button>
                         </div>
 
-                        {/* Announcement Form */}
-                        <div id="announcement-form" className="mb-8 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
-                            <h3 className="font-bold text-lg mb-4 dark:text-white">
-                                {editingAnnouncement ? 'Edit Announcement' : 'Create New Announcement'}
-                            </h3>
-                            <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                                        Announcement Content *
-                                    </label>
-                                    <textarea
-                                        value={newAnnouncement.content}
-                                        onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
-                                        className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-amrita-maroon text-sm"
-                                        rows="3"
-                                        placeholder="Enter announcement content (e.g., 🎉 Google hiring for SDE positions - Apply by March 15)"
-                                        required
-                                    />
-                                </div>
 
-                                <div>
-                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                                        Links (Optional)
-                                    </label>
-                                    {newAnnouncement.links.map((link, idx) => (
-                                        <div key={idx} className="flex gap-2 mb-2">
-                                            <input
-                                                type="text"
-                                                value={link.title}
-                                                onChange={(e) => {
-                                                    const updatedLinks = [...newAnnouncement.links];
-                                                    updatedLinks[idx].title = e.target.value;
-                                                    setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
-                                                }}
-                                                className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
-                                                placeholder="Link title"
-                                            />
-                                            <input
-                                                type="url"
-                                                value={link.url}
-                                                onChange={(e) => {
-                                                    const updatedLinks = [...newAnnouncement.links];
-                                                    updatedLinks[idx].url = e.target.value;
-                                                    setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
-                                                }}
-                                                className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
-                                                placeholder="https://..."
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="flex gap-2">
-                                    <button
-                                        type="submit"
-                                        className="btn-premium !py-2 !px-6 !text-sm"
-                                    >
-                                        {editingAnnouncement ? 'Update Announcement' : 'Post Announcement'}
-                                    </button>
-                                    {editingAnnouncement && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setEditingAnnouncement(null);
-                                                setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
-                                            }}
-                                            className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-300"
-                                        >
-                                            Cancel
-                                        </button>
-                                    )}
-                                </div>
-                            </form>
+                        {/* Search Bar */}
+                        <div className="mb-8 relative">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="text"
+                                placeholder="Search by company..."
+                                className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800/50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-amrita-maroon/20 text-sm transition-all"
+                                value={alumniSearch}
+                                onChange={(e) => setAlumniSearch(e.target.value)}
+                            />
                         </div>
 
-                        {/* Announcements List */}
-                        <div className="space-y-4">
-                            <h3 className="font-bold text-lg dark:text-white">Active Announcements</h3>
-                            {announcements.length > 0 ? (
-                                announcements.map((ann, i) => (
-                                    <div key={ann._id || i} className="p-6 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-md transition-all">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <div className="flex-1">
-                                                <p className="text-sm font-medium text-gray-900 dark:text-white">{ann.content}</p>
-                                                {ann.links && ann.links.length > 0 && ann.links[0].url && (
-                                                    <div className="mt-2 flex gap-2 flex-wrap">
-                                                        {ann.links.map((link, idx) => link.url && (
-                                                            <a
-                                                                key={idx}
-                                                                href={link.url}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="text-xs text-amrita-maroon hover:underline flex items-center gap-1"
-                                                            >
-                                                                <ExternalLink size={12} />
-                                                                {link.title || 'Link'}
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                                <span className="text-[10px] font-bold text-gray-400 mt-2 block">
-                                                    {new Date(ann.createdAt).toLocaleString()}
-                                                </span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {alumni
+                                .filter(a =>
+                                    (a.company?.toLowerCase() || '').includes(alumniSearch.toLowerCase()) ||
+                                    (a.name?.toLowerCase() || '').includes(alumniSearch.toLowerCase())
+                                )
+                                .map((alum, i) => (
+                                    <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-[20px] shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700 group relative flex flex-col items-center text-center">
+
+                                        {/* Actions */}
+                                        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                                            <button
+                                                onClick={() => handleEditAlumni(alum)}
+                                                className="p-2 bg-gray-100 dark:bg-gray-700 rounded-xl text-amrita-maroon hover:bg-amrita-maroon hover:text-white transition-colors shadow-sm"
+                                            >
+                                                <Edit3 size={14} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteAlumni(alum._id)}
+                                                className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors shadow-sm"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
+
+                                        {/* Company Logo */}
+                                        <div className="w-20 h-20 mb-5 p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center border border-gray-100 dark:border-gray-800 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                                            <CompanyLogo name={alum.company} />
+                                        </div>
+
+                                        {/* Details */}
+                                        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 line-clamp-1">{alum.name}</h3>
+                                        <p className="text-xs font-bold text-amrita-maroon uppercase tracking-wider mb-4 px-3 py-1 bg-amrita-maroon/5 rounded-full">
+                                            {alum.role || 'Alumni'}
+                                        </p>
+
+                                        {/* Meta Info */}
+                                        <div className="w-full pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center px-2">
+                                            <div className="flex flex-col items-start bg-gray-50 dark:bg-gray-800 p-2 rounded-lg min-w-[30%]">
+                                                <span className="text-[10px] text-gray-400 font-bold uppercase">Batch</span>
+                                                <span className="text-xs font-black text-gray-700 dark:text-gray-300">{alum.batch}</span>
                                             </div>
-                                            <div className="flex gap-2 ml-4">
-                                                <button
-                                                    onClick={() => handleEditAnnouncement(ann)}
-                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-amrita-maroon"
-                                                    title="Edit"
-                                                >
-                                                    <Edit3 size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleAnnouncementDelete(ann._id)}
-                                                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                                            <div className="flex flex-col items-end bg-gray-50 dark:bg-gray-800 p-2 rounded-lg min-w-[30%]">
+                                                <span className="text-[10px] text-gray-400 font-bold uppercase">Dept</span>
+                                                <span className="text-xs font-black text-gray-700 dark:text-gray-300">{alum.department || 'N/A'}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 w-full">
+                                            <div className="text-xs font-bold text-gray-400 flex items-center justify-center gap-1.5 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                                                <Building2 size={12} /> {alum.company}
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <div className="text-center py-12 text-gray-400">
-                                    <Megaphone size={48} className="mx-auto mb-4 opacity-20" />
-                                    <p className="font-bold">No announcements yet</p>
-                                    <p className="text-sm">Create your first announcement to communicate with students</p>
-                                </div>
-                            )}
+                                ))}
                         </div>
+                        {alumni.filter(a => (a.company?.toLowerCase() || '').includes(alumniSearch.toLowerCase())).length === 0 && (
+                            <div className="py-12 text-center text-gray-400">
+                                <p className="font-bold">No alumni found.</p>
+                            </div>
+                        )}
                     </div>
-                )}
+                )
+                }
 
-                {activeTab === 'analytics' && (
-                    <div className="lg:col-span-3 animate-fade-in-up">
-                        <AdminAnalytics />
-                    </div>
-                )}
 
-                {activeTab === 'reports' && (
-                    <div className="lg:col-span-3 animate-fade-in-up">
-                        <AdminReports />
-                    </div>
-                )}
+
+                {
+                    activeTab === 'schedule' && (
+                        <div className="lg:col-span-3 animate-fade-in-up">
+                            <div className="glass-card p-6">
+                                <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                                    <div>
+                                        <h2 className="text-2xl font-black text-gray-800 dark:text-white flex items-center gap-2">
+                                            <Calendar className="text-amrita-maroon" /> Placement Schedule
+                                        </h2>
+                                        <p className="text-gray-500 text-sm mt-1">Manage all drives, workshops, and events.</p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedEventDate(new Date().toISOString().split('T')[0]);
+                                            setShowAddEventModal(true);
+                                        }}
+                                        className="bg-amrita-maroon text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                                    >
+                                        <Plus size={16} /> Add Event
+                                    </button>
+                                </div>
+                                <CalendarComponent
+                                    currentDate={currentDate}
+                                    setCurrentDate={setCurrentDate}
+                                    calendarData={calendarEvents}
+                                    onAddEvent={(date) => {
+                                        setSelectedEventDate(date || new Date().toISOString().split('T')[0]);
+                                        setShowAddEventModal(true);
+                                    }}
+                                />
+                                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {calendarEvents.filter(e => new Date(e.date) >= new Date()).slice(0, 3).map((event, i) => (
+                                        <div key={i} className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-start gap-4">
+                                            <div className="p-3 bg-white rounded-lg shadow-sm text-amrita-maroon font-black text-center min-w-[60px]">
+                                                <span className="text-xs block">{new Date(event.date).toLocaleString('default', { month: 'short' }).toUpperCase()}</span>
+                                                <span className="text-xl block">{new Date(event.date).getDate()}</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-gray-800">{event.title}</h4>
+                                                <p className="text-xs text-gray-500 mt-1">{event.type.toUpperCase()} • {event.time || 'All Day'}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'announcements' && (
+                        <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
+                                    <Megaphone className="text-amrita-maroon" size={24} />
+                                    Communication Center
+                                </h2>
+                                <button
+                                    onClick={() => {
+                                        setEditingAnnouncement(null);
+                                        setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+                                        document.getElementById('announcement-form').scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className="btn-premium flex items-center gap-2 !py-2 !px-4 !text-xs"
+                                >
+                                    <Send size={14} /> New Announcement
+                                </button>
+                            </div>
+
+                            {/* Announcement Form */}
+                            <div id="announcement-form" className="mb-8 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
+                                <h3 className="font-bold text-lg mb-4 dark:text-white">
+                                    {editingAnnouncement ? 'Edit Announcement' : 'Create New Announcement'}
+                                </h3>
+                                <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                                            Announcement Content *
+                                        </label>
+                                        <textarea
+                                            value={newAnnouncement.content}
+                                            onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-amrita-maroon text-sm"
+                                            rows="3"
+                                            placeholder="Enter announcement content (e.g., 🎉 Google hiring for SDE positions - Apply by March 15)"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                                            Links (Optional)
+                                        </label>
+                                        {newAnnouncement.links.map((link, idx) => (
+                                            <div key={idx} className="flex gap-2 mb-2">
+                                                <input
+                                                    type="text"
+                                                    value={link.title}
+                                                    onChange={(e) => {
+                                                        const updatedLinks = [...newAnnouncement.links];
+                                                        updatedLinks[idx].title = e.target.value;
+                                                        setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
+                                                    }}
+                                                    className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
+                                                    placeholder="Link title"
+                                                />
+                                                <input
+                                                    type="url"
+                                                    value={link.url}
+                                                    onChange={(e) => {
+                                                        const updatedLinks = [...newAnnouncement.links];
+                                                        updatedLinks[idx].url = e.target.value;
+                                                        setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
+                                                    }}
+                                                    className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
+                                                    placeholder="https://..."
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            className="btn-premium !py-2 !px-6 !text-sm"
+                                        >
+                                            {editingAnnouncement ? 'Update Announcement' : 'Post Announcement'}
+                                        </button>
+                                        {editingAnnouncement && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setEditingAnnouncement(null);
+                                                    setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
+                                                }}
+                                                className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-300"
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                </form>
+                            </div>
+
+                            {/* Announcements List */}
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-lg dark:text-white">Active Announcements</h3>
+                                {announcements.length > 0 ? (
+                                    announcements.map((ann, i) => (
+                                        <div key={ann._id || i} className="p-6 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-md transition-all">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{ann.content}</p>
+                                                    {ann.links && ann.links.length > 0 && ann.links[0].url && (
+                                                        <div className="mt-2 flex gap-2 flex-wrap">
+                                                            {ann.links.map((link, idx) => link.url && (
+                                                                <a
+                                                                    key={idx}
+                                                                    href={link.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="text-xs text-amrita-maroon hover:underline flex items-center gap-1"
+                                                                >
+                                                                    <ExternalLink size={12} />
+                                                                    {link.title || 'Link'}
+                                                                </a>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    <span className="text-[10px] font-bold text-gray-400 mt-2 block">
+                                                        {new Date(ann.createdAt).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="flex gap-2 ml-4">
+                                                    <button
+                                                        onClick={() => handleEditAnnouncement(ann)}
+                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-amrita-maroon"
+                                                        title="Edit"
+                                                    >
+                                                        <Edit3 size={16} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleAnnouncementDelete(ann._id)}
+                                                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-12 text-gray-400">
+                                        <Megaphone size={48} className="mx-auto mb-4 opacity-20" />
+                                        <p className="font-bold">No announcements yet</p>
+                                        <p className="text-sm">Create your first announcement to communicate with students</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'analytics' && (
+                        <div className="lg:col-span-3 animate-fade-in-up">
+                            <AdminAnalytics />
+                        </div>
+                    )
+                }
+
+                {
+                    activeTab === 'reports' && (
+                        <div className="lg:col-span-3 animate-fade-in-up">
+                            <AdminReports />
+                        </div>
+                    )
+                }
+
             </div>
-        </div>
+            {/* Add Drive Modal */}
+            < AddDriveModal
+                isOpen={showAddDriveModal}
+                onClose={() => setShowAddDriveModal(false)}
+                editDrive={selectedDrive}
+                onSuccess={() => { fetchAllDrives(); fetchStats(); }}
+            />
+
+            {/* Student Detail Modal */}
+            {
+                showStudentDetailModal && (
+                    <StudentDetailModal
+                        student={selectedStudent}
+                        onClose={() => setShowStudentDetailModal(false)}
+                    />
+                )
+            }
+
+            {/* Add Alumni Modal */}
+            <AddAlumniModal
+                isOpen={showAddAlumniModal}
+                onClose={() => setShowAddAlumniModal(false)}
+                onRefresh={fetchAlumni}
+                editAlumni={editingAlumni}
+            />
+
+            <AddEventModal
+                isOpen={showAddEventModal}
+                initialDate={selectedEventDate}
+                onClose={() => setShowAddEventModal(false)}
+                onSuccess={fetchSchedule}
+            />
+        </div >
     );
 };
 
@@ -1027,7 +1383,7 @@ const getStatusBadge = (status) => {
     return badges[status] || badges.not_placed;
 };
 
-const CalendarComponent = ({ currentDate, setCurrentDate, calendarData }) => {
+const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEvent }) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -1065,7 +1421,16 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData }) => {
     return (
         <div className="glass-card p-6">
             <div className="flex justify-between items-center mb-6">
-                <h3 className="font-black text-lg dark:text-white">Calendar</h3>
+                <div className="flex items-center gap-3">
+                    <h3 className="font-black text-lg dark:text-white">Calendar</h3>
+                    <button
+                        onClick={() => onAddEvent()}
+                        className="p-1.5 bg-amrita-maroon/10 text-amrita-maroon rounded-lg hover:bg-amrita-maroon hover:text-white transition-colors"
+                        title="Add Event"
+                    >
+                        <Plus size={14} />
+                    </button>
+                </div>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
@@ -1092,29 +1457,36 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData }) => {
                     </div>
                 ))}
 
-                {daysArray.map((day, index) => (
-                    <div key={index} className={`min-h-20 p-1 border border-gray-100 dark:border-gray-700 rounded-lg ${day ? 'bg-white dark:bg-gray-800' : ''}`}>
-                        {day && (
-                            <>
-                                <div className="text-right mb-1">
-                                    <span className={`text-sm font-bold ${getEventsForDay(day).length > 0 ? 'text-red-600' : 'text-gray-600 dark:text-gray-400'}`}>
-                                        {day}
-                                    </span>
-                                </div>
-                                <div className="space-y-1">
-                                    {getEventsForDay(day).slice(0, 2).map((event, i) => (
-                                        <div key={i} className={`text-xs p-1 rounded ${getEventColor(event.type)} text-white truncate`}>
-                                            {event.company || event.title.split(' ')[0]}
-                                        </div>
-                                    ))}
-                                    {getEventsForDay(day).length > 2 && (
-                                        <div className="text-xs text-gray-500 text-center">+{getEventsForDay(day).length - 2} more</div>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                    </div>
-                ))}
+                {daysArray.map((day, index) => {
+                    const dateStr = day ? `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}` : '';
+                    return (
+                        <div
+                            key={index}
+                            onClick={() => day && onAddEvent(dateStr)}
+                            className={`min-h-20 p-1 border border-gray-100 dark:border-gray-700 rounded-lg ${day ? 'bg-white dark:bg-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors' : ''}`}
+                        >
+                            {day && (
+                                <>
+                                    <div className="text-right mb-1">
+                                        <span className={`text-sm font-bold ${getEventsForDay(day).length > 0 ? 'text-red-600' : 'text-gray-600 dark:text-gray-400'}`}>
+                                            {day}
+                                        </span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        {getEventsForDay(day).slice(0, 2).map((event, i) => (
+                                            <div key={i} onClick={(e) => { e.stopPropagation(); /* Prevent trigger add on event click for now */ }} className={`text-xs p-1 rounded ${getEventColor(event.type)} text-white truncate`}>
+                                                {event.company || event.title.split(' ')[0]}
+                                            </div>
+                                        ))}
+                                        {getEventsForDay(day).length > 2 && (
+                                            <div className="text-xs text-gray-500 text-center">+{getEventsForDay(day).length - 2} more</div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="border-t pt-4 dark:border-gray-700">

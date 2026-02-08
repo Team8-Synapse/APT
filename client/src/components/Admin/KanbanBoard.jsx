@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import axios from 'axios';
-import { User, GripVertical, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { User, GripVertical, CheckCircle, XCircle, Clock, Eye } from 'lucide-react';
 
 // Define the columns in order
 const COLUMN_ORDER = ['applied', 'shortlisted', 'round1', 'round2', 'hr_round', 'offered', 'rejected'];
@@ -16,7 +16,7 @@ const COLUMN_CONFIG = {
     rejected: { title: 'Rejected', color: 'bg-red-50 border-red-200 text-red-700' }
 };
 
-const KanbanBoard = ({ applications, driveId, fetchApplications }) => {
+const KanbanBoard = ({ applications, driveId, fetchApplications, onViewStudent }) => {
     const [columns, setColumns] = useState({});
 
     // Group applications by status when props change
@@ -155,6 +155,12 @@ const KanbanBoard = ({ applications, driveId, fetchApplications }) => {
                                                                             CGPA: {app.studentId?.cgpa}
                                                                         </span>
                                                                     </div>
+                                                                    <button
+                                                                        onClick={() => onViewStudent && onViewStudent(app.studentId)}
+                                                                        className="mt-2 text-[10px] font-bold text-amrita-maroon flex items-center gap-1 hover:underline"
+                                                                    >
+                                                                        <Eye size={12} /> Click to view profile
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
