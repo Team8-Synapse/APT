@@ -1,10 +1,12 @@
 # Node
 node_modules/
+**/node_modules/
 npm-debug.log*
 yarn-error.log*
 
 # Environment variables
 .env
+*.env
 .env.local
 .env.production
 server/.env
@@ -15,6 +17,7 @@ build/
 
 # OS files
 .DS_Store
+**/.DS_Store
 
 # Logs
 logs/
