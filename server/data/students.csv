@@ -1,8 +1,8 @@
 roll_no,full_name,email,dept_code,section,batch_year,cgpa,backlogs,placement_status
-CB.SC.U4CSE22001,Vihaan Desai,cb.sc.u4cse22001@cb.students.amrita.edu,CSE,A,2026,6.96,2,Not Placed
+CB.SC.U4CSE22001,Vihaan Desai,cb.sc.u4cse22001@cb.students.amrita.edu,CSE,A,2026,7.5,2,Placed
 CB.SC.U4CSE22002,Harish Hegde,cb.sc.u4cse22002@cb.students.amrita.edu,CSE,A,2026,6.01,0,Not Placed
 CB.SC.U4CSE22003,Amrita Krishnan,cb.sc.u4cse22003@cb.students.amrita.edu,CSE,A,2026,6.37,2,Not Placed
-CB.SC.U4CSE22004,Aishwarya Gupta,cb.sc.u4cse22004@cb.students.amrita.edu,CSE,A,2026,8.25,0,In Process
+CB.SC.U4CSE22004,Aishwarya Gupta,cb.sc.u4cse22004@cb.students.amrita.edu,CSE,A,2026,8.25,0,Placed
 CB.SC.U4CSE22005,Anirudh Joshi,cb.sc.u4cse22005@cb.students.amrita.edu,CSE,A,2026,9.26,0,Placed
 CB.SC.U4CSE22006,Swathi Gupta,cb.sc.u4cse22006@cb.students.amrita.edu,CSE,A,2026,8.63,0,Placed
 CB.SC.U4CSE22007,Nikhil Nair,cb.sc.u4cse22007@cb.students.amrita.edu,CSE,A,2026,6.64,1,Not Placed
@@ -120,7 +120,7 @@ CB.EN.U4EEE22028,Rohan Reddy,cb.en.u4eee22028@cb.students.amrita.edu,EEE,A,2026,
 CB.EN.U4EEE22029,Rahul Verma,cb.en.u4eee22029@cb.students.amrita.edu,EEE,A,2026,7.58,0,In Process
 CB.EN.U4EEE22030,Saanvi Singh,cb.en.u4eee22030@cb.students.amrita.edu,EEE,A,2026,8.09,0,In Process
 CB.EN.U4EEE22101,Rishabh Patel,cb.en.u4eee22101@cb.students.amrita.edu,EEE,B,2026,8.1,0,Placed
-CB.EN.U4EEE22102,Aditya Singh,cb.en.u4eee22102@cb.students.amrita.edu,EEE,B,2026,8.94,0,In Process
+CB.EN.U4EEE22102,Aditya Singh,cb.en.u4eee22102@cb.students.amrita.edu,EEE,B,2026,8.94,0,Not Placed
 CB.EN.U4EEE22103,Dhruv Krishnan,cb.en.u4eee22103@cb.students.amrita.edu,EEE,B,2026,5.91,0,Not Placed
 CB.EN.U4EEE22104,Ananya Naidu,cb.en.u4eee22104@cb.students.amrita.edu,EEE,B,2026,8.89,0,Placed
 CB.EN.U4EEE22105,Shruti Pillai,cb.en.u4eee22105@cb.students.amrita.edu,EEE,B,2026,9.12,0,Placed
