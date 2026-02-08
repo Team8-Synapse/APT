@@ -22,6 +22,7 @@ const AdminPrepHub = () => {
         category: 'Coding',
         type: 'Link',
         link: '',
+        file: null,
         tags: ''
     });
 
@@ -32,7 +33,7 @@ const AdminPrepHub = () => {
         { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
     ];
-    const types = ['Link', 'PDF', 'Video', 'Article'];
+    const types = ['Link', 'PPT', 'PDF'];
 
     useEffect(() => {
         fetchResources();
@@ -51,24 +52,47 @@ const AdminPrepHub = () => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === 'file') {
+            setFormData(prev => ({ ...prev, file: files[0] }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-            const dataToSubmit = { ...formData, tags: tagsArray, addedBy: user.id };
+
+            const data = new FormData();
+            data.append('title', formData.title);
+            data.append('description', formData.description);
+            data.append('category', formData.category);
+            data.append('type', formData.type);
+            data.append('tags', JSON.stringify(tagsArray)); // Send tags as JSON string
+            data.append('addedBy', user.id);
+
+            if (formData.type === 'Link') {
+                data.append('link', formData.link);
+            } else if ((formData.type === 'PPT' || formData.type === 'PDF') && formData.file) {
+                data.append('file', formData.file);
+            }
+
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
 
             if (editingResource) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, dataToSubmit);
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, data, config);
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, dataToSubmit);
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, data, config);
             }
 
             setEditingResource(null);
-            setFormData({ title: '', description: '', category: 'Coding', type: 'Link', link: '', tags: '' });
+            setFormData({ title: '', description: '', category: 'Coding', type: 'Link', link: '', file: null, tags: '' });
             fetchResources();
         } catch (err) {
             console.error('Error saving resource:', err);
@@ -135,7 +159,7 @@ const AdminPrepHub = () => {
                         <button
                             onClick={() => {
                                 setEditingResource(null);
-                                setFormData({ title: '', description: '', category: 'Coding', type: 'Link', link: '', tags: '' });
+                                setFormData({ title: '', description: '', category: 'Coding', type: 'Link', link: '', file: null, tags: '' });
                             }}
                             className="text-[10px] font-black text-gray-400 hover:text-amrita-maroon uppercase tracking-widest flex items-center gap-1 group transition-colors"
                         >
@@ -189,10 +213,9 @@ const AdminPrepHub = () => {
                                     <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Upload Document</label>
                                     <div className="relative">
                                         <input
-                                            type="url" name="link"
-                                            className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono"
-                                            placeholder="https://example.com/material"
-                                            value={formData.link}
+                                            type="file" name="file"
+                                            className="w-full p-3 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amrita-maroon/10 file:text-amrita-maroon hover:file:bg-amrita-maroon/20"
+                                            accept={formData.type === 'PDF' ? '.pdf' : '.ppt,.pptx'}
                                             onChange={handleInputChange}
                                         />
                                         <Upload className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
