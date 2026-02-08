@@ -452,7 +452,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <QuickStatCard
                         icon={<Users size={24} />}
-                        label="2026 Batch Strength"
+                        label="Total Students"
                         value={stats.studentCount}
                         change="+5 this week"
                         gradient="from-[#8A0F3C] to-[#6E0B30]"
@@ -514,22 +514,17 @@ const AdminDashboard = () => {
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <BarChart3 className="text-amrita-maroon" size={20} />
                                         </div>
-                                        2026 Department Overview
+                                        Department Overview
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
                                             <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:shadow-md transition-all">
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="font-black text-gray-900 dark:text-white">{dept._id}</span>
-                                                    <div className="text-right">
-                                                        <span className="text-[10px] font-bold text-gray-500 block">
-                                                            {dept.placed}/{dept.count} Placed
-                                                        </span>
-                                                        <span className="text-xs font-black text-amrita-maroon">{(dept.placementPercentage || 0).toFixed(1)}%</span>
-                                                    </div>
+                                                    <span className="text-xs font-black text-amrita-maroon">{((dept.placed / dept.count) * 100 || 0).toFixed(1)}%</span>
                                                 </div>
                                                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-amrita-maroon" style={{ width: `${dept.placementPercentage || 0}%` }} />
+                                                    <div className="h-full bg-amrita-maroon" style={{ width: `${(dept.placed / dept.count) * 100 || 0}%` }} />
                                                 </div>
                                             </div>
                                         ))}

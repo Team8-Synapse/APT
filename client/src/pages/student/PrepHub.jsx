@@ -23,8 +23,7 @@ const PrepHub = () => {
     const [notes, setNotes] = useState([]);
     const [isAddingNote, setIsAddingNote] = useState(false);
     const [editingNoteId, setEditingNoteId] = useState(null);
-    const [noteFormData, setNoteFormData] = useState({ name: '', content: '' });
-    const [viewingNote, setViewingNote] = useState(null);
+    const [noteFormData, setNoteFormData] = useState({ name: '', text: '' });
 
     useEffect(() => {
         if (category === 'Notes') {
@@ -44,9 +43,7 @@ const PrepHub = () => {
             const url = category === 'All'
                 ? `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`
                 : `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources?category=${category}`;
-            const res = await axios.get(url, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await axios.get(url);
             setResources(res.data);
             setLoading(false);
         } catch (err) {
@@ -56,10 +53,9 @@ const PrepHub = () => {
     };
 
     const fetchNotes = async () => {
-        if (!user?._id) return;
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/student/${user._id}`, {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             setNotes(res.data);
@@ -74,23 +70,15 @@ const PrepHub = () => {
         e.preventDefault();
         try {
             if (editingNoteId) {
-                // Update existing note
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${editingNoteId}`, {
-                    title: noteFormData.name,
-                    content: noteFormData.content
-                }, {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${editingNoteId}`, noteFormData, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                 });
             } else {
-                // Create new note
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/create`, {
-                    title: noteFormData.name,
-                    content: noteFormData.content
-                }, {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, noteFormData, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
                 });
             }
-            setNoteFormData({ name: '', content: '' });
+            setNoteFormData({ name: '', text: '' });
             setIsAddingNote(false);
             setEditingNoteId(null);
             fetchNotes();
@@ -102,18 +90,13 @@ const PrepHub = () => {
     };
 
     const handleEditNote = (note) => {
-        setViewingNote(null);
         setEditingNoteId(note._id);
-        setNoteFormData({ name: note.title, content: note.content || '' });
+        setNoteFormData({ name: note.name, text: note.text });
         setIsAddingNote(true);
     };
 
-    const handleViewNote = (note) => {
-        setViewingNote(note);
-    };
-
     const handleDeleteNote = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this note?')) return;
+        if (!window.confirm('Are you sure?')) return;
         try {
             await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -121,7 +104,6 @@ const PrepHub = () => {
             fetchNotes();
         } catch (err) {
             console.error(err);
-            alert('Failed to delete note');
         }
     };
 
@@ -151,35 +133,6 @@ const PrepHub = () => {
         const matchesTags = res.tags?.some(tag => tag.toLowerCase().includes(searchLower));
         return matchesTitle || matchesTags;
     });
-
-    const openResource = (res) => {
-        const url =
-            res.storageFileUrl ||
-            res.cloudinaryFileUrl ||
-            res.driveFileLink ||
-            res.resourceUrl ||
-            res.links?.[0] ||
-            res.link;
-
-        if (!url) {
-            alert('No valid link available for this resource');
-            return;
-        }
-
-        // Check if it's a PPT file - use Google Docs Viewer for in-browser viewing
-        const isPPT = res.type === 'PPT' ||
-            url.toLowerCase().endsWith('.ppt') ||
-            url.toLowerCase().endsWith('.pptx');
-
-        if (isPPT) {
-            // Google Docs Viewer URL for PPT files
-            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-            window.open(viewerUrl, '_blank', 'noopener,noreferrer');
-        } else {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
-    };
-
 
     return (
         <div className="space-y-10 page-enter pb-12 font-bold">
@@ -272,11 +225,11 @@ const PrepHub = () => {
                                         onClick={() => {
                                             setIsAddingNote(true);
                                             setEditingNoteId(null);
-                                            setNoteFormData({ name: '', content: '' });
+                                            setNoteFormData({ name: '', text: '' });
                                         }}
                                         className="flex items-center gap-2 bg-amrita-maroon text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all"
                                     >
-                                        <Plus size={16} /> Create New Note
+                                        <Plus size={16} /> Create Note
                                     </button>
                                 </div>
 
@@ -286,7 +239,7 @@ const PrepHub = () => {
                                         <form onSubmit={handleNoteSubmit} className="space-y-4">
                                             <div className="grid grid-cols-1 gap-4">
                                                 <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Note Title</label>
+                                                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Note Name</label>
                                                     <input
                                                         type="text" required
                                                         className="w-full p-3 bg-white/60 border border-white/40 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amrita-maroon/20 outline-none"
@@ -295,24 +248,24 @@ const PrepHub = () => {
                                                         onChange={(e) => setNoteFormData({ ...noteFormData, name: e.target.value })}
                                                     />
                                                 </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Note Content</label>
-                                                    <textarea
-                                                        rows="8"
-                                                        className="w-full p-3 bg-white/60 border border-white/40 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amrita-maroon/20 outline-none resize-none"
-                                                        placeholder="Write your notes here..."
-                                                        value={noteFormData.content}
-                                                        onChange={(e) => setNoteFormData({ ...noteFormData, content: e.target.value })}
-                                                    />
-                                                </div>
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Note Content</label>
+                                                <textarea
+                                                    required rows="4"
+                                                    className="w-full p-3 bg-white/60 border border-white/40 rounded-xl text-sm font-medium focus:ring-2 focus:ring-amrita-maroon/20 outline-none"
+                                                    placeholder="Write your insights here..."
+                                                    value={noteFormData.text}
+                                                    onChange={(e) => setNoteFormData({ ...noteFormData, text: e.target.value })}
+                                                ></textarea>
                                             </div>
                                             <div className="flex gap-2">
                                                 <button type="submit" className="bg-amrita-maroon text-white px-6 py-3 rounded-xl text-xs font-black flex items-center gap-2 hover:bg-amrita-maroon/90">
-                                                    <Save size={16} /> {editingNoteId ? 'Update Note' : 'Save Note'}
+                                                    <Save size={16} /> {editingNoteId ? 'Update' : 'Save'} Note
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    onClick={() => { setIsAddingNote(false); setEditingNoteId(null); setNoteFormData({ name: '', content: '' }); }}
+                                                    onClick={() => setIsAddingNote(false)}
                                                     className="bg-gray-100 text-gray-500 px-6 py-3 rounded-xl text-xs font-black flex items-center gap-2 hover:bg-gray-200"
                                                 >
                                                     <X size={16} /> Cancel
@@ -322,47 +275,7 @@ const PrepHub = () => {
                                     </div>
                                 )}
 
-                                {viewingNote && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setViewingNote(null)}>
-                                        <div className="glass-card w-full max-w-2xl bg-white border-white p-8 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-                                            <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
-                                                <div>
-                                                    <h2 className="text-2xl font-black text-gray-900">{viewingNote.title}</h2>
-                                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
-                                                        Last Updated: {new Date(viewingNote.updatedAt || viewingNote.createdAt).toLocaleString()}
-                                                    </p>
-                                                </div>
-                                                <button
-                                                    onClick={() => setViewingNote(null)}
-                                                    className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
-                                                >
-                                                    <X size={24} />
-                                                </button>
-                                            </div>
-                                            <div className="prose prose-sm max-w-none">
-                                                <p className="whitespace-pre-line text-gray-700 leading-relaxed font-medium text-base">
-                                                    {viewingNote.content || <span className="italic text-gray-400">No content in this note.</span>}
-                                                </p>
-                                            </div>
-                                            <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end gap-3">
-                                                <button
-                                                    onClick={() => handleEditNote(viewingNote)}
-                                                    className="px-5 py-2.5 bg-amrita-maroon text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-amrita-maroon/90 shadow-lg flex items-center gap-2"
-                                                >
-                                                    <Edit size={14} /> Edit Note
-                                                </button>
-                                                <button
-                                                    onClick={() => setViewingNote(null)}
-                                                    className="px-5 py-2.5 bg-gray-100 text-gray-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-gray-200"
-                                                >
-                                                    Close
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {notes.length > 0 ? notes.map((note) => (
                                         <div key={note._id} className="glass-card group p-6 flex flex-col h-full bg-white/40 border-white/40">
                                             <div className="flex justify-between items-start mb-4">
@@ -370,41 +283,19 @@ const PrepHub = () => {
                                                     <div className="p-3 bg-amrita-maroon/10 rounded-xl text-amrita-maroon">
                                                         <StickyNote size={20} />
                                                     </div>
-                                                    <h3
-                                                        onClick={() => handleViewNote(note)}
-                                                        className="font-black text-lg text-gray-900 group-hover:text-amrita-maroon transition-colors cursor-pointer hover:underline decoration-amrita-maroon/30 underline-offset-4"
-                                                    >
-                                                        {note.title}
-                                                    </h3>
+                                                    <h3 className="font-black text-lg text-gray-900 group-hover:text-amrita-maroon transition-colors">{note.name}</h3>
                                                 </div>
                                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button onClick={() => handleDeleteNote(note._id)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-all" title="Delete Note"><Trash2 size={14} /></button>
+                                                    <button onClick={() => handleEditNote(note)} className="p-2 hover:bg-amrita-maroon/5 text-gray-400 hover:text-amrita-maroon rounded-lg transition-all"><Edit size={14} /></button>
+                                                    <button onClick={() => handleDeleteNote(note._id)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-all"><Trash2 size={14} /></button>
                                                 </div>
                                             </div>
-                                            {note.content && (
-                                                <div
-                                                    onClick={() => handleViewNote(note)}
-                                                    className="flex-1 bg-yellow-50/50 border border-yellow-100/50 rounded-lg p-3 mb-4 cursor-pointer hover:bg-yellow-50 transition-colors"
-                                                >
-                                                    <p className="text-xs text-gray-600 font-medium leading-relaxed whitespace-pre-line line-clamp-6 font-mono opacity-90">
-                                                        {note.content}
-                                                    </p>
+                                            <p className="text-sm font-medium text-gray-600 leading-relaxed flex-1 whitespace-pre-wrap">{note.text}</p>
+                                            {note.createdAt && (
+                                                <div className="mt-6 pt-4 border-t border-white/40 flex justify-between items-center">
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{new Date(note.createdAt).toLocaleDateString()}</span>
                                                 </div>
                                             )}
-                                            <div className="mt-auto pt-4 border-t border-white/40 flex justify-between items-center">
-                                                <div className="flex flex-col">
-                                                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Last Updated</span>
-                                                    <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
-                                                        {new Date(note.updatedAt || note.createdAt).toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleEditNote(note)}
-                                                    className="px-4 py-2 bg-amrita-maroon/5 hover:bg-amrita-maroon hover:text-white text-amrita-maroon text-[9px] font-black uppercase rounded-lg transition-all"
-                                                >
-                                                    Edit Note
-                                                </button>
-                                            </div>
                                         </div>
                                     )) : (
                                         <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-400 opacity-50 bg-white/20 rounded-3xl border border-white/40">
@@ -433,7 +324,7 @@ const PrepHub = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button onClick={() => openResource(res)} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
+                                                <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
                                                     <ExternalLink size={18} />
                                                 </button>
                                             </div>
@@ -465,7 +356,7 @@ const PrepHub = () => {
                                         </div>
 
                                         <button
-                                            onClick={() => openResource(res)}
+                                            onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
                                             className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem]"
                                         >
                                             Start Learning
@@ -513,7 +404,7 @@ const PrepHub = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <button
-                                                        onClick={() => openResource(res)}
+                                                        onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
                                                         className="p-2 text-amrita-maroon hover:bg-amrita-maroon hover:text-white rounded-lg transition-all"
                                                     >
                                                         <ExternalLink size={16} />
