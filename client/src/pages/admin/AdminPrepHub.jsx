@@ -297,44 +297,78 @@ const AdminPrepHub = () => {
                 </div>
             </div>
 
-                {/* Resources List/Grid */}
-                {loading ? (
-                    <div className="py-20 flex justify-center items-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div>
-                    </div>
-                ) : (
-                    <div className="glass-card overflow-hidden">
-                        <table className="w-full">
-                            <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
-                                <tr>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Resource</th>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Type</th>
-                                    <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+            {/* Resources List/Grid */}
+            {loading ? (
+                <div className="py-20 flex justify-center items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div>
+                </div>
+            ) : (
+                <div className="glass-card overflow-hidden">
+                    <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Resource</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Type</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                            {filteredResources.map((res) => (
+                                <tr key={res._id} className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg">
+                                                <BookOpen size={16} />
+                                            </div>
+                                            <span className="font-black text-gray-900 dark:text-white text-sm">{res.title}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className="px-3 py-1 bg-amrita-maroon/10 text-amrita-maroon text-[10px] font-black uppercase tracking-widest rounded-full">
+                                            {res.category}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg flex items-center gap-1 w-fit">
+                                            {res.type === 'PDF' && <FileText size={12} />}
+                                            {res.type === 'Link' && <LinkIcon size={12} />}
+                                            {res.type === 'Video' && <BookOpen size={12} />}
+                                            {res.type === 'Article' && <BookOpen size={12} />}
+                                            {res.type}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex gap-1 justify-end">
+                                            {res.link && (
+                                                <a
+                                                    href={res.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hover:text-amrita-maroon transition-colors"
+                                                    title="Open Link"
+                                                >
+                                                    <ExternalLink size={16} />
+                                                </a>
+                                            )}
+                                            <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-gray-500 hover:text-red-500 transition-colors" title="Delete">
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                                {filteredResources.map((res) => (
-                                    <tr key={res._id} className="hover:bg-gray-50/50 transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg">
-                                                    <BookOpen size={16} />
-                                                </div>
-                                                <span className="font-black text-gray-900 dark:text-white text-sm">{res.title}</span>
-                                            </div>
-                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button onClick={() => handleEdit(res)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500"><Edit3 size={16} /></button>
-                                                <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={16} /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+                            ))}
+                        </tbody>
+                    </table>
+                    {filteredResources.length === 0 && (
+                        <div className="py-20 text-center">
+                            <BookOpen size={48} className="mx-auto text-gray-300 mb-4" />
+                            <p className="text-gray-500 font-bold">No resources found</p>
+                            <p className="text-gray-400 text-xs">Try adjusting your search or category filter</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
