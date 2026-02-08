@@ -67,6 +67,7 @@ router.get('/stats', async (req, res) => {
 });
 
 // Get all students with filters - reads from CSV file
+// Get all students with filters - reads from CSV file
 router.get('/students', async (req, res) => {
     try {
         const { department, minCgpa, maxCgpa, placementStatus, batch, search, page = 1, limit = 50 } = req.query;
@@ -87,12 +88,12 @@ router.get('/students', async (req, res) => {
                 student[header] = values[i] || '';
             });
 
-            // Map CSV fields to expected frontend format
-            return {
+            // Standard mapped object
+            const mappedStudent = {
                 _id: `csv_${index}`,
                 rollNumber: student.roll_no,
-                firstName: student.full_name.split(' ')[0] || '',
-                lastName: student.full_name.split(' ').slice(1).join(' ') || '',
+                firstName: student.full_name?.split(' ')[0] || '',
+                lastName: student.full_name?.split(' ').slice(1).join(' ') || '',
                 email: student.email,
                 department: student.dept_code,
                 section: student.section,
@@ -100,8 +101,11 @@ router.get('/students', async (req, res) => {
                 cgpa: parseFloat(student.cgpa) || 0,
                 backlogs: parseInt(student.backlogs) || 0,
                 placementStatus: student.placement_status === 'Placed' ? 'placed' :
-                    student.placement_status === 'In Process' ? 'in_process' : 'not_placed'
+                    student.placement_status === 'In Process' ? 'in_process' : 'not_placed',
+                // Preserve all original CSV data
+                originalData: student
             };
+            return mappedStudent;
         });
 
         // Apply filters
@@ -120,14 +124,25 @@ router.get('/students', async (req, res) => {
         if (maxCgpa) {
             students = students.filter(s => s.cgpa <= parseFloat(maxCgpa));
         }
+
+        // Robust Search Implementation
         if (search) {
-            const searchLower = search.toLowerCase();
-            students = students.filter(s =>
-                s.firstName.toLowerCase().includes(searchLower) ||
-                s.lastName.toLowerCase().includes(searchLower) ||
-                s.rollNumber.toLowerCase().includes(searchLower) ||
-                s.email.toLowerCase().includes(searchLower)
-            );
+            const searchLower = search.toLowerCase().replace(/\s+/g, '');
+            students = students.filter(s => {
+                // Search in mapped fields
+                const mappedValues = [
+                    s.firstName, s.lastName, s.rollNumber, s.email,
+                    s.department, s.batch, s.placementStatus
+                ].map(v => String(v || '').toLowerCase().replace(/\s+/g, ''));
+
+                if (mappedValues.some(v => v.includes(searchLower))) return true;
+
+                // Search in ALL original CSV columns
+                const originalValues = Object.values(s.originalData)
+                    .map(v => String(v || '').toLowerCase().replace(/\s+/g, ''));
+
+                return originalValues.some(v => v.includes(searchLower));
+            });
         }
 
         // Pagination
@@ -220,6 +235,81 @@ router.get('/drive-analytics', async (req, res) => {
 
         res.json(analytics);
     } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// Update student in CSV
+router.put('/student/csv/:rollNo', async (req, res) => {
+    try {
+        const { rollNo } = req.params;
+        const updatedData = req.body;
+
+        const csvPath = path.join(__dirname, '../data/students.csv');
+        const csvContent = fs.readFileSync(csvPath, 'utf-8');
+        const lines = csvContent.split('\n');
+        const headerLine = lines[0];
+        const headers = headerLine.split(',').map(h => h.trim());
+
+        // Find indices
+        const rollIdx = headers.indexOf('roll_no');
+        if (rollIdx === -1) throw new Error('Roll number column not found in CSV');
+
+        let studentFound = false;
+        const newLines = lines.map((line, index) => {
+            if (index === 0 || !line.trim()) return line; // Skip header and empty lines
+
+            const values = line.split(',');
+            // Handle cases where values might contain commas (naive split, but consistent with existing read logic)
+            // Ideally should use a CSV parser, but sticking to existing pattern for consistency
+
+            if (values[rollIdx]?.trim() === rollNo) {
+                studentFound = true;
+                // Update values
+                // Map frontend fields back to CSV columns
+                const originalData = updatedData.originalData || {};
+
+                // Helper to safely set value
+                const setVal = (colName, val) => {
+                    const idx = headers.indexOf(colName);
+                    if (idx !== -1) values[idx] = val;
+                };
+
+                // Update core fields if present in request
+                if (updatedData.firstName && updatedData.lastName) {
+                    setVal('full_name', `${updatedData.firstName} ${updatedData.lastName}`);
+                }
+                if (updatedData.email) setVal('email', updatedData.email);
+                if (updatedData.department) setVal('dept_code', updatedData.department);
+                if (updatedData.batch) setVal('batch_year', updatedData.batch);
+                if (updatedData.cgpa) setVal('cgpa', String(updatedData.cgpa));
+                if (updatedData.backlogs !== undefined) setVal('backlogs', String(updatedData.backlogs));
+
+                // Map status back
+                if (updatedData.placementStatus) {
+                    const statusMap = {
+                        'placed': 'Placed',
+                        'in_process': 'In Process',
+                        'not_placed': 'Not Placed'
+                    };
+                    setVal('placement_status', statusMap[updatedData.placementStatus] || updatedData.placementStatus);
+                }
+
+                return values.join(',');
+            }
+            return line;
+        });
+
+        if (!studentFound) {
+            return res.status(404).json({ error: 'Student not found in CSV' });
+        }
+
+        fs.writeFileSync(csvPath, newLines.join('\n'));
+        res.json({ success: true, message: 'Student updated successfully' });
+
+    } catch (err) {
+        console.error('Error updating CSV:', err);
         res.status(500).json({ error: err.message });
     }
 });

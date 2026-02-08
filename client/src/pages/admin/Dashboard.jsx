@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import AddDriveModal from '../../components/admin/AddDriveModal';
 import StudentDetailModal from '../../components/admin/StudentDetailModal';
 import AddAlumniModal from '../../components/admin/AddAlumniModal';
+import EditStudentModal from '../../components/admin/EditStudentModal';
 import KanbanBoard from '../../components/admin/KanbanBoard';
 import AdminPrepHub from './AdminPrepHub';
 import AdminAnalytics from './AdminAnalytics';
@@ -71,6 +72,7 @@ const AdminDashboard = () => {
         prepStats: {}, alumniStats: {}, announcementCount: 0
     });
     const [students, setStudents] = useState([]);
+    // const [studentSearch, setStudentSearch] = useState(''); // Removed local search state
     const [companies, setCompanies] = useState([]);
     const [announcements, setAnnouncements] = useState([]);
     const [alumni, setAlumni] = useState([]);
@@ -95,6 +97,10 @@ const AdminDashboard = () => {
 
     // Student Detail Modal (Applicants View)
     const [showStudentDetailModal, setShowStudentDetailModal] = useState(false);
+
+    // Edit Student Modal
+    const [showEditStudentModal, setShowEditStudentModal] = useState(false);
+    const [selectedStudentForEdit, setSelectedStudentForEdit] = useState(null);
     const [selectedStudent, setSelectedStudent] = useState(null);
 
     // Alumni Modal State
@@ -130,6 +136,14 @@ const AdminDashboard = () => {
         fetchAllDrives();
         fetchSchedule();
     }, []);
+
+    // Debounced search effect
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            fetchStudents();
+        }, 500); // 500ms debounce
+        return () => clearTimeout(timeoutId);
+    }, [filters.search]);
 
     const fetchSchedule = async () => {
         try {
@@ -244,6 +258,23 @@ const AdminDashboard = () => {
         } catch (err) {
             console.error(err);
             alert('Failed to delete alumni');
+        }
+    };
+
+    const handleEditStudent = (student) => {
+        setSelectedStudentForEdit(student);
+        setShowEditStudentModal(true);
+    };
+
+    const handleUpdateStudent = async (updatedData) => {
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/student/csv/${updatedData.rollNumber}`, updatedData);
+            setShowEditStudentModal(false);
+            fetchStudents(); // Refresh table
+            alert('Student updated successfully!');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update student: ' + (err.response?.data?.error || err.message));
         }
     };
 
@@ -658,7 +689,13 @@ const AdminDashboard = () => {
                             <div className="flex gap-2">
                                 <div className="relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input type="text" placeholder="Search students..." className="pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search students..."
+                                        className="pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50"
+                                        value={filters.search}
+                                        onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                                    />
                                 </div>
                                 <button className="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100"><Filter size={14} /></button>
                             </div>
@@ -670,6 +707,7 @@ const AdminDashboard = () => {
                                         <th>Roll No.</th>
                                         <th>Student Name</th>
                                         <th>Department</th>
+                                        <th>Batch</th>
                                         <th>CGPA</th>
                                         <th>Status</th>
                                         <th>Actions</th>
@@ -681,12 +719,18 @@ const AdminDashboard = () => {
                                             <td className="text-sm font-bold text-gray-500">{student.rollNumber}</td>
                                             <td className="text-sm font-black text-gray-900 dark:text-white">{student.firstName} {student.lastName}</td>
                                             <td className="text-xs font-bold uppercase">{student.department}</td>
+                                            <td className="text-xs font-bold text-gray-600 dark:text-gray-400">{student.batch}</td>
                                             <td className="text-sm font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
                                             <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
                                             <td>
                                                 <div className="flex gap-1">
-                                                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><EyeIcon size={16} /></button>
-                                                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"><Edit3 size={16} /></button>
+
+                                                    <button
+                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                                                        onClick={() => handleEditStudent(student)}
+                                                    >
+                                                        <Edit3 size={16} />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1200,6 +1244,14 @@ const AdminDashboard = () => {
                     />
                 )
             }
+
+            {/* Edit Student Modal */}
+            <EditStudentModal
+                isOpen={showEditStudentModal}
+                student={selectedStudentForEdit}
+                onClose={() => setShowEditStudentModal(false)}
+                onSave={handleUpdateStudent}
+            />
 
             {/* Add Alumni Modal */}
             <AddAlumniModal
