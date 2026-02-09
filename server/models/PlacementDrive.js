@@ -37,9 +37,9 @@ const placementDriveSchema = new mongoose.Schema({
         duration: String
     }],
     status: { type: String, enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], default: 'upcoming' },
-    registeredStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentProfile' }],
-    shortlistedStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentProfile' }],
-    selectedStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentProfile' }],
+    registeredStudents: [{ type: mongoose.Schema.Types.ObjectId || mongoose.Types.ObjectId, ref: 'StudentProfile' }],
+    shortlistedStudents: [{ type: mongoose.Schema.Types.ObjectId || mongoose.Types.ObjectId, ref: 'StudentProfile' }],
+    selectedStudents: [{ type: mongoose.Schema.Types.ObjectId || mongoose.Types.ObjectId, ref: 'StudentProfile' }],
     coordinator: { type: String },
     contactEmail: { type: String },
     totalPositions: { type: Number },

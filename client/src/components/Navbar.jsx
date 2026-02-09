@@ -78,9 +78,9 @@ const Navbar = () => {
     const links = isAdmin ? adminLinks : studentLinks;
 
     return (
-        <nav className="sticky top-0 z-50 px-4 py-3">
+        <nav className="sticky top-0 z-50 px-4 py-5">
             <div className="max-w-full mx-auto glass-card !rounded-2xl border-white/20 dark:border-gray-700/50 bg-white/40 dark:bg-gray-900/80 shadow-xl">
-                <div className="px-6 py-3 flex justify-between items-center">
+                <div className="px-8 py-4 flex justify-between items-center">
                     <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
                             <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -189,7 +189,7 @@ const Navbar = () => {
 const NavLink = ({ to, icon, label, active }) => (
     <Link
         to={to}
-        className={`flex items-center px-3 py-2 rounded-xl text-sm font-bold transition-all duration-300 gap-2 ${active
+        className={`flex items-center px-4 py-3 rounded-xl text-base font-bold transition-all duration-300 gap-2 ${active
             ? 'bg-amrita-maroon text-white shadow-lg'
             : 'text-gray-600 dark:text-gray-300 hover:bg-amrita-maroon/5 dark:hover:bg-amrita-maroon/20 hover:text-amrita-maroon dark:hover:text-amrita-gold'
             }`}

@@ -487,27 +487,6 @@ const Marquee = ({ children, speed = 30, direction = 'left' }) => (
     </div>
 );
 
-// ============= 21. CONFETTI BURST =============
-const ConfettiBurst = ({ active }) => {
-    if (!active) return null;
-    return (
-        <div className="confetti-container">
-            {[...Array(50)].map((_, i) => (
-                <div
-                    key={i}
-                    className="confetti"
-                    style={{
-                        '--x': `${Math.random() * 200 - 100}px`,
-                        '--y': `${Math.random() * -200 - 50}px`,
-                        '--r': `${Math.random() * 720}deg`,
-                        '--delay': `${Math.random() * 0.3}s`,
-                        '--color': ['#8B0000', '#A52A2A', '#C04040', '#FFD700'][Math.floor(Math.random() * 4)]
-                    }}
-                />
-            ))}
-        </div>
-    );
-};
 
 // ============= 22. PULSE RING =============
 const PulseRing = ({ children, className }) => (
@@ -1181,7 +1160,6 @@ const Drawer = ({ isOpen, onClose, children, position = 'right' }) => (
 const Home = () => {
     const { token } = useAuth();
     const [scrolled, setScrolled] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -1316,7 +1294,6 @@ const Home = () => {
             <NoiseGrain />
             <SpotlightCursor />
             <ScrollProgress />
-            <ConfettiBurst active={showConfetti} />
 
             {/* Navigation */}
             <nav className={`nav-ultimate ${scrolled ? 'scrolled' : ''}`}>
@@ -1335,12 +1312,12 @@ const Home = () => {
                     ))}
                 </ul>
                 <div className="nav-actions">
-                    <MagneticButton className="btn-primary" onClick={() => setShowConfetti(true)}>
+                    <MagneticButton className="btn-primary">
                         <Link to="/login" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             Login
                         </Link>
                     </MagneticButton>
-                    <MagneticButton className="btn-primary" onClick={() => setShowConfetti(true)}>
+                    <MagneticButton className="btn-primary">
                         <Link to="/register" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             Register
                         </Link>
@@ -1524,7 +1501,7 @@ const Home = () => {
                 <div className="section-header">
                     <StaggeredReveal>
                         <span className="section-tag">AI Features</span>
-                        <h2>Intelligent <GlitchText>Insights</GlitchText></h2>
+                        <h2>Intelligent <GradientText>Insights</GradientText></h2>
                     </StaggeredReveal>
                 </div>
                 <div className="features-grid">
@@ -1556,7 +1533,7 @@ const Home = () => {
                 <div className="section-header">
                     <StaggeredReveal>
                         <span className="section-tag">Support</span>
-                        <h2>Frequently Asked <GlitchText>Questions</GlitchText></h2>
+                        <h2>Frequently Asked <GradientText>Questions</GradientText></h2>
                     </StaggeredReveal>
                 </div>
                 <div className="faq-grid">
@@ -1575,7 +1552,7 @@ const Home = () => {
                         <h2>Your Placement Journey Deserves Structure</h2>
                         <p>Join thousands who transformed their experience with intelligent tracking.</p>
                         <div className="cta-buttons">
-                            <RippleButton className="btn-cta-primary" onMouseEnter={() => setShowConfetti(true)}>
+                            <RippleButton className="btn-cta-primary">
                                 <Link to="/register">Start Your Journey <ArrowRight size={20} /></Link>
                             </RippleButton>
                             <RippleButton className="btn-cta-secondary">
@@ -1825,7 +1802,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Hero Metrics Wrapper - Invisible Outer BG */
 .hero-card { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-radius: 0; padding: 0.5rem; border: none; box-shadow: none; }
 .hero-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-.metric-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.metric-card { background: rgba(255,255,255,0.12); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .metric-card:hover { border-color: rgba(139,0,0,0.3); box-shadow: 0 10px 30px rgba(139,0,0,0.1); }
 .metric-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .metric-value { font-size: 2.2rem; font-weight: 900; color: #fff; text-shadow: 0 2px 15px rgba(139,0,0,0.7), 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.3); }

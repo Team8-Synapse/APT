@@ -11,29 +11,10 @@ import {
     Sun, PieChart, Activity, Cpu, Smartphone, Database, Cloud, Terminal, Wifi,
     Battery, Volume2, HelpCircle, Info, AlertTriangle, Clock3, CalendarDays,
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
-    Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon
+    Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon,
+    Dribbble, Github, Linkedin, Twitter, Youtube, Instagram, Facebook
 } from 'lucide-react';
 import NotificationsPanel from '../../components/NotificationsPanel';
-
-// ============= MAROON-WHITE MODERN THEME =============
-const theme = {
-    maroon: {
-        primary: '#B1124A',
-        secondary: '#B1124A',
-        light: '#D14D72',
-        dark: '#7A0C32',
-        gradient: 'linear-gradient(135deg, #B1124A 0%, #D14D72 100%)',
-        subtle: 'rgba(177, 18, 74, 0.08)',
-        medium: 'rgba(177, 18, 74, 0.15)',
-        strong: 'rgba(177, 18, 74, 0.25)'
-    },
-    beige: {
-        primary: '#FFFFFF',
-        secondary: '#F8F9FA',
-        light: '#FFFFFF',
-        dark: '#F0F2F5'
-    }
-};
 
 // ============= ANIMATED BACKGROUND =============
 const AnimatedBackground = () => (
@@ -41,10 +22,55 @@ const AnimatedBackground = () => (
         <div className="gradient-orb-d orb-d1"></div>
         <div className="gradient-orb-d orb-d2"></div>
         <div className="gradient-orb-d orb-d3"></div>
+        <div className="mesh-gradient-overlay"></div>
+        <div className="stars-container-d">
+            {[...Array(50)].map((_, i) => (
+                <div key={i} className="star-d" style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 5}s`,
+                    opacity: Math.random() * 0.5
+                }} />
+            ))}
+        </div>
     </div>
 );
 
+// ============= GLASS CARD PREMIUM =============
+const GlassCardPremium = ({ children, className = '', delay = 0 }) => (
+    <FadeIn delay={delay}>
+        <div className={`glass-card-premium ${className}`}>
+            <div className="card-shine"></div>
+            {children}
+            <div className="card-border-glow"></div>
+        </div>
+    </FadeIn>
+);
 
+// ============= AI SUCCESS RADIAL =============
+const SuccessRadial = ({ percentage }) => {
+    const radius = 35;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percentage / 100) * circumference;
+
+    return (
+        <div className="success-radial-container">
+            <svg viewBox="0 0 100 100" className="success-radial">
+                <circle className="radial-bg" cx="50" cy="50" r={radius} />
+                <circle
+                    className="radial-fill"
+                    cx="50" cy="50" r={radius}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                />
+            </svg>
+            <div className="radial-text">
+                <span className="radial-value">{percentage}%</span>
+                <span className="radial-label">Readiness</span>
+            </div>
+        </div>
+    );
+};
 
 // ============= ANIMATED COUNTER =============
 const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
@@ -76,45 +102,6 @@ const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
     }, [end, duration, hasAnimated]);
 
     return <span ref={ref}>{count}{suffix}</span>;
-};
-
-// ============= TILT CARD =============
-const TiltCard = ({ children, className = '' }) => {
-    const [tilt, setTilt] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
-
-    const handleMouseMove = (e) => {
-        const card = e.currentTarget;
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * 8;
-        const rotateY = ((x - centerX) / centerX) * -8;
-        setTilt({ x: rotateX, y: rotateY });
-    };
-
-    const handleMouseLeave = () => {
-        setTilt({ x: 0, y: 0 });
-        setIsHovered(false);
-    };
-
-    return (
-        <div
-            className={`tilt-card-d ${className}`}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={handleMouseLeave}
-            style={{
-                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${isHovered ? 1.02 : 1})`,
-                transition: 'transform 0.3s ease-out'
-            }}
-        >
-            {isHovered && <div className="card-glow"></div>}
-            {children}
-        </div>
-    );
 };
 
 // ============= FADE IN ANIMATION =============
@@ -212,124 +199,200 @@ const AnimatedSkillBar = ({ skill, level, delay = 0, color = '#B1124A' }) => {
     );
 };
 
-// ============= PULSE NOTIFICATION =============
-const PulseNotification = ({ count }) => (
-    <div className="pulse-notification">
-        <span>{count}</span>
-        <div className="pulse-ring"></div>
-    </div>
-);
+// ============= MAGNETIC BUTTON =============
+const MagneticButton = ({ children, className = '', ...props }) => {
+    const ref = useRef(null);
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const handleMove = (e) => {
+        const { left, top, width, height } = ref.current.getBoundingClientRect();
+        const centerX = left + width / 2;
+        const centerY = top + height / 2;
+        const x = (e.clientX - centerX) * 0.4;
+        const y = (e.clientY - centerY) * 0.4;
+        setPos({ x, y });
+    };
+    return (
+        <button
+            ref={ref}
+            onMouseMove={handleMove}
+            onMouseLeave={() => setPos({ x: 0, y: 0 })}
+            className={`magnetic-btn-d ${className}`}
+            style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
+            {...props}
+        >
+            {children}
+        </button>
+    );
+};
 
-// ============= MOCK DATA =============
-const mockNotifications = [
-    { id: 1, message: 'Google drive registration closes tomorrow!', type: 'urgent', time: '2h ago' },
-    { id: 2, message: 'You\'ve been shortlisted for Microsoft', type: 'success', time: '5h ago' },
-    { id: 3, message: 'New mock interview scheduled', type: 'info', time: '1d ago' },
-];
+// ============= MINI CALENDAR =============
+const MiniCalendar = ({ events = [] }) => {
+    const upcomingEvents = events
+        .filter(e => new Date(e.date) >= new Date())
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 3);
+
+    return (
+        <div className="mini-calendar-d">
+            <style>{`
+                .mini-calendar-d { margin-top: 1rem; }
+                .event-item-d {
+                    display: flex; gap: 1rem; padding: 1rem;
+                    background: white; border-radius: 12px;
+                    border-left: 4px solid var(--maroon-primary);
+                    margin-bottom: 0.75rem; transition: 0.3s;
+                }
+                .event-item-d:hover { transform: translateX(5px); background: var(--maroon-subtle); }
+                .event-date-d {
+                    display: flex; flex-direction: column; align-items: center;
+                    justify-content: center; min-width: 45px;
+                }
+                .event-day-d { font-size: 1.1rem; font-weight: 800; color: var(--maroon-primary); line-height: 1; }
+                .event-month-d { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #888; }
+                .event-info-d { flex: 1; }
+                .event-name-d { font-weight: 700; font-size: 0.9rem; color: #333; }
+                .event-time-d { font-size: 0.75rem; color: #666; display: flex; align-items: center; gap: 4px; }
+            `}</style>
+            {upcomingEvents.length > 0 ? upcomingEvents.map((event, i) => (
+                <div key={i} className="event-item-d">
+                    <div className="event-date-d">
+                        <span className="event-day-d">{new Date(event.date).getDate()}</span>
+                        <span className="event-month-d">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
+                    </div>
+                    <div className="event-info-d">
+                        <div className="event-name-d">{event.title}</div>
+                        <div className="event-time-d"><Clock size={12} /> {event.time || '10:00 AM'}</div>
+                    </div>
+                </div>
+            )) : (
+                <p style={{ textAlign: 'center', color: '#888', fontSize: '0.85rem', padding: '1rem' }}>No upcoming events.</p>
+            )}
+        </div>
+    );
+};
+
+// ============= RECOMMENDED RESOURCES =============
+const RecommendedResources = ({ resources = [] }) => {
+    return (
+        <div className="resources-list-d">
+            <style>{`
+                .resource-item-d {
+                    display: flex; align-items: center; gap: 1rem;
+                    padding: 1rem; border-radius: 12px; margin-bottom: 0.75rem;
+                    background: #fdfdfd; border: 1px solid #eee; transition: 0.3s;
+                }
+                .resource-item-d:hover { transform: translateX(5px); border-color: var(--maroon-primary); }
+                .resource-icon-d {
+                    width: 36px; height: 36px; border-radius: 8px;
+                    background: var(--maroon-subtle); color: var(--maroon-primary);
+                    display: flex; align-items: center; justify-content: center;
+                }
+                .resource-info-d { flex: 1; }
+                .resource-title-d { font-weight: 700; font-size: 0.9rem; color: #333; }
+                .resource-type-d { font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+            `}</style>
+            {resources.length > 0 ? resources.slice(0, 3).map((res, i) => (
+                <div key={i} className="resource-item-d">
+                    <div className="resource-icon-d">
+                        {res.type === 'pdf' ? <FileText size={18} /> :
+                            res.type === 'video' ? <Play size={18} /> :
+                                <BookOpen size={18} />}
+                    </div>
+                    <div className="resource-info-d">
+                        <div className="resource-title-d">{res.title}</div>
+                        <div className="resource-type-d">{res.category || 'Preparation'} • {res.type}</div>
+                    </div>
+                </div>
+            )) : (
+                <p style={{ textAlign: 'center', color: '#888', fontSize: '0.85rem', padding: '1rem' }}>No resources available.</p>
+            )}
+        </div>
+    );
+};
 
 // ============= MAIN DASHBOARD COMPONENT =============
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
     const [stats, setStats] = useState({
-        readinessScore: 78,
-        profile: { name: '', department: 'Computer Science', cgpa: 8.5, placementStatus: 'not_placed', batch: '2026' },
-        applications: { total: 5, inProgress: 2, offered: 1, rejected: 1 },
-        drives: { upcoming: 8, eligible: 6 },
-        skills: [
-            { name: 'Data Structures', level: 85 },
-            { name: 'Algorithms', level: 78 },
-            { name: 'System Design', level: 65 },
-            { name: 'React', level: 90 },
-            { name: 'Node.js', level: 82 }
-        ],
-        mockInterviews: { completed: 3, scheduled: 2, averageScore: 7.5 },
-        resources: { viewed: 12, completed: 8 }
+        readinessScore: 0,
+        profile: { name: '', department: '', cgpa: 0, placementStatus: 'not_placed', batch: '' },
+        applications: { total: 0, inProgress: 0, offered: 0, rejected: 0 },
+        drives: { upcoming: 0, eligible: 0 }
     });
+    const [fullProfile, setFullProfile] = useState(null);
     const [drives, setDrives] = useState([]);
     const [applications, setApplications] = useState([]);
-    const [notifications, setNotifications] = useState(mockNotifications);
+    const [notifications, setNotifications] = useState([]);
     const [announcements, setAnnouncements] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeSection, setActiveSection] = useState('overview');
     const [showNotifications, setShowNotifications] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [userStreak, setUserStreak] = useState(7);
+    const [tickers, setTickers] = useState([]);
 
-    // Update time every minute
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
     }, []);
 
-    // Fetch data
     useEffect(() => {
         const userId = user?._id || user?.id;
         if (!userId) return;
 
-        const fetchAnnouncements = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
-                setAnnouncements(res.data || []);
-            } catch (err) {
-                console.error('Error fetching announcements:', err);
-            }
-        };
-
         const fetchData = async () => {
             try {
-                const [dashboardRes, drivesRes, applicationsRes] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/dashboard-stats/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/student/eligible-drives/${user.id}`),
-                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/applications/my-applications/${user.id}`)
+                const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+                const [dashboardRes, drivesRes, applicationsRes, announcementsRes, profileRes, notifRes, eventsRes, resourcesRes, tickerRes] = await Promise.all([
+                    axios.get(`${apiBase}/student/dashboard-stats/${userId}`),
+                    axios.get(`${apiBase}/student/eligible-drives/${userId}`),
+                    axios.get(`${apiBase}/applications/my-applications/${userId}`),
+                    axios.get(`${apiBase}/announcements`),
+                    axios.get(`${apiBase}/student/profile/${userId}`),
+                    axios.get(`${apiBase}/notifications`),
+                    axios.get(`${apiBase}/schedule`),
+                    axios.get(`${apiBase}/resources`),
+                    axios.get(`${apiBase}/ticker`)
                 ]);
+
                 setStats(dashboardRes.data);
                 setDrives(drivesRes.data.slice(0, 5));
                 setApplications(applicationsRes.data.slice(0, 5));
+                setAnnouncements(announcementsRes.data || []);
+                setFullProfile(profileRes.data);
+                setNotifications(notifRes.data || []);
+                setEvents(eventsRes.data || []);
+                setResources(resourcesRes.data || []);
+                console.log("Ticker Response:", tickerRes.data); // DEBUG LOG
+                setTickers(Array.isArray(tickerRes.data) ? tickerRes.data : []);
+
                 setLoading(false);
             } catch (err) {
-                // Use mock data on error
-                setDrives([
-                    { _id: '1', companyName: 'Google', jobProfile: 'Software Engineer L3', date: '2026-03-15', ctcDetails: { ctc: 4500000 }, location: 'Bangalore' },
-                    { _id: '2', companyName: 'Microsoft', jobProfile: 'SDE', date: '2026-03-22', ctcDetails: { ctc: 4200000 }, location: 'Hyderabad' },
-                    { _id: '3', companyName: 'Amazon', jobProfile: 'SDE-1', date: '2026-04-05', ctcDetails: { ctc: 4000000 }, location: 'Bangalore' },
-                    { _id: '4', companyName: 'Adobe', jobProfile: 'MTS', date: '2026-04-12', ctcDetails: { ctc: 3800000 }, location: 'Noida' },
-                ]);
-                setApplications([
-                    { _id: '1', driveId: { companyName: 'Microsoft', jobProfile: 'SDE' }, status: 'shortlisted', appliedDate: '2026-02-01' },
-                    { _id: '2', driveId: { companyName: 'Adobe', jobProfile: 'MTS' }, status: 'applied', appliedDate: '2026-01-28' },
-                    { _id: '3', driveId: { companyName: 'TCS', jobProfile: 'System Engineer' }, status: 'offered', appliedDate: '2026-01-15' },
-                ]);
+                console.error('Error fetching data:', err);
                 setLoading(false);
             }
         };
 
         fetchData();
-        fetchAnnouncements();
-        const interval = setInterval(fetchAnnouncements, 15000);
+        const interval = setInterval(fetchData, 60000);
         return () => clearInterval(interval);
     }, [user]);
 
     const getGreeting = () => {
         const hour = currentTime.getHours();
-        if (hour < 12) return { text: 'Good Morning', color: '#FFB347' };
-        if (hour < 17) return { text: 'Good Afternoon', color: '#87CEEB' };
-        if (hour < 20) return { text: 'Good Evening', color: '#FF6B6B' };
-        return { text: 'Good Night', color: '#6C5CE7' };
+        if (hour < 12) return { text: 'Good Morning' };
+        if (hour < 17) return { text: 'Good Afternoon' };
+        if (hour < 20) return { text: 'Good Evening' };
+        return { text: 'Good Night' };
     };
 
     const greeting = getGreeting();
-    const userName = stats.profile?.name || user?.email?.split('@')[0] || 'Student';
+    const userName = fullProfile?.firstName || user?.email?.split('@')[0] || 'Student';
 
-    const getStatusColor = (status) => {
-        const colors = {
-            offered: { bg: 'rgba(16, 185, 129, 0.15)', text: '#10B981', border: '#10B981' },
-            shortlisted: { bg: 'rgba(59, 130, 246, 0.15)', text: '#3B82F6', border: '#3B82F6' },
-            applied: { bg: 'rgba(245, 158, 11, 0.15)', text: '#F59E0B', border: '#F59E0B' },
-            rejected: { bg: 'rgba(239, 68, 68, 0.15)', text: '#EF4444', border: '#EF4444' },
-            round1: { bg: 'rgba(139, 92, 246, 0.15)', text: '#8B5CF6', border: '#8B5CF6' },
-            round2: { bg: 'rgba(14, 165, 233, 0.15)', text: '#0EA5E9', border: '#0EA5E9' },
-        };
-        return colors[status] || colors.applied;
+    // Helper to map skill level strings to numbers
+    const getSkillLevel = (lv) => {
+        const map = { 'Beginner': 40, 'Intermediate': 70, 'Advanced': 95 };
+        return map[lv] || 50;
     };
 
     if (loading) {
@@ -337,10 +400,8 @@ const StudentDashboard = () => {
             <div className="loading-screen">
                 <div className="loading-spinner">
                     <div className="spinner-ring"></div>
-                    <div className="spinner-ring"></div>
-                    <div className="spinner-ring"></div>
                 </div>
-                <p>Loading your dashboard...</p>
+                <p>Establishing secure connection...</p>
             </div>
         );
     }
@@ -348,100 +409,33 @@ const StudentDashboard = () => {
     return (
         <div className="dashboard-container">
             <style>{`
-                /* ========== CSS VARIABLES ========== */
                 :root {
-                    --maroon-primary: #B1124A;
-                    --maroon-secondary: #B1124A;
-                    --maroon-light: #D14D72;
-                    --maroon-dark: #7A0C32;
-                    --maroon-gradient: linear-gradient(135deg, #B1124A 0%, #D14D72 100%);
-                    --maroon-subtle: rgba(177, 18, 74, 0.08);
-                    --maroon-medium: rgba(177, 18, 74, 0.15);
-                    --text-primary: #1a1a1a;
-                    --text-secondary: #555;
-                    --text-light: #888;
-                    --bg-primary: #FFFFFF;
-                    --bg-secondary: #F8F9FA;
-                    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-                    --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
-                    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-                    --shadow-glow: 0 0 30px rgba(177, 18, 74, 0.2);
-                    --radius-sm: 8px;
-                    --radius-md: 16px;
-                    --radius-lg: 24px;
-                    --radius-xl: 32px;
+                    --maroon-primary: #A4123F;
+                    --maroon-secondary: #8A0F3C;
+                    --maroon-light: #C04040;
+                    --maroon-dark: #6E0B30;
+                    --maroon-subtle: rgba(164, 18, 63, 0.05);
+                    --maroon-gradient: linear-gradient(135deg, #A4123F 0%, #8A0F3C 100%);
+                    --glass-bg: rgba(255, 255, 255, 0.75);
+                    --glass-border: rgba(255, 255, 255, 0.5);
+                    --text-primary: #1A1A1A;
+                    --text-secondary: #4A4A4A;
+                    --text-light: #717171;
+                    --shadow-premium: 0 20px 40px rgba(0,0,0,0.08);
+                    --shadow-glow: 0 0 25px rgba(177, 18, 74, 0.25);
+                    --radius-inner: 12px;
+                    --radius-outer: 24px;
                 }
 
-                * {
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
+                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
                 .dashboard-container {
                     min-height: 100vh;
-                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 50%, #F8F9FA 100%);
-                    position: relative;
-                    overflow-x: hidden;
-                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+                    background: #FFF5F7;
+                    font-family: 'Outfit', sans-serif;
+                    color: var(--text-primary);
                 }
 
-                /* ========== ANIMATED BACKGROUND ========== */
-                .animated-bg-dashboard {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                    z-index: 0;
-                    overflow: hidden;
-                }
-
-                .gradient-orb-d {
-                    position: absolute;
-                    border-radius: 50%;
-                    filter: blur(100px);
-                    opacity: 0.12;
-                    animation: float-orb-d 30s ease-in-out infinite;
-                }
-
-                .orb-d1 {
-                    width: 600px;
-                    height: 600px;
-                    background: radial-gradient(circle, #B1124A 0%, transparent 70%);
-                    top: -200px;
-                    right: -100px;
-                    animation-delay: 0s;
-                }
-
-                .orb-d2 {
-                    width: 500px;
-                    height: 500px;
-                    background: radial-gradient(circle, #B1124A 0%, transparent 70%);
-                    bottom: -100px;
-                    left: -100px;
-                    animation-delay: -10s;
-                }
-
-                .orb-d3 {
-                    width: 400px;
-                    height: 400px;
-                    background: radial-gradient(circle, #D14D72 0%, transparent 70%);
-                    top: 50%;
-                    left: 50%;
-                    animation-delay: -20s;
-                }
-
-                @keyframes float-orb-d {
-                    0%, 100% { transform: translate(0, 0) scale(1); }
-                    33% { transform: translate(50px, -50px) scale(1.1); }
-                    66% { transform: translate(-30px, 30px) scale(0.9); }
-                }
-
-
-
-                /* ========== MAIN CONTENT ========== */
                 .main-content {
                     position: relative;
                     z-index: 10;
@@ -450,91 +444,50 @@ const StudentDashboard = () => {
                     margin: 0 auto;
                 }
 
-                /* ========== HEADER ========== */
                 .dashboard-header {
                     display: flex;
                     justify-content: space-between;
-                    align-items: flex-start;
-                    margin-bottom: 2rem;
-                    animation: slideDown 0.6s ease-out;
-                }
-
-                @keyframes slideDown {
-                    from { opacity: 0; transform: translateY(-30px); }
-                    to { opacity: 1; transform: translateY(0); }
+                    align-items: center;
+                    margin-bottom: 3rem;
                 }
 
                 .greeting-section h1 {
-                    font-size: 2.5rem;
+                    font-size: 3rem;
                     font-weight: 800;
-                    color: var(--text-primary);
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                    margin-bottom: 0.5rem;
+                    background: var(--maroon-gradient);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    margin: 0;
                 }
 
-                .greeting-section p {
-                    color: var(--text-light);
-                    font-size: 1rem;
-                }
-
-                .header-actions {
-                    display: flex;
-                    gap: 1rem;
-                    align-items: center;
-                }
+                .header-actions { display: flex; gap: 1rem; align-items: center; }
 
                 .icon-btn {
-                    width: 48px;
-                    height: 48px;
-                    border-radius: var(--radius-md);
-                    border: none;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: var(--radius-inner);
                     background: white;
-                    box-shadow: var(--shadow-sm);
-                    cursor: pointer;
+                    border: 1px solid #eee;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    cursor: pointer;
+                    transition: 0.3s;
                     position: relative;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
-                .icon-btn:hover {
-                    transform: translateY(-2px);
-                    box-shadow: var(--shadow-md);
-                    background: var(--maroon-subtle);
-                }
-
-                .icon-btn svg {
-                    color: var(--text-secondary);
-                    transition: color 0.3s;
-                }
-
-                .icon-btn:hover svg {
-                    color: var(--maroon-primary);
-                }
+                .icon-btn:hover { border-color: var(--maroon-primary); transform: translateY(-3px); }
 
                 .notification-badge {
                     position: absolute;
-                    top: -4px;
-                    right: -4px;
-                    width: 20px;
-                    height: 20px;
-                    background: var(--maroon-gradient);
-                    border-radius: 50%;
+                    top: -5px; right: -5px;
+                    background: var(--maroon-primary);
                     color: white;
-                    font-size: 11px;
-                    font-weight: 700;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    animation: pulse-badge 2s infinite;
-                }
-
-                @keyframes pulse-badge {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
+                    font-size: 0.65rem;
+                    width: 20px; height: 20px;
+                    border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    border: 2px solid white;
                 }
 
                 .logout-btn {
@@ -542,159 +495,50 @@ const StudentDashboard = () => {
                     align-items: center;
                     gap: 0.5rem;
                     padding: 0.75rem 1.5rem;
-                    border-radius: var(--radius-md);
-                    border: 2px solid var(--maroon-primary);
-                    background: transparent;
+                    border-radius: var(--radius-inner);
+                    background: white;
                     color: var(--maroon-primary);
-                    font-weight: 600;
+                    border: 2px solid var(--maroon-primary);
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: all 0.3s;
+                    transition: 0.3s;
                 }
 
                 .logout-btn:hover {
                     background: var(--maroon-primary);
                     color: white;
-                    transform: translateY(-2px);
                 }
 
-                /* ========== STATS CARDS ========== */
-                .stats-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 1.5rem;
-                    margin-bottom: 2rem;
-                }
-
-                .tilt-card-d {
-                    position: relative;
-                    transform-style: preserve-3d;
-                }
-
-                .card-glow {
-                    position: absolute;
-                    inset: 0;
-                    border-radius: var(--radius-lg);
-                    background: var(--maroon-gradient);
-                    opacity: 0.1;
-                    filter: blur(20px);
-                    z-index: -1;
-                }
-
-                .stat-card {
-                    background: white;
-                    border-radius: var(--radius-lg);
-                    padding: 1.75rem;
-                    box-shadow: var(--shadow-sm);
-                    border: 1px solid rgba(0,0,0,0.05);
+                .glass-card-premium {
+                    background: var(--glass-bg);
+                    backdrop-filter: blur(12px) saturate(180%);
+                    border: 1px solid var(--glass-border);
+                    border-radius: var(--radius-outer);
+                    padding: 2rem;
                     position: relative;
                     overflow: hidden;
-                    transition: all 0.3s;
+                    box-shadow: var(--shadow-premium);
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
-                .stat-card::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 4px;
-                    background: var(--maroon-gradient);
-                    opacity: 0;
-                    transition: opacity 0.3s;
+                .glass-card-premium:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 30px 60px rgba(177, 18, 74, 0.12);
+                    border-color: var(--maroon-primary);
                 }
 
-                .stat-card:hover::before {
-                    opacity: 1;
-                }
-
-                .stat-card-icon {
-                    width: 56px;
-                    height: 56px;
-                    border-radius: var(--radius-md);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin-bottom: 1rem;
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                .stat-card-icon::after {
-                    content: '';
+                .card-shine {
                     position: absolute;
                     inset: 0;
-                    background: inherit;
-                    filter: blur(10px);
-                    opacity: 0.5;
+                    background: linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.4) 50%, transparent 55%);
+                    background-size: 250% 250%;
+                    animation: shine-flow 5s infinite linear;
+                    pointer-events: none;
                 }
 
-                .stat-card-icon svg {
-                    position: relative;
-                    z-index: 1;
-                }
-
-                .stat-value {
-                    font-size: 2.25rem;
-                    font-weight: 800;
-                    color: var(--text-primary);
-                    line-height: 1;
-                    margin-bottom: 0.5rem;
-                }
-
-                .stat-label {
-                    font-size: 0.9rem;
-                    color: var(--text-secondary);
-                    font-weight: 500;
-                }
-
-                .stat-change {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.25rem;
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    margin-top: 0.75rem;
-                    padding: 0.35rem 0.75rem;
-                    border-radius: 20px;
-                }
-
-                .stat-change.positive {
-                    background: rgba(16, 185, 129, 0.1);
-                    color: #10B981;
-                }
-
-                .stat-change.neutral {
-                    background: rgba(245, 158, 11, 0.1);
-                    color: #F59E0B;
-                }
-
-                /* ========== CONTENT GRID ========== */
-                .content-grid {
-                    display: grid;
-                    grid-template-columns: 2fr 1fr;
-                    gap: 2rem;
-                }
-
-                /* ========== GLASS CARD ========== */
-                .glass-card {
-                    background: rgba(255, 255, 255, 0.95);
-                    backdrop-filter: blur(20px);
-                    border-radius: var(--radius-lg);
-                    padding: 1.75rem;
-                    box-shadow: var(--shadow-md);
-                    border: 1px solid rgba(255, 255, 255, 0.8);
-                    transition: all 0.3s;
-                }
-
-                .glass-card:hover {
-                    box-shadow: var(--shadow-lg);
-                }
-
-                .card-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 1.5rem;
+                @keyframes shine-flow {
+                    0% { background-position: 200% 200%; }
+                    100% { background-position: -200% -200%; }
                 }
 
                 .card-title {
@@ -702,668 +546,308 @@ const StudentDashboard = () => {
                     align-items: center;
                     gap: 0.75rem;
                     font-size: 1.25rem;
-                    font-weight: 700;
-                    color: var(--text-primary);
-                }
-
-                .card-title-icon {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: var(--radius-sm);
-                    background: var(--maroon-subtle);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .card-title-icon svg {
-                    color: var(--maroon-primary);
-                }
-
-                .view-all-btn {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.35rem;
-                    padding: 0.5rem 1rem;
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    color: var(--maroon-primary);
-                    background: var(--maroon-subtle);
-                    border: none;
-                    border-radius: 20px;
-                    cursor: pointer;
-                    transition: all 0.3s;
-                }
-
-                .view-all-btn:hover {
-                    background: var(--maroon-primary);
-                    color: white;
-                    transform: translateX(3px);
-                }
-
-                /* ========== ANNOUNCEMENTS ========== */
-                .announcements-section {
+                    font-weight: 800;
                     margin-bottom: 2rem;
                 }
 
+                .card-title-icon {
+                    width: 44px; height: 44px;
+                    border-radius: 12px;
+                    background: var(--maroon-gradient);
+                    color: white;
+                    display: flex; align-items: center; justify-content: center;
+                    box-shadow: 0 8px 16px rgba(177, 18, 74, 0.2);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 2rem;
+                    margin-bottom: 3rem;
+                }
+
+                .stat-value { font-size: 2.5rem; font-weight: 800; margin: 0.5rem 0; }
+                .stat-label { font-size: 0.85rem; color: var(--text-light); font-weight: 600; text-transform: uppercase; }
+
+                .content-grid {
+                    display: grid;
+                    grid-template-columns: 2fr 1fr;
+                    gap: 3rem;
+                }
+
                 .announcement-card {
-                    background: linear-gradient(135deg, rgba(177, 18, 74, 0.05) 0%, rgba(255,255,255,1) 100%);
-                    border: 1px solid rgba(177, 18, 74, 0.1);
-                    border-left: 4px solid var(--maroon-primary);
-                    padding: 1rem 1.25rem;
-                    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-                    margin-bottom: 1rem;
-                    transition: all 0.3s;
-                    cursor: pointer;
+                    padding: 1.5rem;
+                    border-radius: 16px;
+                    background: white;
+                    border: 1px solid #eee;
+                    margin-bottom: 1.25rem;
+                    transition: 0.3s;
                 }
 
                 .announcement-card:hover {
+                    border-color: var(--maroon-primary);
                     transform: translateX(5px);
-                    box-shadow: var(--shadow-md);
-                    border-left-width: 6px;
                 }
 
-                .announcement-content {
-                    font-size: 0.95rem;
-                    color: var(--text-primary);
-                    font-weight: 500;
-                    line-height: 1.5;
-                }
+                .announcement-content { font-size: 1rem; color: #333; line-height: 1.6; }
+                .announcement-meta { display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.8rem; color: #888; }
+                .announcement-link { color: var(--maroon-primary); font-weight: 700; text-decoration: none; }
 
-                .announcement-meta {
-                    display: flex;
-                    gap: 1rem;
-                    margin-top: 0.75rem;
-                    font-size: 0.8rem;
-                    color: var(--text-light);
-                }
-
-                .announcement-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 0.25rem;
-                    color: var(--maroon-primary);
-                    font-weight: 600;
-                    text-decoration: none;
-                    transition: all 0.2s;
-                }
-
-                .announcement-link:hover {
-                    text-decoration: underline;
-                }
-
-                .no-announcements {
-                    text-align: center;
-                    padding: 2rem;
-                    color: var(--text-light);
-                }
-
-                .no-announcements svg {
-                    opacity: 0.3;
-                    margin-bottom: 1rem;
-                }
-
-                /* ========== DRIVES LIST ========== */
                 .drive-item {
-                    display: flex;
-                    align-items: center;
-                    gap: 1rem;
-                    padding: 1rem;
-                    background: var(--bg-secondary);
-                    border-radius: var(--radius-md);
-                    margin-bottom: 0.75rem;
-                    transition: all 0.3s;
-                    cursor: pointer;
-                    border: 1px solid transparent;
+                    display: flex; align-items: center; gap: 1.5rem;
+                    padding: 1.25rem; border-radius: 16px;
+                    background: white; margin-bottom: 1rem;
+                    transition: 0.3s; border: 1px solid #f0f0f0;
                 }
-
-                .drive-item:hover {
-                    background: white;
-                    border-color: var(--maroon-medium);
-                    transform: translateX(5px);
-                    box-shadow: var(--shadow-sm);
-                }
-
+                .drive-item:hover { transform: scale(1.02); border-color: var(--maroon-primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+                
                 .drive-logo {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: var(--radius-sm);
-                    background: var(--maroon-gradient);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.25rem;
-                    font-weight: 800;
-                    color: white;
-                    flex-shrink: 0;
+                    width: 56px; height: 56px; border-radius: 14px;
+                    background: var(--maroon-gradient); color: white;
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 1.5rem; font-weight: 800;
+                    box-shadow: 0 6px 12px rgba(177, 18, 74, 0.2);
                 }
 
-                .drive-info {
-                    flex: 1;
+                .success-radial-container { position: relative; width: 160px; height: 160px; margin: 0 auto; }
+                .success-radial { transform: rotate(-90deg); width: 100%; height: 100%; }
+                .radial-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; }
+                .radial-fill { 
+                    fill: none; stroke: var(--maroon-primary); stroke-width: 10; 
+                    stroke-linecap: round; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                .radial-text {
+                    position: absolute; inset: 0; display: flex; flex-direction: column;
+                    align-items: center; justify-content: center;
+                }
+                .radial-value { font-size: 2rem; font-weight: 800; color: var(--maroon-primary); }
+                .radial-label { font-size: 0.75rem; font-weight: 600; color: var(--text-light); }
+
+                .magnetic-btn-d {
+                    padding: 1.25rem 2.5rem; border-radius: 16px;
+                    background: var(--maroon-gradient); color: white; border: none;
+                    font-weight: 800; cursor: pointer; box-shadow: var(--shadow-glow);
+                    display: inline-flex; align-items: center; gap: 0.75rem;
+                    font-size: 1rem; transition: 0.1s;
                 }
 
-                .drive-company {
-                    font-weight: 700;
-                    color: var(--text-primary);
-                    font-size: 1rem;
-                    margin-bottom: 0.25rem;
-                }
+                @keyframes star-twinkle { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+                .star-d { position: absolute; width: 3px; height: 3px; background: var(--maroon-primary); border-radius: 50%; animation: star-twinkle 3s infinite; }
 
-                .drive-role {
-                    font-size: 0.85rem;
-                    color: var(--text-secondary);
-                }
-
-                .drive-meta {
-                    text-align: right;
-                }
-
-                .drive-ctc {
-                    font-size: 1rem;
-                    font-weight: 700;
-                    color: var(--maroon-primary);
-                }
-
-                .drive-date {
-                    font-size: 0.8rem;
-                    color: var(--text-light);
-                }
-
-                /* ========== APPLICATIONS LIST ========== */
-                .application-item {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 1rem;
-                    background: var(--bg-secondary);
-                    border-radius: var(--radius-md);
-                    margin-bottom: 0.75rem;
-                    transition: all 0.3s;
-                }
-
-                .application-item:hover {
-                    background: white;
-                    box-shadow: var(--shadow-sm);
-                }
-
-                .application-company {
-                    font-weight: 600;
-                    color: var(--text-primary);
-                    margin-bottom: 0.25rem;
-                }
-
-                .application-role {
-                    font-size: 0.85rem;
-                    color: var(--text-secondary);
-                }
-
-                .status-badge {
-                    padding: 0.4rem 0.9rem;
-                    border-radius: 20px;
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    border: 1px solid;
-                }
-
-                /* ========== SKILL BARS ========== */
-                .skill-bar-container {
-                    margin-bottom: 1.25rem;
-                }
-
-                .skill-bar-header {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 0.5rem;
-                }
-
-                .skill-name {
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    color: var(--text-primary);
-                }
-
-                .skill-level {
-                    font-size: 0.85rem;
-                    font-weight: 700;
-                    color: var(--maroon-primary);
-                }
-
-                .skill-bar-track {
-                    height: 8px;
-                    background: var(--bg-secondary);
-                    border-radius: 10px;
+                .ticker-d {
+                    background: var(--maroon-dark); color: white; padding: 1rem;
+                    position: fixed; bottom: 0; left: 0; width: 100%; z-index: 100;
+                    box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
                     overflow: hidden;
                 }
+                .ticker-content-d { display: flex; gap: 4rem; animation: ticker-move 40s linear infinite; white-space: nowrap; }
+                @keyframes ticker-move { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-                .skill-bar-fill {
-                    height: 100%;
-                    border-radius: 10px;
-                    position: relative;
-                    transition: width 1s ease-out;
-                }
+                .animated-bg-dashboard { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: #FFF5F7; }
+                .mesh-gradient-overlay { position: absolute; inset: 0; background-image: radial-gradient(at 0% 0%, rgba(177, 18, 74, 0.05) 0, transparent 50%), radial-gradient(at 50% 0%, rgba(177, 18, 74, 0.03) 0, transparent 50%); }
 
-                .skill-bar-glow {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    width: 30px;
-                    height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
-                    animation: shimmer 2s infinite;
-                }
+                .skill-bar-container { margin-bottom: 2rem; }
+                .skill-bar-header { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+                .skill-name { font-weight: 700; font-size: 0.95rem; }
+                .skill-level { font-weight: 800; color: var(--maroon-primary); }
+                .skill-bar-track { height: 10px; background: #f0f0f0; border-radius: 10px; overflow: hidden; }
+                .skill-bar-fill { height: 100%; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 10px; position: relative; }
+                .skill-bar-glow { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite; }
+                @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-                @keyframes shimmer {
-                    0% { opacity: 0; }
-                    50% { opacity: 1; }
-                    100% { opacity: 0; }
-                }
-
-                /* ========== STREAK WIDGET ========== */
-                .streak-widget {
-                    background: var(--maroon-gradient);
-                    border-radius: var(--radius-lg);
-                    padding: 1.5rem;
-                    color: white;
-                    text-align: center;
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                .streak-widget::before {
-                    content: '';
-                    position: absolute;
-                    top: -50%;
-                    left: -50%;
-                    width: 200%;
-                    height: 200%;
-                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-                    animation: rotate-bg 10s linear infinite;
-                }
-
-                @keyframes rotate-bg {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-
-                .streak-value {
-                    font-size: 3rem;
-                    font-weight: 800;
-                    position: relative;
-                    z-index: 1;
-                }
-
-                .streak-label {
-                    font-size: 0.9rem;
-                    opacity: 0.9;
-                    position: relative;
-                    z-index: 1;
-                }
-
-                .streak-flames {
-                    font-size: 1.5rem;
-                    margin-top: 0.5rem;
-                    position: relative;
-                    z-index: 1;
-                }
-
-                /* ========== QUICK ACTIONS ========== */
-                .quick-actions {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 1rem;
-                }
-
-                .quick-action-btn {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 0.75rem;
-                    padding: 1.25rem;
-                    background: white;
-                    border: 1px solid rgba(0,0,0,0.05);
-                    border-radius: var(--radius-md);
-                    cursor: pointer;
-                    transition: all 0.3s;
-                    text-decoration: none;
-                }
-
-                .quick-action-btn:hover {
-                    transform: translateY(-3px);
-                    box-shadow: var(--shadow-md);
-                    border-color: var(--maroon-medium);
-                }
-
-                .quick-action-btn:hover svg {
-                    transform: scale(1.1);
-                    color: var(--maroon-primary);
-                }
-
-                .quick-action-btn svg {
-                    color: var(--text-secondary);
-                    transition: all 0.3s;
-                }
-
-                .quick-action-btn span {
-                    font-size: 0.85rem;
-                    font-weight: 600;
-                    color: var(--text-primary);
-                }
-
-                /* ========== LOADING SCREEN ========== */
-                .loading-screen {
-                    min-height: 100vh;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    background: linear-gradient(135deg, #FFFFFF 0%, #FFF1F4 100%);
-                    gap: 2rem;
-                }
-
-                .loading-spinner {
-                    position: relative;
-                    width: 80px;
-                    height: 80px;
-                }
-
-                .spinner-ring {
-                    position: absolute;
-                    border-radius: 50%;
-                    border: 3px solid transparent;
-                    animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-                }
-
-                .spinner-ring:nth-child(1) {
-                    width: 80px;
-                    height: 80px;
-                    border-top-color: var(--maroon-primary);
-                    animation-delay: -0.3s;
-                }
-
-                .spinner-ring:nth-child(2) {
-                    width: 60px;
-                    height: 60px;
-                    top: 10px;
-                    left: 10px;
-                    border-top-color: var(--maroon-secondary);
-                    animation-delay: -0.15s;
-                }
-
-                .spinner-ring:nth-child(3) {
-                    width: 40px;
-                    height: 40px;
-                    top: 20px;
-                    left: 20px;
-                    border-top-color: var(--maroon-light);
-                }
-
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-
-                .loading-screen p {
-                    color: var(--text-secondary);
-                    font-size: 1.1rem;
-                    font-weight: 500;
-                }
-
-                /* ========== RESPONSIVE ========== */
-                @media (max-width: 1200px) {
-                    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-                    .content-grid { grid-template-columns: 1fr; }
-                }
-
-                @media (max-width: 768px) {
-                    .main-content { padding: 1rem; }
-                    .stats-grid { grid-template-columns: 1fr; }
-                    .dashboard-header { flex-direction: column; gap: 1rem; }
-                    .greeting-section h1 { font-size: 1.75rem; }
-                }
+                .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 2rem; }
+                .loading-spinner { position: relative; width: 80px; height: 80px; }
+                .spinner-ring { position: absolute; inset: 0; border: 4px solid transparent; border-top-color: var(--maroon-primary); border-radius: 50%; animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; }
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
             `}</style>
 
             <AnimatedBackground />
 
+            {tickers.length > 0 && (
+                <div className="ticker-d">
+                    <div className="ticker-content-d">
+                        {/* Loop through tickers and repeat to ensure continuous flow */}
+                        {[...Array(5)].flatMap((_, i) => (
+                            tickers.map((t, index) => (
+                                <span key={`${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
+                                    <Megaphone size={18} className="animate-pulse" /> ADMIN ALERT: {t.message} •
+                                </span>
+                            ))
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <main className="main-content">
-                {/* Header */}
                 <FadeIn>
                     <header className="dashboard-header">
                         <div className="greeting-section">
-                            <h1>
-                                {greeting.emoji} {greeting.text}, {userName}!
-                            </h1>
-                            <p>
-                                {currentTime.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} •
-                                Let's make today productive!
-                            </p>
-                        </div>
-                        <div className="header-actions">
-                            <button className="icon-btn" onClick={() => setShowNotifications(!showNotifications)}>
-                                <Bell size={22} />
-                                <span className="notification-badge">{notifications.length}</span>
-                            </button>
-                            {showNotifications && (
-                                <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
-                            )}
-                            <button className="icon-btn">
-                                <Settings size={22} />
-                            </button>
-                            <button className="logout-btn" onClick={logout}>
-                                <LogOut size={18} />
-                                Logout
-                            </button>
+                            <h1>{greeting.text}, {userName}</h1>
+                            <p>{currentTime.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} • Student Portal</p>
                         </div>
                     </header>
                 </FadeIn>
 
-                {/* Stats Cards */}
                 <div className="stats-grid">
-                    {[
-                        { icon: <Target size={26} />, value: stats.drives?.upcoming || 8, label: 'Upcoming Drives', change: '+3 this week', bg: 'rgba(177, 18, 74, 0.1)', color: '#B1124A' },
-                        { icon: <FileText size={26} />, value: stats.applications?.total || 5, label: 'Applications', change: '2 in progress', bg: 'rgba(59, 130, 246, 0.1)', color: '#3B82F6' },
-                        { icon: <Trophy size={26} />, value: stats.applications?.offered || 1, label: 'Offers Received', change: '🎉 Great job!', bg: 'rgba(16, 185, 129, 0.1)', color: '#10B981' },
-                        { icon: <Flame size={26} />, value: userStreak, label: 'Day Streak', change: 'Keep it up!', bg: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B' }
-                    ].map((stat, i) => (
-                        <FadeIn key={i} delay={i * 100}>
-                            <TiltCard>
-                                <div className="stat-card">
-                                    <div className="stat-card-icon" style={{ background: stat.bg }}>
-                                        <div style={{ color: stat.color }}>{stat.icon}</div>
-                                    </div>
-                                    <div className="stat-value">
-                                        <AnimatedCounter end={stat.value} />
-                                    </div>
-                                    <div className="stat-label">{stat.label}</div>
-                                    <div className="stat-change positive">{stat.change}</div>
-                                </div>
-                            </TiltCard>
-                        </FadeIn>
-                    ))}
+                    <GlassCardPremium delay={100}>
+                        <div className="stat-label">Placement Readiness</div>
+                        <SuccessRadial percentage={stats.readinessScore || 0} />
+                    </GlassCardPremium>
+                    <GlassCardPremium delay={200}>
+                        <div className="stat-label">Applied Drives</div>
+                        <div className="stat-value"><AnimatedCounter end={stats.applications?.total || 0} /></div>
+                        <div style={{ color: '#10B981', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <TrendingUp size={16} /> Total Applications
+                        </div>
+                    </GlassCardPremium>
+                    <GlassCardPremium delay={300}>
+                        <div className="stat-label">Eligible Drives</div>
+                        <div className="stat-value"><AnimatedCounter end={stats.drives?.eligible || 0} /></div>
+                        <div style={{ color: '#3B82F6', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <CheckCircle size={16} /> Ready to Apply
+                        </div>
+                    </GlassCardPremium>
+                    <GlassCardPremium delay={400}>
+                        <div className="stat-label">Academic CGPA</div>
+                        <div className="stat-value">{stats.profile?.cgpa || 0}</div>
+                        <div style={{ color: '#B1124A', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <GraduationCap size={16} /> {stats.profile?.department || 'Student'}
+                        </div>
+                    </GlassCardPremium>
                 </div>
 
-                {/* Announcements Section */}
-                <FadeIn delay={400}>
-                    <div className="glass-card announcements-section">
-                        <div className="card-header">
-                            <div className="card-title">
-                                <div className="card-title-icon">
-                                    <Megaphone size={20} />
-                                </div>
-                                Announcements
-                                <span className="notification-badge" style={{ position: 'static', marginLeft: '0.5rem' }}>
-                                    {announcements.length}
-                                </span>
-                            </div>
-                        </div>
-                        {announcements.length > 0 ? (
-                            announcements.slice(0, 4).map((ann, i) => (
-                                <div key={i} className="announcement-card">
-                                    <div className="announcement-content">{ann.content}</div>
-                                    <div className="announcement-meta">
-                                        <span>{new Date(ann.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-                                        {ann.links && ann.links[0]?.url && (
-                                            <a href={ann.links[0].url} target="_blank" rel="noopener noreferrer" className="announcement-link">
-                                                <ExternalLink size={12} /> View Link
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="no-announcements">
-                                <Megaphone size={48} />
-                                <p>No announcements yet. Check back soon!</p>
-                            </div>
-                        )}
-                    </div>
-                </FadeIn>
-
-                {/* Main Content Grid */}
                 <div className="content-grid">
-                    {/* Left Column */}
-                    <div>
-                        {/* Upcoming Drives */}
-                        <FadeIn delay={500}>
-                            <div className="glass-card" style={{ marginBottom: '2rem' }}>
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <div className="card-title-icon">
-                                            <Briefcase size={20} />
+                    <div className="left-col">
+                        <GlassCardPremium delay={500}>
+                            <div className="card-title">
+                                <div className="card-title-icon"><Megaphone size={20} /></div>
+                                Live Announcements
+                            </div>
+                            <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '1rem' }}>
+                                {announcements.length > 0 ? announcements.map((ann, i) => (
+                                    <div key={i} className="announcement-card">
+                                        <div className="announcement-content">{ann.content}</div>
+                                        <div className="announcement-meta">
+                                            <span><Calendar size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {new Date(ann.createdAt).toLocaleDateString()}</span>
+                                            {ann.links && ann.links.length > 0 && (
+                                                <a href={ann.links[0]?.url} className="announcement-link" target="_blank" rel="noopener noreferrer">
+                                                    View Details <ExternalLink size={14} />
+                                                </a>
+                                            )}
                                         </div>
-                                        Upcoming Drives
                                     </div>
-                                    <button className="view-all-btn">
-                                        View All <ArrowRight size={14} />
-                                    </button>
+                                )) : (
+                                    <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
+                                        <BellRing size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                                        <p>No new announcements today.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </GlassCardPremium>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <GlassCardPremium delay={600}>
+                                <div className="card-title">
+                                    <div className="card-title-icon"><Briefcase size={20} /></div>
+                                    Recommended Placements
                                 </div>
                                 {drives.map((drive, i) => (
-                                    <div key={drive._id} className="drive-item">
-                                        <div className="drive-logo">
-                                            {drive.companyName?.charAt(0)}
+                                    <div key={i} className="drive-item">
+                                        <div className="drive-logo">{drive.companyName.charAt(0)}</div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>{drive.companyName}</div>
+                                            <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px' }}>
+                                                <Target size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {drive.jobProfile} •
+                                                <MapPin size={14} style={{ verticalAlign: 'middle', margin: '0 4px 0 8px' }} /> {drive.location}
+                                            </div>
                                         </div>
-                                        <div className="drive-info">
-                                            <div className="drive-company">{drive.companyName}</div>
-                                            <div className="drive-role">{drive.jobProfile}</div>
-                                        </div>
-                                        <div className="drive-meta">
-                                            <div className="drive-ctc">₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)} LPA</div>
-                                            <div className="drive-date">{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ fontWeight: 800, color: '#B1124A', fontSize: '1.2rem' }}>₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)} LPA</div>
+                                            <div style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px' }}>Deadline: {new Date(drive.date).toLocaleDateString()}</div>
                                         </div>
                                     </div>
                                 ))}
-                            </div>
-                        </FadeIn>
-
-                        {/* My Applications */}
-                        <FadeIn delay={600}>
-                            <div className="glass-card">
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <div className="card-title-icon">
-                                            <FileText size={20} />
-                                        </div>
-                                        My Applications
-                                    </div>
-                                    <button className="view-all-btn">
-                                        View All <ArrowRight size={14} />
-                                    </button>
-                                </div>
-                                {applications.map((app, i) => {
-                                    const statusColors = getStatusColor(app.status);
-                                    return (
-                                        <div key={app._id} className="application-item">
-                                            <div>
-                                                <div className="application-company">{app.driveId?.companyName}</div>
-                                                <div className="application-role">{app.driveId?.jobProfile}</div>
-                                            </div>
-                                            <span
-                                                className="status-badge"
-                                                style={{
-                                                    background: statusColors.bg,
-                                                    color: statusColors.text,
-                                                    borderColor: statusColors.border
-                                                }}
-                                            >
-                                                {app.status}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </FadeIn>
+                                <MagneticButton style={{ width: '100%', marginTop: '1.5rem', justifyContent: 'center' }} onClick={() => window.location.href = '/student/drives'}>
+                                    Explore Job Board <ArrowRight size={20} />
+                                </MagneticButton>
+                            </GlassCardPremium>
+                        </div>
                     </div>
 
-                    {/* Right Column */}
-                    <div>
-                        {/* Streak Widget */}
-                        <FadeIn delay={500}>
-                            <div className="streak-widget" style={{ marginBottom: '1.5rem' }}>
-                                <div className="streak-value">{userStreak}</div>
-                                <div className="streak-label">Day Streak</div>
-                                <div className="streak-flames">🔥🔥🔥</div>
-                            </div>
-                        </FadeIn>
+                    <div className="right-col">
 
-                        {/* Skills Progress */}
-                        <FadeIn delay={600}>
-                            <div className="glass-card" style={{ marginBottom: '1.5rem' }}>
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <div className="card-title-icon">
-                                            <Cpu size={20} />
-                                        </div>
-                                        Skills
-                                    </div>
+                        <div style={{ marginTop: '0' }}>
+                            <GlassCardPremium delay={600}>
+                                <div className="card-title">
+                                    <div className="card-title-icon"><CalendarDays size={20} /></div>
+                                    Mini Calendar
                                 </div>
-                                {stats.skills?.slice(0, 4).map((skill, i) => (
+                                <MiniCalendar events={events} />
+                                <button
+                                    onClick={() => window.location.href = '/student/schedule'}
+                                    style={{ width: '100%', marginTop: '1.5rem', background: 'none', border: 'none', color: '#B1124A', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                                >
+                                    Full Schedule <ArrowRight size={18} />
+                                </button>
+                            </GlassCardPremium>
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <GlassCardPremium delay={700}>
+                                <div className="card-title">
+                                    <div className="card-title-icon"><BookOpen size={20} /></div>
+                                    Recommended Resources
+                                </div>
+                                <RecommendedResources resources={resources} />
+                                <button
+                                    onClick={() => window.location.href = '/student/resources'}
+                                    style={{ width: '100%', marginTop: '1rem', background: 'none', border: 'none', color: '#B1124A', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                                >
+                                    Browse all resources <ChevronRight size={18} />
+                                </button>
+                            </GlassCardPremium>
+                        </div>
+
+                        <div style={{ marginTop: '3rem' }}>
+                            <GlassCardPremium delay={800}>
+                                <div className="card-title">
+                                    <div className="card-title-icon"><Cpu size={20} /></div>
+                                    Skill Analytics
+                                </div>
+                                {fullProfile?.skills?.length > 0 ? fullProfile.skills.map((skill, i) => (
                                     <AnimatedSkillBar
                                         key={i}
                                         skill={skill.name}
-                                        level={skill.level}
+                                        level={getSkillLevel(skill.level)}
                                         delay={i * 150}
                                         color={i % 2 === 0 ? '#B1124A' : '#D14D72'}
                                     />
-                                ))}
-                            </div>
-                        </FadeIn>
-
-                        {/* Quick Actions */}
-                        <FadeIn delay={700}>
-                            <div className="glass-card">
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <div className="card-title-icon">
-                                            <Zap size={20} />
-                                        </div>
-                                        Quick Actions
-                                    </div>
-                                </div>
-                                <div className="quick-actions">
-                                    <a href="/drives" className="quick-action-btn">
-                                        <Briefcase size={24} />
-                                        <span>View Drives</span>
-                                    </a>
-                                    <a href="/prephub" className="quick-action-btn">
-                                        <BookOpen size={24} />
-                                        <span>Prep Hub</span>
-                                    </a>
-                                    <a href="/profile" className="quick-action-btn">
-                                        <UserCheck size={24} />
-                                        <span>Edit Profile</span>
-                                    </a>
-                                    <a href="/alumni" className="quick-action-btn">
-                                        <GraduationCap size={24} />
-                                        <span>Alumni Insights</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </FadeIn>
+                                )) : (
+                                    <p style={{ color: '#888', textAlign: 'center', fontSize: '0.9rem' }}>No skills added yet. Update your profile!</p>
+                                )}
+                            </GlassCardPremium>
+                        </div>
                     </div>
                 </div>
+
+                {/* Footer */}
+                <FadeIn delay={1000}>
+                    <div style={{ marginTop: '5rem', paddingBottom: '8rem', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
+                            <Linkedin size={24} style={{ color: '#888', cursor: 'pointer' }} />
+                            <Github size={24} style={{ color: '#888', cursor: 'pointer' }} />
+                            <Globe size={24} style={{ color: '#888', cursor: 'pointer' }} />
+                            <Twitter size={24} style={{ color: '#888', cursor: 'pointer' }} />
+                        </div>
+                        <p style={{ color: '#888', fontSize: '0.9rem' }}>© 2026 Academic Placement Tracker • Empowering Careers</p>
+                    </div>
+                </FadeIn>
             </main>
+
+            <NotificationsPanel
+                isOpen={showNotifications}
+                onClose={() => setShowNotifications(false)}
+            />
         </div>
     );
 };

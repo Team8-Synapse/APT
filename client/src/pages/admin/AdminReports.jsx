@@ -1,460 +1,390 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { saveAs } from 'file-saver';
 import {
-    FileSpreadsheet, Users, Briefcase, GraduationCap, Building2, TrendingUp,
-    Download, Filter, Calendar, ChevronDown, FileText, BarChart3, PieChart,
-    Clock, CheckCircle, XCircle, AlertCircle, Eye, Printer, Mail, Share2,
-    RefreshCw, Search, Sparkles, Award, Target, DollarSign, ArrowUpRight
+    Download,
+    FileText,
+    TrendingUp,
+    BarChart3,
+    FileSpreadsheet,
+    FileJson,
+    Filter,
+    RefreshCw,
+    CheckCircle,
+    AlertCircle,
+    Calendar,
+    Briefcase,
+    Building2,
+    Users,
+    Search,
+    ChevronDown,
+    Printer,
+    Sparkles,
+    Database,
+    UserX,
+    LayoutGrid,
+    List
 } from 'lucide-react';
 
-// Report Card Component
-const ReportCard = ({
-    icon,
-    title,
-    description,
-    category,
-    lastGenerated,
-    format,
-    onGenerate,
-    onPreview,
-    onEmail,
-    gradient
-}) => (
-    <div className="glass-card p-6 group hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${gradient}`} />
-        <div className="relative z-10">
-            <div className="flex items-start justify-between mb-4">
-                <div className="p-3 bg-amrita-maroon/10 rounded-xl text-amrita-maroon group-hover:bg-white/20 group-hover:text-white transition-all">
-                    {icon}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded group-hover:bg-white/20 group-hover:text-white">
-                    {category}
-                </span>
-            </div>
+// --- Reusable UI Components (Tailwind + Amrita Theme) ---
 
-            <h3 className="font-black text-lg text-gray-900 dark:text-white mb-2 group-hover:text-white transition-colors">
-                {title}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 group-hover:text-white/70 transition-colors">
-                {description}
-            </p>
-
-            <div className="flex items-center justify-between mb-4 text-xs text-gray-400 group-hover:text-white/60">
-                <div className="flex items-center gap-1">
-                    <Clock size={12} />
-                    <span>Last: {lastGenerated}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <FileText size={12} />
-                    <span>{format}</span>
-                </div>
-            </div>
-
-            <div className="flex gap-2">
-                <button
-                    onClick={onGenerate}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-amrita-maroon text-white rounded-xl font-bold text-xs hover:bg-amrita-dark transition-all group-hover:bg-white group-hover:text-amrita-maroon"
-                >
-                    <Download size={14} />
-                    Generate
-                </button>
-                <button
-                    onClick={onPreview}
-                    className="p-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-200 transition-all group-hover:bg-white/20 group-hover:text-white"
-                >
-                    <Eye size={14} />
-                </button>
-                <button
-                    onClick={onEmail}
-                    className="p-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-200 transition-all group-hover:bg-white/20 group-hover:text-white"
-                >
-                    <Mail size={14} />
-                </button>
-            </div>
-        </div>
-    </div>
-);
-
-// Quick Stats Card
-const QuickStat = ({ icon, label, value, trend }) => (
-    <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-2">
+const SectionCard = ({ children, title, icon: Icon, className = "" }) => (
+    <div className={`glass-card p-6 relative overflow-hidden ${className}`}>
+        <div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
             <div className="p-2 bg-amrita-maroon/10 rounded-lg text-amrita-maroon">
-                {icon}
+                <Icon size={20} />
             </div>
-            {trend && (
-                <span className="text-xs font-bold text-green-500 flex items-center gap-1">
-                    <ArrowUpRight size={12} />
-                    {trend}
-                </span>
-            )}
+            <h3 className="font-black text-lg text-gray-800 dark:text-white">{title}</h3>
         </div>
-        <p className="text-2xl font-black text-gray-900 dark:text-white">{value}</p>
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{label}</p>
+        {children}
     </div>
 );
 
-// Recent Report Item
-const RecentReportItem = ({ title, type, date, status, size }) => (
-    <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:bg-white dark:hover:bg-gray-800 transition-all cursor-pointer group border border-transparent hover:border-amrita-maroon/20">
-        <div className="p-3 bg-amrita-maroon/10 rounded-xl text-amrita-maroon">
-            <FileSpreadsheet size={20} />
+const ReportTypeCard = ({ label, description, icon: Icon, active, onClick, colorClass }) => (
+    <button
+        onClick={onClick}
+        className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 group hover:shadow-xl w-full h-full flex flex-col ${active
+                ? 'border-amrita-maroon bg-amrita-maroon/5 dark:bg-red-900/10'
+                : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amrita-maroon/30'
+            }`}
+    >
+        <div className={`p-3 rounded-xl w-fit mb-4 transition-colors ${active ? 'bg-amrita-maroon text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 group-hover:bg-amrita-maroon/10 group-hover:text-amrita-maroon'
+            }`}>
+            <Icon size={24} />
         </div>
         <div className="flex-1">
-            <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-amrita-maroon transition-colors">
-                {title}
+            <h4 className={`font-black text-lg mb-1 ${active ? 'text-amrita-maroon' : 'text-gray-800 dark:text-white'}`}>
+                {label}
             </h4>
-            <div className="flex items-center gap-2 mt-1">
-                <span className="text-[10px] font-bold text-gray-400">{type}</span>
-                <span className="text-gray-300">•</span>
-                <span className="text-[10px] font-bold text-gray-400">{date}</span>
-                <span className="text-gray-300">•</span>
-                <span className="text-[10px] font-bold text-gray-400">{size}</span>
-            </div>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+                {description}
+            </p>
         </div>
-        <div className="flex items-center gap-2">
-            <span className={`text-[10px] font-black uppercase px-2 py-1 rounded ${status === 'ready' ? 'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-400' :
-                    status === 'processing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400' :
-                        'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
-                }`}>
-                {status}
-            </span>
-            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                <Download size={14} className="text-gray-400" />
-            </button>
+        {active && (
+            <div className="absolute top-4 right-4 text-amrita-maroon animate-scale-in">
+                <CheckCircle size={20} fill="currentColor" className="text-white" />
+            </div>
+        )}
+    </button>
+);
+
+const FilterSelect = ({ label, value, onChange, options, icon: Icon }) => (
+    <div className="space-y-1.5">
+        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1 flex items-center gap-1">
+            {Icon && <Icon size={12} />} {label}
+        </label>
+        <div className="relative">
+            <select
+                value={value}
+                onChange={onChange}
+                className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white text-sm font-semibold rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-amrita-maroon focus:ring-4 focus:ring-amrita-maroon/10 transition-all cursor-pointer"
+            >
+                {options.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+            </select>
+            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
         </div>
     </div>
 );
 
-const AdminReports = () => {
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [dateRange, setDateRange] = useState('all');
-
-    const categories = [
-        { id: 'all', label: 'All Reports', count: 8 },
-        { id: 'placement', label: 'Placement', count: 3 },
-        { id: 'student', label: 'Student', count: 2 },
-        { id: 'company', label: 'Company', count: 2 },
-        { id: 'analytics', label: 'Analytics', count: 1 }
-    ];
-
-    const reports = [
-        {
-            id: 1,
-            icon: <Users size={24} />,
-            title: 'Student Placement Report',
-            description: 'Complete list of all students with their placement status, company, package, and joining dates.',
-            category: 'placement',
-            lastGenerated: '2 hours ago',
-            format: 'Excel, PDF',
-            gradient: 'bg-gradient-to-br from-amrita-maroon to-amrita-pink'
-        },
-        {
-            id: 2,
-            icon: <Building2 size={24} />,
-            title: 'Company Wise Report',
-            description: 'Detailed breakdown of students placed in each company with CTC statistics and department distribution.',
-            category: 'company',
-            lastGenerated: '1 day ago',
-            format: 'Excel, PDF',
-            gradient: 'bg-gradient-to-br from-blue-500 to-indigo-600'
-        },
-        {
-            id: 3,
-            icon: <GraduationCap size={24} />,
-            title: 'Department Performance',
-            description: 'Department-wise placement analysis including placement rate, average package, and top recruiters.',
-            category: 'analytics',
-            lastGenerated: '3 hours ago',
-            format: 'Excel, PDF, PPT',
-            gradient: 'bg-gradient-to-br from-green-500 to-emerald-600'
-        },
-        {
-            id: 4,
-            icon: <TrendingUp size={24} />,
-            title: 'Year-on-Year Comparison',
-            description: 'Compare placement statistics across multiple academic years with trend analysis.',
-            category: 'analytics',
-            lastGenerated: '5 days ago',
-            format: 'PDF, PPT',
-            gradient: 'bg-gradient-to-br from-purple-500 to-violet-600'
-        },
-        {
-            id: 5,
-            icon: <DollarSign size={24} />,
-            title: 'CTC Analysis Report',
-            description: 'Comprehensive salary statistics including min, max, average CTC by department and company.',
-            category: 'placement',
-            lastGenerated: '1 day ago',
-            format: 'Excel, PDF',
-            gradient: 'bg-gradient-to-br from-amber-500 to-orange-600'
-        },
-        {
-            id: 6,
-            icon: <FileSpreadsheet size={24} />,
-            title: 'Student Database Export',
-            description: 'Full student database with academic details, skills, certifications, and contact information.',
-            category: 'student',
-            lastGenerated: '12 hours ago',
-            format: 'Excel, CSV',
-            gradient: 'bg-gradient-to-br from-cyan-500 to-blue-600'
-        },
-        {
-            id: 7,
-            icon: <Briefcase size={24} />,
-            title: 'Drive Summary Report',
-            description: 'Summary of all placement drives including dates, eligibility, applications, and selections.',
-            category: 'company',
-            lastGenerated: '4 hours ago',
-            format: 'Excel, PDF',
-            gradient: 'bg-gradient-to-br from-rose-500 to-pink-600'
-        },
-        {
-            id: 8,
-            icon: <Award size={24} />,
-            title: 'Unplaced Students Report',
-            description: 'List of students yet to be placed with CGPA, backlog status, and eligible companies.',
-            category: 'student',
-            lastGenerated: '6 hours ago',
-            format: 'Excel, PDF',
-            gradient: 'bg-gradient-to-br from-slate-500 to-gray-600'
-        }
-    ];
-
-    const recentReports = [
-        { title: 'Placement_Report_Feb2026.xlsx', type: 'Placement Report', date: 'Feb 5, 2026', status: 'ready', size: '2.4 MB' },
-        { title: 'CSE_Department_Analysis.pdf', type: 'Department Report', date: 'Feb 4, 2026', status: 'ready', size: '1.8 MB' },
-        { title: 'Company_Statistics_Q4.xlsx', type: 'Company Report', date: 'Feb 3, 2026', status: 'ready', size: '3.1 MB' },
-        { title: 'CTC_Breakdown_2026.pdf', type: 'CTC Analysis', date: 'Feb 2, 2026', status: 'processing', size: '—' },
-        { title: 'Unplaced_Students_List.xlsx', type: 'Student Report', date: 'Feb 1, 2026', status: 'ready', size: '1.2 MB' }
-    ];
-
-    const filteredReports = reports.filter(report => {
-        const matchesCategory = selectedCategory === 'all' || report.category === selectedCategory;
-        const matchesSearch = report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            report.description.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
-    });
-
-    const handleGenerate = (report) => {
-        alert(`Generating ${report.title}...`);
-    };
-
-    const handlePreview = (report) => {
-        alert(`Opening preview for ${report.title}...`);
-    };
-
-    const handleEmail = (report) => {
-        alert(`Email options for ${report.title}...`);
+const ActionButton = ({ onClick, disabled, loading, icon: Icon, label, variant = 'primary', className = '' }) => {
+    const baseClass = "flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed";
+    const variants = {
+        primary: "bg-amrita-maroon text-white hover:bg-amrita-dark shadow-lg shadow-amrita-maroon/20",
+        secondary: "bg-white text-gray-700 border-2 border-gray-100 hover:border-amrita-maroon/30 hover:bg-gray-50",
+        outline: "border-2 border-dashed border-gray-300 text-gray-500 hover:border-amrita-maroon hover:text-amrita-maroon",
+        success: "bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-600/20",
+        warning: "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20"
     };
 
     return (
-        <div className="space-y-8 page-enter">
-            {/* Header */}
-            <div className="glass-card p-6 bg-gradient-to-r from-amrita-maroon to-amrita-pink text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 opacity-10">
-                    <FileSpreadsheet size={200} />
+        <button onClick={onClick} disabled={disabled} className={`${baseClass} ${variants[variant]} ${className}`}>
+            {loading ? <RefreshCw size={18} className="animate-spin" /> : Icon && <Icon size={18} />}
+            {label}
+        </button>
+    );
+};
+
+const AdminReports = () => {
+    // State
+    const [reportType, setReportType] = useState('student_placement');
+    const [selectedBatch, setSelectedBatch] = useState('All');
+    const [selectedDept, setSelectedDept] = useState('All');
+    const [selectedStatus, setSelectedStatus] = useState('All');
+    const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState(null);
+
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+
+    // Report Definitions
+    const reportOptions = [
+        {
+            value: 'student_placement',
+            label: 'Student Placement Report',
+            description: 'Comprehensive list of students with placement status, offers, and CTC details.',
+            icon: Users,
+            endpoint: 'admin-csv',
+            filename: 'placement_report.csv'
+        },
+        {
+            value: 'company_stats',
+            label: 'Company Intelligence',
+            description: 'Recruiter-wise analysis including hire counts, avg CTC, and department breakdown.',
+            icon: Building2,
+            endpoint: 'company-csv',
+            filename: 'company_stats.csv'
+        },
+        {
+            value: 'unplaced',
+            label: 'Unplaced Talent Pool',
+            description: 'Focus list of students yet to be placed, useful for scheduling remediation drives.',
+            icon: UserX,
+            endpoint: 'admin-csv',
+            params: { placementStatus: 'Unplaced' },
+            filename: 'unplaced_students.csv'
+        },
+        {
+            value: 'student_db',
+            label: 'Full Database Export',
+            description: 'Raw export of all student records for archival or external processing.',
+            icon: Database,
+            endpoint: 'admin-csv',
+            filename: 'student_database.csv'
+        }
+    ];
+
+    const generateReport = async () => {
+        const selectedReport = reportOptions.find(r => r.value === reportType);
+        if (!selectedReport) return;
+
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams();
+
+            // Add user selected filters
+            if (selectedBatch !== 'All') params.append('batch', selectedBatch);
+            if (selectedDept !== 'All') params.append('department', selectedDept);
+
+            // Handle Status Filter Logic
+            // If the report type enforces a status (e.g. Unplaced), use that. 
+            // Otherwise use user selection.
+            if (selectedReport.params && selectedReport.params.placementStatus) {
+                params.append('placementStatus', selectedReport.params.placementStatus);
+            } else if (selectedStatus !== 'All') {
+                params.append('placementStatus', selectedStatus);
+            }
+
+            const response = await axios.get(`${API_URL}/reports/${selectedReport.endpoint}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                params: params,
+                responseType: 'blob'
+            });
+
+            saveAs(response.data, selectedReport.filename);
+            showNotification('success', `Generated ${selectedReport.label}`);
+        } catch (error) {
+            console.error('Download failed:', error);
+            showNotification('error', 'Failed to generate report. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const showNotification = (type, message) => {
+        setNotification({ type, message });
+        setTimeout(() => setNotification(null), 4000);
+    };
+
+    const resetFilters = () => {
+        setSelectedBatch('All');
+        setSelectedDept('All');
+        setSelectedStatus('All');
+        showNotification('info', 'Filters reset to default');
+    };
+
+    // Auto-select status when switching report types
+    const handleReportSelect = (type) => {
+        setReportType(type);
+        if (type === 'unplaced') {
+            setSelectedStatus('Unplaced');
+        } else if (type === 'company_stats') {
+            setSelectedStatus('Placed');
+        } else {
+            setSelectedStatus('All');
+        }
+    };
+
+    return (
+        <div className="page-enter min-h-screen pb-20">
+            {/* Notification Toast */}
+            {notification && (
+                <div className={`fixed top-24 right-6 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl animate-slide-in border-l-4 ${notification.type === 'success' ? 'bg-white border-green-500 text-green-700' :
+                        notification.type === 'error' ? 'bg-white border-red-500 text-red-700' :
+                            'bg-white border-blue-500 text-blue-700'
+                    }`}>
+                    {notification.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
+                    <span className="font-bold text-sm">{notification.message}</span>
                 </div>
-                <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
-                        <Sparkles className="text-amrita-gold" size={24} />
-                        <h1 className="text-2xl font-black">Reports & Intelligence Center</h1>
-                    </div>
-                    <p className="text-white/70 font-medium">
-                        Generate, download, and share comprehensive placement reports and analytics
+            )}
+
+            {/* Header Area */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div>
+                    <h1 className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                        <div className="p-3 bg-amrita-maroon text-white rounded-xl shadow-lg shadow-amrita-maroon/20">
+                            <BarChart3 size={24} />
+                        </div>
+                        Reports & Intelligence
+                    </h1>
+                    <p className="mt-2 text-gray-500 font-medium ml-1">
+                        Select a report type below to configure and generate insights.
                     </p>
                 </div>
-
-                {/* Controls */}
-                <div className="flex flex-wrap gap-3 mt-6">
-                    <div className="relative flex-1 min-w-[200px]">
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
-                        <input
-                            type="text"
-                            placeholder="Search reports..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white/20 backdrop-blur-sm text-white placeholder-white/50 border border-white/30 rounded-xl font-medium text-sm focus:outline-none focus:ring-2 focus:ring-white/50"
-                        />
+                <div className="flex gap-3">
+                    <div className="bg-white/50 backdrop-blur-sm border border-white/40 px-4 py-2 rounded-xl text-xs font-bold text-gray-500">
+                        System Status: <span className="text-green-600">● Online</span>
                     </div>
-
-                    <div className="relative">
-                        <select
-                            value={dateRange}
-                            onChange={(e) => setDateRange(e.target.value)}
-                            className="appearance-none bg-white/20 backdrop-blur-sm text-white border border-white/30 rounded-xl px-4 py-2.5 pr-10 font-bold text-sm cursor-pointer hover:bg-white/30 transition-all"
-                        >
-                            <option value="all" className="text-gray-900">All Time</option>
-                            <option value="week" className="text-gray-900">This Week</option>
-                            <option value="month" className="text-gray-900">This Month</option>
-                            <option value="year" className="text-gray-900">This Year</option>
-                        </select>
-                        <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
-
-                    <button className="flex items-center gap-2 bg-white text-amrita-maroon rounded-xl px-4 py-2.5 font-bold text-sm hover:bg-white/90 transition-all">
-                        <RefreshCw size={16} />
-                        Refresh All
-                    </button>
                 </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <QuickStat
-                    icon={<FileSpreadsheet size={18} />}
-                    label="Total Reports"
-                    value="8"
-                    trend="+2 new"
-                />
-                <QuickStat
-                    icon={<Download size={18} />}
-                    label="Downloaded"
-                    value="156"
-                    trend="+12 today"
-                />
-                <QuickStat
-                    icon={<Mail size={18} />}
-                    label="Shared via Email"
-                    value="43"
-                />
-                <QuickStat
-                    icon={<Clock size={18} />}
-                    label="Last Generated"
-                    value="2h ago"
-                />
-            </div>
-
-            {/* Category Filters */}
-            <div className="flex flex-wrap gap-2">
-                {categories.map(cat => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${selectedCategory === cat.id
-                                ? 'bg-amrita-maroon text-white shadow-lg shadow-amrita-maroon/30'
-                                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                            }`}
-                    >
-                        {cat.label}
-                        <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${selectedCategory === cat.id
-                                ? 'bg-white/20 text-white'
-                                : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
-                            }`}>
-                            {cat.count}
-                        </span>
-                    </button>
-                ))}
-            </div>
-
-            {/* Reports Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredReports.map(report => (
-                    <ReportCard
-                        key={report.id}
-                        {...report}
-                        onGenerate={() => handleGenerate(report)}
-                        onPreview={() => handlePreview(report)}
-                        onEmail={() => handleEmail(report)}
+            {/* Report Gallery Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                {reportOptions.map((option) => (
+                    <ReportTypeCard
+                        key={option.value}
+                        {...option}
+                        active={reportType === option.value}
+                        onClick={() => handleReportSelect(option.value)}
                     />
                 ))}
             </div>
 
-            {/* Recent Reports */}
-            <div className="glass-card p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-black text-lg flex items-center gap-3 dark:text-white">
-                        <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                            <Clock className="text-amrita-maroon" size={20} />
+            {/* Main Control Panel */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+
+                {/* Configuration Column (2/3 width) */}
+                <SectionCard title="Query Configuration" icon={Filter} className="lg:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                        <FilterSelect
+                            label="Target Batch"
+                            icon={Calendar}
+                            value={selectedBatch}
+                            onChange={(e) => setSelectedBatch(e.target.value)}
+                            options={[
+                                { value: 'All', label: 'All Batches' },
+                                { value: '2025', label: 'Batch 2025' },
+                                { value: '2026', label: 'Batch 2026' },
+                                { value: '2027', label: 'Batch 2027' }
+                            ]}
+                        />
+
+                        <FilterSelect
+                            label="Department"
+                            icon={Building2}
+                            value={selectedDept}
+                            onChange={(e) => setSelectedDept(e.target.value)}
+                            options={[
+                                { value: 'All', label: 'All Departments' },
+                                { value: 'CSE', label: 'Computer Science (CSE)' },
+                                { value: 'ECE', label: 'Electronics (ECE)' },
+                                { value: 'EEE', label: 'Electrical (EEE)' },
+                                { value: 'ME', label: 'Mechanical (ME)' },
+                                { value: 'CE', label: 'Civil (CE)' },
+                                { value: 'AI', label: 'Artificial Intelligence' }
+                            ]}
+                        />
+
+                        {/* Only show status filter if report type doesn't lock it */}
+                        {!['unplaced'].includes(reportType) && (
+                            <FilterSelect
+                                label="Placement Status"
+                                icon={Briefcase}
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                options={[
+                                    { value: 'All', label: 'All Statuses' },
+                                    { value: 'Placed', label: 'Placed Only' },
+                                    { value: 'Unplaced', label: 'Unplaced Only' }
+                                ]}
+                            />
+                        )}
+
+                        <div className="flex items-end">
+                            <button onClick={resetFilters} className="w-full py-3.5 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 font-bold text-sm hover:border-amrita-maroon hover:text-amrita-maroon transition-all flex items-center justify-center gap-2">
+                                <RefreshCw size={16} /> Reset
+                            </button>
                         </div>
-                        Recently Generated Reports
-                    </h3>
-                    <button className="text-xs font-black text-amrita-maroon hover:underline">
-                        View All History
-                    </button>
-                </div>
-                <div className="space-y-3">
-                    {recentReports.map((report, i) => (
-                        <RecentReportItem key={i} {...report} />
-                    ))}
+                    </div>
+
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                                <Sparkles size={20} />
+                            </div>
+                            <div className="text-sm">
+                                <span className="font-bold text-gray-900 dark:text-white block">
+                                    Ready to Export: {reportOptions.find(r => r.value === reportType)?.label}
+                                </span>
+                                <span className="text-gray-500 text-xs">
+                                    Filters: {selectedBatch !== 'All' ? selectedBatch : 'All Batches'} • {selectedDept !== 'All' ? selectedDept : 'All Depts'}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex w-full md:w-auto gap-3">
+                            <ActionButton
+                                label={loading ? "Processing..." : "Generate Report"}
+                                onClick={generateReport}
+                                disabled={loading}
+                                loading={loading}
+                                icon={Download}
+                            />
+                        </div>
+                    </div>
+                </SectionCard>
+
+                {/* Quick Actions Column (1/3 width) */}
+                <div className="space-y-6">
+                    <SectionCard title="Quick Actions" icon={TrendingUp}>
+                        <div className="space-y-3">
+                            <ActionButton
+                                variant="success"
+                                label="Dump Full CSV"
+                                icon={FileSpreadsheet}
+                                className="w-full justify-start"
+                                onClick={() => {
+                                    setReportType('student_db');
+                                    resetFilters();
+                                    generateReport();
+                                }}
+                            />
+                            <ActionButton
+                                variant="secondary"
+                                label="Print Summary"
+                                icon={Printer}
+                                className="w-full justify-start"
+                                onClick={() => showNotification('info', 'PDF Generation coming soon!')}
+                            />
+                        </div>
+                    </SectionCard>
+
+                    <div className="glass-card p-6 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white">
+                        <h3 className="font-black text-lg mb-2">Detailed Analytics?</h3>
+                        <p className="text-white/80 text-sm mb-4">
+                            View interactive charts and graphs for deeper insights.
+                        </p>
+                        <button
+                            onClick={() => window.location.href = '/admin/dashboard'}
+                            className="w-full py-3 bg-white text-amrita-maroon rounded-xl font-bold text-sm hover:bg-white/90 shadow-lg transition-all"
+                        >
+                            Go to Dashboard
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {/* Scheduled Reports */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="glass-card p-6">
-                    <h3 className="font-black text-lg mb-4 flex items-center gap-3 dark:text-white">
-                        <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                            <Calendar className="text-amrita-maroon" size={20} />
-                        </div>
-                        Scheduled Reports
-                    </h3>
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-black text-sm">
-                                    M
-                                </div>
-                                <div>
-                                    <p className="font-bold text-gray-900 dark:text-white">Weekly Placement Summary</p>
-                                    <p className="text-xs text-gray-400">Every Monday, 9:00 AM</p>
-                                </div>
-                            </div>
-                            <span className="text-[10px] font-black text-green-600 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded">Active</span>
-                        </div>
-                        <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-blue-500 text-white rounded-lg flex items-center justify-center font-black text-sm">
-                                    1
-                                </div>
-                                <div>
-                                    <p className="font-bold text-gray-900 dark:text-white">Monthly Analytics Report</p>
-                                    <p className="text-xs text-gray-400">1st of every month, 10:00 AM</p>
-                                </div>
-                            </div>
-                            <span className="text-[10px] font-black text-green-600 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded">Active</span>
-                        </div>
-                    </div>
-                    <button className="w-full mt-4 py-2.5 border-2 border-dashed border-gray-200 dark:border-gray-700 text-gray-400 rounded-xl font-bold text-sm hover:border-amrita-maroon hover:text-amrita-maroon transition-all">
-                        + Add Scheduled Report
-                    </button>
-                </div>
-
-                {/* Report Templates */}
-                <div className="glass-card p-6">
-                    <h3 className="font-black text-lg mb-4 flex items-center gap-3 dark:text-white">
-                        <div className="p-2 bg-amrita-maroon/10 rounded-xl">
-                            <FileText className="text-amrita-maroon" size={20} />
-                        </div>
-                        Custom Report Builder
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Create custom reports by selecting specific fields and filters.
-                    </p>
-                    <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <input type="checkbox" className="w-4 h-4 accent-amrita-maroon" defaultChecked />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Student Details</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <input type="checkbox" className="w-4 h-4 accent-amrita-maroon" defaultChecked />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Placement Status</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <input type="checkbox" className="w-4 h-4 accent-amrita-maroon" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">CTC Information</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-                            <input type="checkbox" className="w-4 h-4 accent-amrita-maroon" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Company Details</span>
-                        </div>
-                    </div>
-                    <button className="w-full mt-4 py-2.5 bg-amrita-maroon text-white rounded-xl font-bold text-sm hover:bg-amrita-dark transition-all flex items-center justify-center gap-2">
-                        <Sparkles size={16} />
-                        Generate Custom Report
-                    </button>
-                </div>
-            </div>
         </div>
     );
 };
