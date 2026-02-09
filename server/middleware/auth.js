@@ -28,4 +28,24 @@ const authorize = (...roles) => {
     };
 };
 
-module.exports = { auth, authorize };
+const optionalAuth = async (req, res, next) => {
+    try {
+        const authHeader = req.header('Authorization');
+        if (!authHeader) {
+            return next();
+        }
+        const token = authHeader.replace('Bearer ', '');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        const user = await User.findOne({ _id: decoded._id });
+
+        if (user) {
+            req.token = token;
+            req.user = user;
+        }
+        next();
+    } catch (e) {
+        next(); // Ignore errors for optional auth
+    }
+};
+
+module.exports = { auth, authorize, optionalAuth };

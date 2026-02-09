@@ -2,7 +2,22 @@ const Announcement = require('../models/Announcement');
 
 exports.getAnnouncements = async (req, res) => {
     try {
-        const announcements = await Announcement.find().sort({ createdAt: -1 });
+        let query = {};
+
+        // If not logged in as admin, filter out drafts and future-scheduled signals
+        if (!req.user || req.user.role !== 'admin') {
+            query = {
+                status: 'published',
+                $or: [
+                    { scheduledDate: { $lte: new Date() } },
+                    { scheduledDate: { $exists: false } },
+                    { scheduledDate: null },
+                    { scheduledDate: '' }
+                ]
+            };
+        }
+
+        const announcements = await Announcement.find(query).sort({ isPinned: -1, createdAt: -1 });
         res.send(announcements);
     } catch (e) {
         res.status(500).send(e);
