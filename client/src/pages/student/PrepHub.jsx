@@ -309,7 +309,7 @@ const PrepHub = () => {
                         )
                     ) : (
                         viewMode === 'grid' ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {filteredResources.length > 0 ? filteredResources.map((res, i) => (
                                     <div key={i} className="glass-card flex flex-col group h-full">
                                         <div className="p-6 flex-1 space-y-6">
@@ -324,7 +324,16 @@ const PrepHub = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button onClick={() => window.open(res.links?.[0] || res.link, '_blank')} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
+                                                <button onClick={() => {
+                                                    const url = res.links?.[0] || res.link;
+                                                    if (!url) return;
+                                                    // For PPT files, use Google Docs Viewer
+                                                    if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                                        window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                                        return;
+                                                    }
+                                                    window.open(url, '_blank');
+                                                }} className="p-2 transition-colors hover:bg-amrita-maroon/5 rounded-full text-amrita-maroon">
                                                     <ExternalLink size={18} />
                                                 </button>
                                             </div>
@@ -356,7 +365,16 @@ const PrepHub = () => {
                                         </div>
 
                                         <button
-                                            onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
+                                            onClick={() => {
+                                                const url = res.links?.[0] || res.link;
+                                                if (!url) return;
+                                                // For PPT files, use Google Docs Viewer
+                                                if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                                    window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                                    return;
+                                                }
+                                                window.open(url, '_blank');
+                                            }}
                                             className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem]"
                                         >
                                             Start Learning
@@ -404,7 +422,16 @@ const PrepHub = () => {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <button
-                                                        onClick={() => window.open(res.links?.[0] || res.link, '_blank')}
+                                                        onClick={() => {
+                                                            const url = res.links?.[0] || res.link;
+                                                            if (!url) return;
+                                                            // For PPT files, use Google Docs Viewer
+                                                            if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                                                window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                                                return;
+                                                            }
+                                                            window.open(url, '_blank');
+                                                        }}
                                                         className="p-2 text-amrita-maroon hover:bg-amrita-maroon hover:text-white rounded-lg transition-all"
                                                     >
                                                         <ExternalLink size={16} />

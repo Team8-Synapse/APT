@@ -1,0 +1,33 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+*.env
+.env.local
+.env.production
+server/.env
+
+# Build outputs
+dist/
+build/
+
+# OS files
+.DS_Store
+**/.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Editor settings
+.vscode/
+
+# Docker
+*.pid
+
+# Google credentials
+server/google-credentials.json

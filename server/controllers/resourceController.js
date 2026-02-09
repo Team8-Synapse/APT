@@ -1,4 +1,5 @@
 const Resource = require('../models/Resource');
+const supabaseService = require('../services/supabaseService');
 
 exports.getResources = async (req, res) => {
     try {
@@ -19,7 +20,9 @@ exports.addResource = async (req, res) => {
         const resourceData = { ...req.body };
 
         if (req.file) {
-            resourceData.links = [`uploads/${req.file.filename}`];
+            const { url, error } = await supabaseService.uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
+            if (error) throw error;
+            resourceData.links = [url];
         } else if (req.body.link) {
             resourceData.links = [req.body.link];
         }
@@ -59,7 +62,9 @@ exports.updateResource = async (req, res) => {
     try {
         const resourceData = { ...req.body };
         if (req.file) {
-            resourceData.links = [`uploads/${req.file.filename}`];
+            const { url, error } = await supabaseService.uploadFile(req.file.buffer, req.file.originalname, req.file.mimetype);
+            if (error) throw error;
+            resourceData.links = [url];
         } else if (req.body.link) {
             resourceData.links = [req.body.link];
         }
@@ -84,6 +89,14 @@ exports.deleteResource = async (req, res) => {
     try {
         const resource = await Resource.findByIdAndDelete(req.params.id);
         if (!resource) return res.status(404).send();
+
+        // Delete associated file from Supabase if it exists
+        if (resource.links && resource.links.length > 0) {
+            const link = resource.links[0];
+            if (link.includes('supabase.co')) {
+                await supabaseService.deleteFile(link);
+            }
+        }
         res.send(resource);
     } catch (e) {
         res.status(500).send(e);
