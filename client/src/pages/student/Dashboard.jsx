@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: Student Dashboard Component.
+ * - Main hub for student activities: Stats, Drives, Applications, Notifications.
+ * - Features: Real-time clock, data visualization (charts), and quick access widgets.
+ * - responsive layout with glassmorphism UI design.
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -19,6 +26,7 @@ import { motion } from 'framer-motion';
 
 
 // ============= TILT CARD MAX =============
+// Reusable 3D Tilt Card component for premium UI feel
 const TiltCard = ({ children, delay = 0, className = "" }) => {
     const cardRef = useRef(null);
     const [rotateX, setRotateX] = useState(0);
@@ -26,6 +34,7 @@ const TiltCard = ({ children, delay = 0, className = "" }) => {
     const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
     const [opacity, setOpacity] = useState(0);
 
+    // Calculate rotation based on mouse position relative to card center
     const handleMouseMove = (e) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
@@ -85,6 +94,7 @@ const GlassCardPremium = ({ children, className = '', delay = 0 }) => (
 );
 
 // ============= AI SUCCESS RADIAL =============
+// Component to visualize readiness score with SVG radial progress
 const SuccessRadial = ({ percentage }) => {
     const radius = 45;
     const circumference = 2 * Math.PI * radius;
@@ -143,6 +153,7 @@ const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
 
 
 // ============= RADAR CHART COMPONENT =============
+// Visualizes skill distribution using an SVG polygon chart
 const RadarChart = ({ data }) => {
     const size = 200;
     const center = size / 2;
@@ -230,6 +241,7 @@ const RadarChart = ({ data }) => {
 };
 
 // ============= FADE IN ANIMATION =============
+// Reusable animation wrapper using IntersectionObserver
 const FadeIn = ({ children, delay = 0, direction = 'up' }) => {
     const [isVisible, setIsVisible] = useState(false);
     const ref = useRef(null);
@@ -325,6 +337,7 @@ const AnimatedSkillBar = ({ skill, level, delay = 0, color = '#B1124A' }) => {
 };
 
 // ============= MAGNETIC BUTTON =============
+// Button that magnetically follows cursor movement slightly
 const MagneticButton = ({ children, className = '', ...props }) => {
     const ref = useRef(null);
     const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -438,6 +451,7 @@ const RecommendedResources = ({ resources = [] }) => {
 // ============= MAIN DASHBOARD COMPONENT =============
 const StudentDashboard = () => {
     const { user, logout } = useAuth();
+    // Dashboard Stats State
     const [stats, setStats] = useState({
         readinessScore: 0,
         profile: { name: '', department: '', cgpa: 0, placementStatus: 'not_placed', batch: '' },
@@ -456,11 +470,13 @@ const StudentDashboard = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [tickers, setTickers] = useState([]);
 
+    // Update real-time clock every minute
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
     }, []);
 
+    // Fetch comprehensive student data on mount
     useEffect(() => {
         const userId = user?._id || user?.id;
         if (!userId) return;
