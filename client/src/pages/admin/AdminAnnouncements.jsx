@@ -1,3 +1,11 @@
+/**
+ * Mobile: Frontend / Pages / Admin
+ * Description: Admin Announcements Dashboard.
+ * - Manages system-wide announcements and notifications.
+ * - Features: Create, Edit, Delete, Pin, and Bulk Actions.
+ * - Supports rich categorization, priority levels, and audience targeting.
+ * - Includes advanced filtering and search capabilities.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -12,6 +20,7 @@ import AdminNavbar from '../../components/Admin/AdminNavbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
+// Theme configuration for consistent styling
 const theme = {
     maroon: {
         primary: '#A4123F',
@@ -33,8 +42,11 @@ const theme = {
 };
 
 const AdminAnnouncements = () => {
+    // Data State
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // UI Interaction State
     const [showForm, setShowForm] = useState(false);
     const [editingAnnouncement, setEditingAnnouncement] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,6 +54,7 @@ const AdminAnnouncements = () => {
     const [filterStatus, setFilterStatus] = useState('all');
     const [selectedAnnouncements, setSelectedAnnouncements] = useState([]);
 
+    // Form Data State
     const [formData, setFormData] = useState({
         content: '',
         priority: 'normal',
@@ -85,6 +98,7 @@ const AdminAnnouncements = () => {
     ];
 
 
+    // Initial data fetch
     useEffect(() => {
         fetchAnnouncements();
     }, []);
@@ -103,6 +117,7 @@ const AdminAnnouncements = () => {
         }
     };
 
+    // Create or Update Announcement
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -115,9 +130,11 @@ const AdminAnnouncements = () => {
 
             let res;
             if (editingAnnouncement) {
+                // Update existing
                 res = await axios.put(`${API_URL}/announcements/${editingAnnouncement._id}`, submissionData, { headers });
                 setAnnouncements(prev => prev.map(a => a._id === editingAnnouncement._id ? res.data : a));
             } else {
+                // Create new
                 res = await axios.post(`${API_URL}/announcements`, submissionData, { headers });
                 setAnnouncements(prev => [res.data, ...prev]);
 
@@ -146,6 +163,7 @@ const AdminAnnouncements = () => {
         );
     };
 
+    // Bulk Action: Delete Selected
     const handleBulkDelete = async () => {
         if (!window.confirm(`Delete ${selectedAnnouncements.length} announcements?`)) return;
         try {
@@ -160,6 +178,7 @@ const AdminAnnouncements = () => {
         }
     };
 
+    // Bulk Action: Pin/Unpin Selected
     const handleBulkPin = async (status) => {
         try {
             const token = localStorage.getItem('token');
@@ -235,6 +254,7 @@ const AdminAnnouncements = () => {
         setFormData({ ...formData, links: newLinks });
     };
 
+    // Filter announcements based on search and priority
     const filteredAnnouncements = announcements.filter(ann => {
         const matchesSearch = ann.content?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesPriority = filterPriority === 'all' || ann.priority === filterPriority;
@@ -297,7 +317,7 @@ const AdminAnnouncements = () => {
                 </motion.button>
             </div>
 
-            
+
 
             {/* Bulk Actions Bar (Sticky) */}
             <AnimatePresence>

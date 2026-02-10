@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Admin
+ * Description: Admin Analytics Dashboard.
+ * - Visualization powerhouse for placement data.
+ * - Features: Yearly trends, Department-wise breakdown, Company insights, CGPA analysis.
+ * - Components: Custom SVG and HTML/CSS charts for highly responsive and interactive visualizations.
+ */
 import React, { useState, useEffect, useMemo } from 'react';
 import {
     BarChart3, PieChart, TrendingUp, Users, Briefcase, Calendar,
@@ -22,7 +29,7 @@ import {
     Laptop, Monitor, Tablet, Watch
 } from 'lucide-react';
 
-// Generate shades of #B1124A
+// Utility: Generate color palette based on primary brand color
 const generateColorShades = (baseColor) => {
     return {
         50: '#FDF2F6',
@@ -48,6 +55,8 @@ const processAnalyticsData = (rawData, selectedYear) => {
     // rawData contains students from all available years
 
     // 1. Year Trends
+    // 1. Year Trends Analysis
+    // Calculates placement rates and average packages for each year available in the dataset.
     const years = [...new Set(rawData.map(s => s.batch_year))].sort();
     const yearTrends = years.map(year => {
         const students = rawData.filter(s => s.batch_year === year);
@@ -74,6 +83,8 @@ const processAnalyticsData = (rawData, selectedYear) => {
     const departments = [...new Set(yearData.map(s => s.dept_code))];
 
     // 2. Department Analysis
+    // 2. Department Analysis
+    // Breaks down placement statistics by department code (CSE, ECE, etc.)
     const deptPlacement = departments.map(dept => {
         const students = yearData.filter(s => s.dept_code === dept);
         const total = students.length;
@@ -95,6 +106,8 @@ const processAnalyticsData = (rawData, selectedYear) => {
     });
 
     // 3. Company Trends (Top 10)
+    // 3. Company Trends (Top 10)
+    // Identifies top recruiters and tracks their hiring trends over years.
     const companies = [...new Set(rawData.filter(s => s.company).map(s => s.company))];
     let companyTrends = companies.map(company => {
         const hires = rawData.filter(s => s.company === company);
@@ -223,7 +236,9 @@ const processAnalyticsData = (rawData, selectedYear) => {
     };
 };
 
-// Custom Chart Components
+// ============= CHART COMPONENTS =============
+// Custom built charts to avoid heavy charting libraries and allow full styling control.
+
 const YearlyTrendChart = ({ data, selectedYear }) => {
     const maxValue = Math.max(...data.map(d => d.total));
 
@@ -715,6 +730,7 @@ const AdminAnalytics = () => {
         }
     }, [rawData, selectedYear]);
 
+    // Loading State
     if (loading) return (
         <div className="flex flex-col items-center justify-center h-screen">
             <div className="w-16 h-16 border-4 border-[#B1124A] border-t-transparent rounded-full animate-spin mb-4"></div>

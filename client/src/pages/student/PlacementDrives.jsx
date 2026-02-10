@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: Placement Drives Component.
+ * - Lists all eligible and available placement drives.
+ * - Features: Filtering, searching, sorting, and application management.
+ * - Displays drive details in card or list view.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -10,17 +17,20 @@ import CompanyLogo from '../../components/CompanyLogo';
 
 const PlacementDrives = () => {
     const { user } = useAuth();
+    // Drive Data State
     const [drives, setDrives] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // UI State
     const [viewMode, setViewMode] = useState('cards');
     const [filters, setFilters] = useState({
         status: 'all',
         eligibility: 'all',
         search: ''
     });
-    const [sortBy, setSortBy] = useState('date'); // date, ctc, company
+    const [sortBy, setSortBy] = useState('date'); // Options: date, ctc, company
 
-    // Helper function to calculate days until deadline
+    // Helper: Calculate days remaining for deadline
     const getDaysUntil = (date) => {
         const today = new Date();
         const driveDate = new Date(date);
@@ -29,7 +39,7 @@ const PlacementDrives = () => {
         return diffDays;
     };
 
-    // Helper function to get deadline badge
+    // Helper: Generate deadline status badge
     const getDeadlineBadge = (date) => {
         const days = getDaysUntil(date);
         if (days < 0) return { text: 'Expired', color: '#6b7280', bg: '#f3f4f6' };
@@ -46,6 +56,7 @@ const PlacementDrives = () => {
         }
     }, [user]);
 
+    // Fetch eligible drives for the logged-in student
     const fetchDrives = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -86,6 +97,7 @@ const PlacementDrives = () => {
         }
     };
 
+    // Handle application submission
     const handleApply = async (driveId) => {
         try {
             const userId = user?._id || user?.id;
@@ -93,13 +105,14 @@ const PlacementDrives = () => {
                 userId,
                 driveId
             });
-            await fetchDrives();
+            await fetchDrives(); // Refresh to update status
         } catch (err) {
             console.error('Failed to apply:', err);
             alert(err.response?.data?.error || 'Failed to apply');
         }
     };
 
+    // Filter and Sort Logic
     const filteredDrives = drives.filter(drive => {
         // Case-insensitive status check
         if (filters.status !== 'all' && drive.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
@@ -352,6 +365,7 @@ const PlacementDrives = () => {
     );
 };
 
+// ============= DRIVE CARD COMPONENT =============
 const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
     const [expanded, setExpanded] = useState(false);
     const deadlineBadge = getDeadlineBadge ? getDeadlineBadge(drive.date) : null;

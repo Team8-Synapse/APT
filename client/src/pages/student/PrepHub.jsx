@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: Preparation Hub Component.
+ * - Provides curated preparation resources (Coding, Aptitude, Technical, HR).
+ * - Allows students to create, edit, and delete personal notes.
+ * - Supports searching and filtering resources.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, LayoutGrid, List, StickyNote, Plus, Trash2, Edit, Save, X, Lock } from 'lucide-react';
@@ -5,8 +12,11 @@ import { useAuth } from '../../context/AuthContext';
 
 const PrepHub = () => {
     const { user, token } = useAuth();
+    // Resource State
     const [resources, setResources] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // UI State
     const [category, setCategory] = useState('Coding');
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('grid');
@@ -15,11 +25,12 @@ const PrepHub = () => {
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
         { id: 'Aptitude', icon: <UserCheck size={18} />, label: 'Aptitude & Logic' },
-        { id: 'Technical',icon: <Cpu size={18} /> , label: 'Core Technical' },
+        { id: 'Technical', icon: <Cpu size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
         { id: 'Notes', icon: <StickyNote size={18} />, label: 'My Notes' },
     ];
 
+    // Personal Notes State
     const [notes, setNotes] = useState([]);
     const [isAddingNote, setIsAddingNote] = useState(false);
     const [editingNoteId, setEditingNoteId] = useState(null);
@@ -37,6 +48,7 @@ const PrepHub = () => {
         }
     }, [category, token]);
 
+    // Fetch resources based on selected category
     const fetchResources = async () => {
         setLoading(true);
         try {
@@ -52,6 +64,7 @@ const PrepHub = () => {
         }
     };
 
+    // Fetch personal notes
     const fetchNotes = async () => {
         setLoading(true);
         try {
@@ -66,6 +79,7 @@ const PrepHub = () => {
         }
     };
 
+    // Create or Update Note
     const handleNoteSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -89,12 +103,14 @@ const PrepHub = () => {
         }
     };
 
+    // Populate form for editing
     const handleEditNote = (note) => {
         setEditingNoteId(note._id);
         setNoteFormData({ name: note.name, text: note.text });
         setIsAddingNote(true);
     };
 
+    // Delete Note
     const handleDeleteNote = async (id) => {
         if (!window.confirm('Are you sure?')) return;
         try {
@@ -107,6 +123,7 @@ const PrepHub = () => {
         }
     };
 
+    // Helper: Truncate note content for preview
     const getShortSummary = (text) => {
         if (!text) return '';
         // Prefer line breaks if present (First two lines)
@@ -123,6 +140,7 @@ const PrepHub = () => {
         return text.trim();
     };
 
+    // Filter resources based on search term
     const filteredResources = resources.filter(res => {
         // Requirement: 'Notes' MUST be excluded from 'All' browsing and search results
         if (res.category === 'Notes' || res.type === 'Notes') return false;

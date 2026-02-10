@@ -1,3 +1,11 @@
+/**
+ * Mobile: Frontend / Components
+ * Description: Main Navigation Bar. Responsive component handling:
+ * - Desktop/Mobile navigation
+ * - User authentication status
+ * - Dark/Light mode toggling
+ * - Real-time notifications
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -10,6 +18,8 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Dark mode state init from local storage
     const [darkMode, setDarkMode] = useState(() => {
         const saved = localStorage.getItem('darkMode');
         return saved === 'true';
@@ -18,11 +28,13 @@ const Navbar = () => {
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
 
+    // Effect to apply dark mode class to html element
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
 
+    // Fetch notifications when user is authenticated
     useEffect(() => {
         if (user) {
             fetchNotifications();
@@ -40,6 +52,7 @@ const Navbar = () => {
         }
     };
 
+    // Mark notification as read
     const markAsRead = async (id) => {
         try {
             await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {

@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Components
+ * Description: Notifications Panel Component.
+ * - Displays real-time user notifications in a dropdown panel.
+ * - Supports marking notifications as read/unread.
+ * - Auto-fetches notifications on open.
+ */
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bell, X, Check, Trash2, Info, AlertTriangle, CheckCircle, ExternalLink, Briefcase } from 'lucide-react';
@@ -8,6 +15,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
 
+    // Fetch notifications from API
     const fetchNotifications = async () => {
         try {
             setLoading(true);
@@ -22,12 +30,14 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
         }
     };
 
+    // Reload notifications when panel opens
     useEffect(() => {
         if (isOpen) {
             fetchNotifications();
         }
     }, [isOpen]);
 
+    // Mark a single notification as read
     const markAsRead = async (id) => {
         try {
             await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {
@@ -39,6 +49,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
         }
     };
 
+    // Mark all notifications as read
     const markAllAsRead = async () => {
         try {
             await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/read-all`, {}, {
@@ -50,6 +61,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
         }
     };
 
+    // Helper to get icon based on notification type
     const getIcon = (type) => {
         switch (type) {
             case 'success': return <CheckCircle className="text-green-500" size={18} />;
