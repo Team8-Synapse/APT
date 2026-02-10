@@ -1,3 +1,8 @@
+/**
+ * Mobile: Frontend / Core
+ * Description: Main Application Component. Defined specific routes for students and admins,
+ * and manages route protection using PrivateRoute.
+ */
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -19,11 +24,18 @@ import NotificationsPage from './pages/NotificationsPage';
 import Home from './pages/Home';
 
 
+
+// Protected Route Component: Handles access control based on authentication and roles
 const PrivateRoute = ({ children, role, hideNavbar = false }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
+
+  // Redirect to login if not authenticated
   if (!user) return <Navigate to="/login" />;
+
+  // Redirect to home if user doesn't have required role
   if (role && user.role !== role) return <Navigate to="/" />;
+
   return (
     <>
       {!hideNavbar && <Navbar />}
@@ -35,6 +47,7 @@ const PrivateRoute = ({ children, role, hideNavbar = false }) => {
 };
 
 
+// Helper component to redirect authenticated users based on their role
 const HomeRedirect = () => {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amrita-maroon"></div></div>;
