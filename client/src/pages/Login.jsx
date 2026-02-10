@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages
+ * Description: Login Page Component.
+ * - Handles user authentication (Admin & Student).
+ * - Displays animated background and statistics.
+ * - Auto-login features for development/demo.
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -33,6 +40,7 @@ const theme = {
 };
 
 // ============= ANIMATION COMPONENTS =============
+// Component for the animated background visuals
 const AnimatedBackground = () => {
     return (
         <div className="fixed inset-0 z-0">
@@ -55,6 +63,7 @@ const AnimatedBackground = () => {
     );
 };
 
+// Wrapper for floating animation effects
 const FloatingElement = ({ children, delay = 0 }) => {
     return (
         <div
@@ -67,6 +76,7 @@ const FloatingElement = ({ children, delay = 0 }) => {
 };
 
 // ============= STATS COUNTER =============
+// Component to animate numerical statistics on the landing page
 const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
     const [count, setCount] = useState(0);
     const ref = useRef(null);
@@ -100,6 +110,7 @@ const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
 
 // ============= MAIN LOGIN COMPONENT =============
 const Login = () => {
+    // State management for form inputs and UI status
     const [identifier, setIdentifier] = useState('cb.sc.u4cse23621@cb.students.amrita.edu');
     const [password, setPassword] = useState('Harini05');
     const [error, setError] = useState('');
@@ -117,7 +128,7 @@ const Login = () => {
         { value: 98, suffix: '%', label: 'B.Tech Placement', icon: <GraduationCap size={20} /> }
     ]);
 
-    // Platform features
+    // Platform features list
     const features = [
         {
             icon: <Target size={20} />,
