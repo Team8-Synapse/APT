@@ -148,6 +148,46 @@ const PlacementDrives = () => {
 
     return (
         <div className="space-y-8 page-enter">
+            <style>{`
+                .dark h1 span { color: #F3F4F6 !important; }
+                .dark h1 span:last-child { color: #F472B6 !important; }
+                .dark p { color: #9CA3AF !important; }
+                
+                .dark .glass-card {
+                    background-color: #1F2937 !important;
+                    border-color: #374151 !important;
+                }
+                
+                .dark .glass-card h3, 
+                .dark .glass-card p.text-2xl,
+                .dark .glass-card span.font-bold {
+                    color: #F3F4F6 !important;
+                }
+                
+                /* Light mode - ensure inputs are light */
+                input, select {
+                    background-color: #ffffff;
+                    color: #1f2937;
+                    border-color: #e5e7eb;
+                }
+                
+                /* Dark mode - inputs should be dark */
+                .dark input, .dark select {
+                    background-color: #111827 !important;
+                    color: #F3F4F6 !important;
+                    border-color: #374151 !important;
+                }
+                
+                .dark table th { color: #D1D5DB !important; }
+                .dark table td span { color: #F3F4F6 !important; }
+                .dark table td.font-medium { color: #9CA3AF !important; }
+
+                /* Stats Cards Overrides */
+                .dark .glass-card div[style*="background-color: #e0e7ff"] { background-color: rgba(79, 70, 229, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #d1fae5"] { background-color: rgba(5, 150, 105, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #fce7f3"] { background-color: rgba(219, 39, 119, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #fef3c7"] { background-color: rgba(217, 119, 6, 0.2) !important; }
+            `}</style>
             {/* DEBUG SECTION: Show if validation fails but data exists */}
             {drives.length > 0 && filteredDrives.length === 0 && (
                 <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
@@ -235,14 +275,12 @@ const PlacementDrives = () => {
                             type="text"
                             placeholder="Search companies..."
                             className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                            style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                         />
                     </div>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.status}
                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                     >
@@ -253,7 +291,6 @@ const PlacementDrives = () => {
                     </select>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.eligibility}
                         onChange={(e) => setFilters({ ...filters, eligibility: e.target.value })}
                     >
@@ -263,7 +300,6 @@ const PlacementDrives = () => {
                     </select>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
