@@ -152,9 +152,9 @@ const Login = () => {
             const user = await login(id, pwd);
             await new Promise(resolve => setTimeout(resolve, 500));
             if (user.role === 'admin') {
-                navigate('/admin');
+                window.location.href = '/admin';
             } else {
-                navigate('/dashboard');
+                window.location.href = '/dashboard';
             }
         } catch (err) {
             setError(err.response?.data?.error || 'Quick login failed.');
@@ -188,9 +188,9 @@ const Login = () => {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             if (user.role === 'admin') {
-                navigate('/admin');
+                window.location.href = '/admin';
             } else {
-                navigate('/dashboard');
+                window.location.href = '/dashboard';
             }
         } catch (err) {
             setError(err.response?.data?.error || 'Invalid credentials. Please verify and try again.');
