@@ -12,7 +12,7 @@
 
 *Streamlining placement tracking with AI-powered insights and analytics*
 
-[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Documentation](#documentation) • [Team](#team)
+[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Testing](#testing) • [Documentation](#documentation) • [Team](#team)
 
 ---
 
@@ -32,7 +32,7 @@ graph TB
     A[Student Portal] -->|REST API| E[Express Backend]
     B[Admin Portal] -->|REST API| E
     C[Analytics Dashboard] -->|REST API| E
-    E -->|Data Layer| F[JSON Database]
+    E -->|Data Layer| F[MongoDB]
     E -->|AI Processing| G[OpenRouter API]
     G -->|Insights| E
     E -->|Response| A
@@ -106,6 +106,7 @@ graph TB
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-3.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Axios](https://img.shields.io/badge/Axios-1.4-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
 ![Lucide](https://img.shields.io/badge/Lucide_Icons-Latest-F56565?style=for-the-badge)
+![Vitest](https://img.shields.io/badge/Vitest-Latest-729B1B?style=for-the-badge&logo=vitest&logoColor=white)
 
 ### Backend Infrastructure
 
@@ -113,11 +114,12 @@ graph TB
 ![Express](https://img.shields.io/badge/Express-4.18-000000?style=for-the-badge&logo=express&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-API-FF6B6B?style=for-the-badge)
+![Jest](https://img.shields.io/badge/Jest-Latest-C21325?style=for-the-badge&logo=jest&logoColor=white)
 
 ### Data & Storage
 
-![JSON](https://img.shields.io/badge/JSON-Database-000000?style=for-the-badge&logo=json&logoColor=white)
-![LocalStorage](https://img.shields.io/badge/Local-Storage-FFA500?style=for-the-badge)
+![MongoDB](https://img.shields.io/badge/MongoDB-Latest-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?style=for-the-badge&logo=mongoose&logoColor=white)
 
 </div>
 
@@ -163,7 +165,7 @@ graph TB
 │   └── Report Generator
 │
 └── Data Layer
-    ├── data.json (Primary storage)
+    ├── MongoDB (Mongoose Schema)
     ├── Validation schemas
     └── Backup mechanisms
 ```
@@ -253,15 +255,14 @@ APT/
 │   │   ├── assets/             # Images and global resources
 │   │   ├── components/         # Reusable UI components
 │   │   │   ├── admin/          # Admin-specific components
+│   │   │   ├── loading/        # Loading skeletons
 │   │   │   ├── Navbar.jsx
-│   │   │   ├── NotificationsPanel.jsx
 │   │   │   └── ...
 │   │   ├── context/            # Global state (AuthContext)
 │   │   ├── pages/
 │   │   │   ├── admin/          # Admin Views
 │   │   │   │   ├── Dashboard.jsx
 │   │   │   │   ├── AdminAnalytics.jsx
-│   │   │   │   ├── AdminAnnouncements.jsx
 │   │   │   │   └── ...
 │   │   │   ├── student/        # Student Views
 │   │   │   │   ├── Dashboard.jsx
@@ -271,12 +272,15 @@ APT/
 │   │   │   ├── Home.jsx
 │   │   │   ├── Login.jsx
 │   │   │   └── Register.jsx
+│   │   ├── tests/              # Frontend Unit Tests (Vitest)
+│   │   │   ├── components/     # Component Tests
+│   │   │   └── pages/          # Page/Integration Tests
 │   │   ├── App.jsx             # Main Routing
 │   │   └── main.jsx            # Entry point
 │   ├── .env                    # Frontend environment variables
 │   ├── package.json            # Frontend dependencies
 │   ├── tailwind.config.js      # Styling configuration
-│   └── vite.config.js          # Build configuration
+│   └── vite.config.js          # Build & Test configuration
 │
 ├── server/                     # Backend (Node.js + Express)
 │   ├── controllers/            # Logic for handling requests
@@ -292,7 +296,16 @@ APT/
 │   │   ├── adminRoutes.js
 │   │   └── ...
 │   ├── middleware/             # Auth & Error handling middleware
+│   ├── tests/                  # Backend Tests
+│   │   ├── jest/               # Jest Test Suite
+│   │   │   ├── controllers/
+│   │   │   ├── middleware/
+│   │   │   ├── models/
+│   │   │   └── services/
+│   │   └── vitest/             # Vitest Test Suite (Alternative)
 │   ├── .env                    # Backend environment variables
+│   ├── jest.config.js          # Jest configurations
+│   ├── vitest.config.js        # Vitest configurations
 │   ├── package.json            # Backend dependencies
 │   └── server.js               # Server entry point
 │
@@ -303,146 +316,41 @@ APT/
 
 ---
 
-## Sample Dataset
+## Testing Strategy
 
-The system manages **65 students** from Amrita Vishwa Vidyapeetham:
+Comprehensive testing ensures application reliability, security, and performance.
 
-```javascript
-// Register Number Format
-CB.SC.U4CSE22801 → CB.SC.U4CSE22865
+### 🧪 Frontend Testing (Vitest + React Testing Library)
+Located in `client/src/tests/`
 
-// Data Structure
-{
-  "registerNumber": "CB.SC.U4CSE22801",
-  "firstName": "Student Name",
-  "lastName": "Last Name",
-  "email": "student@example.com",
-  "department": "CSE",
-  "batch": "2026",
-  "cgpa": 8.5,
-  "backlogs": 0,
-  "skills": ["React", "Node.js", "Python"],
-  "placementStatus": "not_placed",
-  "applications": [],
-  "mockInterviews": [],
-  "readinessScore": 0
-}
+- **Component Tests**: Verifies individual UI components (e.g., `Navbar`, `SkillProgress`, `CompanyLogo`).
+- **Page Tests**: Tests full page interactions and flows (e.g., `Login`, `Register`).
+- **Interaction Testing**: Simulates user events (clicks, inputs) using `@testing-library/user-event`.
+
+**Run Frontend Tests:**
+```bash
+cd client
+npm run test        # Run tests in watch mode
+# OR
+npm run test:vitest # Run tests once
 ```
 
-<details>
-<summary><b>View Complete Schema</b></summary>
+### 🧬 Backend Testing (Jest + Supertest)
+Located in `server/tests/`
 
-```json
-{
-  "students": [
-    {
-      "id": "unique-id",
-      "registerNumber": "CB.SC.U4CSE22801",
-      "personalInfo": {
-        "firstName": "string",
-        "lastName": "string",
-        "email": "string",
-        "phone": "string",
-        "dateOfBirth": "ISO-date"
-      },
-      "academicInfo": {
-        "department": "CSE|ECE|EEE|ME",
-        "batch": "2026",
-        "cgpa": 0.0,
-        "percentage": 0.0,
-        "backlogs": 0,
-        "semester": 8
-      },
-      "placementInfo": {
-        "status": "not_placed|in_process|placed",
-        "offeredCompany": "string|null",
-        "offeredCTC": 0,
-        "offerDate": "ISO-date|null",
-        "joiningDate": "ISO-date|null"
-      },
-      "skills": ["string"],
-      "resume": "url|null",
-      "applications": ["application-id"],
-      "mockInterviews": ["interview-id"],
-      "readinessScore": 0,
-      "createdAt": "ISO-date",
-      "updatedAt": "ISO-date"
-    }
-  ],
-  "drives": [
-    {
-      "id": "unique-id",
-      "companyName": "string",
-      "jobProfile": "string",
-      "jobDescription": "string",
-      "eligibilityCriteria": {
-        "minCGPA": 0.0,
-        "maxBacklogs": 0,
-        "departments": ["CSE", "ECE"],
-        "requiredSkills": ["string"]
-      },
-      "ctcDetails": {
-        "ctc": 0,
-        "breakup": "string",
-        "bond": "string"
-      },
-      "interviewProcess": ["string"],
-      "applicationDeadline": "ISO-date",
-      "driveDate": "ISO-date",
-      "location": "string",
-      "status": "upcoming|ongoing|completed",
-      "applicants": ["student-id"],
-      "createdAt": "ISO-date"
-    }
-  ],
-  "applications": [
-    {
-      "id": "unique-id",
-      "studentId": "student-id",
-      "driveId": "drive-id",
-      "status": "applied|shortlisted|round1|round2|offered|rejected",
-      "currentRound": "string|null",
-      "rounds": [
-        {
-          "name": "string",
-          "date": "ISO-date",
-          "status": "pending|cleared|failed",
-          "feedback": "string"
-        }
-      ],
-      "appliedDate": "ISO-date",
-      "updatedAt": "ISO-date"
-    }
-  ],
-  "announcements": [
-    {
-      "id": "unique-id",
-      "title": "string",
-      "content": "string",
-      "priority": "high|medium|low",
-      "category": "drive|general|resource",
-      "targetAudience": "all|students|admin",
-      "links": [{"text": "string", "url": "string"}],
-      "createdBy": "admin-id",
-      "createdAt": "ISO-date"
-    }
-  ],
-  "resources": [
-    {
-      "id": "unique-id",
-      "title": "string",
-      "description": "string",
-      "category": "coding|aptitude|interview|resume",
-      "type": "video|article|pdf|link",
-      "url": "string",
-      "tags": ["string"],
-      "createdAt": "ISO-date"
-    }
-  ]
-}
+- **Unit Tests**:
+  - **Controllers**: Tests API endpoints logic (e.g., `authController`, `studentController`).
+  - **Models**: Validates Mongoose schema rules and custom methods (e.g., `User.js`).
+  - **Middleware**: Verifies authentication and error handling (e.g., `auth.js`).
+- **Integration Tests**: Uses `supertest` to test API routes end-to-end.
+
+**Run Backend Tests:**
+```bash
+cd server
+npm run test:jest   # Run Jest test suite
+# OR
+npm run test:vitest # Run Vitest test suite
 ```
-
-</details>
 
 ---
 
@@ -453,6 +361,7 @@ CB.SC.U4CSE22801 → CB.SC.U4CSE22865
 ```bash
 Node.js >= 16.0.0
 npm >= 8.0.0
+MongoDB (Local or Atlas)
 Git
 ```
 
@@ -460,15 +369,15 @@ Git
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/amrita-placement-tracker.git
-cd amrita-placement-tracker
+git clone https://github.com/Team8-Synapse/APT.git
+cd APT
 
 # Install dependencies
 npm run install:all
 
 # Setup environment variables
-cp backend/.env.example backend/.env
-# Edit backend/.env with your configuration
+cp server/.env.example server/.env
+# Edit server/.env with your configuration
 
 # Start development servers
 npm run dev
@@ -486,7 +395,7 @@ npm run dev
 #### Backend Setup
 
 ```bash
-cd backend
+cd server
 npm install
 
 # Create .env file
@@ -495,18 +404,19 @@ PORT=5005
 NODE_ENV=development
 JWT_SECRET=your-secret-key-here
 JWT_EXPIRE=7d
+MONGO_URI=your-mongodb-uri
 OPENROUTER_API_KEY=your-openrouter-key
 CORS_ORIGIN=http://localhost:5173
 EOF
 
 # Start backend
-npm run dev
+npm run start
 ```
 
 #### Frontend Setup
 
 ```bash
-cd frontend
+cd client
 npm install
 
 # Create .env file
@@ -517,25 +427,6 @@ EOF
 
 # Start frontend
 npm run dev
-```
-
-#### Data Initialization
-
-```bash
-# Seed sample data
-cd backend
-npm run seed
-
-# Or manually create data.json
-cat > data/data.json << EOF
-{
-  "students": [],
-  "drives": [],
-  "applications": [],
-  "announcements": [],
-  "resources": []
-}
-EOF
 ```
 
 </details>
@@ -595,160 +486,6 @@ GET    /api/analytics/trends     # Placement trends
 GET    /api/analytics/export     # Export reports
 ```
 
-<details>
-<summary><b>View Sample Requests</b></summary>
-
-```javascript
-// Login Request
-POST /api/auth/login
-{
-  "email": "student@amrita.edu",
-  "password": "password123"
-}
-
-// Response
-{
-  "success": true,
-  "token": "jwt-token-here",
-  "user": {
-    "id": "user-id",
-    "email": "student@amrita.edu",
-    "role": "student"
-  }
-}
-
-// Create Drive Request (Admin)
-POST /api/drives
-{
-  "companyName": "Google",
-  "jobProfile": "SDE L3",
-  "eligibilityCriteria": {
-    "minCGPA": 7.5,
-    "maxBacklogs": 0,
-    "departments": ["CSE", "ECE"]
-  },
-  "ctcDetails": {
-    "ctc": 5200000
-  },
-  "driveDate": "2026-03-15"
-}
-
-// Apply to Drive Request (Student)
-POST /api/applications
-{
-  "driveId": "drive-id-here",
-  "studentId": "student-id-here"
-}
-```
-
-</details>
-
----
-
-## User Interface Preview
-
-<div align="center">
-
-### Design System
-
-**Color Palette**
-```
-Primary   : #8B0000 (Maroon)
-Secondary : #A52A2A (Brown)
-Accent    : #C04040 (Light Red)
-Background: #FFFFFF (White)
-Surface   : #F8F9FA (Beige)
-```
-
-**Typography**
-```
-Font Family: 'Inter', sans-serif
-Headings   : 700-900 weight
-Body       : 400-600 weight
-Code       : 'JetBrains Mono'
-```
-
-**Spacing Scale**
-```
-xs  : 4px
-sm  : 8px
-md  : 16px
-lg  : 24px
-xl  : 32px
-2xl : 48px
-```
-
-</div>
-
----
-
-## Development Workflow
-
-### Available Scripts
-
-```bash
-# Root level
-npm run install:all      # Install all dependencies
-npm run dev             # Start both frontend and backend
-npm run build           # Build for production
-npm run test            # Run test suites
-npm run lint            # Lint code
-npm run format          # Format code
-
-# Frontend specific
-cd frontend
-npm run dev             # Start development server
-npm run build           # Build production bundle
-npm run preview         # Preview production build
-
-# Backend specific
-cd backend
-npm run dev             # Start development server
-npm run start           # Start production server
-npm run seed            # Seed database
-npm run backup          # Create data backup
-```
-
-### Code Standards
-
-- **ESLint** for JavaScript linting
-- **Prettier** for code formatting
-- **Husky** for pre-commit hooks
-- **Conventional Commits** for commit messages
-
----
-
-## Testing Strategy
-
-<details>
-<summary><b>Test Coverage</b></summary>
-
-### Unit Tests
-- Component rendering
-- Utility functions
-- Service methods
-- Validation logic
-
-### Integration Tests
-- API endpoints
-- Authentication flow
-- Data operations
-- File upload/download
-
-### E2E Tests
-- User registration/login
-- Drive application flow
-- Admin operations
-- Report generation
-
-### Performance Tests
-- Load testing
-- Response time benchmarks
-- Memory usage monitoring
-- Database query optimization
-
-</details>
-
 ---
 
 ## Deployment Guide
@@ -757,11 +494,11 @@ npm run backup          # Create data backup
 
 ```bash
 # Build frontend
-cd frontend
+cd client
 npm run build
 
 # Build backend
-cd backend
+cd server
 npm run build
 
 # Deploy to server
@@ -774,70 +511,11 @@ npm run deploy
 # Production .env
 NODE_ENV=production
 PORT=5005
-DATABASE_URL=production-db-url
+MONGO_URI=production-db-url
 JWT_SECRET=strong-secret-key
 OPENROUTER_API_KEY=production-key
 ALLOWED_ORIGINS=https://placement.amrita.edu
 ```
-
-### Deployment Options
-
-- **Traditional Hosting**: VPS, Dedicated Server
-- **Cloud Platforms**: AWS, Google Cloud, Azure
-- **Container**: Docker, Kubernetes
-- **Serverless**: Vercel, Netlify (Frontend), AWS Lambda (Backend)
-
----
-
-## Performance Optimization
-
-- **Code Splitting**: Dynamic imports for routes
-- **Lazy Loading**: Component and image lazy loading
-- **Caching**: API response caching, localStorage
-- **Compression**: Gzip/Brotli compression
-- **CDN**: Static asset delivery via CDN
-- **Database**: Indexed queries, connection pooling
-
----
-
-## Security Measures
-
-- JWT-based authentication
-- Password hashing (bcrypt)
-- Input validation and sanitization
-- CORS configuration
-- Rate limiting
-- SQL injection prevention
-- XSS protection
-- HTTPS enforcement (production)
-
----
-
-## Future Roadmap
-
-### Phase 1 (Completed)
-- [x] Core placement tracking
-- [x] Role-based access
-- [x] Basic analytics
-- [x] AI readiness scoring
-
-### Phase 2 (In Progress)
-- [ ] MongoDB migration
-- [ ] Advanced ML models
-- [ ] Email notifications
-- [ ] Mobile responsive optimization
-
-### Phase 3 (Planned)
-- [ ] Mobile application (React Native)
-- [ ] Real-time collaboration
-- [ ] Advanced reporting (PDF)
-- [ ] Integration with external systems
-
-### Phase 4 (Future)
-- [ ] Multi-campus support
-- [ ] Video interview integration
-- [ ] Blockchain certificates
-- [ ] Predictive analytics dashboard
 
 ---
 
@@ -879,7 +557,7 @@ We welcome contributions from the community!
 
 ### Contributors
 
-[View All Contributors](https://github.com/your-org/amrita-placement-tracker/graphs/contributors)
+[View All Contributors](https://github.com/Team8-Synapse/APT/graphs/contributors)
 
 </div>
 
@@ -888,15 +566,6 @@ We welcome contributions from the community!
 ## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Acknowledgments
-
-- Amrita Vishwa Vidyapeetham for project support
-- Career & Internship Readiness Team for requirements
-- OpenRouter for AI capabilities
-- Open source community for dependencies
 
 ---
 
