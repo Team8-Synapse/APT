@@ -1,3 +1,4 @@
+//Testing for AdminController
 const adminController = require('../../../controllers/adminController');
 const User = require('../../../models/User');
 const StudentProfile = require('../../../models/StudentProfile');
