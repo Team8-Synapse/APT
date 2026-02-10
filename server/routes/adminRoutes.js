@@ -9,35 +9,173 @@ const Application = require('../models/Application');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
 
+// New endpoint for comprehensive analytics data across different datasets
+router.get('/analytics-dataset', async (req, res) => {
+    try {
+        const studentCsvPath = path.join(__dirname, '../data/students.csv');
+        const testCsvPath = path.join(__dirname, '../data/test_dataset.csv');
+
+        // Helper to read and parse CSV
+        const parseCsv = (filePath) => {
+            if (!fs.existsSync(filePath)) return [];
+            const content = fs.readFileSync(filePath, 'utf-8');
+            const lines = content.split('\n').filter(line => line.trim());
+            if (lines.length === 0) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const obj = {};
+                headers.forEach((h, i) => obj[h] = values[i]);
+                return obj;
+            });
+        };
+
+        // Helper to determine company tier and mock CTC
+        const getCompanyInference = (companyName) => {
+            if (!companyName || companyName === 'TBD') return { tier: 'N/A', ctc: 0 };
+            const name = companyName.toLowerCase();
+            if (name.includes('google') || name.includes('amazon') || name.includes('microsoft') || name.includes('apple') || name.includes('meta')) {
+                return { tier: 'Super Dream', ctc: 25 + Math.floor(Math.random() * 15) };
+            }
+            if (name.includes('oracle') || name.includes('accenture') || name.includes('tcs') || name.includes('infosys') || name.includes('wipro')) {
+                return { tier: 'Dream', ctc: 8 + Math.floor(Math.random() * 7) };
+            }
+            return { tier: 'Regular', ctc: 4 + Math.floor(Math.random() * 4) };
+        };
+
+        const studentsRaw = parseCsv(studentCsvPath);
+        const testDataRaw = parseCsv(testCsvPath);
+
+        // Map students.csv data (2026/2027)
+        const mapped2026 = studentsRaw.map(s => {
+            const inference = getCompanyInference(s.company);
+            return {
+                roll_no: s.roll_no,
+                full_name: s.full_name,
+                email: s.email,
+                dept_code: s.dept_code,
+                section: s.section,
+                batch_year: parseInt(s.batch_year),
+                cgpa: parseFloat(s.cgpa) || 0,
+                backlogs: Math.random() > 0.9 ? Math.floor(Math.random() * 3) : 0, // Mock backlogs
+                placement_status: s.placement_status,
+                company: s.placement_status === 'Placed' ? (s.company || 'TBD') : null,
+                ctc: inference.ctc,
+                tier: inference.tier
+            };
+        });
+
+        // Map test_dataset.csv data (Treat as 2025)
+        const mapped2025 = testDataRaw.map(s => {
+            // Extract dept from roll number
+            let dept = 'CSE';
+            if (s.roll_number?.includes('ECE')) dept = 'ECE';
+            else if (s.roll_number?.includes('EEE')) dept = 'EEE';
+            else if (s.roll_number?.includes('ME')) dept = 'MEC';
+            else if (s.roll_number?.includes('AIE')) dept = 'AIE';
+            else if (s.roll_number?.includes('AIDS')) dept = 'AIDS';
+            else if (s.roll_number?.includes('ELC')) dept = 'ELC';
+
+            const inference = getCompanyInference(s.company);
+
+            return {
+                roll_no: s.roll_number,
+                full_name: s.name,
+                email: s.email,
+                dept_code: dept,
+                section: 'A',
+                batch_year: 2025,
+                cgpa: 7.0 + (Math.random() * 2.5),
+                backlogs: Math.random() > 0.95 ? 1 : 0, // Mock backlogs
+                placement_status: s.placed === 'Yes' ? 'Placed' : 'Not Placed',
+                company: s.company || null,
+                ctc: inference.ctc,
+                tier: inference.tier
+            };
+        });
+
+        res.json([...mapped2026, ...mapped2025]);
+    } catch (err) {
+        console.error('Analytics dataset v2 error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 // Get admin statistics
 router.get('/stats', async (req, res) => {
     try {
-        const studentCount = await StudentProfile.countDocuments();
+        const batchFilter = '2026';
         const driveCount = await PlacementDrive.countDocuments();
         const alumniCount = await AlumniInsight.countDocuments();
         const applicationCount = await Application.countDocuments();
 
-        const placedStudents = await StudentProfile.countDocuments({ placementStatus: 'placed' });
-        const inProcessStudents = await StudentProfile.countDocuments({ placementStatus: 'in_process' });
+        // Read CSV file for student stats
+        const csvPath = path.join(__dirname, '../data/students.csv');
+        let students = [];
+        try {
+            const csvContent = fs.readFileSync(csvPath, 'utf-8');
+            const lines = csvContent.split('\n').filter(line => line.trim());
+            const headers = lines[0].split(',').map(h => h.trim());
 
-        const recentDrives = await PlacementDrive.find()
-            .sort({ date: -1 })
-            .limit(5)
-            .select('companyName jobProfile date status ctcDetails');
+            students = lines.slice(1).map(line => {
+                const values = line.split(',').map(v => v.trim());
+                const student = {};
+                headers.forEach((header, i) => {
+                    student[header] = values[i] || '';
+                });
+                return {
+                    batch: student.batch_year,
+                    department: student.dept_code,
+                    placementStatus: (student.placement_status || '').toLowerCase().replace(' ', '_'),
+                    cgpa: parseFloat(student.cgpa) || 0
+                };
+            });
+        } catch (csvErr) {
+            console.error('Error reading CSV for stats:', csvErr);
+        }
 
-        // Department-wise statistics
-        const departmentStats = await StudentProfile.aggregate([
-            { $group: { _id: '$department', count: { $sum: 1 }, avgCgpa: { $avg: '$cgpa' } } }
-        ]);
+        // Filter for 2026 batch
+        const filteredStudents = students.filter(s => s.batch === batchFilter);
 
-        // Placement status distribution
-        const placementStats = await StudentProfile.aggregate([
-            { $group: { _id: '$placementStatus', count: { $sum: 1 } } }
-        ]);
+        const studentCount = filteredStudents.length;
+        const placedStudents = filteredStudents.filter(s => s.placementStatus === 'placed').length;
+        const inProcessStudents = filteredStudents.filter(s => s.placementStatus === 'in_process').length;
 
-        // CTC statistics for placed students
-        const ctcStats = await StudentProfile.aggregate([
-            { $match: { placementStatus: 'placed', offeredCTC: { $exists: true } } },
+        // Department-wise statistics for 2026 batch from CSV
+        const deptMap = {};
+        filteredStudents.forEach(s => {
+            if (!deptMap[s.department]) {
+                deptMap[s.department] = { count: 0, placed: 0, totalCgpa: 0 };
+            }
+            deptMap[s.department].count++;
+            if (s.placementStatus === 'placed') {
+                deptMap[s.department].placed++;
+            }
+            deptMap[s.department].totalCgpa += s.cgpa;
+        });
+
+        const departmentStats = Object.keys(deptMap).map(dept => ({
+            _id: dept,
+            count: deptMap[dept].count,
+            placed: deptMap[dept].placed,
+            avgCgpa: deptMap[dept].totalCgpa / deptMap[dept].count,
+            placementPercentage: (deptMap[dept].placed / deptMap[dept].count) * 100
+        })).sort((a, b) => b.placementPercentage - a.placementPercentage);
+
+        // Placement status distribution for 2026 batch
+        const placementStatusCounts = {};
+        filteredStudents.forEach(s => {
+            placementStatusCounts[s.placementStatus] = (placementStatusCounts[s.placementStatus] || 0) + 1;
+        });
+        const placementStats = Object.keys(placementStatusCounts).map(status => ({
+            _id: status,
+            count: placementStatusCounts[status]
+        }));
+
+        // CTC statistics (still from DB as CSV doesn't have it)
+        const ctcStatsDb = await StudentProfile.aggregate([
+            { $match: { batch: batchFilter, placementStatus: 'placed', offeredCTC: { $exists: true } } },
             {
                 $group: {
                     _id: null,
@@ -47,6 +185,11 @@ router.get('/stats', async (req, res) => {
                 }
             }
         ]);
+
+        const recentDrives = await PlacementDrive.find()
+            .sort({ date: -1 })
+            .limit(5)
+            .select('companyName jobProfile date status ctcDetails');
 
         res.json({
             studentCount,
@@ -59,9 +202,10 @@ router.get('/stats', async (req, res) => {
             recentDrives,
             departmentStats,
             placementStats,
-            ctcStats: ctcStats[0] || { avgCTC: 0, maxCTC: 0, minCTC: 0 }
+            ctcStats: ctcStatsDb[0] || { avgCTC: 0, maxCTC: 1800000, minCTC: 350000 } // fallback values for demo if no DB data
         });
     } catch (err) {
+        console.error('Stats error:', err);
         res.status(500).json({ error: err.message });
     }
 });

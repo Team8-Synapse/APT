@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, MessageSquare, Building2, MapPin, Briefcase, Calendar, Sparkles, Filter, Linkedin, Mail, User, School, ExternalLink, Globe, Copy, Check, MessageCircle } from 'lucide-react';
+import { Search, MessageSquare, Building2, MapPin, Briefcase, Calendar, Sparkles, Filter, Linkedin, Mail, User, Users, School, ExternalLink, Globe, Copy, Check, MessageCircle } from 'lucide-react';
 
 const AlumniInsights = () => {
     const [insights, setInsights] = useState([]);
@@ -63,14 +63,9 @@ const AlumniInsights = () => {
             {/* Header */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-bold">
                 <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Sparkles className="text-amrita-gold" size={18} />
-                        <span className="text-[10px] font-black tracking-[0.2em] text-amrita-maroon uppercase">
-                            {activeTab === 'directory' ? 'Alumni Network' : 'Institutional Intelligence'}
-                        </span>
-                    </div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">
-                        Alumni <span className="text-gradient">{activeTab === 'directory' ? 'Connect' : 'Insights'}</span>
+                    <h1 className="text-4xl font-black flex items-center gap-2">
+                        <Users className="text-amrita-maroon" size={32} />
+                        <span style={{ color: '#1A1A1A' }}>Alumni</span> <span style={{ color: '#A4123F' }}>{activeTab === 'directory' ? 'Connect' : 'Insights'}</span>
                     </h1>
                     <p className="text-gray-500 font-medium mt-2">
                         {activeTab === 'directory'

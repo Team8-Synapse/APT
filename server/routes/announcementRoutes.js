@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const announcementController = require('../controllers/announcementController');
-const { auth, authorize } = require('../middleware/auth');
+const { auth, authorize, optionalAuth } = require('../middleware/auth');
 
-// Public route - anyone can view announcements
-router.get('/', announcementController.getAnnouncements);
+// Public route - anyone can view announcements (filtered if not admin)
+router.get('/', optionalAuth, announcementController.getAnnouncements);
 
 // Admin-only routes
 router.post('/', auth, authorize('admin'), announcementController.addAnnouncement);

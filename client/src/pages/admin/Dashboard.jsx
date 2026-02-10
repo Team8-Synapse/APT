@@ -24,11 +24,12 @@ import EditStudentModal from '../../components/admin/EditStudentModal';
 import KanbanBoard from '../../components/admin/KanbanBoard';
 import AdminPrepHub from './AdminPrepHub';
 import AdminAnalytics from './AdminAnalytics';
-import AdminNavbar from '../../components/admin/AdminNavbar';
+import AdminNavbar from '../../components/Admin/AdminNavbar';
 import AddEventModal from '../../components/admin/AddEventModal';
 import NotificationsPanel from '../../components/NotificationsPanel';
 
 import AdminReports from './AdminReports';
+import AdminTickerManager from './AdminTickerManager';
 import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
 
 const theme = {
@@ -421,11 +422,14 @@ const AdminDashboard = () => {
     const handleAnnouncementSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('token');
+            const headers = { Authorization: `Bearer ${token}` };
+
             if (editingAnnouncement) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement);
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement, { headers });
                 alert('Announcement updated!');
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement);
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement, { headers });
                 alert('Announcement posted!');
             }
             setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
@@ -483,7 +487,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <QuickStatCard
                         icon={<Users size={24} />}
-                        label="Total Students"
+                        label="2026 Batch Strength"
                         value={stats.studentCount}
                         change="+5 this week"
                         gradient="from-[#8A0F3C] to-[#6E0B30]"
@@ -545,17 +549,22 @@ const AdminDashboard = () => {
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <BarChart3 className="text-amrita-maroon" size={20} />
                                         </div>
-                                        Department Overview
+                                        2026 Department Overview
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
                                             <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:shadow-md transition-all">
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="font-black text-gray-900 dark:text-white">{dept._id}</span>
-                                                    <span className="text-xs font-black text-amrita-maroon">{((dept.placed / dept.count) * 100 || 0).toFixed(1)}%</span>
+                                                    <div className="text-right">
+                                                        <span className="text-[10px] font-bold text-gray-500 block">
+                                                            {dept.placed}/{dept.count} Placed
+                                                        </span>
+                                                        <span className="text-xs font-black text-amrita-maroon">{(dept.placementPercentage || 0).toFixed(1)}%</span>
+                                                    </div>
                                                 </div>
                                                 <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                                                    <div className="h-full bg-amrita-maroon" style={{ width: `${(dept.placed / dept.count) * 100 || 0}%` }} />
+                                                    <div className="h-full bg-amrita-maroon" style={{ width: `${dept.placementPercentage || 0}%` }} />
                                                 </div>
                                             </div>
                                         ))}
@@ -646,46 +655,16 @@ const AdminDashboard = () => {
                             />
                         </div>
 
-                        {/* Quick Stats Sidebar */}
-                        <div className="glass-card p-6 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white overflow-hidden relative">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <TrendingUp size={120} />
-                            </div>
-                            <h3 className="font-bold mb-6 flex items-center gap-2">
-                                <Sparkles size={18} />
-                                Seasonal Performance
-                            </h3>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-end">
-                                    <p className="text-xs opacity-70">Success Rate</p>
-                                    <p className="text-2xl font-black">{stats.placementPercentage}%</p>
-                                </div>
-                                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                                    <div className="h-full bg-white rounded-full" style={{ width: `${stats.placementPercentage}%` }} />
-                                </div>
-                                <p className="text-[10px] font-bold opacity-70">
-                                    Outstanding performance in CSE & ECE departments this year.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Shortlist Engine Preview */}
-                        <div className="glass-card p-6">
-                            <h3 className="font-black text-lg mb-4 dark:text-white">Shortlist Engine</h3>
-                            <p className="text-xs text-gray-500 mb-6 font-bold leading-relaxed">
-                                Optimize your selection process using our automated shortlist recommendation engine.
-                            </p>
-                            <button className="w-full py-3 bg-gray-50 dark:bg-gray-800 text-amrita-maroon font-black text-xs uppercase tracking-widest rounded-xl hover:bg-amrita-maroon hover:text-white transition-all">
-                                Configure Engine
-                            </button>
-                        </div>
-                    </>
+                        </>
                 )}
 
                 {activeTab === 'students' && (
                     <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
                         <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl font-black dark:text-white">Student Directory</h2>
+                            <h2 className="text-2xl font-black flex items-center gap-2">
+                                <Users className="text-amrita-maroon" size={24} />
+                                <span style={{ color: '#1A1A1A' }}>Student</span> <span style={{ color: '#A4123F' }}>Directory</span>
+                            </h2>
                             <div className="flex gap-2">
                                 <div className="relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -742,13 +721,14 @@ const AdminDashboard = () => {
                 )}
 
                 {activeTab === 'reports' && (
-                    <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
-                        <h2 className="text-2xl font-black mb-8 dark:text-white">Reports & Intelligence</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <ReportCard icon={<FileSpreadsheet size={24} />} title="Placement Report" description="Detailed student placement statistics and trends" onExport={() => { }} />
-                            <ReportCard icon={<Users size={24} />} title="Student Database" description="Complete export of student records and CGPA" onExport={() => { }} />
-                            <ReportCard icon={<Briefcase size={24} />} title="Company Intelligence" description="Drive history and hiring performance analytics" onExport={() => { }} />
-                        </div>
+                    <div className="lg:col-span-3 animate-fade-in-up">
+                        <AdminReports />
+                    </div>
+                )}
+
+                {activeTab === 'ticker' && (
+                    <div className="lg:col-span-3">
+                        <AdminTickerManager />
                     </div>
                 )}
 
@@ -1218,13 +1198,7 @@ const AdminDashboard = () => {
                     )
                 }
 
-                {
-                    activeTab === 'reports' && (
-                        <div className="lg:col-span-3 animate-fade-in-up">
-                            <AdminReports />
-                        </div>
-                    )
-                }
+
 
             </div>
             {/* Add Drive Modal */}

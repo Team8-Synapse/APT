@@ -55,12 +55,18 @@ exports.generateAdminCSV = async (req, res) => {
         const csvWriter = createObjectCsvWriter({
             path: csvPath,
             header: [
+                { id: 'rollNumber', title: 'Roll Number' },
                 { id: 'firstName', title: 'First Name' },
                 { id: 'lastName', title: 'Last Name' },
+                { id: 'email', title: 'Email' },
+                { id: 'phone', title: 'Phone' },
                 { id: 'department', title: 'Department' },
                 { id: 'cgpa', title: 'CGPA' },
                 { id: 'batch', title: 'Batch' },
-                { id: 'backlogs', title: 'Backlogs' }
+                { id: 'backlogs', title: 'Backlogs' },
+                { id: 'placementStatus', title: 'Placement Status' },
+                { id: 'offeredCompany', title: 'Company' },
+                { id: 'offeredCTC', title: 'CTC' }
             ]
         });
 
@@ -68,9 +74,81 @@ exports.generateAdminCSV = async (req, res) => {
 
         res.download(csvPath, 'student_placement_data.csv', (err) => {
             if (err) res.status(500).send(err);
-            fs.unlinkSync(csvPath); // Cleanup
+            try {
+                fs.unlinkSync(csvPath); // Cleanup
+            } catch (cleanupErr) {
+                console.error('Error deleting temp csv:', cleanupErr);
+            }
         });
     } catch (e) {
+        console.error('CSV Generation Error:', e);
         res.status(500).send(e);
+    }
+};
+
+exports.generateCompanyCSV = async (req, res) => {
+    try {
+        const students = await StudentProfile.find({ placementStatus: 'placed' });
+        const companyStats = {};
+
+        // Aggregate data
+        students.forEach(student => {
+            const company = student.offeredCompany || 'Unknown';
+            if (!companyStats[company]) {
+                companyStats[company] = {
+                    name: company,
+                    count: 0,
+                    totalCTC: 0,
+                    minCTC: Infinity,
+                    maxCTC: -Infinity,
+                    departments: {}
+                };
+            }
+            companyStats[company].count++;
+            companyStats[company].totalCTC += (student.offeredCTC || 0);
+            companyStats[company].minCTC = Math.min(companyStats[company].minCTC, student.offeredCTC || Infinity);
+            companyStats[company].maxCTC = Math.max(companyStats[company].maxCTC, student.offeredCTC || -Infinity);
+
+            const dept = student.department || 'Unknown';
+            companyStats[company].departments[dept] = (companyStats[company].departments[dept] || 0) + 1;
+        });
+
+        // Format for CSV
+        const records = Object.values(companyStats).map(c => ({
+            name: c.name,
+            count: c.count,
+            avgCTC: (c.totalCTC / c.count).toFixed(2),
+            minCTC: c.minCTC === Infinity ? 0 : c.minCTC,
+            maxCTC: c.maxCTC === -Infinity ? 0 : c.maxCTC,
+            deptBreakdown: Object.entries(c.departments).map(([d, n]) => `${d}:${n}`).join('; ')
+        }));
+
+        const csvPath = path.join(__dirname, '../temp_companies.csv');
+        const csvWriter = createObjectCsvWriter({
+            path: csvPath,
+            header: [
+                { id: 'name', title: 'Company Name' },
+                { id: 'count', title: 'Total Hires' },
+                { id: 'avgCTC', title: 'Average CTC' },
+                { id: 'minCTC', title: 'Min CTC' },
+                { id: 'maxCTC', title: 'Max CTC' },
+                { id: 'deptBreakdown', title: 'Department Breakdown' }
+            ]
+        });
+
+        await csvWriter.writeRecords(records);
+
+        res.download(csvPath, 'company_placement_stats.csv', (err) => {
+            if (err) res.status(500).send(err);
+            try {
+                fs.unlinkSync(csvPath);
+            } catch (cleanupErr) {
+                console.error('Error deleting temp csv:', cleanupErr);
+            }
+        });
+
+    } catch (e) {
+        console.error('Company CSV Error:', e);
+        res.status(500).send(e.message);
     }
 };

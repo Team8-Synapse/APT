@@ -76,8 +76,8 @@ const CalendarPage = () => {
     return (
         <div className="max-w-7xl mx-auto animate-fade-in pb-20">
             <h1 className="text-3xl font-black mb-6 flex items-center gap-2">
-                <CalendarIcon className="text-amrita-maroon" />
-                <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#A4123F' }}>Schedule</span>
+                <CalendarIcon className="text-amrita-maroon" size={28} />
+                <span style={{ color: '#1A1A1A' }}>Placement</span> <span style={{ color: '#A4123F' }}>Schedule</span>
             </h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">

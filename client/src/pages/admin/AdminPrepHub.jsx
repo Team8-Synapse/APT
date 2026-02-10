@@ -29,8 +29,8 @@ const AdminPrepHub = () => {
     const categories = [
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
-        { id: 'Aptitude', icon: <Cpu size={18} />, label: 'Aptitude & Logic' },
-        { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
+        { id: 'Aptitude', icon: <UserCheck size={18}/>, label: 'Aptitude & Logic' },
+        { id: 'Technical', icon: <Cpu size={18} /> , label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
     ];
     const types = ['Link', 'PPT', 'PDF'];
@@ -136,11 +136,10 @@ const AdminPrepHub = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Sparkles className="text-amrita-maroon" size={18} />
-                        <span className="text-[10px] font-black tracking-widest text-amrita-maroon uppercase">Training Material Manager</span>
-                    </div>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white">Prep <span className="text-amrita-maroon italic">Hub</span> Center</h1>
+                    <h1 className="text-3xl font-black flex items-center gap-2">
+                        <BookOpen className="text-amrita-maroon" size={28} />
+                        <span style={{ color: '#1A1A1A' }}>Prep</span> <span style={{ color: '#A4123F' }}>Hub Center</span>
+                    </h1>
                     <p className="text-gray-500 text-xs font-bold mt-1 uppercase tracking-tight">Curate and manage elite preparation modules</p>
                 </div>
             </div>

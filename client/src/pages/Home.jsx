@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/logo.png';
+import footerLogoImg from '../assets/placement_tracker_logo.png';
 import campusImg from '../assets/AB1_cbe.png';
 import {
     TrendingUp, Award, Users, ArrowRight, ShieldCheck,
@@ -487,27 +488,6 @@ const Marquee = ({ children, speed = 30, direction = 'left' }) => (
     </div>
 );
 
-// ============= 21. CONFETTI BURST =============
-const ConfettiBurst = ({ active }) => {
-    if (!active) return null;
-    return (
-        <div className="confetti-container">
-            {[...Array(50)].map((_, i) => (
-                <div
-                    key={i}
-                    className="confetti"
-                    style={{
-                        '--x': `${Math.random() * 200 - 100}px`,
-                        '--y': `${Math.random() * -200 - 50}px`,
-                        '--r': `${Math.random() * 720}deg`,
-                        '--delay': `${Math.random() * 0.3}s`,
-                        '--color': ['#8B0000', '#A52A2A', '#C04040', '#FFD700'][Math.floor(Math.random() * 4)]
-                    }}
-                />
-            ))}
-        </div>
-    );
-};
 
 // ============= 22. PULSE RING =============
 const PulseRing = ({ children, className }) => (
@@ -1181,7 +1161,6 @@ const Drawer = ({ isOpen, onClose, children, position = 'right' }) => (
 const Home = () => {
     const { token } = useAuth();
     const [scrolled, setScrolled] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -1316,7 +1295,6 @@ const Home = () => {
             <NoiseGrain />
             <SpotlightCursor />
             <ScrollProgress />
-            <ConfettiBurst active={showConfetti} />
 
             {/* Navigation */}
             <nav className={`nav-ultimate ${scrolled ? 'scrolled' : ''}`}>
@@ -1335,12 +1313,12 @@ const Home = () => {
                     ))}
                 </ul>
                 <div className="nav-actions">
-                    <MagneticButton className="btn-primary" onClick={() => setShowConfetti(true)}>
+                    <MagneticButton className="btn-primary">
                         <Link to="/login" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             Login
                         </Link>
                     </MagneticButton>
-                    <MagneticButton className="btn-primary" onClick={() => setShowConfetti(true)}>
+                    <MagneticButton className="btn-primary">
                         <Link to="/register" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             Register
                         </Link>
@@ -1524,7 +1502,7 @@ const Home = () => {
                 <div className="section-header">
                     <StaggeredReveal>
                         <span className="section-tag">AI Features</span>
-                        <h2>Intelligent <GlitchText>Insights</GlitchText></h2>
+                        <h2>Intelligent <GradientText>Insights</GradientText></h2>
                     </StaggeredReveal>
                 </div>
                 <div className="features-grid">
@@ -1556,7 +1534,7 @@ const Home = () => {
                 <div className="section-header">
                     <StaggeredReveal>
                         <span className="section-tag">Support</span>
-                        <h2>Frequently Asked <GlitchText>Questions</GlitchText></h2>
+                        <h2>Frequently Asked <GradientText>Questions</GradientText></h2>
                     </StaggeredReveal>
                 </div>
                 <div className="faq-grid">
@@ -1575,7 +1553,7 @@ const Home = () => {
                         <h2>Your Placement Journey Deserves Structure</h2>
                         <p>Join thousands who transformed their experience with intelligent tracking.</p>
                         <div className="cta-buttons">
-                            <RippleButton className="btn-cta-primary" onMouseEnter={() => setShowConfetti(true)}>
+                            <RippleButton className="btn-cta-primary">
                                 <Link to="/register">Start Your Journey <ArrowRight size={20} /></Link>
                             </RippleButton>
                             <RippleButton className="btn-cta-secondary">
@@ -1590,9 +1568,7 @@ const Home = () => {
             <footer className="footer-ultimate">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <img src={logoImg} alt="Amrita" className="footer-logo" />
-                        <h3>Placement Tracker</h3>
-                        <p>Official placement management system of Amrita Vishwa Vidyapeetham.</p>
+                        <img src={footerLogoImg} alt="Amrita" className="footer-logo" />
                     </div>
                     <div className="footer-col">
                         <h4>Quick Access</h4>
@@ -1615,6 +1591,9 @@ const Home = () => {
                 </div>
                 <div className="footer-bottom">
                     <p>© {new Date().getFullYear()} Amrita Vishwa Vidyapeetham. All rights reserved.</p>
+                    <p>TEAM 8 - SYNAPSE</p>
+                    <p>Built by the students, for the students</p>
+                    <p> Developed as a product for Software Engineering course</p>
                 </div>
             </footer>
         </div>
@@ -1825,7 +1804,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Hero Metrics Wrapper - Invisible Outer BG */
 .hero-card { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; border-radius: 0; padding: 0.5rem; border: none; box-shadow: none; }
 .hero-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-.metric-card { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.metric-card { background: rgba(255,255,255,0.12); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .metric-card:hover { border-color: rgba(139,0,0,0.3); box-shadow: 0 10px 30px rgba(139,0,0,0.1); }
 .metric-icon { width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .metric-value { font-size: 2.2rem; font-weight: 900; color: #fff; text-shadow: 0 2px 15px rgba(139,0,0,0.7), 0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(0,0,0,0.3); }
@@ -2028,13 +2007,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Footer */
 .footer-ultimate { background: #1a1a1a; color: #fff; padding: 4rem 5% 2rem; position: relative; z-index: 2; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
-.footer-brand .footer-logo { height: 60px; margin-bottom: 1rem; }
+.footer-brand .footer-logo { height: 350px; margin-bottom: 2rem; }
 .footer-brand h3 { font-size: 1.5rem; font-weight: 900; color: #8B0000; margin-bottom: 1rem; }
 .footer-brand p { color: rgba(255,255,255,0.7); line-height: 1.6; }
 .footer-col h4 { font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem; color: #fff; }
 .footer-col a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.75rem; transition: all 0.3s; }
 .footer-col a:hover { color: #fff; padding-left: 0.5rem; }
-.footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255, 255, 255, 1); font-size: 0.9rem; }
 
 /* Responsive */
 @media (max-width: 1024px) {

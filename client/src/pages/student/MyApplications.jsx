@@ -115,8 +115,9 @@ const MyApplications = () => {
     return (
         <div className="space-y-8 page-enter">
             <header>
-                <h1 className="text-4xl font-black tracking-tight">
-                    <span style={{ color: '#1f2937' }}>My</span> <span style={{ color: '#B1124A' }}>Applications</span>
+                <h1 className="text-4xl font-black tracking-tight flex items-center gap-2">
+                    <FileText className="text-amrita-maroon" size={32} />
+                    <span style={{ color: '#1A1A1A' }}>My</span> <span style={{ color: '#A4123F' }}>Applications</span>
                 </h1>
                 <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                     Track your placement journey

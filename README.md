@@ -129,7 +129,7 @@ graph TB
 <summary><b>Component Breakdown</b></summary>
 
 ```
-├── Frontend Layer
+├── Frontend Layer    
 │   ├── Student Portal
 │   │   ├── Dashboard (Real-time stats, notifications)
 │   │   ├── Drives (Browse, filter, apply)
@@ -246,129 +246,59 @@ The platform leverages **OpenRouter API** for intelligent insights:
 ## Project Structure
 
 ```plaintext
-amrita-placement-tracker/
-│
-├── frontend/                      # React application
+APT/
+├── client/                     # Frontend (React + Vite)
+│   ├── public/                 # Static assets
 │   ├── src/
-│   │   ├── components/           # Reusable UI components
-│   │   │   ├── common/          # Buttons, inputs, cards
-│   │   │   ├── charts/          # Visualization components
-│   │   │   ├── forms/           # Form components
-│   │   │   └── layout/          # Headers, footers, nav
-│   │   │
-│   │   ├── pages/               # Route-based pages
-│   │   │   ├── auth/            # Login, register
-│   │   │   ├── student/         # Student portal pages
-│   │   │   ├── admin/           # Admin portal pages
-│   │   │   ├── analytics/       # Analytics dashboards
-│   │   │   └── shared/          # Common pages
-│   │   │
-│   │   ├── context/             # React Context API
-│   │   │   ├── AuthContext.jsx
-│   │   │   ├── ThemeContext.jsx
-│   │   │   └── DataContext.jsx
-│   │   │
-│   │   ├── hooks/               # Custom React hooks
-│   │   │   ├── useAuth.js
-│   │   │   ├── useFetch.js
-│   │   │   └── useLocalStorage.js
-│   │   │
-│   │   ├── services/            # API service layer
-│   │   │   ├── api.js
-│   │   │   ├── auth.service.js
-│   │   │   ├── student.service.js
-│   │   │   └── admin.service.js
-│   │   │
-│   │   ├── utils/               # Utility functions
-│   │   │   ├── constants.js
-│   │   │   ├── validators.js
-│   │   │   └── formatters.js
-│   │   │
-│   │   ├── styles/              # Global styles
-│   │   │   ├── globals.css
-│   │   │   ├── theme.css
-│   │   │   └── animations.css
-│   │   │
-│   │   ├── App.jsx              # Root component
-│   │   └── main.jsx             # Entry point
-│   │
-│   ├── public/                  # Static assets
-│   ├── package.json
-│   └── vite.config.js
+│   │   ├── assets/             # Images and global resources
+│   │   ├── components/         # Reusable UI components
+│   │   │   ├── admin/          # Admin-specific components
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── NotificationsPanel.jsx
+│   │   │   └── ...
+│   │   ├── context/            # Global state (AuthContext)
+│   │   ├── pages/
+│   │   │   ├── admin/          # Admin Views
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── AdminAnalytics.jsx
+│   │   │   │   ├── AdminAnnouncements.jsx
+│   │   │   │   └── ...
+│   │   │   ├── student/        # Student Views
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── PlacementDrives.jsx
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   └── ...
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── Register.jsx
+│   │   ├── App.jsx             # Main Routing
+│   │   └── main.jsx            # Entry point
+│   ├── .env                    # Frontend environment variables
+│   ├── package.json            # Frontend dependencies
+│   ├── tailwind.config.js      # Styling configuration
+│   └── vite.config.js          # Build configuration
 │
-├── backend/                      # Node.js/Express server
-│   ├── src/
-│   │   ├── routes/              # API route definitions
-│   │   │   ├── auth.routes.js
-│   │   │   ├── student.routes.js
-│   │   │   ├── admin.routes.js
-│   │   │   ├── drive.routes.js
-│   │   │   ├── application.routes.js
-│   │   │   └── analytics.routes.js
-│   │   │
-│   │   ├── controllers/         # Request handlers
-│   │   │   ├── auth.controller.js
-│   │   │   ├── student.controller.js
-│   │   │   ├── admin.controller.js
-│   │   │   ├── drive.controller.js
-│   │   │   └── analytics.controller.js
-│   │   │
-│   │   ├── services/            # Business logic
-│   │   │   ├── auth.service.js
-│   │   │   ├── placement.service.js
-│   │   │   ├── analytics.service.js
-│   │   │   └── ai.service.js
-│   │   │
-│   │   ├── middleware/          # Express middleware
-│   │   │   ├── auth.middleware.js
-│   │   │   ├── validation.middleware.js
-│   │   │   ├── error.middleware.js
-│   │   │   └── logger.middleware.js
-│   │   │
-│   │   ├── models/              # Data schemas
-│   │   │   ├── student.model.js
-│   │   │   ├── drive.model.js
-│   │   │   └── application.model.js
-│   │   │
-│   │   ├── utils/               # Helper functions
-│   │   │   ├── dataManager.js
-│   │   │   ├── validators.js
-│   │   │   ├── formatters.js
-│   │   │   └── logger.js
-│   │   │
-│   │   ├── config/              # Configuration
-│   │   │   ├── database.js
-│   │   │   ├── constants.js
-│   │   │   └── env.config.js
-│   │   │
-│   │   └── index.js             # Server entry point
-│   │
-│   ├── data/                    # Data storage
-│   │   ├── data.json            # Primary database
-│   │   └── backups/             # Backup files
-│   │
-│   ├── package.json
-│   └── .env.example
-│
-├── shared/                       # Shared utilities
-│   ├── constants/
-│   ├── types/
-│   └── helpers/
-│
-├── docs/                         # Documentation
-│   ├── API.md                   # API documentation
-│   ├── SETUP.md                 # Setup guide
-│   ├── DEPLOYMENT.md            # Deployment guide
-│   └── CONTRIBUTING.md          # Contribution guide
-│
-├── scripts/                      # Utility scripts
-│   ├── seed.js                  # Database seeding
-│   ├── backup.js                # Backup automation
-│   └── deploy.sh                # Deployment script
+├── server/                     # Backend (Node.js + Express)
+│   ├── controllers/            # Logic for handling requests
+│   ├── models/                 # Mongoose Database Schemas
+│   │   ├── User.js
+│   │   ├── PlacementDrive.js
+│   │   ├── Notification.js
+│   │   ├── Application.js
+│   │   └── ...
+│   ├── routes/                 # API Route Definitions
+│   │   ├── authRoutes.js
+│   │   ├── studentRoutes.js
+│   │   ├── adminRoutes.js
+│   │   └── ...
+│   ├── middleware/             # Auth & Error handling middleware
+│   ├── .env                    # Backend environment variables
+│   ├── package.json            # Backend dependencies
+│   └── server.js               # Server entry point
 │
 ├── .gitignore
-├── LICENSE
-└── README.md
+├── README.md                   # Project Documentation
+└── docker-compose.yml          # Container orchestration (optional)
 ```
 
 ---
