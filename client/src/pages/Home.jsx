@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logoImg from '../assets/logo.png';
+import footerLogoImg from '../assets/placement_tracker_logo.png';
 import campusImg from '../assets/AB1_cbe.png';
 import {
     TrendingUp, Award, Users, ArrowRight, ShieldCheck,
@@ -1567,9 +1568,7 @@ const Home = () => {
             <footer className="footer-ultimate">
                 <div className="footer-grid">
                     <div className="footer-brand">
-                        <img src={logoImg} alt="Amrita" className="footer-logo" />
-                        <h3>Placement Tracker</h3>
-                        <p>Official placement management system of Amrita Vishwa Vidyapeetham.</p>
+                        <img src={footerLogoImg} alt="Amrita" className="footer-logo" />
                     </div>
                     <div className="footer-col">
                         <h4>Quick Access</h4>
@@ -1592,6 +1591,9 @@ const Home = () => {
                 </div>
                 <div className="footer-bottom">
                     <p>© {new Date().getFullYear()} Amrita Vishwa Vidyapeetham. All rights reserved.</p>
+                    <p>TEAM 8 - SYNAPSE</p>
+                    <p>Built by the students, for the students</p>
+                    <p> Developed as a product for Software Engineering course</p>
                 </div>
             </footer>
         </div>
@@ -2005,13 +2007,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Footer */
 .footer-ultimate { background: #1a1a1a; color: #fff; padding: 4rem 5% 2rem; position: relative; z-index: 2; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
-.footer-brand .footer-logo { height: 60px; margin-bottom: 1rem; }
+.footer-brand .footer-logo { height: 350px; margin-bottom: 2rem; }
 .footer-brand h3 { font-size: 1.5rem; font-weight: 900; color: #8B0000; margin-bottom: 1rem; }
 .footer-brand p { color: rgba(255,255,255,0.7); line-height: 1.6; }
 .footer-col h4 { font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem; color: #fff; }
 .footer-col a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.75rem; transition: all 0.3s; }
 .footer-col a:hover { color: #fff; padding-left: 0.5rem; }
-.footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255, 255, 255, 1); font-size: 0.9rem; }
 
 /* Responsive */
 @media (max-width: 1024px) {

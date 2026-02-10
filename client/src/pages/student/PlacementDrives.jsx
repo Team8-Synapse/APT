@@ -147,8 +147,9 @@ const PlacementDrives = () => {
 
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight">
-                        <span style={{ color: '#1f2937' }}>Placement</span> <span style={{ color: '#B1124A' }}>Drives</span>
+                    <h1 className="text-4xl font-black tracking-tight flex items-center gap-2">
+                        <Briefcase className="text-amrita-maroon" size={32} />
+                        <span style={{ color: '#1A1A1A' }}>Placement</span> <span style={{ color: '#A4123F' }}>Drives</span>
                     </h1>
                     <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                         Discover opportunities from top companies

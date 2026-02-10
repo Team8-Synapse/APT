@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 import NotificationsPanel from './NotificationsPanel';
 
 const Navbar = () => {
@@ -65,7 +66,7 @@ const Navbar = () => {
         { to: '/drives', icon: <Briefcase size={18} />, label: 'Drives' },
         { to: '/applications', icon: <FileText size={18} />, label: 'Apps' },
         { to: '/experiences', icon: <MessageSquare size={18} />, label: 'Stories' },
-        { to: '/alumni', icon: <Users size={18} />, label: 'Insights' },
+        { to: '/alumni-insights', icon: <Users size={18} />, label: 'Connect' },
         { to: '/prephub', icon: <BookOpen size={18} />, label: 'Prep' },
         { to: '/profile', icon: <User size={18} />, label: 'Profile' },
     ];
@@ -83,13 +84,7 @@ const Navbar = () => {
                 <div className="px-8 py-4 flex justify-between items-center">
                     <div className="flex items-center space-x-8">
                         <Link to="/" className="flex items-center group">
-                            <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                <Sparkles className="text-amrita-gold" size={20} />
-                            </div>
-                            <div className="ml-2 hidden xl:block">
-                                <span className="block text-amrita-maroon dark:text-amrita-gold font-black text-xl leading-none">AMRITA</span>
-                                <span className="block text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest mt-1">Placement Tracker</span>
-                            </div>
+                            <img src={logoImg} alt="Amrita Placement Tracker" className="h-10 w-auto object-contain hover:scale-105 transition-transform duration-300" />
                         </Link>
 
                         {/* Desktop Navigation */}

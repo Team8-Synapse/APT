@@ -745,11 +745,9 @@ const AdminAnalytics = () => {
             {/* Header */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-[#B1124A] to-[#D1477C]">
-                            <Activity className="text-white" size={28} />
-                        </div>
-                        Placement Analytics Dashboard
+                    <h1 className="text-3xl font-black flex items-center gap-2">
+                        <Activity className="text-amrita-maroon" size={28} />
+                        <span style={{ color: '#1A1A1A' }}>Placement</span> <span style={{ color: '#A4123F' }}>Analytics Dashboard</span>
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 font-medium mt-2">
                         Comprehensive analysis for {selectedYear} | Fully customizable visualizations

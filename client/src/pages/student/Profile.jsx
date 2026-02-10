@@ -261,15 +261,9 @@ const StudentProfile = () => {
             {/* Header */}
             <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                 <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Sparkles className="animate-pulse" size={20} style={{ color: '#D4AF37' }} />
-                        <span className="text-[10px] font-black tracking-[0.2em] uppercase" style={{ color: '#B1124A' }}>
-                            Placement Profile
-                        </span>
-                    </div>
-                    <h1 className="text-4xl font-black tracking-tight">
-                        <span style={{ color: '#1f2937' }}>My</span>{' '}
-                        <span style={{ color: '#B1124A' }}>Profile</span>
+                    <h1 className="text-4xl font-black tracking-tight flex items-center gap-2">
+                        <User className="text-amrita-maroon" size={32} />
+                        <span style={{ color: '#1A1A1A' }}>My</span> <span style={{ color: '#A4123F' }}>Profile</span>
                     </h1>
                     <p style={{ color: '#6b7280' }} className="font-medium mt-1">
                         Complete your profile to apply for placement drives

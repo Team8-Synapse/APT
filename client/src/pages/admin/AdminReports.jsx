@@ -44,8 +44,8 @@ const ReportTypeCard = ({ label, description, icon: Icon, active, onClick, color
     <button
         onClick={onClick}
         className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 group hover:shadow-xl w-full h-full flex flex-col ${active
-                ? 'border-amrita-maroon bg-amrita-maroon/5 dark:bg-red-900/10'
-                : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amrita-maroon/30'
+            ? 'border-amrita-maroon bg-amrita-maroon/5 dark:bg-red-900/10'
+            : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amrita-maroon/30'
             }`}
     >
         <div className={`p-3 rounded-xl w-fit mb-4 transition-colors ${active ? 'bg-amrita-maroon text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 group-hover:bg-amrita-maroon/10 group-hover:text-amrita-maroon'
@@ -221,8 +221,8 @@ const AdminReports = () => {
             {/* Notification Toast */}
             {notification && (
                 <div className={`fixed top-24 right-6 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl animate-slide-in border-l-4 ${notification.type === 'success' ? 'bg-white border-green-500 text-green-700' :
-                        notification.type === 'error' ? 'bg-white border-red-500 text-red-700' :
-                            'bg-white border-blue-500 text-blue-700'
+                    notification.type === 'error' ? 'bg-white border-red-500 text-red-700' :
+                        'bg-white border-blue-500 text-blue-700'
                     }`}>
                     {notification.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                     <span className="font-bold text-sm">{notification.message}</span>
@@ -232,11 +232,9 @@ const AdminReports = () => {
             {/* Header Area */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                        <div className="p-3 bg-amrita-maroon text-white rounded-xl shadow-lg shadow-amrita-maroon/20">
-                            <BarChart3 size={24} />
-                        </div>
-                        Reports & Intelligence
+                    <h1 className="text-3xl font-black flex items-center gap-2">
+                        <BarChart3 className="text-amrita-maroon" size={28} />
+                        <span style={{ color: '#1A1A1A' }}>Reports &</span> <span style={{ color: '#A4123F' }}>Intelligence</span>
                     </h1>
                     <p className="mt-2 text-gray-500 font-medium ml-1">
                         Select a report type below to configure and generate insights.

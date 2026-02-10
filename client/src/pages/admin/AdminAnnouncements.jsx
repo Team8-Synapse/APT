@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import AdminNavbar from '../../components/admin/AdminNavbar';
+import AdminNavbar from '../../components/Admin/AdminNavbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -280,7 +280,10 @@ const AdminAnnouncements = () => {
             {/* Page Header */}
             <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight uppercase" style={{ color: theme.neutral.textPrimary }}>Announcements Hub</h1>
+                    <h1 className="text-3xl font-black flex items-center gap-2">
+                        <Megaphone className="text-amrita-maroon" size={28} />
+                        <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                    </h1>
                     <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
                 </div>
                 <motion.button
@@ -290,35 +293,11 @@ const AdminAnnouncements = () => {
                     className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
                     style={{ background: theme.maroon.gradient }}
                 >
-                    <Plus size={20} /> NEW SIGNAL
+                    <Plus size={20} /> NEW ANNOUNCEMENT
                 </motion.button>
             </div>
 
-            {/* Stats Row - Matching Dashboard Style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { label: 'Total Signals', value: announcements.length, change: '+5 this week', icon: <Megaphone /> },
-                    { label: 'Live Broadcasts', value: announcements.filter(a => a.status !== 'draft').length, change: 'Active now', icon: <TrendingUp /> },
-                    { label: 'Pending Drafts', value: announcements.filter(a => a.status === 'draft').length, change: 'Requires review', icon: <Clock /> },
-                    { label: 'High Priority', value: announcements.filter(a => a.priority === 'urgent' || a.priority === 'high').length, change: 'Action required', icon: <Star /> }
-                ].map((stat, idx) => (
-                    <motion.div
-                        key={idx}
-                        whileHover={{ y: -5 }}
-                        className="p-6 rounded-[2rem] text-white relative overflow-hidden group shadow-lg"
-                        style={{ background: theme.maroon.gradient }}
-                    >
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            {React.cloneElement(stat.icon, { size: 60 })}
-                        </div>
-                        <div className="relative z-10">
-                            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-1">{stat.label}</p>
-                            <p className="text-3xl font-black">{stat.value}</p>
-                            <p className="text-[10px] font-bold mt-2 opacity-90 uppercase tracking-widest">{stat.change}</p>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+            
 
             {/* Bulk Actions Bar (Sticky) */}
             <AnimatePresence>
@@ -379,7 +358,7 @@ const AdminAnnouncements = () => {
                 </motion.div>
             </div>
 
-            {/* The "Broadcast Signal" List */}
+            {/* The "Broadcast announcement" List */}
             <div className="grid grid-cols-1 gap-10 mt-10">
                 <AnimatePresence mode="popLayout">
                     {filteredAnnouncements.length > 0 ? (
@@ -492,7 +471,7 @@ const AdminAnnouncements = () => {
                                 <div className="flex flex-row xl:flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
                                     {[
                                         { icon: <Edit3 size={18} />, action: () => handleEdit(ann), hoverBg: theme.maroon.subtle, hoverColor: theme.maroon.primary },
-                                        { icon: <Copy size={18} />, action: () => { navigator.clipboard.writeText(ann.content); alert('Signal Copied'); }, hoverBg: theme.maroon.subtle, hoverColor: theme.maroon.secondary },
+                                        { icon: <Copy size={18} />, action: () => { navigator.clipboard.writeText(ann.content); alert('announcement Copied'); }, hoverBg: theme.maroon.subtle, hoverColor: theme.maroon.secondary },
                                         { icon: <Trash2 size={18} />, action: () => handleDelete(ann._id), hoverBg: theme.maroon.subtle, hoverColor: theme.maroon.dark }
                                     ].map((tool, idx) => (
                                         <motion.button
@@ -519,7 +498,7 @@ const AdminAnnouncements = () => {
                             <div className="w-24 h-24 mx-auto mb-8 rounded-full flex items-center justify-center" style={{ background: theme.neutral.gray50, color: theme.maroon.light }}>
                                 <Megaphone size={40} />
                             </div>
-                            <h3 className="text-2xl font-black mb-4 tracking-tight uppercase" style={{ color: theme.neutral.textPrimary }}>No active signals</h3>
+                            <h3 className="text-2xl font-black mb-4 tracking-tight uppercase" style={{ color: theme.neutral.textPrimary }}>No active announcements</h3>
                             <p className="font-bold mb-10 max-w-sm mx-auto uppercase tracking-widest text-[10px]" style={{ color: theme.neutral.textSecondary }}>Initialize a new broadcast to reach students across the network.</p>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
@@ -528,7 +507,7 @@ const AdminAnnouncements = () => {
                                 className="px-10 py-5 text-white rounded-2xl font-black shadow-lg transition-all inline-flex items-center gap-3 text-sm tracking-widest"
                                 style={{ background: theme.maroon.gradient }}
                             >
-                                <Plus size={24} /> CREATE SIGNAL
+                                <Plus size={24} /> CREATE announcement
                             </motion.button>
                         </motion.div>
                     )}
@@ -563,7 +542,7 @@ const AdminAnnouncements = () => {
                                     </div>
                                     <div>
                                         <h2 className="text-2xl font-black tracking-tight uppercase" style={{ color: theme.neutral.textPrimary }}>
-                                            {editingAnnouncement ? 'Edit Signal' : 'New Broadcast'}
+                                            {editingAnnouncement ? 'Edit announcement' : 'New Broadcast'}
                                         </h2>
                                         <p className="text-[10px] font-black uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Amrita Management Protocol</p>
                                     </div>
@@ -576,7 +555,7 @@ const AdminAnnouncements = () => {
                                     <form onSubmit={handleSubmit} className="p-10 lg:p-14 space-y-12" style={{ borderRight: `1px solid ${theme.neutral.gray100}` }}>
                                         {/* Category Archetype */}
                                         <div className="space-y-6">
-                                            <label className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: theme.neutral.textSecondary }}>Signal Archetype</label>
+                                            <label className="text-[10px] font-black uppercase tracking-[0.3em]" style={{ color: theme.neutral.textSecondary }}>announcement Archetype</label>
                                             <div className="grid grid-cols-3 gap-4">
                                                 {categories.map(cat => (
                                                     <motion.button
@@ -707,7 +686,7 @@ const AdminAnnouncements = () => {
 
                                         <button type="submit" className="w-full py-6 text-white rounded-2xl font-black shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-4 text-sm uppercase tracking-widest group mt-8 overflow-hidden relative" style={{ background: theme.maroon.gradient }}>
                                             <Send size={24} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-500" />
-                                            <span>{editingAnnouncement ? 'UPDATE SIGNAL' : 'DISPATCH SIGNAL'}</span>
+                                            <span>{editingAnnouncement ? 'UPDATE announcement' : 'DISPATCH announcement'}</span>
                                         </button>
                                     </form>
 

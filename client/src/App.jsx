@@ -51,7 +51,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<PrivateRoute role="student"><StudentDashboard /></PrivateRoute>} />
-          <Route path="/alumni" element={<PrivateRoute role="student"><AlumniInsights /></PrivateRoute>} />
+          <Route path="/alumni-insights" element={<PrivateRoute role="student"><AlumniInsights /></PrivateRoute>} />
           <Route path="/prephub" element={<PrivateRoute role="student"><PrepHub /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute role="student"><StudentProfile /></PrivateRoute>} />
           <Route path="/drives" element={<PrivateRoute role="student"><PlacementDrives /></PrivateRoute>} />

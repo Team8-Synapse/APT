@@ -62,12 +62,12 @@ const AdminTickerManager = () => {
 
     return (
         <div className="p-8 max-w-4xl mx-auto animate-fade-in-up">
-            <div className="flex items-center gap-4 mb-8">
-                <div className="p-3 bg-amrita-maroon text-white rounded-xl shadow-lg">
-                    <Megaphone size={28} />
-                </div>
+            <div className="flex items-center gap-2 mb-8">
+                <Megaphone className="text-amrita-maroon" size={28} />
                 <div>
-                    <h1 className="text-3xl font-black text-gray-800 dark:text-white">Ticker Manager</h1>
+                    <h1 className="text-3xl font-black">
+                        <span style={{ color: '#1A1A1A' }}>Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
+                    </h1>
                     <p className="text-gray-500 font-medium">Manage scrolling messages on the student dashboard.</p>
                 </div>
             </div>

@@ -14,8 +14,8 @@ const PrepHub = () => {
     const categories = [
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
-        { id: 'Aptitude', icon: <Cpu size={18} />, label: 'Aptitude & Logic' },
-        { id: 'Technical', icon: <UserCheck size={18} />, label: 'Core Technical' },
+        { id: 'Aptitude', icon: <UserCheck size={18} />, label: 'Aptitude & Logic' },
+        { id: 'Technical',icon: <Cpu size={18} /> , label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
         { id: 'Notes', icon: <StickyNote size={18} />, label: 'My Notes' },
     ];
@@ -138,11 +138,10 @@ const PrepHub = () => {
         <div className="space-y-10 page-enter pb-12 font-bold">
             <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
                 <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Sparkles className="text-amrita-gold" size={18} />
-                        <span className="text-[10px] font-black tracking-[0.2em] text-amrita-maroon uppercase">Elite Training Material</span>
-                    </div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">Prep <span className="text-gradient">Hub</span></h1>
+                    <h1 className="text-4xl font-black flex items-center gap-2">
+                        <BookOpen className="text-amrita-maroon" size={32} />
+                        <span style={{ color: '#1A1A1A' }}>Prep</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                    </h1>
                     <p className="text-gray-500 font-medium mt-2">Curated preparation resources verified by CIR, Amrita</p>
                 </div>
 

@@ -5,6 +5,7 @@ import {
     Settings, LogOut, MessageSquare
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logoImg from '../../assets/logo.png';
 import NotificationsPanel from '../NotificationsPanel';
 
 const AdminNavbar = ({
@@ -28,7 +29,7 @@ const AdminNavbar = ({
         { id: 'students', label: 'Students', icon: <Users size={20} />, path: '/admin' },
         { id: 'drives', label: 'Company Drives', icon: <Briefcase size={20} />, path: '/admin' },
         { id: 'prep', label: 'Prep Hub', icon: <Brain size={20} />, path: '/admin' },
-        { id: 'alumni', label: 'Alumni Insights', icon: <GraduationCap size={20} />, path: '/admin' },
+        { id: 'alumni', label: 'Alumni Connect', icon: <GraduationCap size={20} />, path: '/admin' },
         { id: 'announcements', label: 'Announcements', icon: <Megaphone size={20} />, path: '/admin/announcements' },
         { id: 'ticker', label: 'Ticker', icon: <MessageSquare size={20} />, path: '/admin' },
         { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={20} />, path: '/admin' },
@@ -47,14 +48,8 @@ const AdminNavbar = ({
     return (
         <div className="glass-card !bg-white/90 dark:!bg-gray-900/90 !rounded-2xl px-4 py-2 flex items-center justify-between sticky top-4 z-50 backdrop-blur-xl border border-white/20 shadow-xl">
             {/* Amrita Branding */}
-            <div className="flex items-center gap-3 pr-5 border-r border-gray-200 dark:border-gray-700">
-                <div className="w-10 h-10 bg-amrita-maroon rounded-xl flex items-center justify-center text-white shadow-lg shadow-amrita-maroon/20">
-                    <Sparkles size={20} className="text-[#FFD700]" />
-                </div>
-                <div>
-                    <h2 className="text-base font-black text-amrita-maroon leading-tight tracking-tighter uppercase">Amrita</h2>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Placement Tracker</p>
-                </div>
+            <div className="flex items-center gap-3 pr-5 border-r border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => navigate('/admin')}>
+                <img src={logoImg} alt="Amrita Placement Tracker" className="h-10 w-auto object-contain hover:scale-105 transition-transform duration-300" />
             </div>
 
             {/* Navigation Tabs - Single Row */}

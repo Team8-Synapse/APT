@@ -11,45 +11,82 @@ import {
     Sun, PieChart, Activity, Cpu, Smartphone, Database, Cloud, Terminal, Wifi,
     Battery, Volume2, HelpCircle, Info, AlertTriangle, Clock3, CalendarDays,
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
-    Edit3, Trash2, Save, Upload, Link, Lock, Unlock, EyeOff, Eye as EyeIcon,
-    Dribbble, Github, Linkedin, Twitter, Youtube, Instagram, Facebook
+    Dribbble, Github, Linkedin, Twitter, Youtube, Instagram, Facebook, LayoutDashboard
 } from 'lucide-react';
 import NotificationsPanel from '../../components/NotificationsPanel';
+import { motion } from 'framer-motion';
 
-// ============= ANIMATED BACKGROUND =============
-const AnimatedBackground = () => (
-    <div className="animated-bg-dashboard">
-        <div className="gradient-orb-d orb-d1"></div>
-        <div className="gradient-orb-d orb-d2"></div>
-        <div className="gradient-orb-d orb-d3"></div>
-        <div className="mesh-gradient-overlay"></div>
-        <div className="stars-container-d">
-            {[...Array(50)].map((_, i) => (
-                <div key={i} className="star-d" style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 5}s`,
-                    opacity: Math.random() * 0.5
-                }} />
-            ))}
+
+
+// ============= TILT CARD MAX =============
+const TiltCard = ({ children, delay = 0, className = "" }) => {
+    const cardRef = useRef(null);
+    const [rotateX, setRotateX] = useState(0);
+    const [rotateY, setRotateY] = useState(0);
+    const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
+    const [opacity, setOpacity] = useState(0);
+
+    const handleMouseMove = (e) => {
+        if (!cardRef.current) return;
+        const rect = cardRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rX = ((y - centerY) / centerY) * -10;
+        const rY = ((x - centerX) / centerX) * 10;
+
+        setRotateX(rX);
+        setRotateY(rY);
+        setGlarePosition({
+            x: (x / rect.width) * 100,
+            y: (y / rect.height) * 100
+        });
+        setOpacity(1);
+    };
+
+    const handleMouseLeave = () => {
+        setRotateX(0);
+        setRotateY(0);
+        setOpacity(0);
+    };
+
+    return (
+        <div
+            ref={cardRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+                perspective: 1000,
+                transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+                transition: "transform 0.1s ease-out",
+                transformStyle: "preserve-3d"
+            }}
+            className={`glass-card-premium ${className}`}
+        >
+            <div className="card-shine-max" style={{
+                background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.4) 0%, transparent 80%)`,
+                opacity: opacity
+            }} />
+            <div style={{ transform: "translateZ(20px)" }}>
+                {children}
+            </div>
+            <div className="card-border-glow-max"></div>
         </div>
-    </div>
-);
+    );
+};
 
-// ============= GLASS CARD PREMIUM =============
+// ============= GLASS CARD PREMIUM (Tilt Variant) =============
 const GlassCardPremium = ({ children, className = '', delay = 0 }) => (
-    <FadeIn delay={delay}>
-        <div className={`glass-card-premium ${className}`}>
-            <div className="card-shine"></div>
-            {children}
-            <div className="card-border-glow"></div>
-        </div>
-    </FadeIn>
+    <TiltCard delay={delay} className={className}>
+        {children}
+    </TiltCard>
 );
 
 // ============= AI SUCCESS RADIAL =============
 const SuccessRadial = ({ percentage }) => {
-    const radius = 35;
+    const radius = 45;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (percentage / 100) * circumference;
 
@@ -102,6 +139,94 @@ const AnimatedCounter = ({ end, suffix = '', duration = 2000 }) => {
     }, [end, duration, hasAnimated]);
 
     return <span ref={ref}>{count}{suffix}</span>;
+};
+
+
+// ============= RADAR CHART COMPONENT =============
+const RadarChart = ({ data }) => {
+    const size = 200;
+    const center = size / 2;
+    const radius = size * 0.35;
+    const angleStep = (Math.PI * 2) / data.length;
+
+    const points = data.map((d, i) => {
+        const r = (d.value / 100) * radius;
+        const x = center + r * Math.sin(i * angleStep);
+        const y = center - r * Math.cos(i * angleStep);
+        return `${x},${y}`;
+    }).join(' ');
+
+    return (
+        <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
+            <svg viewBox={`0 0 ${size} ${size}`} style={{ width: '100%', height: '100%' }}>
+                {/* Background Polygons */}
+                {[0.2, 0.4, 0.6, 0.8, 1].map((scale, i) => (
+                    <polygon
+                        key={i}
+                        points={data.map((_, j) => {
+                            const r = scale * radius;
+                            const x = center + r * Math.sin(j * angleStep);
+                            const y = center - r * Math.cos(j * angleStep);
+                            return `${x},${y}`;
+                        }).join(' ')}
+                        fill="none"
+                        stroke="#f0f0f0"
+                        strokeWidth="1"
+                    />
+                ))}
+
+                {/* Axes */}
+                {data.map((_, i) => {
+                    const x = center + radius * Math.sin(i * angleStep);
+                    const y = center - radius * Math.cos(i * angleStep);
+                    return <line key={i} x1={center} y1={center} x2={x} y2={y} stroke="#f0f0f0" strokeWidth="1" />;
+                })}
+
+                {/* Data Polygon */}
+                <motion.polygon
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    points={points}
+                    fill="rgba(164, 18, 63, 0.2)"
+                    stroke="#A4123F"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                />
+
+                {/* Data Points */}
+                {data.map((d, i) => {
+                    const r = (d.value / 100) * radius;
+                    const x = center + r * Math.sin(i * angleStep);
+                    const y = center - r * Math.cos(i * angleStep);
+                    return <circle key={i} cx={x} cy={y} r="4" fill="#A4123F" />;
+                })}
+            </svg>
+
+            {/* Labels */}
+            {data.map((d, i) => {
+                const x = center + (radius + 20) * Math.sin(i * angleStep);
+                const y = center - (radius + 20) * Math.cos(i * angleStep);
+                return (
+                    <div key={i} style={{
+                        position: 'absolute',
+                        left: x,
+                        top: y,
+                        transform: 'translate(-50%, -50%)',
+                        fontSize: '11px',
+                        fontWeight: '900',
+                        color: '#777',
+                        textTransform: 'uppercase',
+                        whiteSpace: 'nowrap',
+                        pointerEvents: 'none',
+                        letterSpacing: '0.02em'
+                    }}>
+                        {d.label}
+                    </div>
+                );
+            })}
+        </div>
+    );
 };
 
 // ============= FADE IN ANIMATION =============
@@ -387,7 +512,7 @@ const StudentDashboard = () => {
     };
 
     const greeting = getGreeting();
-    const userName = fullProfile?.firstName || user?.email?.split('@')[0] || 'Student';
+    const userName = fullProfile?.firstName || user?.email?.split('@')?.[0] || 'Student';
 
     // Helper to map skill level strings to numbers
     const getSkillLevel = (lv) => {
@@ -431,7 +556,7 @@ const StudentDashboard = () => {
 
                 .dashboard-container {
                     min-height: 100vh;
-                    background: #FFF5F7;
+                    background: #f8f9fa;
                     font-family: 'Outfit', sans-serif;
                     color: var(--text-primary);
                 }
@@ -510,35 +635,42 @@ const StudentDashboard = () => {
                 }
 
                 .glass-card-premium {
-                    background: var(--glass-bg);
-                    backdrop-filter: blur(12px) saturate(180%);
-                    border: 1px solid var(--glass-border);
-                    border-radius: var(--radius-outer);
-                    padding: 2rem;
+                    background: rgba(255, 255, 255, 0.7);
+                    backdrop-filter: blur(25px) saturate(200%);
+                    border: 1px solid rgba(255, 255, 255, 0.6);
+                    border-radius: 32px;
+                    padding: 2.5rem;
                     position: relative;
                     overflow: hidden;
-                    box-shadow: var(--shadow-premium);
-                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+                    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
                 .glass-card-premium:hover {
-                    transform: translateY(-8px);
-                    box-shadow: 0 30px 60px rgba(177, 18, 74, 0.12);
-                    border-color: var(--maroon-primary);
+                    border-color: rgba(164, 18, 63, 0.4);
+                    box-shadow: 0 30px 60px rgba(164, 18, 63, 0.1);
                 }
 
-                .card-shine {
+                .card-shine-max {
                     position: absolute;
                     inset: 0;
-                    background: linear-gradient(135deg, transparent 45%, rgba(255,255,255,0.4) 50%, transparent 55%);
-                    background-size: 250% 250%;
-                    animation: shine-flow 5s infinite linear;
                     pointer-events: none;
+                    z-index: 10;
+                    mix-blend-mode: overlay;
+                    transition: opacity 0.5s;
                 }
 
                 @keyframes shine-flow {
                     0% { background-position: 200% 200%; }
                     100% { background-position: -200% -200%; }
+                }
+
+                .holographic-glow {
+                    background: linear-gradient(135deg, #1A1A1A 0%, #A4123F 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    filter: drop-shadow(0 0 8px rgba(164, 18, 63, 0.15));
+                    font-weight: 900 !important;
                 }
 
                 .card-title {
@@ -609,7 +741,7 @@ const StudentDashboard = () => {
                     box-shadow: 0 6px 12px rgba(177, 18, 74, 0.2);
                 }
 
-                .success-radial-container { position: relative; width: 160px; height: 160px; margin: 0 auto; }
+                .success-radial-container { position: relative; width: 180px; height: 180px; margin: 0 auto; }
                 .success-radial { transform: rotate(-90deg); width: 100%; height: 100%; }
                 .radial-bg { fill: none; stroke: #f0f0f0; stroke-width: 10; }
                 .radial-fill { 
@@ -618,10 +750,10 @@ const StudentDashboard = () => {
                 }
                 .radial-text {
                     position: absolute; inset: 0; display: flex; flex-direction: column;
-                    align-items: center; justify-content: center;
+                    align-items: center; justify-content: center; gap: 4px;
                 }
-                .radial-value { font-size: 2rem; font-weight: 800; color: var(--maroon-primary); }
-                .radial-label { font-size: 0.75rem; font-weight: 600; color: var(--text-light); }
+                .radial-value { font-size: 2.75rem; font-weight: 950; color: var(--maroon-primary); line-height: 1; }
+                .radial-label { font-size: 0.9rem; font-weight: 900; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.15em; }
 
                 .magnetic-btn-d {
                     padding: 1.25rem 2.5rem; border-radius: 16px;
@@ -659,9 +791,84 @@ const StudentDashboard = () => {
                 .loading-spinner { position: relative; width: 80px; height: 80px; }
                 .spinner-ring { position: absolute; inset: 0; border: 4px solid transparent; border-top-color: var(--maroon-primary); border-radius: 50%; animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; }
                 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+                .bento-grid-container {
+                    display: grid;
+                    grid-template-columns: repeat(12, 1fr);
+                    grid-auto-rows: 260px;
+                    gap: 1.5rem;
+                    margin-bottom: 3rem;
+                }
+
+                /* RESTORED GRID UTILITY CLASSES */
+                .bento-card { height: 100%; display: flex; flex-direction: column; overflow: hidden;x}
+                .span-12 { grid-column: span 12; }
+                .span-8 { grid-column: span 8; }
+                .span-4 { grid-column: span 4; }
+                .row-2 { grid-row: span 2; }
+
+                /* RESPONSIVE LAYOUT LOGIC */
+                @media (max-width: 1280px) {
+                    .bento-grid-container { grid-template-columns: repeat(8, 1fr); }
+                    .span-4 { grid-column: span 4; }
+                    .span-8 { grid-column: span 8; }
+                    .span-12 { grid-column: span 8; }
+                }
+
+                @media (max-width: 1024px) {
+                    .bento-grid-container { grid-template-columns: repeat(4, 1fr); }
+                    .span-4 { grid-column: span 4; }
+                    .span-8 { grid-column: span 4; }
+                    .span-12 { grid-column: span 4; }
+                    .row-2 { grid-row: auto; }
+                    .bento-grid-container { grid-auto-rows: auto; }
+                }
+
+                @media (max-width: 640px) {
+                    .bento-grid-container { grid-template-columns: 1fr; }
+                    .span-4, .span-8, .span-12 { grid-column: span 1; }
+                }
+
+                .stat-card-compact {
+                    padding: 2rem !important;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+
+                .stat-label { font-size: 0.95rem !important; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem !important; }
+                .stat-value { font-size: 3.5rem !important; font-weight: 900 !important; color: var(--maroon-primary) !important; line-height: 1 !important; margin-bottom: 1rem !important; }
+
+                .card-title { font-size: 1.25rem !important; font-weight: 900 !important; margin-bottom: 2rem !important; display: flex; align-items: center; gap: 1rem; color: #1A1A1A; }
+                .card-title-icon { width: 2.75rem !important; height: 2.75rem !important; display: flex; items-center justify-center; background: var(--maroon-subtle); color: var(--maroon-primary); border-radius: 14px; font-size: 1.25rem !important; }
+
+                .tab-btn-d {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 0.75rem 1.25rem;
+                    border-radius: 12px;
+                    border: none;
+                    background: transparent;
+                    color: var(--text-light);
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                .tab-btn-d:hover {
+                    background: var(--maroon-subtle);
+                    color: var(--maroon-primary);
+                }
+
+                .tab-btn-d.active {
+                    background: var(--maroon-primary);
+                    color: white;
+                    box-shadow: var(--shadow-glow);
+                }
             `}</style>
 
-            <AnimatedBackground />
+
 
             {tickers.length > 0 && (
                 <div className="ticker-d">
@@ -682,155 +889,234 @@ const StudentDashboard = () => {
                 <FadeIn>
                     <header className="dashboard-header">
                         <div className="greeting-section">
-                            <h1>{greeting.text}, {userName}</h1>
-                            <p>{currentTime.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })} • Student Portal</p>
+                            <h2 className="text-sm font-black uppercase tracking-widest mb-1 flex items-center gap-2 opacity-60">
+                                <LayoutDashboard size={14} className="text-amrita-maroon" />
+                                <span style={{ color: '#1A1A1A' }}>Student</span> <span style={{ color: '#A4123F' }}>Dashboard</span>
+                            </h2>
+                            <h1 className="text-4xl font-black tracking-tight" style={{ color: '#A4123F' }}>
+                                {greeting.text}, {userName}
+                                <span className="block text-sm font-bold text-gray-400 mt-1">
+                                    {currentTime.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+                                </span>
+                            </h1>
                         </div>
                     </header>
                 </FadeIn>
 
-                <div className="stats-grid">
-                    <GlassCardPremium delay={100}>
-                        <div className="stat-label">Placement Readiness</div>
-                        <SuccessRadial percentage={stats.readinessScore || 0} />
-                    </GlassCardPremium>
-                    <GlassCardPremium delay={200}>
-                        <div className="stat-label">Applied Drives</div>
-                        <div className="stat-value"><AnimatedCounter end={stats.applications?.total || 0} /></div>
-                        <div style={{ color: '#10B981', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <TrendingUp size={16} /> Total Applications
-                        </div>
-                    </GlassCardPremium>
-                    <GlassCardPremium delay={300}>
-                        <div className="stat-label">Eligible Drives</div>
-                        <div className="stat-value"><AnimatedCounter end={stats.drives?.eligible || 0} /></div>
-                        <div style={{ color: '#3B82F6', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <CheckCircle size={16} /> Ready to Apply
-                        </div>
-                    </GlassCardPremium>
-                    <GlassCardPremium delay={400}>
-                        <div className="stat-label">Academic CGPA</div>
-                        <div className="stat-value">{stats.profile?.cgpa || 0}</div>
-                        <div style={{ color: '#B1124A', fontSize: '0.9rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <GraduationCap size={16} /> {stats.profile?.department || 'Student'}
-                        </div>
-                    </GlassCardPremium>
-                </div>
 
-                <div className="content-grid">
-                    <div className="left-col">
-                        <GlassCardPremium delay={500}>
+                <div className="animate-fade-in-up bento-grid-container">
+                    {/* TIER 1: Readiness + Applied + Eligible */}
+                    <div className="span-4 row-2">
+                        <TiltCard delay={100} className="bento-card h-full !p-8">
                             <div className="card-title">
-                                <div className="card-title-icon"><Megaphone size={20} /></div>
-                                Live Announcements
+                                <div className="card-title-icon"><Target size={24} /></div>
+                                Readiness
                             </div>
-                            <div style={{ maxHeight: '400px', overflowY: 'auto', paddingRight: '1rem' }}>
+                            <div className="flex-1 flex items-center justify-center">
+                                <SuccessRadial percentage={stats.readinessScore || 0} />
+                            </div>
+                            <div className="mt-4 p-5 bg-amrita-maroon/5 rounded-2xl border border-amrita-maroon/10">
+                                <p className="text-[11px] font-black text-amrita-maroon uppercase tracking-widest mb-1">Coach Insight</p>
+                                <p className="text-sm text-gray-500 font-bold leading-tight">Focus on Technical MCQ to reach benchmark.</p>
+                            </div>
+                        </TiltCard>
+                    </div>
+
+                    <div className="span-4">
+                        <TiltCard delay={200} className="bento-card stat-card-compact">
+                            <div className="stat-label">Applied</div>
+                            <div className="stat-value holographic-glow"><AnimatedCounter end={stats.applications?.total || 0} /></div>
+                            <div className="text-[11px] font-extrabold text-[#10B981] flex items-center gap-2">
+                                <TrendingUp size={14} /> Tracking History
+                            </div>
+                        </TiltCard>
+                    </div>
+
+                    <div className="span-4">
+                        <TiltCard delay={300} className="bento-card stat-card-compact">
+                            <div className="stat-label">Eligible</div>
+                            <div className="stat-value holographic-glow"><AnimatedCounter end={stats.drives?.eligible || 0} /></div>
+                            <div className="text-[11px] font-extrabold text-[#3B82F6] flex items-center gap-2">
+                                <CheckCircle size={14} /> Ready to Apply
+                            </div>
+                        </TiltCard>
+                    </div>
+
+                    {/* TIER 2: (Readiness continues) + CGPA + Activity */}
+                    <div className="span-4">
+                        <TiltCard delay={400} className="bento-card stat-card-compact">
+                            <div className="stat-label">CGPA</div>
+                            <div className="stat-value holographic-glow">{stats.profile?.cgpa || 0}</div>
+                            <div className="text-[11px] font-extrabold text-[#B1124A] flex items-center gap-2">
+                                <GraduationCap size={14} /> Academic Record
+                            </div>
+                        </TiltCard>
+                    </div>
+
+                    <div className="span-4">
+                        <GlassCardPremium delay={700} className="bento-card h-full !p-6">
+                            <div className="card-title !mb-4">
+                                <div className="card-title-icon !w-8 !h-8"><Activity size={16} /></div>
+                                Activity
+                            </div>
+                            <div className="space-y-3 flex-1 overflow-y-auto">
+                                {applications.slice(0, 3).map((app, i) => (
+                                    <div key={i} onClick={() => window.location.href = '/applications'} className="flex items-center gap-3 p-2 bg-white/50 rounded-xl hover:bg-white border border-transparent hover:border-amrita-maroon/20 transition-all cursor-pointer group">
+                                        <div className="w-8 h-8 flex-shrink-0 bg-amrita-maroon/10 text-amrita-maroon rounded-lg group-hover:bg-amrita-maroon group-hover:text-white transition-all flex items-center justify-center">
+                                            <Briefcase size={14} />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[11px] font-black text-gray-800 truncate">{app.companyName}</p>
+                                            <p className="text-[9px] text-gray-400 font-black uppercase">{new Date(app.appliedDate).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </GlassCardPremium>
+                    </div>
+
+                    {/* TIER 3: Announcements + Recommended (Balanced Rectangle) */}
+                    <div className="span-4 row-2">
+                        <GlassCardPremium delay={500} className="bento-card h-full !p-6">
+                            <div className="card-title !mb-6">
+                                <div className="card-title-icon"><Megaphone size={22} /></div>
+                                Bulletins
+                            </div>
+                            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar" style={{ maxHeight: '420px' }}>
                                 {announcements.length > 0 ? announcements.map((ann, i) => (
-                                    <div key={i} className="announcement-card">
-                                        <div className="announcement-content">{ann.content}</div>
-                                        <div className="announcement-meta">
-                                            <span><Calendar size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {new Date(ann.createdAt).toLocaleDateString()}</span>
-                                            {ann.links && ann.links.length > 0 && (
-                                                <a href={ann.links[0]?.url} className="announcement-link" target="_blank" rel="noopener noreferrer">
-                                                    View Details <ExternalLink size={14} />
+                                    <div key={i} className="announcement-card !p-5 !mb-5">
+                                        <div className="announcement-content !text-sm !leading-relaxed">{ann.content}</div>
+                                        <div className="announcement-meta !mt-4">
+                                            <span className="!text-[11px]"><Calendar size={14} className="inline mr-2" /> {new Date(ann.createdAt).toLocaleDateString()}</span>
+                                            {ann.links?.length > 0 && (
+                                                <a href={ann.links[0].url} className="announcement-link !text-[11px]" target="_blank" rel="noopener noreferrer">
+                                                    Open <ExternalLink size={12} className="inline ml-1" />
                                                 </a>
                                             )}
                                         </div>
                                     </div>
                                 )) : (
-                                    <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
-                                        <BellRing size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                        <p>No new announcements today.</p>
+                                    <div className="flex flex-col items-center justify-center h-full opacity-30 py-10">
+                                        <BellRing size={40} className="mb-4" />
+                                        <p className="text-[10px] font-black uppercase tracking-widest">No Alerts</p>
                                     </div>
                                 )}
                             </div>
                         </GlassCardPremium>
+                    </div>
 
-                        <div style={{ marginTop: '3rem' }}>
-                            <GlassCardPremium delay={600}>
-                                <div className="card-title">
+                    <div className="span-8 row-2">
+                        <GlassCardPremium delay={600} className="bento-card h-full !p-8">
+                            <div className="flex justify-between items-center mb-6">
+                                <div className="card-title !mb-0">
                                     <div className="card-title-icon"><Briefcase size={20} /></div>
-                                    Recommended Placements
+                                    Top Recommendations
                                 </div>
-                                {drives.map((drive, i) => (
-                                    <div key={i} className="drive-item">
-                                        <div className="drive-logo">{drive.companyName.charAt(0)}</div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>{drive.companyName}</div>
-                                            <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '4px' }}>
-                                                <Target size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {drive.jobProfile} •
-                                                <MapPin size={14} style={{ verticalAlign: 'middle', margin: '0 4px 0 8px' }} /> {drive.location}
-                                            </div>
+                                <button onClick={() => window.location.href = '/drives'} className="text-[10px] font-black text-amrita-maroon uppercase bg-amrita-maroon/10 px-4 py-2 rounded-xl hover:bg-amrita-maroon hover:text-white transition-all">All Drives</button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 flex-1">
+                                {drives.slice(0, 4).map((drive, i) => (
+                                    <div key={i} onClick={() => window.location.href = '/drives'} className="drive-item !mb-0 !p-4 border border-gray-100 rounded-2xl hover:border-amrita-maroon transition-all flex items-center gap-4 cursor-pointer group bg-white/40">
+                                        <div className="w-10 h-10 bg-amrita-maroon/10 text-amrita-maroon rounded-xl flex items-center justify-center font-black group-hover:bg-amrita-maroon group-hover:text-white transition-all">{drive.companyName.charAt(0)}</div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-sm truncate">{drive.companyName}</h4>
+                                            <p className="text-[10px] text-gray-400 font-bold">₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)} LPA • {drive.jobProfile}</p>
                                         </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontWeight: 800, color: '#B1124A', fontSize: '1.2rem' }}>₹{((drive.ctcDetails?.ctc || 0) / 100000).toFixed(1)} LPA</div>
-                                            <div style={{ fontSize: '0.75rem', color: '#888', marginTop: '4px' }}>Deadline: {new Date(drive.date).toLocaleDateString()}</div>
-                                        </div>
+                                        <ChevronRight size={14} className="text-gray-300 group-hover:text-amrita-maroon" />
                                     </div>
                                 ))}
-                                <MagneticButton style={{ width: '100%', marginTop: '1.5rem', justifyContent: 'center' }} onClick={() => window.location.href = '/student/drives'}>
-                                    Explore Job Board <ArrowRight size={20} />
-                                </MagneticButton>
-                            </GlassCardPremium>
-                        </div>
+                            </div>
+                        </GlassCardPremium>
                     </div>
 
-                    <div className="right-col">
+                    {/* TIER 4: Quick Links + Calendar + Radar */}
+                    <div className="span-4">
+                        <GlassCardPremium delay={900} className="bento-card h-full !p-6 flex items-center justify-center">
+                            <div className="grid grid-cols-2 gap-4 w-full">
+                                <button onClick={() => window.location.href = '/prephub'} className="flex flex-col items-center gap-3 group p-4 hover:bg-amrita-maroon/5 rounded-2xl transition-all">
+                                    <div className="w-12 h-12 bg-amrita-maroon/10 text-amrita-maroon rounded-2xl flex items-center justify-center group-hover:bg-amrita-maroon group-hover:text-white transition-all"><Brain size={20} /></div>
+                                    <span className="text-[11px] font-black uppercase">Prep</span>
+                                </button>
+                                <button onClick={() => window.location.href = '/profile'} className="flex flex-col items-center gap-3 group p-4 hover:bg-amrita-maroon/5 rounded-2xl transition-all">
+                                    <div className="w-12 h-12 bg-amrita-maroon/10 text-amrita-maroon rounded-2xl flex items-center justify-center group-hover:bg-amrita-maroon group-hover:text-white transition-all"><Users size={20} /></div>
+                                    <span className="text-[11px] font-black uppercase">User</span>
+                                </button>
+                                <button onClick={() => window.location.href = '/calendar'} className="flex flex-col items-center gap-3 group p-4 hover:bg-amrita-maroon/5 rounded-2xl transition-all">
+                                    <div className="w-12 h-12 bg-amrita-maroon/10 text-amrita-maroon rounded-2xl flex items-center justify-center group-hover:bg-amrita-maroon group-hover:text-white transition-all"><Calendar size={20} /></div>
+                                    <span className="text-[11px] font-black uppercase">Date</span>
+                                </button>
+                                <button onClick={() => window.location.href = '/drives'} className="flex flex-col items-center gap-3 group p-4 hover:bg-amrita-maroon/5 rounded-2xl transition-all">
+                                    <div className="w-12 h-12 bg-amrita-maroon/10 text-amrita-maroon rounded-2xl flex items-center justify-center group-hover:bg-amrita-maroon group-hover:text-white transition-all"><Briefcase size={20} /></div>
+                                    <span className="text-[11px] font-black uppercase">Jobs</span>
+                                </button>
+                            </div>
+                        </GlassCardPremium>
+                    </div>
 
-                        <div style={{ marginTop: '0' }}>
-                            <GlassCardPremium delay={600}>
-                                <div className="card-title">
-                                    <div className="card-title-icon"><CalendarDays size={20} /></div>
-                                    Mini Calendar
-                                </div>
+                    <div className="span-4">
+                        <GlassCardPremium delay={800} className="bento-card h-full !p-6">
+                            <div className="card-title !mb-4">
+                                <div className="card-title-icon !w-8 !h-8"><CalendarDays size={16} /></div>
+                                Events
+                            </div>
+                            <div className="flex-1 scale-90 origin-top">
                                 <MiniCalendar events={events} />
-                                <button
-                                    onClick={() => window.location.href = '/student/schedule'}
-                                    style={{ width: '100%', marginTop: '1.5rem', background: 'none', border: 'none', color: '#B1124A', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                                >
-                                    Full Schedule <ArrowRight size={18} />
-                                </button>
-                            </GlassCardPremium>
-                        </div>
+                            </div>
+                        </GlassCardPremium>
+                    </div>
 
-                        <div style={{ marginTop: '3rem' }}>
-                            <GlassCardPremium delay={700}>
-                                <div className="card-title">
-                                    <div className="card-title-icon"><BookOpen size={20} /></div>
-                                    Recommended Resources
-                                </div>
-                                <RecommendedResources resources={resources} />
-                                <button
-                                    onClick={() => window.location.href = '/student/resources'}
-                                    style={{ width: '100%', marginTop: '1rem', background: 'none', border: 'none', color: '#B1124A', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                                >
-                                    Browse all resources <ChevronRight size={18} />
-                                </button>
-                            </GlassCardPremium>
-                        </div>
+                    <div className="span-4">
+                        <TiltCard delay={1000} className="bento-card h-full !p-6">
+                            <div className="card-title !mb-4">
+                                <div className="card-title-icon !w-8 !h-8"><Activity size={16} /></div>
+                                Radar
+                            </div>
+                            <div className="flex-1 flex items-center justify-center">
+                                <RadarChart data={
+                                    fullProfile?.skills?.slice(0, 6)?.map(s => ({
+                                        label: s.name,
+                                        value: getSkillLevel(s.level)
+                                    })) || [
+                                        { label: 'Technical', value: 80 },
+                                        { label: 'Aptitude', value: 70 },
+                                        { label: 'Soft Skills', value: 60 }
+                                    ]
+                                } />
+                            </div>
+                        </TiltCard>
+                    </div>
 
-                        <div style={{ marginTop: '3rem' }}>
-                            <GlassCardPremium delay={800}>
-                                <div className="card-title">
-                                    <div className="card-title-icon"><Cpu size={20} /></div>
-                                    Skill Analytics
+                    {/* TIER 5: Intelligence Matrix (Full Width Solid Base) */}
+                    <div className="span-12">
+                        <TiltCard delay={1100} className="bento-card !p-8">
+                            <div className="flex flex-col md:flex-row gap-8 items-center">
+                                <div className="flex-1 w-full">
+                                    <div className="card-title !mb-8">
+                                        <div className="card-title-icon"><Cpu size={24} /></div>
+                                        Skill Intelligence Matrix
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                        {fullProfile?.skills?.slice(0, 4).map((skill, i) => (
+                                            <div key={i} className="space-y-3">
+                                                <div className="flex justify-between text-xs font-black uppercase tracking-widest text-gray-500">
+                                                    <span>{skill.name}</span>
+                                                    <span className="text-amrita-maroon">{getSkillLevel(skill.level)}%</span>
+                                                </div>
+                                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-amrita-maroon" style={{ width: `${getSkillLevel(skill.level)}%` }} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                {fullProfile?.skills?.length > 0 ? fullProfile.skills.map((skill, i) => (
-                                    <AnimatedSkillBar
-                                        key={i}
-                                        skill={skill.name}
-                                        level={getSkillLevel(skill.level)}
-                                        delay={i * 150}
-                                        color={i % 2 === 0 ? '#B1124A' : '#D14D72'}
-                                    />
-                                )) : (
-                                    <p style={{ color: '#888', textAlign: 'center', fontSize: '0.9rem' }}>No skills added yet. Update your profile!</p>
-                                )}
-                            </GlassCardPremium>
-                        </div>
+                                <div className="md:w-64 p-6 bg-amrita-maroon/5 rounded-3xl border border-amrita-maroon/10 self-stretch flex flex-col justify-center">
+                                    <p className="text-[10px] text-gray-400 font-black uppercase mb-2 tracking-widest text-center">AI Projection</p>
+                                    <p className="text-sm font-black text-amrita-maroon text-center">Solutions Architect (92%)</p>
+                                </div>
+                            </div>
+                        </TiltCard>
                     </div>
                 </div>
-
-                {/* Footer */}
                 <FadeIn delay={1000}>
                     <div style={{ marginTop: '5rem', paddingBottom: '8rem', textAlign: 'center' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
