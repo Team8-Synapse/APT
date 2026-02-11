@@ -220,10 +220,20 @@ cd client && npm run dev
 
 ---
 
+
 ## 🤝 Team & Contribution
 
-**Managed by Team 8**
-*Amrita Vishwa Vidyapeetham*
+## 🤝 Team 8 - SYNAPSE
+
+| Roll No. | Name | GitHub |
+|----------|------|--------|
+| **CB.SC.U4CSE23601** | Adithyaraman R | [![GitHub](https://img.shields.io/badge/ADITHYARAMAN7-181717?style=flat&logo=github&logoColor=white)](https://github.com/ADITHYARAMAN7) |
+| **CB.SC.U4CSE23621** | Harini N | [![GitHub](https://img.shields.io/badge/harininr-181717?style=flat&logo=github&logoColor=white)](https://github.com/harininr) |
+| **CB.SC.U4CSE23633** | Meera J Vaishnav | [![GitHub](https://img.shields.io/badge/Meerajvaishnav-181717?style=flat&logo=github&logoColor=white)](https://github.com/Meerajvaishnav) |
+| **CB.SC.U4CSE23657** | Vijay Aditya R V | [![GitHub](https://img.shields.io/badge/VIJAYADITYARV-181717?style=flat&logo=github&logoColor=white)](https://github.com/VIJAYADITYARV) |
+| **CB.SC.U4CSE23665** | Sharumathi P S | [![GitHub](https://img.shields.io/badge/Sharumathips-181717?style=flat&logo=github&logoColor=white)](https://github.com/Sharumathips) |
+
+*Amrita Vishwa Vidyapeetham, Coimbatore*
 
 We welcome community feedback and contributions! Please read our [Contribution Guidelines](CONTRIBUTING.md) before submitting Pull Requests.
 
