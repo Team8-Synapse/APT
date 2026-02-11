@@ -1,9 +1,7 @@
 # Amrita Placement Tracker
 <p align="center">
-<img width="516" height="193" alt="image" src="https://github.com/user-attachments/assets/fc8c034e-4c3f-41ec-9fc4-ef50fe9cfdaa" />
+<img width="516" height="193" alt="APT Logo" src="https://github.com/user-attachments/assets/fc8c034e-4c3f-41ec-9fc4-ef50fe9cfdaa" />
 </p>
-
-
 
 <div align="center">
 
@@ -17,39 +15,41 @@
 
 *Streamlining placement tracking with AI-enhanced insights, real-time analytics, and collaborative peer stories*
 
-[Features](#features) • [Tech Stack](#tech-stack) • [System Flow](#system-flow) • [Installation](#installation) • [API Guide](#api-documentation) • [Team](#team)
+[Features](#features) • [Tech Stack](#tech-stack) • [System Flow](#system-flow) • [Installation](#installation) • [API Guide](#api-documentation) • [Future Roadmap](#road-map)
 
 ---
 
 <img src="https://raw.githubusercontent.com/andreasbm/rainbow-line/master/line.png" width="100%">
 
-![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-
-![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)
-
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-
-![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-
-
-
-### **Next-Generation Campus Placement Management System**
-
-*Structures placement tracking of Amrita Vishwa Vidyapeetham with AI-powered insights and analytics*
-
----
-
 </div>
 
-## Overview
+## 📌 Overview
 
-**Amrita Placement Tracker (APT)** is an enterprise-grade, full-stack ecosystem designed to optimize campus recruitment at Amrita Vishwa Vidyapeetham. It provides a bridge between the Career & Internship Readiness (CIR) team, students, and alumni, delivering centralized tracking, deep behavioral analytics, and AI-driven growth metrics.
+**Amrita Placement Tracker (APT)** is an enterprise-grade, full-stack ecosystem designed to optimize campus recruitment at Amrita Vishwa Vidyapeetham. It provides a bridge between the **Career & Internship Readiness (CIR)** team, students, and alumni, delivering centralized tracking, deep behavioral analytics, and AI-driven growth metrics.
 
 ### 🌟 Why APT?
 - **AI-Enhanced Readiness**: Proprietary scoring algorithm mapping CGPA and skills to industry requirements.
 - **Storytelling Hub**: Students share and learn from real-world interview experiences.
 - **Enterprise-Scale Dashboards**: High-fidelity metrics for institutional oversight.
 - **Real-Time Synergy**: Live tickers, instant notifications, and dynamic scheduling.
+
+---
+
+## 📸 Visual Showcase
+
+<details>
+<summary><b>Click to view Dashboard Screenshots</b></summary>
+<br>
+
+| Student Dashboard | Admin Analytics |
+|-------------------|-----------------|
+| ![Student](https://via.placeholder.com/400x200?text=Student+Dashboard) | ![Admin](https://via.placeholder.com/400x200?text=Admin+Analytics) |
+
+| Placement Drives | Interview Stories |
+|------------------|-------------------|
+| ![Drives](https://via.placeholder.com/400x200?text=Drives+Page) | ![Stories](https://via.placeholder.com/400x200?text=Stories+Page) |
+
+</details>
 
 ---
 
@@ -191,13 +191,14 @@ npm run install:all
 
 ### 3. Environment Config
 Place a `.env` in the `/server` directory:
-```env
-PORT=5005
-MONGODB_URI=your_atlas_connection_string
-JWT_SECRET=secure_hex_key
-SUPABASE_URL=cloud_endpoint
-SUPABASE_SERVICE_KEY=cloud_key
-```
+
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Server listening port (default: 5005) |
+| `MONGODB_URI` | MongoDB Atlas Connection String |
+| `JWT_SECRET` | Secret key for signing tokens |
+| `SUPABASE_URL` | Endpoint for Supabase storage |
+| `SUPABASE_SERVICE_KEY` | Admin key for file operations |
 
 ### 4. Launch
 ```bash
@@ -207,6 +208,15 @@ cd server && npm start
 # Development with Hot-Reload
 cd client && npm run dev
 ```
+
+---
+
+## 🔮 Future Roadmap
+
+- [ ] **Mobile Application**: Native mobile app for iOS and Android.
+- [ ] **Resume Parsing**: AI-based auto-filling of profile data from PDFs.
+- [ ] **Mock Tests**: Integrating code compile for technical mock tests.
+- [ ] **Chatbot**: AI assistant for resolving student FAQs.
 
 ---
 
