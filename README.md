@@ -1,5 +1,7 @@
 # Amrita Placement Tracker
-<img width="569" height="178" align="center" alt="image" src="https://github.com/user-attachments/assets/78de32ff-6d17-4edc-ac64-7419d6dd8c77" />
+<p align="center">
+  <img width="569" height="178" alt="image" src="https://github.com/user-attachments/assets/78de32ff-6d17-4edc-ac64-7419d6dd8c77" />
+</p>
 
 <div align="center">
 
