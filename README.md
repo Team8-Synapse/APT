@@ -223,7 +223,6 @@ cd client && npm run dev
 
 ## 🤝 Team & Contribution
 
-## 🤝 Team 8 - SYNAPSE
 
 | Roll No. | Name | GitHub |
 |----------|------|--------|
