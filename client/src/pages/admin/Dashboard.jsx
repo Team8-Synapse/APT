@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Admin
+ * Description: Admin Dashboard Component.
+ * - Comprehensive administrative interface for placement management.
+ * - Features: Student management, drive tracking, analytics, and content management.
+ * - Includes sub-components for specific tasks (e.g., Reports, Ticker, PrepHub).
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -32,6 +39,7 @@ import AdminReports from './AdminReports';
 import AdminTickerManager from './AdminTickerManager';
 import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
 
+// ============= THEME DEFINITION =============
 const theme = {
     maroon: {
         primary: '#8B0000',
@@ -52,12 +60,14 @@ const theme = {
     }
 };
 
+// ============= MAIN ADMIN DASHBOARD COMPONENT =============
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
     const [timeOfDay, setTimeOfDay] = useState('');
     const [darkMode, setDarkMode] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
-    // Initialize time of day
+
+    // Initialize time of day greeting
     useEffect(() => {
         const hour = new Date().getHours();
         if (hour < 12) setTimeOfDay('Morning');
@@ -65,15 +75,16 @@ const AdminDashboard = () => {
         else setTimeOfDay('Evening');
     }, []);
 
-    // ... state ...
+    // ============= STATE MANAGEMENT =============
+    // Dashboard Core Stats
     const [stats, setStats] = useState({
         studentCount: 0, driveCount: 0, alumniCount: 0,
         placedStudents: 0, inProcessStudents: 0, placementPercentage: 0,
         recentDrives: [], departmentStats: [], placementStats: [], ctcStats: {},
         prepStats: {}, alumniStats: {}, announcementCount: 0
     });
+    // Data Lists
     const [students, setStudents] = useState([]);
-    // const [studentSearch, setStudentSearch] = useState(''); // Removed local search state
     const [companies, setCompanies] = useState([]);
     const [announcements, setAnnouncements] = useState([]);
     const [alumni, setAlumni] = useState([]);
@@ -81,32 +92,31 @@ const AdminDashboard = () => {
     const [filters, setFilters] = useState({ minCgpa: 7.0, maxBacklogs: 0, department: '', search: '' });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
+
+    // Resource Management
     const [adminResources, setAdminResources] = useState([]);
     const [newResource, setNewResource] = useState({
         title: '', description: '', category: 'Coding', type: 'Link', link: '', content: '', tags: ''
     });
+
+    // Announcement Management
     const [newAnnouncement, setNewAnnouncement] = useState({ content: '', links: [{ title: '', url: '' }] });
     const [editingAnnouncement, setEditingAnnouncement] = useState(null);
     const [editingResource, setEditingResource] = useState(null);
 
     // Drive Management State
     const [allDrives, setAllDrives] = useState([]);
-    const [viewingDrive, setViewingDrive] = useState(null); // Drive selected for Kanban
+    const [viewingDrive, setViewingDrive] = useState(null); // Drive selected for Kanban view
     const [driveApplications, setDriveApplications] = useState([]);
     const [showAddDriveModal, setShowAddDriveModal] = useState(false);
     const [selectedDrive, setSelectedDrive] = useState(null); // For editing drive details
 
-    // Student Detail Modal (Applicants View)
+    // Modal States
     const [showStudentDetailModal, setShowStudentDetailModal] = useState(false);
-
-    // Edit Student Modal
     const [showEditStudentModal, setShowEditStudentModal] = useState(false);
     const [selectedStudentForEdit, setSelectedStudentForEdit] = useState(null);
     const [selectedStudent, setSelectedStudent] = useState(null);
-
-    // Alumni Modal State
     const [showAddAlumniModal, setShowAddAlumniModal] = useState(false);
-
     const [editingAlumni, setEditingAlumni] = useState(null);
     const [alumniSearch, setAlumniSearch] = useState('');
     const [showAddEventModal, setShowAddEventModal] = useState(false);
@@ -116,7 +126,7 @@ const AdminDashboard = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [calendarEvents, setCalendarEvents] = useState([]);
 
-    // Recent activities
+    // Recent activities dummy data (replaced by API real data where available)
     const recentActivities = [
         { type: 'placement', message: 'Rahul Kumar placed at Microsoft', time: '2 hours ago', icon: <Trophy /> },
         { type: 'application', message: '15 new applications for Google drive', time: '4 hours ago', icon: <FileText /> },
@@ -124,9 +134,7 @@ const AdminDashboard = () => {
         { type: 'update', message: 'CTC statistics updated', time: '2 days ago', icon: <RefreshCw /> },
     ];
 
-    // Calendar events
-    // const calendarData = fetched dynamically now
-
+    // ============= DATA FETCHING EFFECS =============
     useEffect(() => {
         fetchStats();
         fetchStudents();
@@ -655,7 +663,7 @@ const AdminDashboard = () => {
                             />
                         </div>
 
-                        </>
+                    </>
                 )}
 
                 {activeTab === 'students' && (

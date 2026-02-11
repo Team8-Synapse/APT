@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages
+ * Description: Registration Page Component.
+ * - Multi-step registration process: Email Verification -> OTP -> Password Setup.
+ * - Real-time validation for email and password strength.
+ * - Integration with EmailJS for OTP delivery.
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -33,6 +40,7 @@ const theme = {
 };
 
 // ============= ANIMATION COMPONENTS =============
+// Component for the animated background visuals
 const AnimatedBackground = () => {
     return (
         <div className="fixed inset-0 z-0">
@@ -53,6 +61,7 @@ const AnimatedBackground = () => {
     );
 };
 
+// Wrapper for floating animation effects
 const FloatingElement = ({ children, delay = 0 }) => {
     return (
         <div
@@ -64,14 +73,18 @@ const FloatingElement = ({ children, delay = 0 }) => {
     );
 };
 
+// ============= MAIN REGISTER COMPONENT =============
 const Register = () => {
+    // State for multi-step form navigation
     const [step, setStep] = useState(0);
+    // Form input states
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [generatedOtp, setGeneratedOtp] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [username, setUsername] = useState('');
+    // UI status states
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -81,6 +94,7 @@ const Register = () => {
 
     const navigate = useNavigate();
 
+    // Regex to enforce institutional email domain
     const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)*amrita\.edu$/;
 
     const features = [
@@ -90,6 +104,7 @@ const Register = () => {
         { icon: <Briefcase size={20} />, title: 'Career Guidance', description: 'Expert mentorship and support' }
     ];
 
+    // Timer effect for OTP resend countdown
     useEffect(() => {
         let timer;
         if (otpTimer > 0) {
@@ -98,11 +113,13 @@ const Register = () => {
         return () => clearInterval(timer);
     }, [otpTimer]);
 
+    // Helper to extract username from email
     const extractUsername = (email) => {
         const partBeforeAt = email.split('@')[0];
         return partBeforeAt.toUpperCase();
     };
 
+    // Helper to calculate password strength score
     const getPasswordStrength = (pass) => {
         let score = 0;
         if (pass.length > 8) score++;
@@ -112,6 +129,7 @@ const Register = () => {
         return score;
     };
 
+    // Step 1: Handle Email Submission and OTP Generation
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
         if (!emailRegex.test(email)) {
@@ -147,6 +165,7 @@ const Register = () => {
         }
     };
 
+    // Step 2: Verify User-entered OTP
     const handleOTPSubmit = (e) => {
         e.preventDefault();
         if (otp !== generatedOtp) {
@@ -157,6 +176,7 @@ const Register = () => {
         setStep(2);
     };
 
+    // Step 3: Complete Registration with Password
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
         const strength = getPasswordStrength(password);

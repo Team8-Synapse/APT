@@ -66,6 +66,31 @@ const InterviewExperiences = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
+            <style>{`
+                .dark h1 span:first-of-type { color: #F3F4F6 !important; }
+                .dark h1 span:last-child { color: #F472B6 !important; }
+
+                /* Fix for light mode text visibility in glass cards */
+                .glass-card h3 { color: #1f2937; }
+                .glass-card p.text-xs { color: #6b7280; }
+
+                /* Dark mode overrides */
+                .dark .glass-card h3 { color: #F3F4F6 !important; }
+                .dark .glass-card p.text-xs { color: #9CA3AF !important; }
+                
+                /* Filter bubble fixes */
+                button.rounded-full {
+                    background-color: #ffffff;
+                    color: #4b5563;
+                    border-color: #f3f4f6;
+                }
+                
+                .dark button.rounded-full {
+                    background-color: #1f2937 !important;
+                    color: #d1d5db !important;
+                    border-color: #374151 !important;
+                }
+            `}</style>
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
@@ -103,7 +128,7 @@ const InterviewExperiences = () => {
                         onClick={() => setSearchTerm(company === 'All' ? '' : company)}
                         className={`px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all shadow-sm ${(company === 'All' && searchTerm === '') || searchTerm.toLowerCase() === company.toLowerCase()
                             ? 'bg-amrita-maroon text-white shadow-amrita-maroon/20'
-                            : 'bg-white text-gray-600 border border-gray-100 hover:bg-gray-50'
+                            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                             }`}
                     >
                         {company}

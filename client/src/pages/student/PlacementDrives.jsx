@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: Placement Drives Component.
+ * - Lists all eligible and available placement drives.
+ * - Features: Filtering, searching, sorting, and application management.
+ * - Displays drive details in card or list view.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -10,17 +17,20 @@ import CompanyLogo from '../../components/CompanyLogo';
 
 const PlacementDrives = () => {
     const { user } = useAuth();
+    // Drive Data State
     const [drives, setDrives] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // UI State
     const [viewMode, setViewMode] = useState('cards');
     const [filters, setFilters] = useState({
         status: 'all',
         eligibility: 'all',
         search: ''
     });
-    const [sortBy, setSortBy] = useState('date'); // date, ctc, company
+    const [sortBy, setSortBy] = useState('date'); // Options: date, ctc, company
 
-    // Helper function to calculate days until deadline
+    // Helper: Calculate days remaining for deadline
     const getDaysUntil = (date) => {
         const today = new Date();
         const driveDate = new Date(date);
@@ -29,7 +39,7 @@ const PlacementDrives = () => {
         return diffDays;
     };
 
-    // Helper function to get deadline badge
+    // Helper: Generate deadline status badge
     const getDeadlineBadge = (date) => {
         const days = getDaysUntil(date);
         if (days < 0) return { text: 'Expired', color: '#6b7280', bg: '#f3f4f6' };
@@ -46,6 +56,7 @@ const PlacementDrives = () => {
         }
     }, [user]);
 
+    // Fetch eligible drives for the logged-in student
     const fetchDrives = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -86,6 +97,7 @@ const PlacementDrives = () => {
         }
     };
 
+    // Handle application submission
     const handleApply = async (driveId) => {
         try {
             const userId = user?._id || user?.id;
@@ -93,13 +105,14 @@ const PlacementDrives = () => {
                 userId,
                 driveId
             });
-            await fetchDrives();
+            await fetchDrives(); // Refresh to update status
         } catch (err) {
             console.error('Failed to apply:', err);
             alert(err.response?.data?.error || 'Failed to apply');
         }
     };
 
+    // Filter and Sort Logic
     const filteredDrives = drives.filter(drive => {
         // Case-insensitive status check
         if (filters.status !== 'all' && drive.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
@@ -135,6 +148,46 @@ const PlacementDrives = () => {
 
     return (
         <div className="space-y-8 page-enter">
+            <style>{`
+                .dark h1 span { color: #F3F4F6 !important; }
+                .dark h1 span:last-child { color: #F472B6 !important; }
+                .dark p { color: #9CA3AF !important; }
+                
+                .dark .glass-card {
+                    background-color: #1F2937 !important;
+                    border-color: #374151 !important;
+                }
+                
+                .dark .glass-card h3, 
+                .dark .glass-card p.text-2xl,
+                .dark .glass-card span.font-bold {
+                    color: #F3F4F6 !important;
+                }
+                
+                /* Light mode - ensure inputs are light */
+                input, select {
+                    background-color: #ffffff;
+                    color: #1f2937;
+                    border-color: #e5e7eb;
+                }
+                
+                /* Dark mode - inputs should be dark */
+                .dark input, .dark select {
+                    background-color: #111827 !important;
+                    color: #F3F4F6 !important;
+                    border-color: #374151 !important;
+                }
+                
+                .dark table th { color: #D1D5DB !important; }
+                .dark table td span { color: #F3F4F6 !important; }
+                .dark table td.font-medium { color: #9CA3AF !important; }
+
+                /* Stats Cards Overrides */
+                .dark .glass-card div[style*="background-color: #e0e7ff"] { background-color: rgba(79, 70, 229, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #d1fae5"] { background-color: rgba(5, 150, 105, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #fce7f3"] { background-color: rgba(219, 39, 119, 0.2) !important; }
+                .dark .glass-card div[style*="background-color: #fef3c7"] { background-color: rgba(217, 119, 6, 0.2) !important; }
+            `}</style>
             {/* DEBUG SECTION: Show if validation fails but data exists */}
             {drives.length > 0 && filteredDrives.length === 0 && (
                 <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative">
@@ -222,14 +275,12 @@ const PlacementDrives = () => {
                             type="text"
                             placeholder="Search companies..."
                             className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                            style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                         />
                     </div>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.status}
                         onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                     >
@@ -240,7 +291,6 @@ const PlacementDrives = () => {
                     </select>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={filters.eligibility}
                         onChange={(e) => setFilters({ ...filters, eligibility: e.target.value })}
                     >
@@ -250,7 +300,6 @@ const PlacementDrives = () => {
                     </select>
                     <select
                         className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold cursor-pointer focus:outline-none focus:ring-2 focus:ring-amrita-maroon/30 focus:border-amrita-maroon transition-all"
-                        style={{ backgroundColor: '#ffffff', color: '#000000', borderColor: '#e5e7eb' }}
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                     >
@@ -352,6 +401,7 @@ const PlacementDrives = () => {
     );
 };
 
+// ============= DRIVE CARD COMPONENT =============
 const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
     const [expanded, setExpanded] = useState(false);
     const deadlineBadge = getDeadlineBadge ? getDeadlineBadge(drive.date) : null;

@@ -75,6 +75,58 @@ const CalendarPage = () => {
 
     return (
         <div className="max-w-7xl mx-auto animate-fade-in pb-20">
+            <style>{`
+                .calendar-panel {
+                    background-color: #ffffff !important;
+                    border-color: #f3f4f6;
+                }
+                .schedule-panel {
+                    background-color: #ffffff !important;
+                }
+                .calendar-day-cell {
+                    background-color: #ffffff !important;
+                    border-color: #e5e7eb !important;
+                    color: #6b7280 !important;
+                }
+                .calendar-header {
+                    background-color: #f9fafb !important;
+                }
+                
+                .dark .calendar-panel {
+                    background-color: #1F2937 !important;
+                    border-color: #374151 !important;
+                }
+                .dark .schedule-panel {
+                    background-color: #1F2937 !important;
+                }
+                .dark .calendar-day-cell {
+                    background-color: rgba(31, 41, 55, 0.5) !important;
+                    border-color: #374151 !important;
+                }
+                .dark .calendar-header {
+                    background-color: rgba(31, 41, 55, 0.5) !important;
+                }
+                
+                .dark h1 span:first-of-type {
+                    color: #F3F4F6 !important;
+                }
+                .dark h1 span:last-child {
+                    color: #F472B6 !important;
+                }
+                .dark .glass-card {
+                    background-color: #1F2937 !important;
+                    border-color: #374151 !important;
+                }
+                .dark .glass-card h2 {
+                    color: #F3F4F6 !important;
+                }
+                .dark .glass-card h3 {
+                    color: #F3F4F6 !important;
+                }
+                .dark .glass-card p {
+                    color: #9CA3AF !important;
+                }
+            `}</style>
             <h1 className="text-3xl font-black mb-6 flex items-center gap-2">
                 <CalendarIcon className="text-amrita-maroon" size={28} />
                 <span style={{ color: '#1A1A1A' }}>Placement</span> <span style={{ color: '#A4123F' }}>Schedule</span>
@@ -82,9 +134,9 @@ const CalendarPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
                 {/* Calendar Grid */}
-                <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                <div className="lg:col-span-2 calendar-panel rounded-3xl shadow-xl overflow-hidden border">
                     {/* Header */}
-                    <div className="p-6 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                    <div className="p-6 flex justify-between items-center calendar-header border-b border-gray-100 dark:border-gray-700">
                         <h2 className="text-xl font-black text-gray-800 dark:text-white">
                             {currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                         </h2>
@@ -122,7 +174,7 @@ const CalendarPage = () => {
                                         h-24 rounded-2xl border transition-all cursor-pointer relative group
                                         ${isSelected ? 'bg-amrita-maroon text-white border-amrita-maroon shadow-lg transform scale-105 z-10' :
                                             isToday ? 'bg-amrita-gold/20 border-amrita-gold text-amrita-maroon' :
-                                                'bg-white dark:bg-gray-800/50 border-gray-50 dark:border-gray-700 hover:border-amrita-maroon/30 hover:bg-gray-50'}
+                                                'calendar-day-cell hover:border-amrita-maroon/30 hover:bg-gray-50'}
                                     `}
                                 >
                                     <div className={`p-2 font-bold text-sm ${isSelected ? 'text-white' : 'text-gray-500'}`}>{day}</div>
@@ -145,7 +197,7 @@ const CalendarPage = () => {
 
                 {/* Right Side: Selected Day Details */}
                 <div className="space-y-6">
-                    <div className="glass-card p-6 bg-white border-0 shadow-xl sticky top-24 min-h-[400px]" style={{ backgroundColor: '#ffffff' }}>
+                    <div className="glass-card schedule-panel p-6 border-0 shadow-xl sticky top-24 min-h-[400px]">
                         <div className="mb-6 pb-6 border-b border-gray-100">
                             <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Schedule For</p>
                             <h2 className="text-3xl font-black" style={{ color: '#1f2937' }}>

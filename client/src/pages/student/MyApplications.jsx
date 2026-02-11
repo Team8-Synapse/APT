@@ -1,3 +1,10 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: My Applications Component.
+ * - Tracks the status of all student applications (Applied, Shortlisted, Offered, etc.).
+ * - Allows students to withdraw applications or accept/reject offers.
+ * - Displays application history and progress timeline.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -9,15 +16,19 @@ import CompanyLogo from '../../components/CompanyLogo';
 
 const MyApplications = () => {
     const { user } = useAuth();
+    // Application Data State
     const [applications, setApplications] = useState([]);
     const [stats, setStats] = useState({ total: 0, applied: 0, shortlisted: 0, inProgress: 0, offered: 0, rejected: 0 });
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
 
+    // Load applications on mount
+
     useEffect(() => {
         fetchApplications();
     }, [user]);
 
+    // Fetch applications and stats
     const fetchApplications = async () => {
         const userId = user?._id || user?.id;
         if (!userId) {
@@ -35,7 +46,7 @@ const MyApplications = () => {
             setLoading(false);
         } catch (err) {
             console.error(err);
-            // Mock data
+            // Mock data fallback for demonstration/dev purposes
             setApplications([
                 { _id: '1', driveId: { companyName: 'Microsoft', jobProfile: 'SDE', date: '2026-03-22', ctcDetails: { ctc: 4200000 } }, status: 'shortlisted', appliedDate: '2026-02-01', rounds: [{ roundName: 'Applied', status: 'passed' }, { roundName: 'Online Test', status: 'passed' }, { roundName: 'Technical', status: 'scheduled' }] },
                 { _id: '2', driveId: { companyName: 'Adobe', jobProfile: 'MTS', date: '2026-03-28', ctcDetails: { ctc: 2100000 } }, status: 'applied', appliedDate: '2026-01-28' },
@@ -47,6 +58,7 @@ const MyApplications = () => {
         }
     };
 
+    // Withdraw application
     const handleWithdraw = async (applicationId) => {
         if (!confirm('Are you sure you want to withdraw this application?')) return;
         try {
@@ -57,6 +69,7 @@ const MyApplications = () => {
         }
     };
 
+    // Accept or Decline Offer
     const handleRespondOffer = async (applicationId, status) => {
         if (!confirm(`Are you sure you want to ${status} this offer?`)) return;
         try {
@@ -81,6 +94,7 @@ const MyApplications = () => {
         }
     };
 
+    // Helper: Get color/icon config for status
     const getStatusConfig = (status) => {
         const configs = {
             applied: { color: 'blue', icon: Clock, label: 'Applied' },

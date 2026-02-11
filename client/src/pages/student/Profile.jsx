@@ -1,3 +1,11 @@
+/**
+ * Mobile: Frontend / Pages / Student
+ * Description: Student Profile Component.
+ * - Allows students to view and edit their personal and academic details.
+ * - Tracks profile completion score.
+ * - Supports adding/removing skills, certifications, internships, and projects.
+ * - Generates and downloads a resume PDF.
+ */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -12,6 +20,8 @@ import ResumeDocument from '../../components/Resume/ResumeDocument';
 const StudentProfile = () => {
     const { user } = useAuth();
     const [activeSection, setActiveSection] = useState('personal');
+
+    // Comprehensive Profile State
     const [profile, setProfile] = useState({
         // Basic Info
         firstName: '',
@@ -47,6 +57,7 @@ const StudentProfile = () => {
         expectedCTC: ''
     });
 
+    // Temporary states for adding new items
     const [newSkill, setNewSkill] = useState({ name: '', level: 'Intermediate' });
     const [newCert, setNewCert] = useState('');
     const [newAchievement, setNewAchievement] = useState('');
@@ -55,6 +66,7 @@ const StudentProfile = () => {
     const [newRole, setNewRole] = useState('');
     const [newLocation, setNewLocation] = useState('');
 
+    // UI States
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
@@ -68,6 +80,7 @@ const StudentProfile = () => {
         calculateCompletion();
     }, [profile]);
 
+    // Fetch student profile data
     const fetchProfile = async () => {
         try {
             const userId = user?._id || user?.id;
@@ -86,6 +99,7 @@ const StudentProfile = () => {
         }
     };
 
+    // Calculate profile completion percentage based on filled fields
     const calculateCompletion = () => {
         let score = 0;
         const checks = [
@@ -201,6 +215,7 @@ const StudentProfile = () => {
         setProfile({ ...profile, preferredLocations: profile.preferredLocations.filter((_, i) => i !== index) });
     };
 
+    // Save profile changes to backend
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage({ type: '', text: '' });
