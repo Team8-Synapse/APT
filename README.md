@@ -2,27 +2,28 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-darkred?style=for-the-badge)
-![Build](https://img.shields.io/badge/build-passing-success?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
-![Node](https://img.shields.io/badge/node-%3E%3D16.0.0-darkgreen?style=for-the-badge)
-![React](https://img.shields.io/badge/react-18.2.0-61dafb?style=for-the-badge)
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?style=for-the-badge&logo=node.js&logoColor=white)
+
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+
+
 
 ### **Next-Generation Campus Placement Management System**
 
-*Streamlining placement tracking with AI-powered insights and analytics*
-
-[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Testing](#testing) • [Documentation](#documentation) • [Team](#team)
+*Structures placement tracking of Amrita Vishwa Vidyapeetham with AI-powered insights and analytics*
 
 ---
 
-<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" width="100%">
 
 </div>
 
 ## Overview
 
-**Amrita Placement Tracker** is an enterprise-grade, full-stack web application engineered to revolutionize campus placement management at Amrita Vishwa Vidyapeetham. Built for the Career & Internship Readiness (CIR) team and students, this platform delivers centralized tracking, advanced analytics, and AI-driven insights to optimize placement outcomes.
+**Amrita Placement Tracker** is a full-stack placement management ecosystem built to redefine how campus recruitment is monitored and optimized at Amrita Vishwa Vidyapeetham. Engineered for the Corporate and Industry Relations team (CIR) team and students of the university, the platform provides centralized tracking, intelligent automation, advanced analytics dashboards, and AI-driven insights — empowering data-backed strategies that significantly improve placement performance.
 
 <details>
 <summary><b>View System Architecture</b></summary>
