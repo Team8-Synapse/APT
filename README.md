@@ -237,7 +237,8 @@ cd client && npm run dev
 We welcome community feedback and contributions! Please read our [Contribution Guidelines](CONTRIBUTING.md) before submitting Pull Requests.
 
 ---
-
+<p aligin ="center">
 **© 2026 Amrita Placement Tracker | Built for Excellence**
+</p>
 
 ![Footer](https://raw.githubusercontent.com/andreasbm/rainbow-line/master/line.png)
