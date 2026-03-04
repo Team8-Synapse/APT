@@ -273,10 +273,13 @@ const AdminReports = () => {
                             onChange={(e) => setSelectedBatch(e.target.value)}
                             options={[
                                 { value: 'All', label: 'All Batches' },
+                                { value: '2023', label: 'Batch 2023' },
+                                { value: '2024', label: 'Batch 2024' },
                                 { value: '2025', label: 'Batch 2025' },
                                 { value: '2026', label: 'Batch 2026' },
                                 { value: '2027', label: 'Batch 2027' }
                             ]}
+
                         />
 
                         <FilterSelect
