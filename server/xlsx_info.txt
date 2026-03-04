@@ -1,0 +1,21 @@
+SHEETS: 2023, 2024, 2025, 2026, 2027
+
+SHEET: 2023 | ROWS: 1501
+HEADERS: ["Roll Number","Name","Year","Year of Grad","Branch","Dept","Section","University Email ID","Contact Number","CGPA","Placement Status"]
+SAMPLE: ["CB.SC.U4CSE19001","Ishaan Shetty",4,2023,"CBE","CSE","A","cb.sc.u4cse19001@cb.students.amrita.edu","9143279668",7.76,"No"]
+
+SHEET: 2024 | ROWS: 1501
+HEADERS: ["Roll Number","Name","Year","Year of Grad","Branch","Dept","Section","University Email ID","Contact Number","CGPA","Placement Status"]
+SAMPLE: ["CB.SC.U4CSE20001","Aditya Kapoor",4,2024,"CBE","CSE","A","cb.sc.u4cse20001@cb.students.amrita.edu","9049876238",7.43,"Yes"]
+
+SHEET: 2025 | ROWS: 1501
+HEADERS: ["Roll Number","Name","Year","Year of Grad","Branch","Dept","Section","University Email ID","Contact Number","CGPA","Placement Status"]
+SAMPLE: ["CB.SC.U4CSE21001","Lakshmi Mishra",4,2025,"CBE","CSE","A","cb.sc.u4cse21001@cb.students.amrita.edu","9910005581",9.77,"Yes"]
+
+SHEET: 2026 | ROWS: 1501
+HEADERS: ["Roll Number","Name","Year","Year of Grad","Branch","Dept","Section","University Email ID","Contact Number","CGPA","Placement Status"]
+SAMPLE: ["CB.SC.U4CSE22001","Ishaan Bose",4,2026,"CBE","CSE","A","cb.sc.u4cse22001@cb.students.amrita.edu","9433754500",7.56,"No"]
+
+SHEET: 2027 | ROWS: 1501
+HEADERS: ["Roll Number","Name","Year","Year of Grad","Branch","Dept","Section","University Email ID","Contact Number","CGPA","Placement Status"]
+SAMPLE: ["CB.SC.U4CSE23001","Tanvi Bose",3,2027,"CBE","CSE","A","cb.sc.u4cse23001@cb.students.amrita.edu","9800447896",9.45,"No"]

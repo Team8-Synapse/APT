@@ -44,11 +44,13 @@ router.get('/analytics-dataset', async (req, res) => {
         };
 
         const studentsRaw = parseCsv(studentCsvPath);
-        const testDataRaw = parseCsv(testCsvPath);
 
-        // Map students.csv data (2026/2027)
-        const mapped2026 = studentsRaw.map(s => {
-            const inference = getCompanyInference(s.company);
+        // Map all students from students.csv (2023-2027)
+        const mappedData = studentsRaw.map(s => {
+            const inference = getCompanyInference(s.placement_status === 'Placed' ? 'Google' : null); // Simple inference
+            // Note: Since our new CSV has placement_status as "Placed"/"Not Placed", 
+            // and we generated random backlogs, we can use those.
+
             return {
                 roll_no: s.roll_no,
                 full_name: s.full_name,
@@ -57,44 +59,16 @@ router.get('/analytics-dataset', async (req, res) => {
                 section: s.section,
                 batch_year: parseInt(s.batch_year),
                 cgpa: parseFloat(s.cgpa) || 0,
-                backlogs: Math.random() > 0.9 ? Math.floor(Math.random() * 3) : 0, // Mock backlogs
+                backlogs: parseInt(s.backlogs) || 0,
                 placement_status: s.placement_status,
-                company: s.placement_status === 'Placed' ? (s.company || 'TBD') : null,
-                ctc: inference.ctc,
-                tier: inference.tier
+                company: s.placement_status === 'Placed' ? 'TBD' : null,
+                ctc: s.placement_status === 'Placed' ? (12 + Math.floor(Math.random() * 20)) : 0, // Mock CTC for analytics
+                tier: s.placement_status === 'Placed' ? 'Dream' : 'N/A'
             };
         });
 
-        // Map test_dataset.csv data (Treat as 2025)
-        const mapped2025 = testDataRaw.map(s => {
-            // Extract dept from roll number
-            let dept = 'CSE';
-            if (s.roll_number?.includes('ECE')) dept = 'ECE';
-            else if (s.roll_number?.includes('EEE')) dept = 'EEE';
-            else if (s.roll_number?.includes('ME')) dept = 'MEC';
-            else if (s.roll_number?.includes('AIE')) dept = 'AIE';
-            else if (s.roll_number?.includes('AIDS')) dept = 'AIDS';
-            else if (s.roll_number?.includes('ELC')) dept = 'ELC';
+        res.json(mappedData);
 
-            const inference = getCompanyInference(s.company);
-
-            return {
-                roll_no: s.roll_number,
-                full_name: s.name,
-                email: s.email,
-                dept_code: dept,
-                section: 'A',
-                batch_year: 2025,
-                cgpa: 7.0 + (Math.random() * 2.5),
-                backlogs: Math.random() > 0.95 ? 1 : 0, // Mock backlogs
-                placement_status: s.placed === 'Yes' ? 'Placed' : 'Not Placed',
-                company: s.company || null,
-                ctc: inference.ctc,
-                tier: inference.tier
-            };
-        });
-
-        res.json([...mapped2026, ...mapped2025]);
     } catch (err) {
         console.error('Analytics dataset v2 error:', err);
         res.status(500).json({ error: err.message });
@@ -105,7 +79,8 @@ router.get('/analytics-dataset', async (req, res) => {
 // Get admin statistics
 router.get('/stats', async (req, res) => {
     try {
-        const batchFilter = '2026';
+        const batchFilter = req.query.batch || '2027';
+
         const driveCount = await PlacementDrive.countDocuments();
         const alumniCount = await AlumniInsight.countDocuments();
         const applicationCount = await Application.countDocuments();
