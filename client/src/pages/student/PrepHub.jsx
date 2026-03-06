@@ -275,36 +275,88 @@ const PrepHub = () => {
                                     </div>
                                 )}
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {notes.length > 0 ? notes.map((note) => (
-                                        <div key={note._id} className="glass-card group p-6 flex flex-col h-full bg-white/40 border-white/40">
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-3 bg-amrita-maroon/10 rounded-xl text-amrita-maroon">
-                                                        <StickyNote size={20} />
+                                {viewMode === 'grid' ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {notes.length > 0 ? notes.map((note) => (
+                                            <div key={note._id} className="glass-card group p-6 flex flex-col h-full bg-white/40 border-white/40">
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="p-3 bg-amrita-maroon/10 rounded-xl text-amrita-maroon">
+                                                            <StickyNote size={20} />
+                                                        </div>
+                                                        <h3 className="font-black text-lg text-gray-900 group-hover:text-amrita-maroon transition-colors">{note.name}</h3>
                                                     </div>
-                                                    <h3 className="font-black text-lg text-gray-900 group-hover:text-amrita-maroon transition-colors">{note.name}</h3>
+                                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button onClick={() => handleEditNote(note)} className="p-2 hover:bg-amrita-maroon/5 text-gray-400 hover:text-amrita-maroon rounded-lg transition-all"><Edit size={14} /></button>
+                                                        <button onClick={() => handleDeleteNote(note._id)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-all"><Trash2 size={14} /></button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button onClick={() => handleEditNote(note)} className="p-2 hover:bg-amrita-maroon/5 text-gray-400 hover:text-amrita-maroon rounded-lg transition-all"><Edit size={14} /></button>
-                                                    <button onClick={() => handleDeleteNote(note._id)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-lg transition-all"><Trash2 size={14} /></button>
-                                                </div>
+                                                <p className="text-sm font-medium text-gray-600 leading-relaxed flex-1 whitespace-pre-wrap line-clamp-4">{note.text}</p>
+                                                {note.createdAt && (
+                                                    <div className="mt-6 pt-4 border-t border-white/40 flex justify-between items-center">
+                                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{new Date(note.createdAt).toLocaleDateString()}</span>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <p className="text-sm font-medium text-gray-600 leading-relaxed flex-1 whitespace-pre-wrap">{note.text}</p>
-                                            {note.createdAt && (
-                                                <div className="mt-6 pt-4 border-t border-white/40 flex justify-between items-center">
-                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{new Date(note.createdAt).toLocaleDateString()}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )) : (
-                                        <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-400 opacity-50 bg-white/20 rounded-3xl border border-white/40">
-                                            <StickyNote size={64} className="mb-4" />
-                                            <p className="text-xl font-black italic">Your notepad is empty.</p>
-                                            <p className="text-xs font-bold mt-2 uppercase">Create your first note to start tracking insights</p>
-                                        </div>
-                                    )}
-                                </div>
+                                        )) : (
+                                            <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-400 opacity-50 bg-white/20 rounded-3xl border border-white/40">
+                                                <StickyNote size={64} className="mb-4" />
+                                                <p className="text-xl font-black italic">Your notepad is empty.</p>
+                                                <p className="text-xs font-bold mt-2 uppercase">Create your first note to start tracking insights</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="glass-card overflow-hidden bg-white/40 border border-white">
+                                        <table className="w-full">
+                                            <thead className="bg-white/60 border-b border-white">
+                                                <tr>
+                                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Note Name</th>
+                                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Content Preview</th>
+                                                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Date</th>
+                                                    <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/40">
+                                                {notes.length > 0 ? notes.map((note) => (
+                                                    <tr key={note._id} className="hover:bg-white/40 transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg group-hover:bg-amrita-maroon group-hover:text-white transition-all">
+                                                                    <StickyNote size={16} />
+                                                                </div>
+                                                                <span className="font-black text-gray-900 text-sm group-hover:text-amrita-maroon transition-colors">{note.name}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <p className="text-xs text-gray-500 font-medium line-clamp-1 max-w-md whitespace-pre-line leading-tight">
+                                                                {getShortSummary(note.text)}
+                                                            </p>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                                                {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : 'N/A'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="flex gap-1 justify-end">
+                                                                <button onClick={() => handleEditNote(note)} className="p-2 text-gray-400 hover:bg-amrita-maroon/5 hover:text-amrita-maroon rounded-lg transition-all"><Edit size={14} /></button>
+                                                                <button onClick={() => handleDeleteNote(note._id)} className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all"><Trash2 size={14} /></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="py-20 text-center text-gray-400 opacity-50 font-black italic">
+                                                            <StickyNote size={48} className="mx-auto mb-4" />
+                                                            <p>Your notepad is empty.</p>
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
                         )
                     ) : (
