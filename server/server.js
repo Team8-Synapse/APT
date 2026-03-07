@@ -60,8 +60,12 @@ app.use('/api/schedule', require('./routes/eventRoutes'));
 app.use('/api/ticker', require('./routes/tickerRoutes'));
 app.use('/api/ai-shortlist', require('./routes/aiShortlistRoutes'));
 
+app.get('/api/test-route', (req, res) => {
+    res.send('Server is using the LATEST server.js file');
+});
+
 app.get('/', (req, res) => {
-    res.send('Placement Tracker API is running...');
+    res.send('PLACEMENT TRACKER API - VERSION V2 - AI READY');
 });
 
 // 404 Handler
