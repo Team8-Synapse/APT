@@ -24,21 +24,21 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 // Import Administrative Components
-import AddDriveModal from '../../components/admin/AddDriveModal';
-import StudentDetailModal from '../../components/admin/StudentDetailModal';
-import AddAlumniModal from '../../components/admin/AddAlumniModal';
-import EditStudentModal from '../../components/admin/EditStudentModal';
-import KanbanBoard from '../../components/admin/KanbanBoard';
+import AddDriveModal from '../../components/Admin/AddDriveModal';
+import StudentDetailModal from '../../components/Admin/StudentDetailModal';
+import AddAlumniModal from '../../components/Admin/AddAlumniModal';
+import EditStudentModal from '../../components/Admin/EditStudentModal';
+import KanbanBoard from '../../components/Admin/KanbanBoard';
 import AdminPrepHub from './AdminPrepHub';
 import AdminAnalytics from './AdminAnalytics';
 import AdminNavbar from '../../components/Admin/AdminNavbar';
-import AddEventModal from '../../components/admin/AddEventModal';
+import AddEventModal from '../../components/Admin/AddEventModal';
 import NotificationsPanel from '../../components/NotificationsPanel';
 
 import AdminReports from './AdminReports';
 import CommunicationHub from './CommunicationHub';
 import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
-import AIShortlistPanel from '../../components/admin/AIShortlistPanel';
+import AIShortlistPanel from '../../components/Admin/AIShortlistPanel';
 
 // ============= THEME DEFINITION =============
 const theme = {
