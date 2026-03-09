@@ -5,6 +5,62 @@ const StudentProfile = require('../models/StudentProfile');
 const Resource = require('../models/Resource');
 const Note = require('../models/Note');
 
+/**
+ * RAG helper: detects placement-related intent in a message and builds
+ * structured DB context to feed into Gemini.
+ */
+async function buildPlacementContext(message) {
+    const msg = message.toLowerCase().trim();
+
+    // Fetch all placed students (lean for performance)
+    const placedStudents = await StudentProfile.find({ placementStatus: 'placed' })
+        .select('firstName lastName department cgpa skills certifications offeredCompany offeredRole offeredCTC projects achievements batch')
+        .lean();
+
+    if (placedStudents.length === 0) return null;
+
+    // Collect distinct company names from DB
+    const companyNames = [...new Set(placedStudents.map(s => s.offeredCompany).filter(Boolean))];
+
+    // Try to match a company name mentioned in the user's message
+    let targetCompany = null;
+    for (const company of companyNames) {
+        // Normalise: lowercase, strip punctuation, split into words
+        const compWords = company.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2);
+        if (compWords.some(word => msg.includes(word))) {
+            targetCompany = company;
+            break;
+        }
+    }
+
+    if (targetCompany) {
+        const keyword = targetCompany.toLowerCase().split(/\s+/)[0]; // first significant word
+        const companyStudents = placedStudents.filter(s =>
+            s.offeredCompany && s.offeredCompany.toLowerCase().includes(keyword)
+        );
+        return {
+            type: 'company_analysis',
+            company: targetCompany,
+            students: companyStudents,
+            totalPlaced: placedStudents.length,
+            allCompanies: companyNames
+        };
+    }
+
+    // Fall back to general stats for broad placement queries
+    const isGeneralQuery = /\b(placement|placed|statistics?|stats|offer|ctc|package|salary|how many|total|all companies|which companies|top companies)\b/.test(msg);
+    if (isGeneralQuery) {
+        return {
+            type: 'general_stats',
+            students: placedStudents,
+            totalPlaced: placedStudents.length,
+            allCompanies: companyNames
+        };
+    }
+
+    return null;
+}
+
 exports.getInsights = async (req, res) => {
     try {
         const profile = await StudentProfile.findOne({ userId: req.user._id });
@@ -26,14 +82,21 @@ exports.getInsights = async (req, res) => {
 exports.getChatResponse = async (req, res) => {
     try {
         const { message, context, sourceName } = req.body;
-        
+
         let response;
         if (context) {
+            // Document / notes context mode (existing behaviour)
             response = await geminiService.askWithContext(message, context, sourceName);
         } else {
-            response = await geminiService.askGeneral(message);
+            // RAG mode: try to fetch relevant placement data from DB first
+            const placementData = await buildPlacementContext(message);
+            if (placementData) {
+                response = await geminiService.askWithPlacementData(message, placementData);
+            } else {
+                response = await geminiService.askGeneral(message);
+            }
         }
-        
+
         res.send({ response });
     } catch (e) {
         console.error("Chat Response Error:", e);
