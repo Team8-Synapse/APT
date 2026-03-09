@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
+import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X, Brain, Target } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import NotificationsPanel from './NotificationsPanel';
 
@@ -79,6 +79,8 @@ const Navbar = () => {
         { to: '/drives', icon: <Briefcase size={18} />, label: 'Drives' },
         { to: '/applications', icon: <FileText size={18} />, label: 'Apps' },
         { to: '/experiences', icon: <MessageSquare size={18} />, label: 'Stories' },
+        { to: '/mock-interview', icon: <Brain size={18} />, label: 'Mock AI' },
+        { to: '/resume-analyzer', icon: <Target size={18} />, label: 'Resume Scanner' },
         { to: '/alumni-insights', icon: <Users size={18} />, label: 'Connect' },
         { to: '/prephub', icon: <BookOpen size={18} />, label: 'Prep' },
         { to: '/profile', icon: <User size={18} />, label: 'Profile' },

@@ -22,6 +22,8 @@ import InterviewExperiences from './pages/student/InterviewExperiences';
 import CalendarPage from './pages/CalendarPage';
 import NotificationsPage from './pages/NotificationsPage';
 import Home from './pages/Home';
+import AIMockInterview from './pages/student/AIMockInterview';
+import AIResumeAnalyzer from './pages/student/AIResumeAnalyzer';
 
 
 
@@ -70,6 +72,8 @@ function App() {
           <Route path="/drives" element={<PrivateRoute role="student"><PlacementDrives /></PrivateRoute>} />
           <Route path="/applications" element={<PrivateRoute role="student"><MyApplications /></PrivateRoute>} />
           <Route path="/experiences" element={<PrivateRoute role="student"><InterviewExperiences /></PrivateRoute>} />
+          <Route path="/mock-interview" element={<PrivateRoute role="student"><AIMockInterview /></PrivateRoute>} />
+          <Route path="/resume-analyzer" element={<PrivateRoute role="student"><AIResumeAnalyzer /></PrivateRoute>} />
           <Route path="/calendar" element={<PrivateRoute><CalendarPage /></PrivateRoute>} />
           <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute role="admin" hideNavbar={true}><AdminDashboard /></PrivateRoute>} />
