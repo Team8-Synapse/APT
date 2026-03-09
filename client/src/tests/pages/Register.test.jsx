@@ -7,7 +7,7 @@ import emailjs from "@emailjs/browser";
 
 // Mock dependencies
 vi.mock('axios');
-vi.mock('emailjs-com');
+vi.mock('@emailjs/browser');
 vi.mock('../../assets/AB1_cbe.png', () => ({ default: 'mock-image.png' }));
 
 const mockNavigate = vi.fn();
