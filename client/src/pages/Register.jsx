@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import emailjs from "emailjs-com";
+import emailjs from "@emailjs/browser";
 import {
     Mail, Lock, ArrowRight, ShieldCheck, ArrowLeft,
     CheckCircle2, GraduationCap, Award, TrendingUp, Users,

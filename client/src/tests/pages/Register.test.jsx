@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import Register from '../../pages/Register';
 import axios from 'axios';
-import emailjs from 'emailjs-com';
+import emailjs from "@emailjs/browser";
 
 // Mock dependencies
 vi.mock('axios');
