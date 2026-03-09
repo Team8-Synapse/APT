@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Megaphone, Save, Trash2, AlertCircle, CheckCircle, Smartphone, Plus } from 'lucide-react';
 
-const AdminTickerManager = () => {
+const AdminTickerManager = ({ isSubModule = false }) => {
     const [message, setMessage] = useState('');
     const [priority, setPriority] = useState('normal');
     const [tickers, setTickers] = useState([]);
@@ -62,15 +62,17 @@ const AdminTickerManager = () => {
 
     return (
         <div className="p-8 max-w-4xl mx-auto animate-fade-in-up">
-            <div className="flex items-center gap-2 mb-8">
-                <Megaphone className="text-amrita-maroon" size={28} />
-                <div>
-                    <h1 className="text-3xl font-black">
-                        <span style={{ color: '#1A1A1A' }}>Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
-                    </h1>
-                    <p className="text-gray-500 font-medium">Manage scrolling messages on the student dashboard.</p>
+            {!isSubModule && (
+                <div className="flex items-center gap-2 mb-8">
+                    <Megaphone className="text-amrita-maroon" size={28} />
+                    <div>
+                        <h1 className="text-3xl font-black">
+                            <span style={{ color: '#1A1A1A' }}>Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
+                        </h1>
+                        <p className="text-gray-500 font-medium">Manage scrolling messages on the student dashboard.</p>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Preview Section */}
             <div className="mb-8">
