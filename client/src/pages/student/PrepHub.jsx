@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, LayoutGrid, List, StickyNote, Plus, Trash2, Edit, Save, X, Lock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AIChatbot from '../../components/AIChatbot';
 
 const PrepHub = () => {
     const { user, token } = useAuth();
@@ -35,6 +36,12 @@ const PrepHub = () => {
     const [isAddingNote, setIsAddingNote] = useState(false);
     const [editingNoteId, setEditingNoteId] = useState(null);
     const [noteFormData, setNoteFormData] = useState({ name: '', text: '' });
+
+    // AI Integration State
+    const [aiContext, setAiContext] = useState(null);
+    const [aiSourceName, setAiSourceName] = useState(null);
+    const [aiSummary, setAiSummary] = useState(null);
+    const [aiLoading, setAiLoading] = useState(false);
 
     useEffect(() => {
         if (category === 'Notes') {
@@ -140,6 +147,45 @@ const PrepHub = () => {
         return text.trim();
     };
 
+    // AI Functions
+    const summarizeResource = async (resource) => {
+        setAiLoading(true);
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/summarize-resource/${resource._id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            // Combine parsed content + AI summary so Q&A has full context
+            const fullContext = `AI Summary:\n${res.data.summary}\n\nOriginal Content:\n${res.data.context}`;
+            setAiContext(fullContext);
+            setAiSourceName(res.data.sourceName);
+            setAiSummary(res.data.summary);
+        } catch (err) {
+            console.error('AI Summarize Error:', err);
+            const errorMsg = err.response?.data?.error || 'AI summarizing failed. Please ensure Gemini API key is configured.';
+            alert(errorMsg);
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    const summarizeNotes = async () => {
+        setAiLoading(true);
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/summarize-notes`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            const fullContext = `AI Summary:\n${res.data.summary}\n\nOriginal Content:\n${res.data.context}`;
+            setAiContext(fullContext);
+            setAiSourceName(res.data.sourceName);
+            setAiSummary(res.data.summary);
+        } catch (err) {
+            console.error('AI Summarize Notes Error:', err);
+            alert('Failed to summarize notes.');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
     // Filter resources based on search term
     const filteredResources = resources.filter(res => {
         // Requirement: 'Notes' MUST be excluded from 'All' browsing and search results
@@ -238,16 +284,25 @@ const PrepHub = () => {
                                         <h2 className="text-xl font-black text-gray-900">Personal <span className="text-amrita-maroon italic">Workspace</span></h2>
                                         <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-black">Organize your preparation insights</p>
                                     </div>
-                                    <button
-                                        onClick={() => {
-                                            setIsAddingNote(true);
-                                            setEditingNoteId(null);
-                                            setNoteFormData({ name: '', text: '' });
-                                        }}
-                                        className="flex items-center gap-2 bg-amrita-maroon text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all"
-                                    >
-                                        <Plus size={16} /> Create Note
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={summarizeNotes}
+                                            disabled={aiLoading}
+                                            className="flex items-center gap-2 bg-amrita-gold text-amrita-maroon px-5 py-2.5 rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all disabled:opacity-50"
+                                        >
+                                            <Sparkles size={16} /> {aiLoading ? 'Summarizing...' : 'Summarize Notes'}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsAddingNote(true);
+                                                setEditingNoteId(null);
+                                                setNoteFormData({ name: '', text: '' });
+                                            }}
+                                            className="flex items-center gap-2 bg-amrita-maroon text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg hover:scale-105 transition-all"
+                                        >
+                                            <Plus size={16} /> Create Note
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {isAddingNote && (
@@ -381,21 +436,31 @@ const PrepHub = () => {
                                             </div>
                                         </div>
 
-                                        <button
-                                            onClick={() => {
-                                                const url = res.links?.[0] || res.link;
-                                                if (!url) return;
-                                                // For PPT files, use Google Docs Viewer
-                                                if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
-                                                    window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
-                                                    return;
-                                                }
-                                                window.open(url, '_blank');
-                                            }}
-                                            className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic rounded-b-[1.5rem]"
-                                        >
-                                            Start Learning
-                                        </button>
+                                        <div className={`grid ${(res.type === 'PDF' || res.type === 'PPT') ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                                            <button
+                                                onClick={() => {
+                                                    const url = res.links?.[0] || res.link;
+                                                    if (!url) return;
+                                                    if (res.type === 'PPT' || url.toLowerCase().includes('.ppt')) {
+                                                        window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+                                                        return;
+                                                    }
+                                                    window.open(url, '_blank');
+                                                }}
+                                                className={`w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-maroon group-hover:text-white transition-all text-xs font-black uppercase tracking-widest italic ${(res.type === 'PDF' || res.type === 'PPT') ? 'border-r rounded-bl-[1.5rem]' : 'rounded-b-[1.5rem]'}`}
+                                            >
+                                                Start Learning
+                                            </button>
+                                            {(res.type === 'PDF' || res.type === 'PPT') && (
+                                            <button
+                                                onClick={() => summarizeResource(res)}
+                                                disabled={aiLoading}
+                                                className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-gold group-hover:text-amrita-maroon transition-all text-xs font-black uppercase tracking-widest italic rounded-br-[1.5rem] disabled:opacity-30 flex items-center justify-center gap-2"
+                                            >
+                                                <Sparkles size={14} /> Summarize
+                                            </button>
+                                            )}
+                                        </div>
                                     </div>
                                 )) : (
                                     <div className="col-span-full py-24 glass-card flex flex-col items-center justify-center text-gray-400 opacity-50">
@@ -469,7 +534,12 @@ const PrepHub = () => {
                     )}
                 </div>
 
-
+                {/* AI Sidebar */}
+                <div className="w-full lg:w-80 h-[450px] lg:h-auto">
+                    <div className="sticky top-24 h-[500px]">
+                        <AIChatbot initialContext={aiContext} initialSourceName={aiSourceName} initialSummary={aiSummary} />
+                    </div>
+                </div>
             </div>
         </div>
     );

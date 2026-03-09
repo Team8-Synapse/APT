@@ -10,7 +10,7 @@ const PORT = (process.env.PORT || '5005').toString().trim();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:80', 'http://localhost'],
     credentials: true
 }));
 app.use(express.json());
@@ -60,8 +60,12 @@ app.use('/api/schedule', require('./routes/eventRoutes'));
 app.use('/api/ticker', require('./routes/tickerRoutes'));
 app.use('/api/ai-shortlist', require('./routes/aiShortlistRoutes'));
 
+app.get('/api/test-route', (req, res) => {
+    res.send('Server is using the LATEST server.js file');
+});
+
 app.get('/', (req, res) => {
-    res.send('Placement Tracker API is running...');
+    res.send('PLACEMENT TRACKER API - VERSION V2 - AI READY');
 });
 
 // 404 Handler
