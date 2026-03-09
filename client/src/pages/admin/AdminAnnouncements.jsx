@@ -41,7 +41,7 @@ const theme = {
     }
 };
 
-const AdminAnnouncements = () => {
+const AdminAnnouncements = ({ isSubModule = false }) => {
     // Data State
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -287,35 +287,53 @@ const AdminAnnouncements = () => {
 
     return (
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen" style={{ background: theme.neutral.white }}>
-            <AdminNavbar
-                activeTab="announcements"
-                user={user}
-                logout={logout}
-                showNotifications={showNotifications}
-                setShowNotifications={setShowNotifications}
-                stats={stats}
-            />
+            {!isSubModule && (
+                <AdminNavbar
+                    activeTab="announcements"
+                    user={user}
+                    logout={logout}
+                    showNotifications={showNotifications}
+                    setShowNotifications={setShowNotifications}
+                    stats={stats}
+                />
+            )}
 
 
-            {/* Page Header */}
-            <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
-                <div>
-                    <h1 className="text-3xl font-black flex items-center gap-2">
-                        <Megaphone className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
-                    </h1>
-                    <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+            {/* Page Header - only show if not sub-module */}
+            {!isSubModule && (
+                <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
+                    <div>
+                        <h1 className="text-3xl font-black flex items-center gap-2">
+                            <Megaphone className="text-amrita-maroon" size={28} />
+                            <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                        </h1>
+                        <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={20} /> NEW ANNOUNCEMENT
+                    </motion.button>
                 </div>
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => { resetForm(); setShowForm(true); }}
-                    className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
-                    style={{ background: theme.maroon.gradient }}
-                >
-                    <Plus size={20} /> NEW ANNOUNCEMENT
-                </motion.button>
-            </div>
+            )}
+
+            {isSubModule && (
+                <div className="flex justify-end mb-4">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-6 py-3 text-white rounded-xl font-black text-xs shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={16} /> NEW ANNOUNCEMENT
+                    </motion.button>
+                </div>
+            )}
 
 
 
