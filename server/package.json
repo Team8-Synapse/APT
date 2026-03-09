@@ -13,7 +13,7 @@
   "description": "",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@supabase/supabase-js": "^2.95.3",
+    "@supabase/supabase-js": "^2.98.0",
     "axios": "^1.13.4",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -26,8 +26,10 @@
     "mongoose": "^9.1.5",
     "multer": "^2.1.1",
     "nodemailer": "^7.0.13",
-    "pdf-parse": "^1.1.1",
-    "pdfkit": "^0.17.2"
+    "officeparser": "^6.0.4",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.17.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "jest": "^30.2.0",

@@ -10,6 +10,7 @@ const Resource = require('./models/Resource');
 const Application = require('./models/Application');
 const Notification = require('./models/Notification');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
 
 dotenv.config();
 
@@ -105,9 +106,62 @@ const seedData = async () => {
             });
         }
 
+        // --- DUPLICATE REMOVAL ---
+        const seenEmailsCsv = new Set();
+        const finalCsvRows = [];
+        for (const row of csvResults) {
+            if (row.email && !seenEmailsCsv.has(row.email)) {
+                seenEmailsCsv.add(row.email);
+                finalCsvRows.push(row);
+            }
+        }
+        // Update csvResults to be the unique set
+        csvResults.length = 0;
+        csvResults.push(...finalCsvRows);
+        console.log(`Working with ${csvResults.length} unique student records.`);
+        // -------------------------
+
+        const usersToInsert = [];
+
+        const profilesToInsert = [];
+        const defaultHashedPassword = await bcrypt.hash('password123', 10);
+        const hariniHashedPassword = await bcrypt.hash('Harini05', 10);
+
         for (let i = 0; i < csvResults.length; i++) {
             const row = csvResults[i];
-            const rollNumber = row.roll_no;
+            const email = row.email;
+            if (!email) {
+                console.error(`Row ${i} is missing email! Rows length: ${csvResults.length}`);
+                process.exit(1);
+            }
+            const passwordToUse = (email === 'cb.sc.u4cse23621@cb.students.amrita.edu')
+                ? hariniHashedPassword
+                : defaultHashedPassword;
+
+            usersToInsert.push({ email, password: passwordToUse, role: 'student' });
+        }
+
+        console.log(`Inserting ${usersToInsert.length} unique users...`);
+        let insertedUsers;
+        try {
+            insertedUsers = await User.insertMany(usersToInsert); // Already unique because of earlier cleaning
+            console.log(`Inserted ${insertedUsers.length} users.`);
+        } catch (insertErr) {
+            fs.writeFileSync('error_details.txt', JSON.stringify(insertErr, null, 2));
+            console.error('FAILED TO INSERT USERS. See error_details.txt');
+            throw insertErr;
+        }
+
+
+
+        for (let i = 0; i < csvResults.length; i++) {
+            const row = csvResults[i];
+            const user = insertedUsers[i];
+            const rollNumber = row.roll_no || row['Roll Number'];
+            if (!rollNumber) {
+                console.error(`Row missing rollNumber: ${JSON.stringify(row)}`);
+                process.exit(1);
+            }
             const fullName = row.full_name;
             const nameParts = fullName ? fullName.split(' ') : ['Student'];
             const firstName = nameParts[0];
@@ -126,23 +180,13 @@ const seedData = async () => {
             };
             const placementStatus = placementStatusMap[row.placement_status] || 'not_placed';
 
-            let password = 'password123';
-            if (email === 'cb.sc.u4cse23621@cb.students.amrita.edu') {
-                password = 'Harini05';
-            }
-
-            // Random skills (3-6 skills per student)
             const numSkills = 3 + Math.floor(Math.random() * 4);
             const shuffledSkills = [...skillsList].sort(() => Math.random() - 0.5);
             const studentSkills = shuffledSkills.slice(0, numSkills);
 
-            // Random certifications (0-3 per student)
             const numCerts = Math.floor(Math.random() * 4);
             const shuffledCerts = [...certifications].sort(() => Math.random() - 0.5);
             const studentCerts = shuffledCerts.slice(0, numCerts);
-
-            const user = new User({ email, password, role: 'student' });
-            await user.save();
 
             const profileData = {
                 userId: user._id,
@@ -191,10 +235,20 @@ const seedData = async () => {
                 profileData.offerDate = new Date('2026-01-15');
             }
 
-            const profile = new StudentProfile(profileData);
-            await profile.save();
+            profilesToInsert.push(profileData);
         }
-        console.log(`Created ${csvResults.length} students from CSV`);
+
+        console.log('Inserting profiles...');
+        try {
+            await StudentProfile.insertMany(profilesToInsert); // ordered insertion by default
+            console.log(`Created ${profilesToInsert.length} students from CSV`);
+        } catch (profileErr) {
+            fs.writeFileSync('profile_error_details.txt', JSON.stringify(profileErr, null, 2));
+            console.error('FAILED TO INSERT PROFILES. Check profile_error_details.txt');
+            throw profileErr;
+        }
+
+
 
         // 3. Create 15 Placement Drives
         const drivesToInsert = [
@@ -563,7 +617,7 @@ const seedData = async () => {
                     { name: 'Loop 1', type: 'Technical', difficulty: 'Hard', topics: ['DSA', 'LP'] },
                     { name: 'Loop 2', type: 'Technical', difficulty: 'Hard', topics: ['System Design', 'LP'] },
                     { name: 'Loop 3', type: 'HR', difficulty: 'Medium', topics: ['LP', 'Behavioral'] },
-                    { name: 'Bar Raiser', type: 'Technical', difficulty: 'Very Hard', topics: ['Deep dive', 'LP'] }
+                    { name: 'Bar Raiser', type: 'Technical', difficulty: 'Hard', topics: ['Deep dive', 'LP'] }
                 ],
                 offerDetails: { role: 'SDE-1', ctc: 4000000, location: 'Bangalore' },
                 consentForContact: true,

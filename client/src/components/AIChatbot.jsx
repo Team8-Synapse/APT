@@ -3,13 +3,15 @@ import axios from 'axios';
 import { Send, User, Bot, Sparkles, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const AIChatbot = () => {
+const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSummary = null }) => {
     const { token, user } = useAuth();
     const [messages, setMessages] = useState([
         { role: 'assistant', content: user?.role === 'admin' ? "Greetings Admin! Ready to assist with placement insights and logistics." : "Namaste! I am your AI Career Advisor. How can I help you navigate your placement journey today?" }
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [context, setContext] = useState(initialContext);
+    const [sourceName, setSourceName] = useState(initialSourceName);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -17,6 +19,25 @@ const AIChatbot = () => {
     };
 
     useEffect(scrollToBottom, [messages]);
+
+    // Handle incoming context updates from parent (PrepHub)
+    useEffect(() => {
+        if (initialContext) {
+            setContext(initialContext);
+            setSourceName(initialSourceName);
+            if (initialSummary) {
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `📄 Summary of "${initialSourceName}":\n\n${initialSummary}\n\nYou can now ask me questions about this material!`
+                }]);
+            } else {
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `I've loaded the contents of "${initialSourceName}". You can ask me questions about it or ask for a summary!`
+                }]);
+            }
+        }
+    }, [initialContext, initialSourceName, initialSummary]);
 
     const handleSend = async (e) => {
         if (e) e.preventDefault();
@@ -28,8 +49,12 @@ const AIChatbot = () => {
         setLoading(true);
 
         try {
-            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, { message: input }, config);
+            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, {
+                message: input,
+                context: context,
+                sourceName: sourceName
+            }, config);
             setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
         } catch (err) {
             console.error(err);
@@ -66,8 +91,23 @@ const AIChatbot = () => {
         });
     };
 
+    const clearContext = () => {
+        setContext(null);
+        setSourceName(null);
+        setMessages(prev => [...prev, { role: 'assistant', content: "Context cleared. I'm now back to general mode." }]);
+    };
+
     return (
         <div className="flex flex-col h-full bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold">
+            {sourceName && (
+                <div className="px-4 py-2 bg-amrita-maroon/10 border-b border-white/40 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <Zap size={10} className="text-amrita-maroon" />
+                        <span className="text-[10px] text-amrita-maroon uppercase tracking-wider line-clamp-1">Focusing on: {sourceName}</span>
+                    </div>
+                    <button onClick={clearContext} className="text-[8px] bg-white/60 px-2 py-0.5 rounded border border-white hover:bg-white transition-colors">CLEAR</button>
+                </div>
+            )}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {messages.map((m, i) => (
                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
@@ -100,7 +140,7 @@ const AIChatbot = () => {
                     <input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder="Ask about companies, prep strategies..."
+                        placeholder={sourceName ? `Ask about ${sourceName}...` : "Ask about companies, prep strategies..."}
                         className="w-full p-4 pr-14 bg-white/90 border border-transparent rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon outline-none transition-all placeholder:text-gray-400 group-hover:bg-white"
                         disabled={loading}
                     />
@@ -114,7 +154,7 @@ const AIChatbot = () => {
                 </div>
                 <div className="flex justify-center mt-3 gap-4">
                     <p className="text-[8px] text-amrita-maroon/40 italic uppercase tracking-widest flex items-center gap-1">
-                        <Sparkles size={8} /> Powered by Amrita AI
+                        <Sparkles size={8} /> Powered by Amrita AI (Gemini)
                     </p>
                 </div>
             </form>

@@ -40,6 +40,7 @@ import AdminTickerManager from './AdminTickerManager';
 import AdminAIInsights from './AdminAIInsights';
 import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
 import AIChatbot from '../../components/AIChatbot';
+import AIShortlistPanel from '../../components/admin/AIShortlistPanel';
 
 // ============= THEME DEFINITION =============
 const theme = {
@@ -170,9 +171,9 @@ const AdminDashboard = () => {
 
     // Unified fetchAlumni moved below
 
-    const fetchStats = async () => {
+    const fetchStats = async (batch = '2027') => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/stats`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/stats?batch=${batch}`);
             setStats(res.data);
             setLoading(false);
         } catch (err) {
@@ -498,7 +499,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <QuickStatCard
                         icon={<Users size={24} />}
-                        label="2026 Batch Strength"
+                        label="2027 Batch Strength"
                         value={stats.studentCount}
                         change="+5 this week"
                         gradient="from-[#8A0F3C] to-[#6E0B30]"
@@ -560,7 +561,7 @@ const AdminDashboard = () => {
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <BarChart3 className="text-amrita-maroon" size={20} />
                                         </div>
-                                        2026 Department Overview
+                                        2027 Department Overview
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
@@ -670,67 +671,72 @@ const AdminDashboard = () => {
                 )}
 
                 {activeTab === 'students' && (
-                    <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
-                        <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl font-black flex items-center gap-2">
-                                <Users className="text-amrita-maroon" size={24} />
-                                <span style={{ color: '#1A1A1A' }}>Student</span> <span style={{ color: '#A4123F' }}>Directory</span>
-                            </h2>
-                            <div className="flex gap-2">
-                                <div className="relative">
-                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search students..."
-                                        className="pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50"
-                                        value={filters.search}
-                                        onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                                    />
-                                </div>
-                                <button className="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100"><Filter size={14} /></button>
-                            </div>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Roll No.</th>
-                                        <th>Student Name</th>
-                                        <th>Department</th>
-                                        <th>Batch</th>
-                                        <th>CGPA</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {students.map((student, i) => (
-                                        <tr key={i} className="group">
-                                            <td className="text-sm font-bold text-gray-500">{student.rollNumber}</td>
-                                            <td className="text-sm font-black text-gray-900 dark:text-white">{student.firstName} {student.lastName}</td>
-                                            <td className="text-xs font-bold uppercase">{student.department}</td>
-                                            <td className="text-xs font-bold text-gray-600 dark:text-gray-400">{student.batch}</td>
-                                            <td className="text-sm font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
-                                            <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
-                                            <td>
-                                                <div className="flex gap-1">
+                    <div className="lg:col-span-3 animate-fade-in-up space-y-6">
 
-                                                    <button
-                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                                                        onClick={() => handleEditStudent(student)}
-                                                    >
-                                                        <Edit3 size={16} />
-                                                    </button>
-                                                </div>
-                                            </td>
+                        {/* ── AI SHORTLIST PANEL ── */}
+                        <AIShortlistPanel />
+
+                        {/* ── STUDENT DIRECTORY ── */}
+                        <div className="glass-card p-8">
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className="text-2xl font-black flex items-center gap-2">
+                                    <Users className="text-amrita-maroon" size={24} />
+                                    <span style={{ color: '#1A1A1A' }}>Student</span>{' '}<span style={{ color: '#A4123F' }}>Directory</span>
+                                </h2>
+                                <div className="flex gap-2">
+                                    <div className="relative">
+                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search students..."
+                                            className="pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50"
+                                            value={filters.search}
+                                            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                                        />
+                                    </div>
+                                    <button className="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100"><Filter size={14} /></button>
+                                </div>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Roll No.</th>
+                                            <th>Student Name</th>
+                                            <th>Department</th>
+                                            <th>Batch</th>
+                                            <th>CGPA</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {students.map((student, i) => (
+                                            <tr key={i} className="group">
+                                                <td className="text-sm font-bold text-gray-500">{student.rollNumber}</td>
+                                                <td className="text-sm font-black text-gray-900 dark:text-white">{student.firstName} {student.lastName}</td>
+                                                <td className="text-xs font-bold uppercase">{student.department}</td>
+                                                <td className="text-xs font-bold text-gray-600 dark:text-gray-400">{student.batch}</td>
+                                                <td className="text-sm font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
+                                                <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
+                                                <td>
+                                                    <div className="flex gap-1">
+                                                        <button
+                                                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                                                            onClick={() => handleEditStudent(student)}
+                                                        >
+                                                            <Edit3 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 )}
-
                 {activeTab === 'reports' && (
                     <div className="lg:col-span-3 animate-fade-in-up">
                         <AdminReports />

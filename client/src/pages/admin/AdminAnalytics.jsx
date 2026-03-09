@@ -688,7 +688,7 @@ const MonthlyTrendChart = ({ data }) => {
 
 // Main Component
 const AdminAnalytics = () => {
-    const [selectedYear, setSelectedYear] = useState(2026); // Default to current batch
+    const [selectedYear, setSelectedYear] = useState(2027); // Default to current batch
     const [viewMode, setViewMode] = useState('overview');
     const [data, setData] = useState(null);
     const [rawData, setRawData] = useState(null);
