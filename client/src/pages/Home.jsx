@@ -2096,6 +2096,8 @@ h1, h2, h3, h4, h5, h6 {
     .hero-content { grid-template-columns: 1fr; gap: 3rem; }
     .nav-links { display: none; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
+    .problems-grid, .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .metrics-grid, .branch-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
     .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
@@ -2103,6 +2105,7 @@ h1, h2, h3, h4, h5, h6 {
     .hero-title { font-size: 2.2rem; }
     .hero-cta, .cta-buttons { flex-direction: column; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .problems-grid, .features-grid, .solution-steps, .metrics-grid, .branch-grid, .hero-metrics { grid-template-columns: 1fr; }
     
     .nav-ultimate { padding: 0.75rem 1rem; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
     .nav-text span:first-child { font-size: 1.1rem; }
