@@ -287,9 +287,9 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                     <div>
                         <h1 className="text-3xl font-black flex items-center gap-2">
                             <Megaphone className="text-amrita-maroon" size={28} />
-                            <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                            <span className="text-gray-900 dark:text-white">Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
                         </h1>
-                        <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+                        <p className="text-xs font-bold uppercase tracking-widest mt-1 text-gray-500 dark:text-gray-400">Management Domain Control</p>
                     </div>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -349,8 +349,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="rounded-[2rem] p-4 shadow-sm flex flex-col lg:flex-row gap-4 items-center"
-                    style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}
+                    className="rounded-[2rem] p-4 shadow-sm flex flex-col lg:flex-row gap-4 items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
                 >
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2" size={18} style={{ color: theme.neutral.textSecondary }} />
@@ -359,16 +358,14 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                             placeholder="Search broadcasts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-14 pr-6 py-4 rounded-xl border-2 border-transparent transition-all text-sm font-bold outline-none"
-                            style={{ background: theme.neutral.gray50, color: theme.neutral.textPrimary }}
+                            className="w-full pl-14 pr-6 py-4 rounded-xl border-2 border-transparent transition-all text-sm font-bold outline-none bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                     </div>
                     <div className="flex gap-4 w-full lg:w-auto">
                         <select
                             value={filterPriority}
                             onChange={(e) => setFilterPriority(e.target.value)}
-                            className="px-6 py-4 border-2 border-transparent rounded-xl text-[10px] font-black uppercase tracking-widest outline-none shadow-sm"
-                            style={{ background: theme.neutral.gray50, color: theme.neutral.textPrimary }}
+                            className="px-6 py-4 border-2 border-transparent rounded-xl text-[10px] font-black uppercase tracking-widest outline-none shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                             <option value="all">Priority: All</option>
                             {priorities.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}

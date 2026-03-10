@@ -138,7 +138,7 @@ const AdminPrepHub = () => {
                 <div>
                     <h1 className="text-3xl font-black flex items-center gap-2">
                         <BookOpen className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Prep</span> <span style={{ color: '#A4123F' }}>Hub Center</span>
+                        <span className="text-gray-900 dark:text-white">Prep</span> <span style={{ color: '#A4123F' }}>Hub Center</span>
                     </h1>
                     <p className="text-gray-500 text-xs font-bold mt-1 uppercase tracking-tight">Curate and manage elite preparation modules</p>
                 </div>

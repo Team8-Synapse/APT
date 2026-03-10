@@ -284,7 +284,7 @@ const AdminReports = () => {
                 <div>
                     <h1 className="text-3xl font-black flex items-center gap-2">
                         <BarChart3 className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Reports &</span> <span style={{ color: '#A4123F' }}>Intelligence</span>
+                        <span className="text-gray-900 dark:text-white">Reports &</span> <span style={{ color: '#A4123F' }}>Intelligence</span>
                     </h1>
                     <p className="mt-2 text-gray-500 font-medium ml-1">
                         Select a report type below to configure and generate insights.

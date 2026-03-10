@@ -67,7 +67,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
                     <Megaphone className="text-amrita-maroon" size={28} />
                     <div>
                         <h1 className="text-3xl font-black">
-                            <span style={{ color: '#1A1A1A' }}>Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
+                            <span className="text-gray-900 dark:text-white">Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
                         </h1>
                         <p className="text-gray-500 font-medium">Manage scrolling messages on the student dashboard.</p>
                     </div>

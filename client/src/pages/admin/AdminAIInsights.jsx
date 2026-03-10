@@ -50,7 +50,7 @@ const AdminAIInsights = () => {
                         <div className="p-3 bg-gradient-to-br from-amrita-maroon to-[#D1477C] rounded-2xl text-white shadow-lg">
                             <Brain size={28} />
                         </div>
-                        <span style={{ color: '#1A1A1A' }}>Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amrita-maroon to-[#D1477C]">Neural Dashboard</span>
+                        <span className="text-gray-900 dark:text-white">Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amrita-maroon to-[#D1477C]">Neural Dashboard</span>
                     </h2>
                     <p className="text-gray-500 font-bold mt-2 text-sm uppercase tracking-widest">Powered by Google Gemini Array</p>
                 </div>
