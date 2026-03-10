@@ -7,7 +7,7 @@
  * - Real-time notifications
  */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, User, Users, LayoutDashboard, Briefcase, BookOpen, MessageSquare, Bell, Sparkles, Moon, Sun, Calendar, FileText, Menu, X } from 'lucide-react';
@@ -43,9 +43,7 @@ const Navbar = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications`, {
-                withCredentials: true // IMPORTANT for Auth
-            });
+            const res = await api.get('/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.error('Failed to fetch notifications', err);
@@ -55,9 +53,7 @@ const Navbar = () => {
     // Mark notification as read
     const markAsRead = async (id) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {
-                withCredentials: true
-            });
+            await api.put(`/notifications/${id}`, {});
             setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
         } catch (err) {
             console.error(err);

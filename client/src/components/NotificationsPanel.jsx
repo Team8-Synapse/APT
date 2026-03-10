@@ -6,7 +6,7 @@
  * - Auto-fetches notifications on open.
  */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Bell, X, Check, Trash2, Info, AlertTriangle, CheckCircle, ExternalLink, Briefcase } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -19,9 +19,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.error('Error fetching notifications:', err);
@@ -40,9 +38,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
     // Mark a single notification as read
     const markAsRead = async (id) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.put(`/notifications/${id}`, {});
             setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
         } catch (err) {
             console.error(err);
@@ -52,9 +48,7 @@ const NotificationsPanel = ({ isOpen, onClose }) => {
     // Mark all notifications as read
     const markAllAsRead = async () => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/read-all`, {}, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.put('/notifications/read-all', {});
             setNotifications(notifications.map(n => ({ ...n, isRead: true })));
         } catch (err) {
             console.error(err);
