@@ -189,7 +189,6 @@ const MagneticButton = ({ children, className, ...props }) => {
     );
 };
 
-// ============= 8. TEXT CASCADE =============
 const TextCascade = ({ text, className }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
@@ -200,21 +199,46 @@ const TextCascade = ({ text, className }) => {
         return () => obs.disconnect();
     }, []);
 
+    let globalCharIndex = 0;
+
     return (
         <span ref={ref} className={className}>
-            {text.split('').map((char, i) => (
-                <span
-                    key={i}
-                    className="cascade-char"
-                    style={{
-                        animationDelay: `${i * 0.03}s`,
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'translateY(0)' : 'translateY(30px)'
-                    }}
-                >
-                    {char === ' ' ? '\u00A0' : char}
-                </span>
-            ))}
+            {text.split(' ').map((word, wIdx) => {
+                // If it's a space (resulting from split)
+                const isLast = wIdx === text.split(' ').length - 1;
+                return (
+                    <span key={wIdx} style={{ whiteSpace: 'nowrap', display: 'inline-flex' }}>
+                        {word.split('').map((char, cIdx) => {
+                            const delay = globalCharIndex++ * 0.03;
+                            return (
+                                <span
+                                    key={cIdx}
+                                    className="cascade-char"
+                                    style={{
+                                        animationDelay: `${delay}s`,
+                                        opacity: visible ? 1 : 0,
+                                        transform: visible ? 'translateY(0)' : 'translateY(30px)'
+                                    }}
+                                >
+                                    {char}
+                                </span>
+                            );
+                        })}
+                        {!isLast && (
+                            <span
+                                className="cascade-char"
+                                style={{
+                                    animationDelay: `${globalCharIndex++ * 0.03}s`,
+                                    opacity: visible ? 1 : 0,
+                                    transform: visible ? 'translateY(0)' : 'translateY(30px)'
+                                }}
+                            >
+                                &nbsp;
+                            </span>
+                        )}
+                    </span>
+                );
+            })}
         </span>
     );
 };
@@ -1602,9 +1626,6 @@ const Home = () => {
 
 // ============= STYLES =============
 const styles = `
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap');
-
 /* Base */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { 

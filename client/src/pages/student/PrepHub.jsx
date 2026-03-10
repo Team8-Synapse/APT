@@ -21,6 +21,7 @@ const PrepHub = () => {
     const [category, setCategory] = useState('Coding');
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('grid');
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     const categories = [
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
@@ -529,6 +530,31 @@ const PrepHub = () => {
                     </div>
                 </div>
             </div>
+
+            {/* AI Assistant Floating Action Button */}
+            <div className={`fixed bottom-8 right-8 z-[100] transition-all duration-500 flex flex-col items-end ${isChatOpen ? 'w-[450px] h-[650px]' : 'w-auto h-auto'}`}>
+                {isChatOpen ? (
+                    <div className="w-full h-full animate-fade-in-up relative">
+                        <button onClick={() => setIsChatOpen(false)} className="absolute -top-3 -right-3 p-2 bg-red-500 text-white rounded-full hover:scale-110 transition-transform shadow-lg z-50">
+                            <X size={16} />
+                        </button>
+                        <AIChatbot />
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => setIsChatOpen(true)}
+                        className="group flex items-center gap-3 bg-gradient-to-r from-[#A4123F] to-[#8A0F3C] text-white p-4 rounded-full shadow-2xl hover:shadow-[#A4123F]/40 hover:-translate-y-1 hover:scale-105 transition-all duration-300 relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                        <Sparkles size={24} className="animate-pulse relative z-10" />
+                        <span className="font-bold relative z-10 pr-2">Amrita AI Advisor</span>
+
+                        {/* Ping animation behind button */}
+                        <div className="absolute inset-0 rounded-full border border-white/50 animate-ping opacity-20" />
+                    </button>
+                )}
+            </div>
+
         </div>
     );
 };

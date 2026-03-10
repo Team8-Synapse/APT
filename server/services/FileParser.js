@@ -13,8 +13,21 @@ const FileParser = {
     async parsePdfFromUrl(url) {
         try {
             const response = await axios.get(url, { responseType: 'arraybuffer' });
-            const data = await pdf(response.data);
-            return String(data.text || '');
+
+            // Handle different export styles of pdf-parse
+            let dataText = '';
+            if (typeof pdf === 'function') {
+                const data = await pdf(response.data);
+                dataText = data.text;
+            } else if (pdf.PDFParse) {
+                const parser = new pdf.PDFParse({ data: response.data });
+                const result = await parser.getText();
+                dataText = result.text;
+                await parser.destroy();
+            } else {
+                throw new Error("Could not find suitable pdf-parse export.");
+            }
+            return String(dataText || '');
         } catch (error) {
             console.error('PDF Parsing Error:', error);
             throw new Error(`Failed to parse PDF: ${error.message}`);
@@ -30,7 +43,7 @@ const FileParser = {
             const response = await axios.get(url, { responseType: 'arraybuffer' });
             const buffer = Buffer.from(response.data);
             const data = await officeparser.parseOffice(buffer);
-            
+
             // officeparser v6 returns an object with toText() method
             let text = '';
             if (typeof data === 'string') {
@@ -47,7 +60,7 @@ const FileParser = {
                         .join('\n');
                 }).join('\n\n');
             }
-            
+
             console.log('PPT parsed text length:', text.length, 'preview:', text.substring(0, 100));
             return text || 'No text content found in this presentation.';
         } catch (error) {
