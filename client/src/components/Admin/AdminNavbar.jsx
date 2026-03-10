@@ -130,7 +130,7 @@ const AdminNavbar = ({
                             key={tab.id}
                             onClick={() => handleNavClick(tab)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 w-full ${activeTab === tab.id
-                                ? 'bg-amrita-maroon text-white shadow-md'
+                                ? 'bg-white text-amrita-maroon shadow-md border border-amrita-maroon/20'
                                 : 'text-gray-600 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
                                 }`}
                         >
