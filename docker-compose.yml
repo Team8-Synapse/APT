@@ -11,13 +11,13 @@ services:
   server:
     build: ./server
     ports:
-      - "5000:5000"
+      - "5005:5005"
     depends_on:
       - database
     environment:
       - MONGODB_URI=mongodb://database:27017/placement_tracker
       - JWT_SECRET=your_jwt_secret
-      - PORT=5000
+      - PORT=5005
 
   client:
     build: ./client

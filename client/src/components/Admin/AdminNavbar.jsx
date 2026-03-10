@@ -30,8 +30,7 @@ const AdminNavbar = ({
         { id: 'drives', label: 'Company Drives', icon: <Briefcase size={20} />, path: '/admin' },
         { id: 'prep', label: 'Prep Hub', icon: <Brain size={20} />, path: '/admin' },
         { id: 'alumni', label: 'Alumni Connect', icon: <GraduationCap size={20} />, path: '/admin' },
-        { id: 'announcements', label: 'Announcements', icon: <Megaphone size={20} />, path: '/admin/announcements' },
-        { id: 'ticker', label: 'Ticker', icon: <MessageSquare size={20} />, path: '/admin' },
+        { id: 'communication', label: 'Communications', icon: <Megaphone size={20} />, path: '/admin' },
         { id: 'analytics', label: 'Analytics', icon: <BarChart3 size={20} />, path: '/admin' },
         { id: 'reports', label: 'Reports', icon: <FileSpreadsheet size={20} />, path: '/admin' }
     ];

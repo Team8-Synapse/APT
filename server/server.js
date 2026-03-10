@@ -10,7 +10,7 @@ const PORT = (process.env.PORT || '5005').toString().trim();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:80', 'http://localhost', 'https://amrita-placement-tracker.vercel.app'],
     credentials: true
 }));
 app.use(express.json());

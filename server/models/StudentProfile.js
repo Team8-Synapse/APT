@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const studentProfileSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId || mongoose.Types.ObjectId,
         ref: 'User',
         required: true
     },
