@@ -67,7 +67,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
                     <Megaphone className="text-amrita-maroon" size={28} />
                     <div>
                         <h1 className="text-3xl font-black">
-                            <span className="text-gray-900 dark:text-white">Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
+                            <span className="text-gray-900">Ticker</span> <span style={{ color: '#A4123F' }}>Manager</span>
                         </h1>
                         <p className="text-gray-500 font-medium">Manage scrolling messages on the student dashboard.</p>
                     </div>
@@ -76,11 +76,11 @@ const AdminTickerManager = ({ isSubModule = false }) => {
 
             {/* Preview Section */}
             <div className="mb-8">
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-gray-700">
                     <Smartphone size={20} /> Live Preview
                 </h3>
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900 opacity-50 z-0"></div>
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gray-50 opacity-50 z-0"></div>
                     <div className="relative z-10">
                         <p className="text-xs font-bold text-gray-400 uppercase mb-2">Student Dashboard Footer</p>
                         <div className="bg-[#6E0B30] text-white p-4 rounded-xl shadow-lg flex items-center gap-4 overflow-hidden">
@@ -100,16 +100,16 @@ const AdminTickerManager = ({ isSubModule = false }) => {
             </div>
 
             {/* Editor Section */}
-            <div className="glass-card p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-md mb-8">
+            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-xl mb-8">
                 <form onSubmit={handleSave} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-bold text-gray-700 mb-2">
                             New Message Content <span className="text-red-500">*</span>
                         </label>
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-amrita-maroon outline-none transition-all font-medium h-24 resize-none"
+                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amrita-maroon outline-none transition-all font-medium h-24 resize-none"
                             placeholder="Enter a new announcement..."
                             required
                         />

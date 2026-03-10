@@ -135,7 +135,7 @@ const AdminAnalytics = () => {
     ].sort((a, b) => b.value - a.value);
 
     return (
-        <div className="p-4 bg-[#F8FAFC] min-h-screen space-y-8 animate-fade-in">
+        <div className="p-4 !bg-white min-h-screen space-y-8 animate-fade-in">
             {/* Dashboard Header */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
                 <div>

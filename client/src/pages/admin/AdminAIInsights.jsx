@@ -27,7 +27,7 @@ const AdminAIInsights = () => {
     }, []);
 
     if (loading) return (
-        <div className="flex flex-col items-center justify-center p-20 glass-card">
+        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-[2rem] border border-gray-100 shadow-sm">
             <RefreshCw size={48} className="text-amrita-maroon animate-spin mb-6" />
             <h3 className="text-2xl font-black text-gray-900">Synthesizing Institutional Data...</h3>
             <p className="text-gray-500 font-bold uppercase tracking-widest mt-2">Connecting to Neural Engine</p>
@@ -35,22 +35,22 @@ const AdminAIInsights = () => {
     );
 
     if (!insights) return (
-        <div className="p-12 text-center glass-card">
+        <div className="p-12 text-center bg-white rounded-[2rem] border border-gray-100 shadow-sm">
             <AlertTriangle size={48} className="text-red-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold">Failed to load AI Insights</h3>
+            <h3 className="text-xl font-bold text-gray-900">Failed to load AI Insights</h3>
             <button onClick={fetchInsights} className="mt-4 px-6 py-2 bg-amrita-maroon text-white rounded-lg font-bold hover:bg-[#8B0000]">Retry</button>
         </div>
     );
 
     return (
         <div className="space-y-8 animate-fade-in-up">
-            <header className="flex justify-between items-center bg-white/40 p-6 rounded-3xl border border-white/60 shadow-sm backdrop-blur-md">
+            <header className="flex justify-between items-center bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
                 <div>
                     <h2 className="text-3xl font-black flex items-center gap-3">
                         <div className="p-3 bg-gradient-to-br from-amrita-maroon to-[#D1477C] rounded-2xl text-white shadow-lg">
                             <Brain size={28} />
                         </div>
-                        <span className="text-gray-900 dark:text-white">Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amrita-maroon to-[#D1477C]">Neural Dashboard</span>
+                        <span className="text-gray-900">Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amrita-maroon to-[#D1477C]">Neural Dashboard</span>
                     </h2>
                     <p className="text-gray-500 font-bold mt-2 text-sm uppercase tracking-widest">Powered by Google Gemini Array</p>
                 </div>
@@ -65,7 +65,7 @@ const AdminAIInsights = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Executive Summary */}
-                <div className="lg:col-span-3 glass-card p-10 bg-gradient-to-br from-[#1E0610] to-[#45071D] text-white border-none shadow-2xl relative overflow-hidden">
+                <div className="lg:col-span-3 bg-white rounded-[2rem] p-10 bg-gradient-to-br from-[#1E0610] to-[#45071D] text-white border-none shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 opacity-10 pointer-events-none p-10 transform scale-150">
                         <Activity size={200} />
                     </div>
@@ -80,7 +80,7 @@ const AdminAIInsights = () => {
                 </div>
 
                 {/* AI Predictions */}
-                <div className="lg:col-span-1 glass-card p-8 border-t-4 border-t-amrita-maroon">
+                <div className="lg:col-span-1 bg-white rounded-[2rem] p-8 border-t-4 border-t-amrita-maroon border-x border-b border-gray-100 shadow-sm">
                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 text-gray-900">
                         <div className="p-2 bg-pink-50 text-amrita-maroon rounded-xl">
                             <TrendingUp size={20} />
@@ -104,7 +104,7 @@ const AdminAIInsights = () => {
                 </div>
 
                 {/* Strategic Action Plan */}
-                <div className="lg:col-span-2 glass-card p-8 border-t-4 border-t-[#D1477C]">
+                <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 border-t-4 border-t-[#D1477C] border-x border-b border-gray-100 shadow-sm">
                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 text-gray-900">
                         <div className="p-2 bg-pink-50 text-[#D1477C] rounded-xl">
                             <Brain size={20} />

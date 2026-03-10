@@ -278,7 +278,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
     }
 
     return (
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen" style={{ background: theme.neutral.white }}>
+        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen !bg-white">
 
 
             {/* Page Header - only show if not sub-module */}
@@ -287,9 +287,9 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                     <div>
                         <h1 className="text-3xl font-black flex items-center gap-2">
                             <Megaphone className="text-amrita-maroon" size={28} />
-                            <span className="text-gray-900 dark:text-white">Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                            <span className="text-gray-900">Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
                         </h1>
-                        <p className="text-xs font-bold uppercase tracking-widest mt-1 text-gray-500 dark:text-gray-400">Management Domain Control</p>
+                        <p className="text-xs font-bold uppercase tracking-widest mt-1 text-gray-500">Management Domain Control</p>
                     </div>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -349,7 +349,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="rounded-[2rem] p-4 shadow-sm flex flex-col lg:flex-row gap-4 items-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
+                    className="rounded-[2rem] p-4 shadow-sm flex flex-col lg:flex-row gap-4 items-center bg-white border border-gray-100"
                 >
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-6 top-1/2 -translate-y-1/2" size={18} style={{ color: theme.neutral.textSecondary }} />
@@ -358,14 +358,14 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
                             placeholder="Search broadcasts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-14 pr-6 py-4 rounded-xl border-2 border-transparent transition-all text-sm font-bold outline-none bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                            className="w-full pl-14 pr-6 py-4 rounded-xl border-2 border-transparent transition-all text-sm font-bold outline-none bg-gray-50 text-gray-900"
                         />
                     </div>
                     <div className="flex gap-4 w-full lg:w-auto">
                         <select
                             value={filterPriority}
                             onChange={(e) => setFilterPriority(e.target.value)}
-                            className="px-6 py-4 border-2 border-transparent rounded-xl text-[10px] font-black uppercase tracking-widest outline-none shadow-sm bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                            className="px-6 py-4 border-2 border-transparent rounded-xl text-[10px] font-black uppercase tracking-widest outline-none shadow-sm bg-gray-50 text-gray-900"
                         >
                             <option value="all">Priority: All</option>
                             {priorities.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}

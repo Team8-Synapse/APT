@@ -29,12 +29,12 @@ import {
 // --- Reusable UI Components (Tailwind + Amrita Theme) ---
 
 const SectionCard = ({ children, title, icon: Icon, className = "" }) => (
-    <div className={`glass-card p-6 relative overflow-hidden ${className}`}>
-        <div className="flex items-center gap-3 mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+    <div className={`bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden ${className}`}>
+        <div className="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
             <div className="p-2 bg-amrita-maroon/10 rounded-lg text-amrita-maroon">
                 <Icon size={20} />
             </div>
-            <h3 className="font-black text-lg text-gray-800 dark:text-white">{title}</h3>
+            <h3 className="font-black text-lg text-gray-800">{title}</h3>
         </div>
         {children}
     </div>
@@ -44,19 +44,19 @@ const ReportTypeCard = ({ label, description, icon: Icon, active, onClick, color
     <button
         onClick={onClick}
         className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 group hover:shadow-xl w-full h-full flex flex-col ${active
-            ? 'border-amrita-maroon bg-amrita-maroon/5 dark:bg-red-900/10'
-            : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amrita-maroon/30'
+            ? 'border-amrita-maroon bg-amrita-maroon/5'
+            : 'border-gray-100 bg-white hover:border-amrita-maroon/30'
             }`}
     >
-        <div className={`p-3 rounded-xl w-fit mb-4 transition-colors ${active ? 'bg-amrita-maroon text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 group-hover:bg-amrita-maroon/10 group-hover:text-amrita-maroon'
+        <div className={`p-3 rounded-xl w-fit mb-4 transition-colors ${active ? 'bg-amrita-maroon text-white' : 'bg-gray-100 text-gray-600 group-hover:bg-amrita-maroon/10 group-hover:text-amrita-maroon'
             }`}>
             <Icon size={24} />
         </div>
         <div className="flex-1">
-            <h4 className={`font-black text-lg mb-1 ${active ? 'text-amrita-maroon' : 'text-gray-800 dark:text-white'}`}>
+            <h4 className={`font-black text-lg mb-1 ${active ? 'text-amrita-maroon' : 'text-gray-800'}`}>
                 {label}
             </h4>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+            <p className="text-xs font-medium text-gray-500 leading-relaxed">
                 {description}
             </p>
         </div>
@@ -77,7 +77,7 @@ const FilterSelect = ({ label, value, onChange, options, icon: Icon }) => (
             <select
                 value={value}
                 onChange={onChange}
-                className="w-full appearance-none bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 text-gray-900 dark:text-white text-sm font-semibold rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-amrita-maroon focus:ring-4 focus:ring-amrita-maroon/10 transition-all cursor-pointer"
+                className="w-full appearance-none bg-gray-50 border-2 border-gray-100 text-gray-900 text-sm font-semibold rounded-xl px-4 py-3 pr-10 focus:outline-none focus:border-amrita-maroon focus:ring-4 focus:ring-amrita-maroon/10 transition-all cursor-pointer"
             >
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -284,7 +284,7 @@ const AdminReports = () => {
                 <div>
                     <h1 className="text-3xl font-black flex items-center gap-2">
                         <BarChart3 className="text-amrita-maroon" size={28} />
-                        <span className="text-gray-900 dark:text-white">Reports &</span> <span style={{ color: '#A4123F' }}>Intelligence</span>
+                        <span className="text-gray-900">Reports &</span> <span style={{ color: '#A4123F' }}>Intelligence</span>
                     </h1>
                     <p className="mt-2 text-gray-500 font-medium ml-1">
                         Select a report type below to configure and generate insights.

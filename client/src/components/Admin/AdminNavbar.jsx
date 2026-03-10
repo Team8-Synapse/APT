@@ -8,16 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/logo.png';
 import NotificationsPanel from '../NotificationsPanel';
 
-const AdminNavbar = ({
-    activeTab,
-    setActiveTab,
-    user,
-    logout,
-    darkMode,
-    setDarkMode,
-    showNotifications,
-    setShowNotifications,
-    stats,
+stats,
     filters,
     setFilters
 }) => {
@@ -73,18 +64,7 @@ const AdminNavbar = ({
                 </nav>
 
                 {/* Right Section - Notifications & Profile */}
-                <div className="flex items-center gap-2 pl-2 md:pl-5 md:border-l border-gray-200 dark:border-gray-700">
-                    {/* Dark Mode Toggle */}
-                    {setDarkMode && (
-                        <button
-                            onClick={() => setDarkMode(!darkMode)}
-                            className="p-2 transition-all hover:bg-gray-100 rounded-xl text-gray-700"
-                            title={darkMode ? 'Light Mode' : 'Dark Mode'}
-                        >
-                            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                        </button>
-                    )}
-
+                <div className="flex items-center gap-2 pl-2 md:pl-5 md:border-l border-gray-200">
                     {/* Notifications */}
                     <button
                         onClick={() => setShowNotifications && setShowNotifications(prev => !prev)}
@@ -96,15 +76,15 @@ const AdminNavbar = ({
 
                     {/* User Profile */}
                     <div className="relative group hidden md:block">
-                        <button className="flex items-center gap-2 p-1 md:p-1.5 pl-3 md:pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all">
-                            <span className="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-300 hidden sm:block">Admin</span>
+                        <button className="flex items-center gap-2 p-1 md:p-1.5 pl-3 md:pl-4 bg-gray-50 rounded-xl border border-gray-200 hover:shadow-md transition-all">
+                            <span className="text-xs md:text-sm font-bold text-gray-700 hidden sm:block">Admin</span>
                             <div className="w-8 h-8 md:w-9 md:h-9 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-bold text-base shadow-inner">
                                 A
                             </div>
                         </button>
-                        <div className="absolute right-0 top-14 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                            <div className="p-4 border-b border-gray-100 dark:border-gray-700">
-                                <p className="font-bold text-base text-gray-900 dark:text-white">Admin User</p>
+                        <div className="absolute right-0 top-14 w-52 bg-white border border-gray-200 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                            <div className="p-4 border-b border-gray-100">
+                                <p className="font-bold text-base text-gray-900">Admin User</p>
                                 <p className="text-xs text-gray-500 uppercase font-bold mt-1">{user?.email}</p>
                             </div>
                             <div className="p-2">

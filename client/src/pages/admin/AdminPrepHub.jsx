@@ -138,17 +138,17 @@ const AdminPrepHub = () => {
                 <div>
                     <h1 className="text-3xl font-black flex items-center gap-2">
                         <BookOpen className="text-amrita-maroon" size={28} />
-                        <span className="text-gray-900 dark:text-white">Prep</span> <span style={{ color: '#A4123F' }}>Hub Center</span>
+                        <span className="text-gray-900">Prep</span> <span style={{ color: '#A4123F' }}>Hub Center</span>
                     </h1>
                     <p className="text-gray-500 text-xs font-bold mt-1 uppercase tracking-tight">Curate and manage elite preparation modules</p>
                 </div>
             </div>
 
             {/* Inline Module Publisher */}
-            <div className="glass-card overflow-hidden border-t-4 border-t-amrita-maroon animate-fade-in">
-                <div className="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20 flex justify-between items-center">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden border-t-4 border-t-amrita-maroon animate-fade-in">
+                <div className="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                     <div>
-                        <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                        <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
                             {editingResource ? <Edit3 size={20} className="text-amrita-maroon" /> : <PlusCircle size={20} className="text-amrita-maroon" />}
                             {editingResource ? 'Edit' : 'Add'} <span className="text-amrita-maroon italic">Module</span>
                         </h2>
