@@ -84,7 +84,7 @@ const AdminNavbar = ({
                     </button>
 
                     {/* User Profile */}
-                    <div className="relative group">
+                    <div className="relative group hidden md:block">
                         <button className="flex items-center gap-2 p-1 md:p-1.5 pl-3 md:pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all">
                             <span className="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-300 hidden sm:block">Admin</span>
                             <div className="w-8 h-8 md:w-9 md:h-9 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-bold text-base shadow-inner">
@@ -138,6 +138,15 @@ const AdminNavbar = ({
                             <span>{tab.label}</span>
                         </button>
                     ))}
+                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <button
+                            onClick={logout}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 w-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+                        >
+                            <LogOut size={20} />
+                            <span>Logout</span>
+                        </button>
+                    </div>
                 </nav>
             )}
         </div>
