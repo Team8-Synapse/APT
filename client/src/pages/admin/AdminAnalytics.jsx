@@ -185,7 +185,7 @@ const AdminAnalytics = () => {
             </div>
 
             {/* Analytics Grid - 15 Dynamic Visualizations */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                 {/* 1. Placement Rate by Department */}
                 <AnalyticsCard title="Placement Efficiency" icon={LayoutDashboard} delay={100}>

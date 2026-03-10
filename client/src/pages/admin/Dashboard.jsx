@@ -69,9 +69,18 @@ const theme = {
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
     const [timeOfDay, setTimeOfDay] = useState('');
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        const saved = localStorage.getItem('darkMode');
+        return saved === 'true';
+    });
     const [showNotifications, setShowNotifications] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+
+    // Apply dark mode on mount and state change
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', darkMode);
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
 
     // Initialize time of day greeting
     useEffect(() => {
@@ -679,7 +688,7 @@ const AdminDashboard = () => {
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-black flex items-center gap-2">
                                     <Users className="text-amrita-maroon" size={24} />
-                                    <span style={{ color: '#1A1A1A' }}>Student</span>{' '}<span style={{ color: '#A4123F' }}>Directory</span>
+                                    <span className="text-gray-900 dark:text-white">Student</span>{' '}<span style={{ color: '#A4123F' }}>Directory</span>
                                 </h2>
                                 <div className="flex gap-2">
                                     <div className="relative">

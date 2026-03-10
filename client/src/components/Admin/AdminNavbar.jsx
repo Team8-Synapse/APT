@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     LayoutDashboard, Calendar, Users, Briefcase, Brain, GraduationCap,
     Megaphone, BarChart3, FileSpreadsheet, Sparkles, BellRing,
-    Settings, LogOut, MessageSquare, Menu, X
+    Settings, LogOut, MessageSquare, Menu, X, Sun, Moon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/logo.png';
@@ -48,7 +48,7 @@ const AdminNavbar = ({
     };
 
     return (
-        <div className="glass-card !bg-white/90 dark:!bg-gray-900/90 !rounded-2xl p-3 md:px-4 md:py-2 flex flex-col justify-between sticky top-4 z-50 backdrop-blur-xl border border-white/20 shadow-xl gap-y-3 md:gap-y-0">
+        <div className="glass-card !rounded-2xl border-white/20 bg-white shadow-xl p-3 md:px-4 md:py-2 flex flex-col justify-between sticky top-4 z-50 backdrop-blur-xl gap-y-3 md:gap-y-0">
             <div className="flex items-center justify-between w-full">
                 {/* Amrita Branding */}
                 <div className="flex items-center gap-3 pr-2 md:pr-5 md:border-r md:border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => navigate('/admin')}>
@@ -63,7 +63,7 @@ const AdminNavbar = ({
                             onClick={() => handleNavClick(tab)}
                             className={`flex items-center gap-2 px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl text-sm lg:text-base font-semibold transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
                                 ? 'bg-amrita-maroon text-white shadow-lg shadow-amrita-maroon/30'
-                                : 'text-gray-600 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
+                                : 'text-gray-700 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
                                 }`}
                         >
                             <span className="scale-90 lg:scale-100">{tab.icon}</span>
@@ -74,10 +74,21 @@ const AdminNavbar = ({
 
                 {/* Right Section - Notifications & Profile */}
                 <div className="flex items-center gap-2 pl-2 md:pl-5 md:border-l border-gray-200 dark:border-gray-700">
+                    {/* Dark Mode Toggle */}
+                    {setDarkMode && (
+                        <button
+                            onClick={() => setDarkMode(!darkMode)}
+                            className="p-2 transition-all hover:bg-gray-100 rounded-xl text-gray-700"
+                            title={darkMode ? 'Light Mode' : 'Dark Mode'}
+                        >
+                            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                    )}
+
                     {/* Notifications */}
                     <button
                         onClick={() => setShowNotifications && setShowNotifications(prev => !prev)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative transition-colors text-gray-500"
+                        className="p-2 hover:bg-gray-100 rounded-xl relative transition-colors text-amrita-maroon"
                     >
                         <BellRing size={20} className="md:w-[22px] md:h-[22px]" />
                         {stats?.announcementCount > 0 && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>}
@@ -113,7 +124,7 @@ const AdminNavbar = ({
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl text-gray-600 dark:text-gray-300 ml-1"
+                        className="md:hidden p-2 hover:bg-gray-100 rounded-xl text-gray-700 ml-1"
                     >
                         {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
@@ -130,18 +141,18 @@ const AdminNavbar = ({
                             key={tab.id}
                             onClick={() => handleNavClick(tab)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 w-full ${activeTab === tab.id
-                                ? 'bg-white text-amrita-maroon shadow-md border border-amrita-maroon/20'
-                                : 'text-gray-600 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
+                                ? 'bg-amrita-maroon text-white shadow-md'
+                                : 'text-gray-700 hover:text-amrita-maroon hover:bg-gray-100'
                                 }`}
                         >
                             <span>{tab.icon}</span>
                             <span>{tab.label}</span>
                         </button>
                     ))}
-                    <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <div className="mt-2 pt-2 border-t border-gray-100">
                         <button
                             onClick={logout}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 w-full text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 w-full text-red-600 hover:bg-red-50"
                         >
                             <LogOut size={20} />
                             <span>Logout</span>
