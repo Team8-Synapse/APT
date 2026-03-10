@@ -1405,9 +1405,9 @@ const Home = () => {
                                 <span>Official Placement Intelligence System</span>
                             </div>
                             <h1 className="hero-title">
-                                <TextCascade text="Because  your " className="title-white" />
-                                <GradientText>Placement  Journey</GradientText>
-                                <TextCascade text="     deserves  structure" className="title-white" />
+                                <div><TextCascade text="Because your" className="title-white" /></div>
+                                <div><GradientText>Placement Journey</GradientText></div>
+                                <div><TextCascade text="deserves structure" className="title-white" /></div>
                             </h1>
                             <p className="hero-desc">
                                 <Typewriter texts={['Track opportunities in real-time.', 'AI-powered placement insights.', 'Connect with 500+ companies.']} />
