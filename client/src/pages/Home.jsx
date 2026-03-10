@@ -1374,6 +1374,45 @@ const Home = () => {
                                     <Link to="/register">Get Started <ArrowRight size={20} /></Link>
                                 </RippleButton>
                             </div>
+
+                            <div className="mobile-app-cta" style={{
+                                marginTop: '2rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                gap: '1rem',
+                                background: 'rgba(0, 0, 0, 0.4)',
+                                padding: '1.5rem',
+                                borderRadius: '1rem',
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                            }}>
+                                <span style={{ color: 'white', fontWeight: 600, fontSize: '1.05rem', letterSpacing: '0.5px' }}>
+                                    ✨ CLICK HERE TO DOWNLOAD THE MOBILE APP OF AMRITA PLACEMENT TRACKER
+                                </span>
+                                <a style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    background: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
+                                    color: 'white',
+                                    padding: '0.75rem 1.75rem',
+                                    borderRadius: '0.75rem',
+                                    border: 'none',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    boxShadow: '0 4px 15px rgba(139, 0, 0, 0.4)',
+                                    transition: 'transform 0.2s',
+                                    textDecoration: 'none'
+                                }}
+                                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                    href="https://adithyaraman7.github.io/amrita-download/" target="_blank" rel="noopener noreferrer"
+                                >
+                                    <Smartphone size={20} /> Download App
+                                </a>
+                            </div>
+
                             <div className="hero-badges">
                                 {trustBadges.map((b, i) => (
                                     <FloatingElement key={i} delay={i * 0.2} amplitude={8}>
