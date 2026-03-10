@@ -2101,7 +2101,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 @media (max-width: 768px) {
     .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
-    .hero-ultimate { padding: 14rem 5% 4rem !important; min-height: 100vh; }
+    .hero-ultimate { padding: 18rem 5% 4rem !important; min-height: 100vh; }
     .hero-title { font-size: 2.2rem; }
     .hero-cta, .cta-buttons { flex-direction: column; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
