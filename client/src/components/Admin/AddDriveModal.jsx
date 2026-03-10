@@ -97,7 +97,11 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
                 totalPositions: parseInt(formData.totalPositions) || undefined
             };
 
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive`, payload);
+            if (isEditMode) {
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${editDrive._id}`, payload);
+            } else {
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive`, payload);
+            }
             setSuccess(true);
             setTimeout(() => {
                 onSuccess();
