@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import api from '../api';
-import { Send, User, Bot, Sparkles, Zap } from 'lucide-react';
+import { Send, User, Bot, Sparkles, Zap, Minimize2, Maximize2 } from 'lucide-react';
 
 const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSummary = null }) => {
     const [messages, setMessages] = useState([
