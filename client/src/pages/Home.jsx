@@ -2055,17 +2055,24 @@ h1, h2, h3, h4, h5, h6 {
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
-    .hero-ultimate, .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
-    .hero-title { font-size: 2.5rem; }
+    .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
+    .hero-ultimate { padding: 14rem 5% 4rem !important; min-height: 100vh; }
+    .hero-title { font-size: 2.2rem; }
     .hero-cta, .cta-buttons { flex-direction: column; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
     
+    .nav-ultimate { padding: 0.75rem 1rem; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
+    .nav-text span:first-child { font-size: 1.1rem; }
+    .nav-text span:last-child { font-size: 0.65rem; }
+    .nav-actions { gap: 0.5rem; width: 100%; justify-content: center; margin-top: 0.25rem; }
+    .btn-primary, .btn-ghost { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
     .mobile-app-cta {
         flex-direction: column;
         gap: 0.75rem;
         padding: 1rem 5%;
         text-align: center;
-        top: 80px; 
+        top: 110px; /* Accounts for the new wrapped mobile navbar */
     }
     .mobile-app-cta-text {
         font-size: 0.85rem;
