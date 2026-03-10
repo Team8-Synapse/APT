@@ -46,45 +46,28 @@ const AdminNavbar = ({
     };
 
     return (
-        <div className="glass-card !bg-white/90 dark:!bg-gray-900/90 !rounded-2xl px-4 py-2 flex items-center justify-between sticky top-4 z-50 backdrop-blur-xl border border-white/20 shadow-xl">
+        <div className="glass-card !bg-white/90 dark:!bg-gray-900/90 !rounded-2xl p-3 md:px-4 md:py-2 flex flex-wrap items-center justify-between sticky top-4 z-50 backdrop-blur-xl border border-white/20 shadow-xl gap-y-3 md:gap-y-0">
             {/* Amrita Branding */}
-            <div className="flex items-center gap-3 pr-5 border-r border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => navigate('/admin')}>
-                <img src={logoImg} alt="Amrita Placement Tracker" className="h-10 w-auto object-contain hover:scale-105 transition-transform duration-300" />
+            <div className="flex items-center gap-3 md:pr-5 md:border-r md:border-gray-200 dark:border-gray-700 cursor-pointer order-1" onClick={() => navigate('/admin')}>
+                <img src={logoImg} alt="Amrita Placement Tracker" className="h-8 md:h-10 w-auto object-contain hover:scale-105 transition-transform duration-300" />
             </div>
 
-            {/* Navigation Tabs - Single Row */}
-            <nav className="flex items-center gap-1 flex-1 justify-center px-4">
-                {navItems.map((tab) => (
-                    <button
-                        key={tab.id}
-                        onClick={() => handleNavClick(tab)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-base font-semibold transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
-                            ? 'bg-amrita-maroon text-white shadow-lg shadow-amrita-maroon/30'
-                            : 'text-gray-600 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
-                            }`}
-                    >
-                        {tab.icon}
-                        <span>{tab.label}</span>
-                    </button>
-                ))}
-            </nav>
-
             {/* Right Section - Notifications & Profile */}
-            <div className="flex items-center gap-3 pl-5 border-l border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-5 md:border-l border-gray-200 dark:border-gray-700 order-2 md:order-3">
                 {/* Notifications */}
                 <button
                     onClick={() => setShowNotifications && setShowNotifications(prev => !prev)}
-                    className="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative transition-colors text-gray-500"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl relative transition-colors text-gray-500"
                 >
-                    <BellRing size={22} />
+                    <BellRing size={20} className="md:w-[22px] md:h-[22px]" />
                     {stats?.announcementCount > 0 && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>}
                 </button>
 
                 {/* User Profile */}
                 <div className="relative group">
-                    <button className="flex items-center gap-2 p-1.5 pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all">
-                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Admin</span>
-                        <div className="w-9 h-9 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-bold text-base shadow-inner">
+                    <button className="flex items-center gap-2 p-1 md:p-1.5 pl-3 md:pl-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all">
+                        <span className="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-300 hidden sm:block">Admin</span>
+                        <div className="w-8 h-8 md:w-9 md:h-9 bg-amrita-maroon text-white rounded-lg flex items-center justify-center font-bold text-base shadow-inner">
                             A
                         </div>
                     </button>
@@ -108,6 +91,23 @@ const AdminNavbar = ({
                 </div>
                 {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
             </div>
+
+            {/* Navigation Tabs - Single Row Scrollable on Mobile */}
+            <nav className="flex items-center gap-1 w-full md:w-auto md:flex-1 justify-start md:justify-center overflow-x-auto [&::-webkit-scrollbar]:hidden order-3 md:order-2 pb-1 md:pb-0 px-1 md:px-4">
+                {navItems.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => handleNavClick(tab)}
+                        className={`flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-sm md:text-base font-semibold transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === tab.id
+                            ? 'bg-amrita-maroon text-white shadow-lg shadow-amrita-maroon/30'
+                            : 'text-gray-600 hover:text-amrita-maroon hover:bg-amrita-maroon/10'
+                            }`}
+                    >
+                        <span className="scale-90 md:scale-100">{tab.icon}</span>
+                        <span>{tab.label}</span>
+                    </button>
+                ))}
+            </nav>
         </div>
     );
 };

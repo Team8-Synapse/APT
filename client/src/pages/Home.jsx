@@ -2118,7 +2118,7 @@ h1, h2, h3, h4, h5, h6 {
         gap: 0.75rem;
         padding: 1rem 5%;
         text-align: center;
-        top: 110px; /* Accounts for the new wrapped mobile navbar */
+        top: 130px; /* Accounts for the new wrapped mobile navbar */
     }
     .mobile-app-cta-text {
         font-size: 0.85rem;
