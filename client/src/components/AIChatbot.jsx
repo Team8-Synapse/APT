@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import api from '../api';
 import { Send, User, Bot, Sparkles, Zap, Minimize2, Maximize2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSummary = null }) => {
     const { token, user } = useAuth();
@@ -51,7 +52,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             const config = {
                 headers: { Authorization: `Bearer ${token || localStorage.getItem('token')}` }
             };
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, {
+            const res = await api.post('/ai/chat', {
                 message: input,
                 context: context,
                 sourceName: sourceName
