@@ -887,16 +887,24 @@ const StudentDashboard = () => {
 
 
 
-            {tickers.length > 0 && (
+            {/* Combined Ticker System */}
+            {(tickers.length > 0 || announcements.some(a => a.displayInTicker)) && (
                 <div className="ticker-d">
                     <div className="ticker-content-d">
-                        {/* Loop through tickers and repeat to ensure continuous flow */}
-                        {[...Array(5)].flatMap((_, i) => (
-                            tickers.map((t, index) => (
-                                <span key={`${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
-                                    <Megaphone size={18} className="animate-pulse" /> ADMIN ALERT: {t.message} •
-                                </span>
-                            ))
+                        {/* Loop through both old tickers and new announcement-based tickers */}
+                        {[...Array(3)].flatMap((_, i) => (
+                            <>
+                                {tickers.map((t, index) => (
+                                    <span key={`old-${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
+                                        <Megaphone size={18} className="animate-pulse" /> ALERT: {t.message} •
+                                    </span>
+                                ))}
+                                {announcements.filter(a => a.displayInTicker).map((a, index) => (
+                                    <span key={`ann-${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
+                                        <Bell size={18} className="animate-pulse text-amrita-gold" /> BROADCAST: {a.content} •
+                                    </span>
+                                ))}
+                            </>
                         ))}
                     </div>
                 </div>

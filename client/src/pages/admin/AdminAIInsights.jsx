@@ -47,10 +47,10 @@ const AdminAIInsights = () => {
             <header className="flex justify-between items-center bg-white/40 p-6 rounded-3xl border border-white/60 shadow-sm backdrop-blur-md">
                 <div>
                     <h2 className="text-3xl font-black flex items-center gap-3">
-                        <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl text-white shadow-lg">
+                        <div className="p-3 bg-gradient-to-br from-amrita-maroon to-[#D1477C] rounded-2xl text-white shadow-lg">
                             <Brain size={28} />
                         </div>
-                        <span style={{ color: '#1A1A1A' }}>Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Neural Dashboard</span>
+                        <span style={{ color: '#1A1A1A' }}>Director's</span> <span className="text-transparent bg-clip-text bg-gradient-to-r from-amrita-maroon to-[#D1477C]">Neural Dashboard</span>
                     </h2>
                     <p className="text-gray-500 font-bold mt-2 text-sm uppercase tracking-widest">Powered by Google Gemini Array</p>
                 </div>
@@ -65,24 +65,24 @@ const AdminAIInsights = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Executive Summary */}
-                <div className="lg:col-span-3 glass-card p-10 bg-gradient-to-br from-indigo-900 to-gray-900 text-white border-none shadow-2xl relative overflow-hidden">
+                <div className="lg:col-span-3 glass-card p-10 bg-gradient-to-br from-[#1E0610] to-[#45071D] text-white border-none shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 opacity-10 pointer-events-none p-10 transform scale-150">
                         <Activity size={200} />
                     </div>
                     <div className="relative z-10 w-full max-w-4xl">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-indigo-300 mb-4 flex items-center gap-2">
+                        <h3 className="text-xs font-black uppercase tracking-widest text-[#F5B0CA] mb-4 flex items-center gap-2">
                             <Zap size={16} /> Executive Summary
                         </h3>
-                        <p className="text-2xl lg:text-3xl font-bold leading-relaxed text-blue-50">
+                        <p className="text-2xl lg:text-3xl font-bold leading-relaxed text-pink-50">
                             {insights.summary}
                         </p>
                     </div>
                 </div>
 
                 {/* AI Predictions */}
-                <div className="lg:col-span-1 glass-card p-8 border-t-4 border-t-purple-500">
+                <div className="lg:col-span-1 glass-card p-8 border-t-4 border-t-amrita-maroon">
                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 text-gray-900">
-                        <div className="p-2 bg-purple-100 text-purple-600 rounded-xl">
+                        <div className="p-2 bg-pink-50 text-amrita-maroon rounded-xl">
                             <TrendingUp size={20} />
                         </div>
                         Market Predictions
@@ -96,7 +96,7 @@ const AdminAIInsights = () => {
                                 key={i}
                                 className="p-4 bg-gray-50 border border-gray-100 rounded-2xl flex items-start gap-3"
                             >
-                                <Target size={18} className="text-purple-500 mt-1 flex-shrink-0" />
+                                <Target size={18} className="text-amrita-maroon mt-1 flex-shrink-0" />
                                 <span className="text-sm font-medium text-gray-700 leading-relaxed">{pred}</span>
                             </motion.div>
                         ))}
@@ -104,9 +104,9 @@ const AdminAIInsights = () => {
                 </div>
 
                 {/* Strategic Action Plan */}
-                <div className="lg:col-span-2 glass-card p-8 border-t-4 border-t-indigo-500">
+                <div className="lg:col-span-2 glass-card p-8 border-t-4 border-t-[#D1477C]">
                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 text-gray-900">
-                        <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl">
+                        <div className="p-2 bg-pink-50 text-[#D1477C] rounded-xl">
                             <Brain size={20} />
                         </div>
                         Strategic Action Plan
@@ -118,9 +118,9 @@ const AdminAIInsights = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.1 + 0.3 }}
                                 key={i}
-                                className="p-5 bg-gradient-to-br from-white to-indigo-50/50 border border-indigo-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow group h-full flex flex-col"
+                                className="p-5 bg-gradient-to-br from-white to-pink-50/50 border border-pink-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow group h-full flex flex-col"
                             >
-                                <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-black mb-3 text-sm">
+                                <div className="w-8 h-8 rounded-full bg-pink-100 text-[#D1477C] flex items-center justify-center font-black mb-3 text-sm">
                                     {i + 1}
                                 </div>
                                 <span className="text-sm font-bold text-gray-800 leading-relaxed flex-1">{action}</span>

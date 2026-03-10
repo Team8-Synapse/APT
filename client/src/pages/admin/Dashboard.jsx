@@ -7,6 +7,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../../api';
 import {
     Target, TrendingUp, AlertCircle, Calendar, ChevronRight, Brain, Briefcase, Clock, CheckCircle, XCircle, Send, Users, Building2, GraduationCap, Star,
     ArrowUpRight, Bell, FileText, MapPin, Flame, Trophy, BookOpen, Rocket, Heart,
@@ -38,6 +39,7 @@ import NotificationsPanel from '../../components/NotificationsPanel';
 import AdminReports from './AdminReports';
 import AdminTickerManager from './AdminTickerManager';
 import AdminAIInsights from './AdminAIInsights';
+import CommunicationHub from './CommunicationHub';
 import CompanyLogo from '../../components/CompanyLogo'; // Added for drives UI
 import AIChatbot from '../../components/AIChatbot';
 import AIShortlistPanel from '../../components/Admin/AIShortlistPanel';
@@ -171,7 +173,7 @@ const AdminDashboard = () => {
 
     // Unified fetchAlumni moved below
 
-    const fetchStats = async (batch = '2027') => {
+    const fetchStats = async (batch = '2026') => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/stats?batch=${batch}`);
             setStats(res.data);
@@ -251,9 +253,7 @@ const AdminDashboard = () => {
 
     const fetchAlumni = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/directory`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get(`/alumni/directory`);
             setAlumni(res.data);
         } catch (err) {
             console.error(err);
@@ -264,9 +264,7 @@ const AdminDashboard = () => {
     const handleDeleteAlumni = async (id) => {
         if (!window.confirm('Are you sure you want to remove this alumni member?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/member/${id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.delete(`/alumni/member/${id}`);
             fetchAlumni();
         } catch (err) {
             console.error(err);
@@ -499,7 +497,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <QuickStatCard
                         icon={<Users size={24} />}
-                        label="2027 Batch Strength"
+                        label="2026 Batch Strength"
                         value={stats.studentCount}
                         change="+5 this week"
                         gradient="from-[#8A0F3C] to-[#6E0B30]"
@@ -561,7 +559,7 @@ const AdminDashboard = () => {
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <BarChart3 className="text-amrita-maroon" size={20} />
                                         </div>
-                                        2027 Department Overview
+                                        2026 Department Overview
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
@@ -746,12 +744,6 @@ const AdminDashboard = () => {
                 {activeTab === 'ai-insights' && (
                     <div className="lg:col-span-3 animate-fade-in-up">
                         <AdminAIInsights />
-                    </div>
-                )}
-
-                {activeTab === 'ticker' && (
-                    <div className="lg:col-span-3">
-                        <AdminTickerManager />
                     </div>
                 )}
 
@@ -1060,155 +1052,8 @@ const AdminDashboard = () => {
 
                 {
                     activeTab === 'announcements' && (
-                        <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
-                            <div className="flex justify-between items-center mb-8">
-                                <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
-                                    <Megaphone className="text-amrita-maroon" size={24} />
-                                    Communication Center
-                                </h2>
-                                <button
-                                    onClick={() => {
-                                        setEditingAnnouncement(null);
-                                        setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
-                                        document.getElementById('announcement-form').scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                    className="btn-premium flex items-center gap-2 !py-2 !px-4 !text-xs"
-                                >
-                                    <Send size={14} /> New Announcement
-                                </button>
-                            </div>
-
-                            {/* Announcement Form */}
-                            <div id="announcement-form" className="mb-8 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
-                                <h3 className="font-bold text-lg mb-4 dark:text-white">
-                                    {editingAnnouncement ? 'Edit Announcement' : 'Create New Announcement'}
-                                </h3>
-                                <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                                            Announcement Content *
-                                        </label>
-                                        <textarea
-                                            value={newAnnouncement.content}
-                                            onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
-                                            className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-amrita-maroon text-sm"
-                                            rows="3"
-                                            placeholder="Enter announcement content (e.g., 🎉 Google hiring for SDE positions - Apply by March 15)"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                                            Links (Optional)
-                                        </label>
-                                        {newAnnouncement.links.map((link, idx) => (
-                                            <div key={idx} className="flex gap-2 mb-2">
-                                                <input
-                                                    type="text"
-                                                    value={link.title}
-                                                    onChange={(e) => {
-                                                        const updatedLinks = [...newAnnouncement.links];
-                                                        updatedLinks[idx].title = e.target.value;
-                                                        setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
-                                                    }}
-                                                    className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
-                                                    placeholder="Link title"
-                                                />
-                                                <input
-                                                    type="url"
-                                                    value={link.url}
-                                                    onChange={(e) => {
-                                                        const updatedLinks = [...newAnnouncement.links];
-                                                        updatedLinks[idx].url = e.target.value;
-                                                        setNewAnnouncement({ ...newAnnouncement, links: updatedLinks });
-                                                    }}
-                                                    className="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-sm"
-                                                    placeholder="https://..."
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                        <button
-                                            type="submit"
-                                            className="btn-premium !py-2 !px-6 !text-sm"
-                                        >
-                                            {editingAnnouncement ? 'Update Announcement' : 'Post Announcement'}
-                                        </button>
-                                        {editingAnnouncement && (
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setEditingAnnouncement(null);
-                                                    setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
-                                                }}
-                                                className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-300"
-                                            >
-                                                Cancel
-                                            </button>
-                                        )}
-                                    </div>
-                                </form>
-                            </div>
-
-                            {/* Announcements List */}
-                            <div className="space-y-4">
-                                <h3 className="font-bold text-lg dark:text-white">Active Announcements</h3>
-                                {announcements.length > 0 ? (
-                                    announcements.map((ann, i) => (
-                                        <div key={ann._id || i} className="p-6 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-md transition-all">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{ann.content}</p>
-                                                    {ann.links && ann.links.length > 0 && ann.links[0].url && (
-                                                        <div className="mt-2 flex gap-2 flex-wrap">
-                                                            {ann.links.map((link, idx) => link.url && (
-                                                                <a
-                                                                    key={idx}
-                                                                    href={link.url}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-xs text-amrita-maroon hover:underline flex items-center gap-1"
-                                                                >
-                                                                    <ExternalLink size={12} />
-                                                                    {link.title || 'Link'}
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                    <span className="text-[10px] font-bold text-gray-400 mt-2 block">
-                                                        {new Date(ann.createdAt).toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                <div className="flex gap-2 ml-4">
-                                                    <button
-                                                        onClick={() => handleEditAnnouncement(ann)}
-                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-amrita-maroon"
-                                                        title="Edit"
-                                                    >
-                                                        <Edit3 size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleAnnouncementDelete(ann._id)}
-                                                        className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-red-600"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="text-center py-12 text-gray-400">
-                                        <Megaphone size={48} className="mx-auto mb-4 opacity-20" />
-                                        <p className="font-bold">No announcements yet</p>
-                                        <p className="text-sm">Create your first announcement to communicate with students</p>
-                                    </div>
-                                )}
-                            </div>
+                        <div className="lg:col-span-3 animate-fade-in-up">
+                            <CommunicationHub isSubModule={true} />
                         </div>
                     )
                 }

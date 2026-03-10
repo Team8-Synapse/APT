@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { XCircle, User, Building2, Briefcase, Mail, Linkedin, School, Calendar } from 'lucide-react';
 
 const AddAlumniModal = ({ isOpen, onClose, onRefresh, editAlumni }) => {
@@ -37,13 +37,9 @@ const AddAlumniModal = ({ isOpen, onClose, onRefresh, editAlumni }) => {
         setLoading(true);
         try {
             if (editAlumni) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/member/${editAlumni._id}`, formData, {
-                    withCredentials: true
-                });
+                await api.put(`/alumni/member/${editAlumni._id}`, formData);
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/alumni/member`, formData, {
-                    withCredentials: true // For admin auth check
-                });
+                await api.post(`/alumni/member`, formData);
             }
             onRefresh && onRefresh();
             onClose();

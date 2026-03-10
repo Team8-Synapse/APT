@@ -59,6 +59,7 @@ app.use('/api/experiences', require('./routes/experienceRoutes'));
 app.use('/api/schedule', require('./routes/eventRoutes'));
 app.use('/api/ticker', require('./routes/tickerRoutes'));
 app.use('/api/ai-shortlist', require('./routes/aiShortlistRoutes'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/api/test-route', (req, res) => {
     res.send('Server is using the LATEST server.js file');

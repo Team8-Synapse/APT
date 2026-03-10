@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { X, CheckCircle, AlertCircle, Save, Plus } from 'lucide-react';
 
 const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
@@ -98,9 +98,9 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
             };
 
             if (isEditMode) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${editDrive._id}`, payload);
+                await api.put(`/admin/drive/${editDrive._id}`, payload);
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive`, payload);
+                await api.post(`/admin/drive`, payload);
             }
             setSuccess(true);
             setTimeout(() => {

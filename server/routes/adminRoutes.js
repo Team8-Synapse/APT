@@ -9,48 +9,66 @@ const Application = require('../models/Application');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
 
-// New endpoint for comprehensive analytics data across different datasets
+// Helper to parse CSV robustly
+const parseStudentCsv = () => {
+    try {
+        const csvPath = path.join(__dirname, '../data/students.csv');
+        console.log(`[CSV Helper] Trying path: ${csvPath}`);
+        if (!fs.existsSync(csvPath)) {
+            console.error(`[CSV Helper] File not found at: ${csvPath}`);
+            return [];
+        }
+        const content = fs.readFileSync(csvPath, 'utf-8').replace(/^\uFEFF/, '');
+        const lines = content.split('\n').filter(line => line.trim());
+        console.log(`[CSV Helper] Headers line: ${lines[0]}`);
+        if (lines.length < 2) return [];
+
+        const headers = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h => h.trim().replace(/^\uFEFF/, '').replace(/^"(.*)"$/, '$1'));
+        return lines.slice(1).map((line, index) => {
+            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"(.*)"$/, '$1'));
+            const student = {};
+            headers.forEach((header, i) => student[header] = values[i] || '');
+
+            return {
+                _id: `csv_${index}`,
+                rollNumber: student.roll_no,
+                firstName: student.full_name?.split(' ')[0] || '',
+                lastName: student.full_name?.split(' ').slice(1).join(' ') || '',
+                email: student.email,
+                department: student.dept_code,
+                section: student.section,
+                batch: String(student.batch_year || '').trim(),
+                cgpa: parseFloat(student.cgpa) || 0,
+                backlogs: parseInt(student.backlogs) || 0,
+                placementStatus: (student.placement_status || '').toLowerCase().replace(' ', '_'),
+                originalData: student
+            };
+        });
+    } catch (err) {
+        console.error('CSV Parse Helper Error:', err);
+        return [];
+    }
+};
+
 router.get('/analytics-dataset', async (req, res) => {
     try {
         const studentCsvPath = path.join(__dirname, '../data/students.csv');
-        const testCsvPath = path.join(__dirname, '../data/test_dataset.csv');
+        if (!fs.existsSync(studentCsvPath)) return res.json([]);
 
-        // Helper to read and parse CSV
-        const parseCsv = (filePath) => {
-            if (!fs.existsSync(filePath)) return [];
-            const content = fs.readFileSync(filePath, 'utf-8');
-            const lines = content.split('\n').filter(line => line.trim());
-            if (lines.length === 0) return [];
-            const headers = lines[0].split(',').map(h => h.trim());
-            return lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
-                const obj = {};
-                headers.forEach((h, i) => obj[h] = values[i]);
-                return obj;
-            });
-        };
+        const rawContent = fs.readFileSync(studentCsvPath, 'utf-8').replace(/^\uFEFF/, '');
+        const lines = rawContent.split('\n').filter(line => line.trim());
+        if (lines.length === 0) return res.json([]);
 
-        // Helper to determine company tier and mock CTC
-        const getCompanyInference = (companyName) => {
-            if (!companyName || companyName === 'TBD') return { tier: 'N/A', ctc: 0 };
-            const name = companyName.toLowerCase();
-            if (name.includes('google') || name.includes('amazon') || name.includes('microsoft') || name.includes('apple') || name.includes('meta')) {
-                return { tier: 'Super Dream', ctc: 25 + Math.floor(Math.random() * 15) };
-            }
-            if (name.includes('oracle') || name.includes('accenture') || name.includes('tcs') || name.includes('infosys') || name.includes('wipro')) {
-                return { tier: 'Dream', ctc: 8 + Math.floor(Math.random() * 7) };
-            }
-            return { tier: 'Regular', ctc: 4 + Math.floor(Math.random() * 4) };
-        };
-
-        const studentsRaw = parseCsv(studentCsvPath);
+        const headers = lines[0].split(',').map(h => h.trim().replace(/^"(.*)"$/, '$1'));
+        const studentsRaw = lines.slice(1).map(line => {
+            const values = line.split(',').map(v => v.trim().replace(/^"(.*)"$/, '$1'));
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = values[i]);
+            return obj;
+        });
 
         // Map all students from students.csv (2023-2027)
         const mappedData = studentsRaw.map(s => {
-            const inference = getCompanyInference(s.placement_status === 'Placed' ? 'Google' : null); // Simple inference
-            // Note: Since our new CSV has placement_status as "Placed"/"Not Placed", 
-            // and we generated random backlogs, we can use those.
-
             return {
                 roll_no: s.roll_no,
                 full_name: s.full_name,
@@ -62,15 +80,14 @@ router.get('/analytics-dataset', async (req, res) => {
                 backlogs: parseInt(s.backlogs) || 0,
                 placement_status: s.placement_status,
                 company: s.placement_status === 'Placed' ? 'TBD' : null,
-                ctc: s.placement_status === 'Placed' ? (12 + Math.floor(Math.random() * 20)) : 0, // Mock CTC for analytics
+                ctc: s.placement_status === 'Placed' ? (12 + Math.floor(Math.random() * 20)) : 0,
                 tier: s.placement_status === 'Placed' ? 'Dream' : 'N/A'
             };
         });
 
         res.json(mappedData);
-
     } catch (err) {
-        console.error('Analytics dataset v2 error:', err);
+        console.error('Analytics dataset error:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -79,66 +96,49 @@ router.get('/analytics-dataset', async (req, res) => {
 // Get admin statistics
 router.get('/stats', async (req, res) => {
     try {
-        const batchFilter = req.query.batch || '2027';
+        const batchFilter = String(req.query.batch || '2027').trim();
 
         const driveCount = await PlacementDrive.countDocuments();
         const alumniCount = await AlumniInsight.countDocuments();
         const applicationCount = await Application.countDocuments();
 
-        // Read CSV file for student stats
-        const csvPath = path.join(__dirname, '../data/students.csv');
-        let students = [];
-        try {
-            const csvContent = fs.readFileSync(csvPath, 'utf-8');
-            const lines = csvContent.split('\n').filter(line => line.trim());
-            const headers = lines[0].split(',').map(h => h.trim());
+        const students = parseStudentCsv();
+        console.log(`[Stats DEBUG] Total students parsed: ${students.length}`);
+        console.log(`[Stats DEBUG] Searching for batch: "${batchFilter}" (Type: ${typeof batchFilter})`);
 
-            students = lines.slice(1).map(line => {
-                const values = line.split(',').map(v => v.trim());
-                const student = {};
-                headers.forEach((header, i) => {
-                    student[header] = values[i] || '';
-                });
-                return {
-                    batch: student.batch_year,
-                    department: student.dept_code,
-                    placementStatus: (student.placement_status || '').toLowerCase().replace(' ', '_'),
-                    cgpa: parseFloat(student.cgpa) || 0
-                };
-            });
-        } catch (csvErr) {
-            console.error('Error reading CSV for stats:', csvErr);
-        }
-
-        // Filter for 2026 batch
-        const filteredStudents = students.filter(s => s.batch === batchFilter);
-
+        const filteredStudents = students.filter(s => {
+            const matches = s.batch === batchFilter;
+            if (students.indexOf(s) < 5) {
+                console.log(`[Stats DEBUG] Student batch: "${s.batch}" (Type: ${typeof s.batch}) - Matches: ${matches}`);
+            }
+            return matches;
+        });
         const studentCount = filteredStudents.length;
+        console.log(`[Stats DEBUG] Filtered count: ${studentCount}`);
         const placedStudents = filteredStudents.filter(s => s.placementStatus === 'placed').length;
         const inProcessStudents = filteredStudents.filter(s => s.placementStatus === 'in_process').length;
 
-        // Department-wise statistics for 2026 batch from CSV
+        // Department-wise statistics
         const deptMap = {};
         filteredStudents.forEach(s => {
-            if (!deptMap[s.department]) {
-                deptMap[s.department] = { count: 0, placed: 0, totalCgpa: 0 };
+            const dept = s.department || 'Unknown';
+            if (!deptMap[dept]) {
+                deptMap[dept] = { count: 0, placed: 0, totalCgpa: 0 };
             }
-            deptMap[s.department].count++;
-            if (s.placementStatus === 'placed') {
-                deptMap[s.department].placed++;
-            }
-            deptMap[s.department].totalCgpa += s.cgpa;
+            deptMap[dept].count++;
+            if (s.placementStatus === 'placed') deptMap[dept].placed++;
+            deptMap[dept].totalCgpa += s.cgpa;
         });
 
         const departmentStats = Object.keys(deptMap).map(dept => ({
             _id: dept,
             count: deptMap[dept].count,
             placed: deptMap[dept].placed,
-            avgCgpa: deptMap[dept].totalCgpa / deptMap[dept].count,
-            placementPercentage: (deptMap[dept].placed / deptMap[dept].count) * 100
+            avgCgpa: deptMap[dept].totalCgpa / (deptMap[dept].count || 1),
+            placementPercentage: (deptMap[dept].placed / (deptMap[dept].count || 1)) * 100
         })).sort((a, b) => b.placementPercentage - a.placementPercentage);
 
-        // Placement status distribution for 2026 batch
+        // Placement status distribution
         const placementStatusCounts = {};
         filteredStudents.forEach(s => {
             placementStatusCounts[s.placementStatus] = (placementStatusCounts[s.placementStatus] || 0) + 1;
@@ -148,7 +148,7 @@ router.get('/stats', async (req, res) => {
             count: placementStatusCounts[status]
         }));
 
-        // CTC statistics (still from DB as CSV doesn't have it)
+        // CTC statistics (Improved mock if DB is empty)
         const ctcStatsDb = await StudentProfile.aggregate([
             { $match: { batch: batchFilter, placementStatus: 'placed', offeredCTC: { $exists: true } } },
             {
@@ -166,6 +166,7 @@ router.get('/stats', async (req, res) => {
             .limit(5)
             .select('companyName jobProfile date status ctcDetails');
 
+        // Combined result
         res.json({
             studentCount,
             driveCount,
@@ -177,7 +178,17 @@ router.get('/stats', async (req, res) => {
             recentDrives,
             departmentStats,
             placementStats,
-            ctcStats: ctcStatsDb[0] || { avgCTC: 0, maxCTC: 1800000, minCTC: 350000 } // fallback values for demo if no DB data
+            ctcStats: ctcStatsDb[0] || {
+                avgCTC: 1450000,
+                maxCTC: 4800000,
+                minCTC: 450000
+            },
+            debug: {
+                totalStudents: students.length,
+                batchFilter,
+                sampleBatch: students[0]?.batch,
+                filteredCount: filteredStudents.length
+            }
         });
     } catch (err) {
         console.error('Stats error:', err);

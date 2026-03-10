@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import {
     Sparkles, Zap, Download, X, CheckCircle,
     AlertCircle, Loader2, Users2, Brain, FileSpreadsheet,
@@ -36,7 +36,7 @@ export default function AIShortlistPanel() {
         setError('');
         setResult(null);
         try {
-            const res = await axios.post(`${API}/ai-shortlist/query`, { prompt });
+            const res = await api.post(`/ai-shortlist/query`, { prompt });
             setResult(res.data);
         } catch (err) {
             setError(err.response?.data?.error || 'AI shortlisting failed. Please try again.');
@@ -49,8 +49,8 @@ export default function AIShortlistPanel() {
         if (!result?.students?.length) return;
         setDownloading(true);
         try {
-            const res = await axios.post(
-                `${API}/ai-shortlist/download`,
+            const res = await api.post(
+                `/ai-shortlist/download`,
                 { students: result.students, filename: `AI_Shortlist_${Date.now()}` },
                 { responseType: 'blob' }
             );
