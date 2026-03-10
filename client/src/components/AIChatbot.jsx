@@ -11,6 +11,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
     const [loading, setLoading] = useState(false);
     const [context, setContext] = useState(initialContext);
     const [sourceName, setSourceName] = useState(initialSourceName);
+    const [isMaximized, setIsMaximized] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -98,7 +99,21 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
     }
 
     return (
-        <div className="flex flex-col h-full bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold">
+        <div className={`flex flex-col bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold transition-all duration-300 ${isMaximized ? 'fixed inset-4 z-50 h-auto' : 'h-full'}`}>
+            {/* Header with maximize toggle */}
+            <div className="px-4 py-2 bg-amrita-maroon/5 border-b border-white/40 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Sparkles size={12} className="text-amrita-maroon" />
+                    <span className="text-[10px] text-amrita-maroon uppercase tracking-wider font-black">AI Advisor</span>
+                </div>
+                <button
+                    onClick={() => setIsMaximized(!isMaximized)}
+                    className="p-1.5 hover:bg-amrita-maroon/10 rounded-lg transition-all text-amrita-maroon"
+                    title={isMaximized ? 'Minimize' : 'Maximize'}
+                >
+                    {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                </button>
+            </div>
             {sourceName && (
                 <div className="px-4 py-2 bg-amrita-maroon/10 border-b border-white/40 flex justify-between items-center">
                     <div className="flex items-center gap-2">
