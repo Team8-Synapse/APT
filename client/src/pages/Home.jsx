@@ -1351,19 +1351,23 @@ const Home = () => {
             </nav>
 
             <div className="mobile-app-cta" style={{
-                position: 'relative',
-                zIndex: 100,
+                position: 'absolute',
+                top: '95px', /* Places it just below the 92px navbar */
+                left: 0,
+                right: 0,
+                zIndex: 999,
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                background: 'rgba(25, 25, 25, 0.85)',
+                justifyContent: 'center', /* Centers content horizontally */
+                gap: '2rem', /* Spacing between text and button */
+                background: 'rgba(0, 0, 0, 0.4)', /* Increased translucency */
                 padding: '0.75rem 5%',
                 backdropFilter: 'blur(10px)',
                 borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
             }}>
                 <span style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', letterSpacing: '0.5px' }}>
-                    ✨ CLICK HERE TO DOWNLOAD THE MOBILE APP OF AMRITA PLACEMENT TRACKER
+                    CLICK HERE TO DOWNLOAD THE MOBILE APP OF AMRITA PLACEMENT TRACKER
                 </span>
                 <a style={{
                     display: 'flex',
@@ -1394,7 +1398,7 @@ const Home = () => {
                 <div className="hero-bg">
                     <ParallaxImage src={campusImg} alt="Amrita Campus" className="hero-campus" />
                 </div>
-                <div className="hero-content">
+                <div className="hero-content" style={{ marginTop: '2rem' }}>
                     <StaggeredReveal>
                         <div className="hero-text">
                             <div className="hero-badge">
@@ -1426,7 +1430,7 @@ const Home = () => {
                         </div>
                     </StaggeredReveal>
                     <StaggeredReveal delay={200} direction="right">
-                        <HolographicCard className="hero-card">
+                        <HolographicCard className="hero-card" style={{ marginTop: '1.5rem' }}>
                             <div className="hero-metrics">
                                 {metrics.map((m, i) => (
                                     <Tilt3DCard key={i} className="metric-card">
