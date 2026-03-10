@@ -2048,41 +2048,6 @@ h1, h2, h3, h4, h5, h6 {
 .footer-col a:hover { color: #fff; padding-left: 0.5rem; }
 .footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: rgba(255, 255, 255, 1); font-size: 0.9rem; }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .hero-content { grid-template-columns: 1fr; gap: 3rem; }
-    .nav-links { display: none; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 768px) {
-    .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
-    .hero-ultimate { padding: 14rem 5% 4rem !important; min-height: 100vh; }
-    .hero-title { font-size: 2.2rem; }
-    .hero-cta, .cta-buttons { flex-direction: column; }
-    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
-    
-    .nav-ultimate { padding: 0.75rem 1rem; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
-    .nav-text span:first-child { font-size: 1.1rem; }
-    .nav-text span:last-child { font-size: 0.65rem; }
-    .nav-actions { gap: 0.5rem; width: 100%; justify-content: center; margin-top: 0.25rem; }
-    .btn-primary, .btn-ghost { padding: 0.5rem 1rem; font-size: 0.85rem; }
-
-    .mobile-app-cta {
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem 5%;
-        text-align: center;
-        top: 110px; /* Accounts for the new wrapped mobile navbar */
-    }
-    .mobile-app-cta-text {
-        font-size: 0.85rem;
-        line-height: 1.4;
-    }
-    .mobile-app-cta-btn {
-        padding: 0.6rem 1.5rem;
-    }
-}
-
 /* Base styles for CTA */
 .mobile-app-cta {
     position: absolute;
@@ -2125,6 +2090,42 @@ h1, h2, h3, h4, h5, h6 {
 .mobile-app-cta-btn:hover {
     transform: scale(1.05);
 }
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .hero-content { grid-template-columns: 1fr; gap: 3rem; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+    .section-problems, .section-solution, .section-metrics, .section-features, .section-faq, .section-cta { padding: 4rem 5%; }
+    .hero-ultimate { padding: 14rem 5% 4rem !important; min-height: 100vh; }
+    .hero-title { font-size: 2.2rem; }
+    .hero-cta, .cta-buttons { flex-direction: column; }
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    
+    .nav-ultimate { padding: 0.75rem 1rem; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
+    .nav-text span:first-child { font-size: 1.1rem; }
+    .nav-text span:last-child { font-size: 0.65rem; }
+    .nav-actions { gap: 0.5rem; width: 100%; justify-content: center; margin-top: 0.25rem; }
+    .btn-primary, .btn-ghost { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+    .mobile-app-cta {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem 5%;
+        text-align: center;
+        top: 110px; /* Accounts for the new wrapped mobile navbar */
+    }
+    .mobile-app-cta-text {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    .mobile-app-cta-btn {
+        padding: 0.6rem 1.5rem;
+    }
+}
+
 
 /* ============= NEW 50 EFFECTS STYLES ============= */
 
