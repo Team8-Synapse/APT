@@ -15,7 +15,7 @@ import PrepHub from './pages/student/PrepHub';
 import StudentProfile from './pages/student/Profile';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminPrepHub from './pages/admin/AdminPrepHub';
-import AdminAnnouncements from './pages/admin/AdminAnnouncements';
+import CommunicationHub from './pages/admin/CommunicationHub';
 import PlacementDrives from './pages/student/PlacementDrives';
 import MyApplications from './pages/student/MyApplications';
 import InterviewExperiences from './pages/student/InterviewExperiences';
@@ -78,7 +78,7 @@ function App() {
           <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute role="admin" hideNavbar={true}><AdminDashboard /></PrivateRoute>} />
           <Route path="/admin/prephub" element={<PrivateRoute role="admin" hideNavbar={true}><AdminPrepHub /></PrivateRoute>} />
-          <Route path="/admin/announcements" element={<PrivateRoute role="admin" hideNavbar={true}><AdminAnnouncements /></PrivateRoute>} />
+          <Route path="/admin/announcements" element={<PrivateRoute role="admin" hideNavbar={true}><CommunicationHub /></PrivateRoute>} />
           <Route path="/home" element={<HomeRedirect />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

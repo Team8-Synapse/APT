@@ -7,7 +7,7 @@
  * - Includes advanced filtering and search capabilities.
  */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import {
     Megaphone, Send, Edit3, Trash2, Plus, Search, Filter, Calendar,
     Users, Eye, Clock, Star, Sparkles, TrendingUp, Bell, AlertCircle,
@@ -41,7 +41,7 @@ const theme = {
     }
 };
 
-const AdminAnnouncements = () => {
+const AdminAnnouncements = ({ isSubModule = false }) => {
     // Data State
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -105,10 +105,7 @@ const AdminAnnouncements = () => {
 
     const fetchAnnouncements = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${API_URL}/announcements`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/announcements');
             setAnnouncements(res.data);
             setLoading(false);
         } catch (err) {
@@ -121,9 +118,6 @@ const AdminAnnouncements = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-
             const submissionData = { ...formData };
             if (!submissionData.scheduledDate) delete submissionData.scheduledDate;
             if (!submissionData.expiryDate) delete submissionData.expiryDate;
@@ -131,11 +125,11 @@ const AdminAnnouncements = () => {
             let res;
             if (editingAnnouncement) {
                 // Update existing
-                res = await axios.put(`${API_URL}/announcements/${editingAnnouncement._id}`, submissionData, { headers });
+                res = await api.put(`/announcements/${editingAnnouncement._id}`, submissionData);
                 setAnnouncements(prev => prev.map(a => a._id === editingAnnouncement._id ? res.data : a));
             } else {
                 // Create new
-                res = await axios.post(`${API_URL}/announcements`, submissionData, { headers });
+                res = await api.post('/announcements', submissionData);
                 setAnnouncements(prev => [res.data, ...prev]);
 
                 // Success Wow Factor
@@ -167,9 +161,7 @@ const AdminAnnouncements = () => {
     const handleBulkDelete = async () => {
         if (!window.confirm(`Delete ${selectedAnnouncements.length} announcements?`)) return;
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-            await Promise.all(selectedAnnouncements.map(id => axios.delete(`${API_URL}/announcements/${id}`, { headers })));
+            await Promise.all(selectedAnnouncements.map(id => api.delete(`/announcements/${id}`)));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
             alert('Bulk deletion successful');
@@ -181,10 +173,8 @@ const AdminAnnouncements = () => {
     // Bulk Action: Pin/Unpin Selected
     const handleBulkPin = async (status) => {
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
             await Promise.all(selectedAnnouncements.map(id =>
-                axios.put(`${API_URL}/announcements/${id}`, { isPinned: status }, { headers })
+                api.put(`/announcements/${id}`, { isPinned: status })
             ));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
@@ -196,9 +186,7 @@ const AdminAnnouncements = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this announcement?')) {
             try {
-                const token = localStorage.getItem('token');
-                const headers = { Authorization: `Bearer ${token}` };
-                await axios.delete(`${API_URL}/announcements/${id}`, { headers });
+                await api.delete(`/announcements/${id}`);
                 fetchAnnouncements();
             } catch (err) {
                 console.error('Error deleting announcement:', err);
@@ -287,35 +275,53 @@ const AdminAnnouncements = () => {
 
     return (
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen" style={{ background: theme.neutral.white }}>
-            <AdminNavbar
-                activeTab="announcements"
-                user={user}
-                logout={logout}
-                showNotifications={showNotifications}
-                setShowNotifications={setShowNotifications}
-                stats={stats}
-            />
+            {!isSubModule && (
+                <AdminNavbar
+                    activeTab="announcements"
+                    user={user}
+                    logout={logout}
+                    showNotifications={showNotifications}
+                    setShowNotifications={setShowNotifications}
+                    stats={stats}
+                />
+            )}
 
 
-            {/* Page Header */}
-            <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
-                <div>
-                    <h1 className="text-3xl font-black flex items-center gap-2">
-                        <Megaphone className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
-                    </h1>
-                    <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+            {/* Page Header - only show if not sub-module */}
+            {!isSubModule && (
+                <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
+                    <div>
+                        <h1 className="text-3xl font-black flex items-center gap-2">
+                            <Megaphone className="text-amrita-maroon" size={28} />
+                            <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                        </h1>
+                        <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={20} /> NEW ANNOUNCEMENT
+                    </motion.button>
                 </div>
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => { resetForm(); setShowForm(true); }}
-                    className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
-                    style={{ background: theme.maroon.gradient }}
-                >
-                    <Plus size={20} /> NEW ANNOUNCEMENT
-                </motion.button>
-            </div>
+            )}
+
+            {isSubModule && (
+                <div className="flex justify-end mb-4">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-6 py-3 text-white rounded-xl font-black text-xs shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={16} /> NEW ANNOUNCEMENT
+                    </motion.button>
+                </div>
+            )}
 
 
 

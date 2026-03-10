@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Bell, CheckCheck, Trash2, Clock, Info, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 
 const NotificationsPage = () => {
@@ -12,9 +12,7 @@ const NotificationsPage = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications`, {
-                withCredentials: true
-            });
+            const res = await api.get('/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.error(err);
@@ -23,9 +21,7 @@ const NotificationsPage = () => {
 
     const markAsRead = async (id) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/${id}`, {}, {
-                withCredentials: true
-            });
+            await api.put(`/notifications/${id}`, {});
             setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
         } catch (err) {
             console.error(err);
@@ -34,9 +30,7 @@ const NotificationsPage = () => {
 
     const markAllRead = async () => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notifications/read-all`, {}, {
-                withCredentials: true
-            });
+            await api.put('/notifications/read-all', {});
             setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
         } catch (err) {
             console.error(err);
