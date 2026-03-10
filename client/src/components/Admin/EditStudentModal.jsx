@@ -205,3 +205,4 @@ const EditStudentModal = ({ student, isOpen, onClose, onSave }) => {
 };
 
 export default EditStudentModal;
+

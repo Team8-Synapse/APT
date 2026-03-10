@@ -1,30 +1,11 @@
-import React, { useState } from 'react';
-import api from '../../api';
-import { saveAs } from 'file-saver';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
-    Download,
-    FileText,
-    TrendingUp,
-    BarChart3,
-    FileSpreadsheet,
-    FileJson,
-    Filter,
-    RefreshCw,
-    CheckCircle,
-    AlertCircle,
-    Calendar,
-    Briefcase,
-    Building2,
-    Users,
-    Search,
-    ChevronDown,
-    Printer,
-    Sparkles,
-    Database,
-    UserX,
-    LayoutGrid,
-    List
+    FileSpreadsheet, Download, Filter, Calendar, Users, Briefcase,
+    Building2, RefreshCw, BarChart3, PieChart, Sparkles, TrendingUp,
+    FileText, CheckCircle, AlertCircle, Clock, Printer, Database
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Reusable UI Components (Tailwind + Amrita Theme) ---
 
@@ -68,10 +49,10 @@ const ReportTypeCard = ({ label, description, icon: Icon, active, onClick, color
     </button>
 );
 
-const FilterSelect = ({ label, value, onChange, options, icon: Icon }) => (
-    <div className="space-y-1.5">
-        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide ml-1 flex items-center gap-1">
-            {Icon && <Icon size={12} />} {label}
+const FilterSelect = ({ label, icon: Icon, value, onChange, options }) => (
+    <div className="space-y-2">
+        <label className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] flex items-center gap-2">
+            <Icon size={12} /> {label}
         </label>
         <div className="relative">
             <select
@@ -83,167 +64,163 @@ const FilterSelect = ({ label, value, onChange, options, icon: Icon }) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
             </select>
-            <ChevronDown size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <Clock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
         </div>
     </div>
 );
 
-const ActionButton = ({ onClick, disabled, loading, icon: Icon, label, variant = 'primary', className = '' }) => {
-    const baseClass = "flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed";
+const ActionButton = ({ label, onClick, disabled, loading, variant = "primary", icon: Icon, className = "" }) => {
     const variants = {
-        primary: "bg-amrita-maroon text-white hover:bg-amrita-dark shadow-lg shadow-amrita-maroon/20",
-        secondary: "bg-white text-gray-700 border-2 border-gray-100 hover:border-amrita-maroon/30 hover:bg-gray-50",
-        outline: "border-2 border-dashed border-gray-300 text-gray-500 hover:border-amrita-maroon hover:text-amrita-maroon",
-        success: "bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-600/20",
-        warning: "bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/20"
+        primary: "bg-amrita-maroon text-white hover:bg-amrita-maroon/90 shadow-amrita-maroon/20",
+        secondary: "bg-white border-2 border-gray-100 text-gray-700 hover:border-amrita-maroon hover:text-amrita-maroon",
+        success: "bg-green-600 text-white hover:bg-green-700 shadow-green-600/20"
     };
 
     return (
-        <button onClick={onClick} disabled={disabled} className={`${baseClass} ${variants[variant]} ${className}`}>
-            {loading ? <RefreshCw size={18} className="animate-spin" /> : Icon && <Icon size={18} />}
-            {label}
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg ${variants[variant]} ${className}`}
+        >
+            {loading ? (
+                <RefreshCw size={18} className="animate-spin" />
+            ) : (
+                <>
+                    {Icon && <Icon size={18} />}
+                    {label}
+                </>
+            )}
         </button>
     );
 };
 
+// --- Main Page Component ---
+
 const AdminReports = () => {
-    // State
-    const [reportType, setReportType] = useState('student_placement');
-    const [selectedBatch, setSelectedBatch] = useState('All');
+    const [reportType, setReportType] = useState('student_db');
+    const [selectedBatch, setSelectedBatch] = useState('2026');
     const [selectedDept, setSelectedDept] = useState('All');
     const [selectedStatus, setSelectedStatus] = useState('All');
     const [loading, setLoading] = useState(false);
     const [aiLoading, setAiLoading] = useState(false);
     const [aiInsights, setAiInsights] = useState(null);
-    const [notification, setNotification] = useState(null);
     const [recordCount, setRecordCount] = useState(null);
     const [countLoading, setCountLoading] = useState(false);
+    const [notification, setNotification] = useState(null);
 
-    // Report Definitions
     const reportOptions = [
         {
-            value: 'student_placement',
-            label: 'Student Placement Report',
-            description: 'Comprehensive list of students with placement status, offers, and CTC details.',
+            value: 'student_db',
+            label: 'Master Student Database',
+            description: 'Full profile dump including academic history, skills, and contact info.',
             icon: Users,
-            endpoint: 'admin-csv',
-            filename: 'placement_report.csv'
+            colorClass: 'bg-blue-500'
         },
         {
-            value: 'company_stats',
-            label: 'Company Intelligence',
-            description: 'Recruiter-wise analysis including hire counts, avg CTC, and department breakdown.',
-            icon: Building2,
-            endpoint: 'company-csv',
-            filename: 'company_stats.csv'
+            value: 'placement_master',
+            label: 'Placement Master List',
+            description: 'Detailed log of all offers, CTC details, and company assignments.',
+            icon: Briefcase,
+            colorClass: 'bg-amrita-maroon'
         },
         {
             value: 'unplaced',
-            label: 'Unplaced Talent Pool',
-            description: 'Focus list of students yet to be placed, useful for scheduling remediation drives.',
-            icon: UserX,
-            endpoint: 'admin-csv',
-            params: { placementStatus: 'Unplaced' },
-            filename: 'unplaced_students.csv'
+            label: 'Unplaced Analysis',
+            description: 'Focused list of students eligible but not yet placed for targeted support.',
+            icon: AlertCircle,
+            colorClass: 'bg-orange-500'
         },
         {
-            value: 'student_db',
-            label: 'Full Database Export',
-            description: 'Raw export of all student records for archival or external processing.',
-            icon: Database,
-            endpoint: 'admin-csv',
-            filename: 'student_database.csv'
+            value: 'company_stats',
+            label: 'Company Visit ROI',
+            description: 'Recruitment patterns, average packages, and conversion rates per company.',
+            icon: Building2,
+            colorClass: 'bg-green-600'
         }
     ];
 
-    const generateReport = async () => {
-        const selectedReport = reportOptions.find(r => r.value === reportType);
-        if (!selectedReport) return;
+    // Show notification helper
+    const showNotification = (type, message) => {
+        setNotification({ type, message });
+        setTimeout(() => setNotification(null), 4000);
+    };
 
+    // Fetch live count based on filters
+    useEffect(() => {
+        const fetchCount = async () => {
+            setCountLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const params = new URLSearchParams();
+                if (selectedBatch !== 'All') params.append('batch', selectedBatch);
+                if (selectedDept !== 'All') params.append('department', selectedDept);
+                if (selectedStatus !== 'All') params.append('status', selectedStatus);
+
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/reports/count?${params.toString()}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setRecordCount(res.data.count);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setCountLoading(false);
+            }
+        };
+
+        fetchCount();
+    }, [selectedBatch, selectedDept, selectedStatus]);
+
+    const generateReport = async () => {
         setLoading(true);
         try {
-            const params = new URLSearchParams();
-
-            // Add user selected filters
-            if (selectedBatch !== 'All') params.append('batch', selectedBatch);
-            if (selectedDept !== 'All') params.append('department', selectedDept);
-
-            // Handle Status Filter Logic
-            // If the report type enforces a status (e.g. Unplaced), use that. 
-            // Otherwise use user selection.
-            if (selectedReport.params && selectedReport.params.placementStatus) {
-                params.append('placementStatus', selectedReport.params.placementStatus);
-            } else if (selectedStatus !== 'All') {
-                params.append('placementStatus', selectedStatus);
-            }
-
-            const response = await api.get(`/reports/${selectedReport.endpoint}`, {
-                params: params,
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/reports/generate`, {
+                params: {
+                    type: reportType,
+                    batch: selectedBatch,
+                    department: selectedDept,
+                    status: selectedStatus
+                },
+                headers: { Authorization: `Bearer ${token}` },
                 responseType: 'blob'
             });
 
-            saveAs(response.data, selectedReport.filename);
-            showNotification('success', `Generated ${selectedReport.label}`);
-        } catch (error) {
-            console.error('Download failed:', error);
-            showNotification('error', 'Failed to generate report. Please try again.');
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `Amrita_Report_${reportType}_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            showNotification('success', 'Report generated and downloaded successfully!');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'Critical failure during report generation.');
         } finally {
             setLoading(false);
         }
     };
 
     const fetchAIInsights = async () => {
-        if (recordCount === 0) {
-            showNotification('warning', 'No records found for current filters.');
-            return;
-        }
         setAiLoading(true);
+        setAiInsights(null);
         try {
-            const params = new URLSearchParams();
-            if (selectedBatch !== 'All') params.append('batch', selectedBatch);
-            if (selectedDept !== 'All') params.append('department', selectedDept);
-            if (selectedStatus !== 'All') params.append('placementStatus', selectedStatus);
-
-            const response = await api.get('/reports/ai-insights', {
-                params: params
+            const token = localStorage.getItem('token');
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/reports/ai-analyze`, {
+                type: reportType,
+                batch: selectedBatch,
+                department: selectedDept
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-
-            setAiInsights(response.data);
-            showNotification('success', 'AI Analysis Complete!');
-        } catch (error) {
-            console.error('AI Insights failed:', error);
-            showNotification('error', 'Failed to generate AI insights.');
+            setAiInsights(res.data);
+            showNotification('success', 'AI Analysis Complete: Insights rendered below.');
+        } catch (err) {
+            console.error(err);
+            showNotification('error', 'AI Neural Engine timed out. Please retry.');
         } finally {
             setAiLoading(false);
         }
-    };
-
-    const fetchReportCount = async () => {
-        setCountLoading(true);
-        try {
-            const params = new URLSearchParams();
-            if (selectedBatch !== 'All') params.append('batch', selectedBatch);
-            if (selectedDept !== 'All') params.append('department', selectedDept);
-            if (selectedStatus !== 'All') params.append('placementStatus', selectedStatus);
-
-            const response = await api.get('/reports/count', {
-                params: params
-            });
-            setRecordCount(response.data.count);
-        } catch (error) {
-            console.error('Count fetch failed:', error);
-        } finally {
-            setCountLoading(false);
-        }
-    };
-
-    React.useEffect(() => {
-        fetchReportCount();
-    }, [selectedBatch, selectedDept, selectedStatus]);
-
-    const showNotification = (type, message) => {
-        setNotification({ type, message });
-        setTimeout(() => setNotification(null), 4000);
     };
 
     const resetFilters = () => {
@@ -267,7 +244,7 @@ const AdminReports = () => {
     };
 
     return (
-        <div className="page-enter min-h-screen pb-20">
+        <div className="page-enter min-h-screen pb-20 !bg-white">
             {/* Notification Toast */}
             {notification && (
                 <div className={`fixed top-24 right-6 z-50 flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl animate-slide-in border-l-4 ${notification.type === 'success' ? 'bg-white border-green-500 text-green-700' :
@@ -329,7 +306,6 @@ const AdminReports = () => {
                                 { value: '2026', label: 'Batch 2026' },
                                 { value: '2027', label: 'Batch 2027' }
                             ]}
-
                         />
 
                         <FilterSelect
@@ -348,7 +324,6 @@ const AdminReports = () => {
                             ]}
                         />
 
-                        {/* Only show status filter if report type doesn't lock it */}
                         {!['unplaced'].includes(reportType) && (
                             <FilterSelect
                                 label="Placement Status"
@@ -363,7 +338,7 @@ const AdminReports = () => {
                             />
                         )}
 
-                        <div className="lg:col-span-3 flex flex-col md:flex-row items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 gap-4">
+                        <div className="lg:col-span-3 flex flex-col md:flex-row items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 gap-4">
                             <div className="flex items-center gap-4">
                                 <div className={`p-3 rounded-xl border flex items-center gap-3 transition-all ${countLoading ? 'bg-gray-100 border-gray-200 animate-pulse' : 'bg-green-50/50 border-green-100'}`}>
                                     <div className="p-2 bg-green-100/50 rounded-lg text-green-600">
@@ -371,7 +346,7 @@ const AdminReports = () => {
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-0.5">Matching Profiles</p>
-                                        <p className="text-xl font-black text-gray-800 dark:text-white leading-none">
+                                        <p className="text-xl font-black text-gray-800 leading-none">
                                             {countLoading ? '...' : (recordCount !== null ? recordCount.toLocaleString() : '---')}
                                         </p>
                                     </div>
@@ -387,13 +362,13 @@ const AdminReports = () => {
                         </div>
                     </div>
 
-                    <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
                                 <Sparkles size={20} />
                             </div>
                             <div className="text-sm">
-                                <span className="font-bold text-gray-900 dark:text-white block">
+                                <span className="font-bold text-gray-900 block">
                                     Ready to Export: {reportOptions.find(r => r.value === reportType)?.label}
                                 </span>
                                 <span className="text-gray-500 text-xs">
@@ -421,75 +396,6 @@ const AdminReports = () => {
                     </div>
                 </SectionCard>
 
-                {/* AI Insights Panel (Conditionally Visible) */}
-                {aiInsights && (
-                    <div className="lg:col-span-3 animate-slide-up">
-                        <SectionCard title="AI Intelligence Hub" icon={Sparkles} className="bg-gradient-to-r from-amrita-maroon/5 to-transparent border-l-4 border-l-amrita-maroon">
-                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                                <div className="xl:col-span-2 space-y-6">
-                                    <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl border border-amrita-maroon/10 shadow-sm">
-                                        <h4 className="flex items-center gap-2 text-amrita-maroon font-black mb-3 text-lg">
-                                            <FileText size={20} /> Executive Summary
-                                        </h4>
-                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                                            {aiInsights.summary}
-                                        </p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {aiInsights.metrics.map((metric, idx) => (
-                                            <div key={idx} className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-                                                <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">
-                                                    {metric.label}
-                                                </span>
-                                                <span className={`text-xl font-black ${metric.color === 'green' ? 'text-green-600' :
-                                                    metric.color === 'blue' ? 'text-blue-600' :
-                                                        metric.color === 'purple' ? 'text-purple-600' : 'text-orange-600'}`}>
-                                                    {metric.value}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <h4 className="font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                                            <TrendingUp size={18} className="text-blue-500" /> Key Observations
-                                        </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            {aiInsights.insights.map((insight, idx) => (
-                                                <div key={idx} className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-100/50 dark:border-blue-800/20 text-blue-800 dark:text-blue-200 text-sm font-semibold flex gap-3">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
-                                                    {insight}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h4 className="font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                                        <CheckCircle size={18} className="text-green-500" /> AI Recommendations
-                                    </h4>
-                                    <div className="space-y-3">
-                                        {aiInsights.recommendations.map((rec, idx) => (
-                                            <div key={idx} className="p-4 bg-green-50/50 dark:bg-green-900/10 rounded-xl border border-green-100/50 dark:border-green-800/20 text-green-800 dark:text-green-200 text-sm font-bold flex items-start gap-3">
-                                                <div className="p-1 bg-green-500 text-white rounded mt-0.5">
-                                                    <Sparkles size={12} />
-                                                </div>
-                                                {rec}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="p-4 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center text-center gap-2 opacity-60">
-                                        <Database size={24} className="text-gray-400" />
-                                        <p className="text-xs font-medium text-gray-500">More insights will appear as data matures</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </SectionCard>
-                    </div>
-                )}
-
                 {/* Quick Actions Column (1/3 width) */}
                 <div className="space-y-6">
                     <SectionCard title="Quick Actions" icon={TrendingUp}>
@@ -515,23 +421,92 @@ const AdminReports = () => {
                         </div>
                     </SectionCard>
 
-                    <div className="glass-card p-6 bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white">
+                    <div className="bg-gradient-to-br from-amrita-maroon to-amrita-pink text-white rounded-[2rem] p-6 shadow-sm">
                         <h3 className="font-black text-lg mb-2">Detailed Analytics?</h3>
                         <p className="text-white/80 text-sm mb-4">
                             View interactive charts and graphs for deeper insights.
                         </p>
                         <button
-                            onClick={() => window.location.href = '/admin/dashboard'}
+                            onClick={() => window.location.href = '/admin'}
                             className="w-full py-3 bg-white text-amrita-maroon rounded-xl font-bold text-sm hover:bg-white/90 shadow-lg transition-all"
                         >
                             Go to Dashboard
                         </button>
                     </div>
                 </div>
-            </div>
 
+                {/* AI Insights Panel (Conditionally Visible) */}
+                {aiInsights && (
+                    <div className="lg:col-span-3 animate-slide-up">
+                        <SectionCard title="AI Intelligence Hub" icon={Sparkles} className="bg-gradient-to-r from-amrita-maroon/5 to-transparent border-l-4 border-l-amrita-maroon">
+                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                                <div className="xl:col-span-2 space-y-6">
+                                    <div className="p-6 bg-white rounded-2xl border border-amrita-maroon/10 shadow-sm">
+                                        <h4 className="flex items-center gap-2 text-amrita-maroon font-black mb-3 text-lg">
+                                            <FileText size={20} /> Executive Summary
+                                        </h4>
+                                        <p className="text-gray-700 leading-relaxed font-medium">
+                                            {aiInsights.summary}
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        {aiInsights.metrics.map((metric, idx) => (
+                                            <div key={idx} className="p-4 rounded-xl bg-white border border-gray-100">
+                                                <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">
+                                                    {metric.label}
+                                                </span>
+                                                <span className={`text-xl font-black ${metric.color === 'green' ? 'text-green-600' :
+                                                    metric.color === 'blue' ? 'text-blue-600' :
+                                                        metric.color === 'purple' ? 'text-purple-600' : 'text-orange-600'}`}>
+                                                    {metric.value}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                                            <TrendingUp size={18} className="text-blue-500" /> Key Observations
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {aiInsights.insights.map((insight, idx) => (
+                                                <div key={idx} className="p-4 bg-blue-50/50 rounded-xl border border-blue-100/50 text-blue-800 text-sm font-semibold flex gap-3">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                                                    {insight}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                                        <CheckCircle size={18} className="text-green-500" /> AI Recommendations
+                                    </h4>
+                                    <div className="space-y-3">
+                                        {aiInsights.recommendations.map((rec, idx) => (
+                                            <div key={idx} className="p-4 bg-green-50/50 rounded-xl border border-green-100/50 text-green-800 text-sm font-bold flex items-start gap-3">
+                                                <div className="p-1 bg-green-500 text-white rounded mt-0.5">
+                                                    <Sparkles size={12} />
+                                                </div>
+                                                {rec}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="p-4 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center gap-2 opacity-60">
+                                        <Database size={24} className="text-gray-400" />
+                                        <p className="text-xs font-medium text-gray-500">More insights will appear as data matures</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </SectionCard>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
 
 export default AdminReports;
+

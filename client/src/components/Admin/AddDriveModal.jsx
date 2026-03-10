@@ -123,7 +123,7 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm animate-fade-in">
             <div className="flex min-h-full items-start justify-center p-4 py-8">
                 <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl relative" style={{ backgroundColor: '#ffffff', color: '#000000' }}>
-                    <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white z-10" style={{ backgroundColor: '#ffffff' }}>
+                    <div className="p-6 border-b border-gray-100  flex justify-between items-center sticky top-0 bg-white z-10" style={{ backgroundColor: '#ffffff' }}>
                         <div>
                             <h2 className="text-xl font-black" style={{ color: '#1f2937' }}>
                                 {isEditMode ? 'Edit Placement Drive' : 'Add New Placement Drive'}
@@ -132,20 +132,20 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
                                 {isEditMode ? 'Update drive details' : 'Fill in the details to create a new drive'}
                             </p>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                        <button onClick={onClose} className="p-2 hover:bg-gray-100  rounded-full transition-colors">
                             <X size={20} style={{ color: '#6b7280' }} />
                         </button>
                     </div>
 
                     <form onSubmit={handleSubmit} className="p-6 space-y-6">
                         {error && (
-                            <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl flex items-center gap-2 text-sm font-bold" style={{ color: '#dc2626' }}>
+                            <div className="p-4 bg-red-50  rounded-xl flex items-center gap-2 text-sm font-bold" style={{ color: '#dc2626' }}>
                                 <AlertCircle size={18} /> {error}
                             </div>
                         )}
 
                         {success && (
-                            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl flex items-center gap-2 text-sm font-bold" style={{ color: '#16a34a' }}>
+                            <div className="p-4 bg-green-50  rounded-xl flex items-center gap-2 text-sm font-bold" style={{ color: '#16a34a' }}>
                                 <CheckCircle size={18} /> Drive {isEditMode ? 'updated' : 'created'} successfully!
                             </div>
                         )}
@@ -360,7 +360,7 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
                                             onClick={() => handleDeptChange(dept)}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${formData.allowedDepartments.includes(dept)
                                                 ? 'bg-amrita-maroon text-white shadow-md'
-                                                : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200'
+                                                : 'bg-gray-100  hover:bg-gray-200'
                                                 }`}
                                             style={{ color: formData.allowedDepartments.includes(dept) ? 'white' : '#6b7280' }}
                                         >
@@ -418,7 +418,7 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
                         </div>
 
                         {/* Submit */}
-                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 ">
                             <button
                                 type="button"
                                 onClick={onClose}
@@ -450,3 +450,4 @@ const AddDriveModal = ({ isOpen, onClose, onSuccess, editDrive = null }) => {
 };
 
 export default AddDriveModal;
+

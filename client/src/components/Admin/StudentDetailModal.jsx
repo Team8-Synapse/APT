@@ -308,3 +308,4 @@ const StatBox = ({ label, value }) => (
 );
 
 export default StudentDetailModal;
+

@@ -31,3 +31,4 @@ const CommunicationHub = ({ isSubModule = false }) => {
 };
 
 export default CommunicationHub;
+

@@ -132,7 +132,7 @@ const AdminPrepHub = () => {
     });
 
     return (
-        <div className="space-y-8 page-enter pb-10">
+        <div className="space-y-8 page-enter pb-10 text-gray-900">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
@@ -493,3 +493,4 @@ const AdminPrepHub = () => {
 };
 
 export default AdminPrepHub;
+

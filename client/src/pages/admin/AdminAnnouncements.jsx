@@ -813,3 +813,4 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
 };
 
 export default AdminAnnouncements;
+

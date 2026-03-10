@@ -124,7 +124,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
                                     onClick={() => setPriority(type)}
                                     className={`py-2 px-4 rounded-lg text-sm font-bold uppercase tracking-wider transition-all ${priority === type
                                         ? type === 'urgent' ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' : 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                                        : 'bg-gray-100 dark:bg-gray-700 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                        : 'bg-gray-100  text-gray-500 hover:bg-gray-200 '
                                         }`}
                                 >
                                     {type}
@@ -165,15 +165,15 @@ const AdminTickerManager = ({ isSubModule = false }) => {
 
             {/* Active Tickers List */}
             <div className="space-y-4">
-                <h3 className="font-bold text-lg text-gray-700 dark:text-gray-200">Active Messages ({tickers.length})</h3>
+                <h3 className="font-bold text-lg text-gray-700 ">Active Messages ({tickers.length})</h3>
                 {tickers.length === 0 && (
                     <p className="text-gray-400 italic">No active ticker messages.</p>
                 )}
                 {tickers.map((ticker) => (
-                    <div key={ticker._id} className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between gap-4 group">
+                    <div key={ticker._id} className="bg-white  p-4 rounded-xl border border-gray-100  shadow-sm flex items-center justify-between gap-4 group">
                         <div className="flex items-center gap-3 flex-1">
                             <div className={`w-2 h-2 rounded-full ${ticker.priority === 'urgent' ? 'bg-red-500' : 'bg-blue-500'}`}></div>
-                            <p className="font-bold text-gray-800 dark:text-gray-200">{ticker.message}</p>
+                            <p className="font-bold text-gray-800 ">{ticker.message}</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <span className="text-xs font-bold text-gray-400">
@@ -181,7 +181,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
                             </span>
                             <button
                                 onClick={() => handleDelete(ticker._id)}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50  rounded-lg transition-all"
                                 title="Delete message"
                             >
                                 <Trash2 size={16} />
@@ -195,3 +195,4 @@ const AdminTickerManager = ({ isSubModule = false }) => {
 };
 
 export default AdminTickerManager;
+

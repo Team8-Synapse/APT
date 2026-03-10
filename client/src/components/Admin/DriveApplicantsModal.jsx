@@ -23,20 +23,20 @@ const DriveApplicantsModal = ({
                 onClick={onClose}
             ></div>
 
-            <div className="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
+            <div className="relative bg-white  rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-white dark:bg-gray-900 z-10">
+                <div className="px-8 py-6 border-b border-gray-100  flex justify-between items-center bg-white  z-10">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
                             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amrita-maroon to-red-600 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-amrita-maroon/20">
                                 {drive.companyName?.[0]}
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-black text-gray-900  tracking-tight">
                                 {drive.companyName} - Applicants
                             </h2>
                         </div>
-                        <div className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                            <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-700 dark:text-gray-300">
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-500 ">
+                            <span className="px-2 py-0.5 bg-gray-100  rounded text-gray-700 ">
                                 {drive.jobProfile}
                             </span>
                             <span>•</span>
@@ -46,12 +46,12 @@ const DriveApplicantsModal = ({
 
                     <div className="flex items-center gap-4">
                         {/* View Toggles */}
-                        <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+                        <div className="flex bg-gray-100  p-1 rounded-xl">
                             <button
                                 onClick={() => setViewMode('list')}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'list'
-                                    ? 'bg-white dark:bg-gray-700 text-amrita-maroon shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    ? 'bg-white  text-amrita-maroon shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700 '
                                     }`}
                             >
                                 <LayoutList size={16} /> List
@@ -59,8 +59,8 @@ const DriveApplicantsModal = ({
                             <button
                                 onClick={() => setViewMode('board')}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'board'
-                                    ? 'bg-white dark:bg-gray-700 text-amrita-maroon shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                                    ? 'bg-white  text-amrita-maroon shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700 '
                                     }`}
                             >
                                 <Kanban size={16} /> Board
@@ -69,7 +69,7 @@ const DriveApplicantsModal = ({
 
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 rounded-xl transition-colors"
+                            className="p-2 hover:bg-gray-100  text-gray-500 rounded-xl transition-colors"
                         >
                             <X size={24} />
                         </button>
@@ -77,12 +77,12 @@ const DriveApplicantsModal = ({
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-hidden bg-gray-50/50 dark:bg-gray-900/50 relative">
+                <div className="flex-1 overflow-hidden bg-gray-50/50  relative">
                     {viewMode === 'list' ? (
                         <div className="h-full overflow-y-auto p-6 md:p-8">
-                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                            <div className="bg-white  rounded-2xl shadow-sm border border-gray-100  overflow-hidden">
                                 <table className="w-full">
-                                    <thead className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800">
+                                    <thead className="bg-gray-50  border-b border-gray-100 ">
                                         <tr>
                                             <th className="text-left py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">Student</th>
                                             <th className="text-left py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">Department</th>
@@ -92,12 +92,12 @@ const DriveApplicantsModal = ({
                                             <th className="text-left py-4 px-6 text-xs font-black text-gray-500 uppercase tracking-wider">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                                    <tbody className="divide-y divide-gray-100 ">
                                         {applicants.map((app) => (
-                                            <tr key={app._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                            <tr key={app._id} className="hover:bg-gray-50  transition-colors">
                                                 <td className="py-4 px-6">
                                                     <div>
-                                                        <div className="font-bold text-gray-900 dark:text-white">
+                                                        <div className="font-bold text-gray-900 ">
                                                             {app.studentId?.firstName} {app.studentId?.lastName}
                                                         </div>
                                                         <div className="text-xs text-gray-500 font-medium flex items-center gap-1">
@@ -114,7 +114,7 @@ const DriveApplicantsModal = ({
                                                         </button>
                                                     </div>
                                                 </td>
-                                                <td className="py-4 px-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                <td className="py-4 px-6 text-sm font-medium text-gray-600 ">
                                                     {app.studentId?.department}
                                                 </td>
                                                 <td className="py-4 px-6">
@@ -143,7 +143,7 @@ const DriveApplicantsModal = ({
                                                     <select
                                                         value={app.status || 'applied'}
                                                         onChange={(e) => updateStatus(app._id, e.target.value)}
-                                                        className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 text-xs rounded-lg focus:ring-amrita-maroon focus:border-amrita-maroon block w-full p-2 font-bold cursor-pointer hover:bg-white transition-colors"
+                                                        className="bg-gray-50  border border-gray-200  text-gray-900 text-xs rounded-lg focus:ring-amrita-maroon focus:border-amrita-maroon block w-full p-2 font-bold cursor-pointer hover:bg-white transition-colors"
                                                     >
                                                         <option value="applied">Applied</option>
                                                         <option value="shortlisted">Shortlisted</option>
@@ -193,3 +193,4 @@ const DriveApplicantsModal = ({
 };
 
 export default DriveApplicantsModal;
+

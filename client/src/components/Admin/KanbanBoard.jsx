@@ -125,7 +125,7 @@ const KanbanBoard = ({ applications, driveId, fetchApplications, onViewStudent }
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
-                                        className={`flex-shrink-0 w-80 rounded-xl p-4 flex flex-col h-full bg-gray-50/50 dark:bg-gray-800/50 backdrop-blur-sm border ${snapshot.isDraggingOver ? 'border-amrita-maroon bg-red-50 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-700'}`}
+                                        className={`flex-shrink-0 w-80 rounded-xl p-4 flex flex-col h-full bg-gray-50/50  backdrop-blur-sm border ${snapshot.isDraggingOver ? 'border-amrita-maroon bg-red-50 ' : 'border-gray-200 '}`}
                                     >
                                         <div className={`p-3 rounded-lg mb-4 flex justify-between items-center ${config.color} border`}>
                                             <h3 className="font-bold text-sm uppercase tracking-wider">{config.title}</h3>
@@ -140,18 +140,18 @@ const KanbanBoard = ({ applications, driveId, fetchApplications, onViewStudent }
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className={`bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all ${snapshot.isDragging ? 'rotate-2 scale-105 shadow-xl ring-2 ring-amrita-maroon' : ''}`}
+                                                            className={`bg-white  p-4 rounded-lg shadow-sm border border-gray-100  hover:shadow-md transition-all ${snapshot.isDragging ? 'rotate-2 scale-105 shadow-xl ring-2 ring-amrita-maroon' : ''}`}
                                                             style={provided.draggableProps.style}
                                                         >
                                                             <div className="flex items-start gap-3">
-                                                                <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-full">
-                                                                    <User size={16} className="text-gray-600 dark:text-gray-300" />
+                                                                <div className="p-2 bg-gray-100  rounded-full">
+                                                                    <User size={16} className="text-gray-600 " />
                                                                 </div>
                                                                 <div>
-                                                                    <p className="font-bold text-gray-800 dark:text-white text-sm">{app.studentId?.firstName} {app.studentId?.lastName}</p>
-                                                                    <p className="text-xs text-gray-500 dark:text-gray-400">{app.studentId?.rollNumber}</p>
+                                                                    <p className="font-bold text-gray-800  text-sm">{app.studentId?.firstName} {app.studentId?.lastName}</p>
+                                                                    <p className="text-xs text-gray-500 ">{app.studentId?.rollNumber}</p>
                                                                     <div className="flex items-center gap-1 mt-2">
-                                                                        <span className="text-[10px] bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
+                                                                        <span className="text-[10px] bg-gray-100  px-2 py-0.5 rounded text-gray-600 ">
                                                                             CGPA: {app.studentId?.cgpa}
                                                                         </span>
                                                                     </div>
@@ -181,3 +181,4 @@ const KanbanBoard = ({ applications, driveId, fetchApplications, onViewStudent }
 };
 
 export default KanbanBoard;
+

@@ -155,3 +155,4 @@ const AddAlumniModal = ({ isOpen, onClose, onRefresh, editAlumni }) => {
 };
 
 export default AddAlumniModal;
+

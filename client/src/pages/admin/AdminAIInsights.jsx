@@ -134,3 +134,4 @@ const AdminAIInsights = () => {
 };
 
 export default AdminAIInsights;
+

@@ -79,3 +79,4 @@ const AddEventModal = ({ isOpen, onClose, onSuccess, initialDate }) => {
 };
 
 export default AddEventModal;
+

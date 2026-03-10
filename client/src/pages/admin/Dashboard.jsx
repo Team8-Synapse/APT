@@ -482,7 +482,7 @@ const AdminDashboard = () => {
     );
 
     return (
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen !bg-white">
+        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen !bg-white text-gray-900">
             <AdminNavbar
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -538,7 +538,7 @@ const AdminDashboard = () => {
                             {/* Analytics Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="!bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
-                                    <h3 className="font-black text-lg mb-6 flex items-center gap-3 dark:text-white">
+                                    <h3 className="font-black text-lg mb-6 flex items-center gap-3">
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <PieChart className="text-amrita-maroon" size={20} />
                                         </div>
@@ -549,9 +549,9 @@ const AdminDashboard = () => {
                                             <div key={i} className="flex items-center justify-between p-3 !bg-white border border-gray-100 rounded-xl">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-3 h-3 rounded-full ${stat._id === 'placed' ? 'bg-amrita-maroon' : stat._id === 'in_process' ? 'bg-gray-400' : 'bg-gray-200'}`}></div>
-                                                    <span className="font-bold text-gray-700 dark:text-gray-300 capitalize">{stat._id?.replace('_', ' ')}</span>
+                                                    <span className="font-bold text-gray-700  capitalize">{stat._id?.replace('_', ' ')}</span>
                                                 </div>
-                                                <span className="font-black text-gray-900 dark:text-white">{stat.count}</span>
+                                                <span className="font-black text-gray-900 ">{stat.count}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -568,7 +568,7 @@ const AdminDashboard = () => {
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
                                             <div key={i} className="p-4 !bg-white border border-gray-100 rounded-xl hover:shadow-md transition-all">
                                                 <div className="flex justify-between items-center mb-2">
-                                                    <span className="font-black text-gray-900 dark:text-white">{dept._id}</span>
+                                                    <span className="font-black text-gray-900 ">{dept._id}</span>
                                                     <div className="text-right">
                                                         <span className="text-[10px] font-bold text-gray-500 block">
                                                             {dept.placed}/{dept.count} Placed
@@ -576,7 +576,7 @@ const AdminDashboard = () => {
                                                         <span className="text-xs font-black text-amrita-maroon">{(dept.placementPercentage || 0).toFixed(1)}%</span>
                                                     </div>
                                                 </div>
-                                                <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                                                <div className="w-full h-1.5 bg-gray-100  rounded-full overflow-hidden">
                                                     <div className="h-full bg-amrita-maroon" style={{ width: `${dept.placementPercentage || 0}%` }} />
                                                 </div>
                                             </div>
@@ -589,7 +589,7 @@ const AdminDashboard = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="!bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
                                     <div className="flex justify-between items-center mb-6">
-                                        <h3 className="font-black text-lg flex items-center gap-3 dark:text-white">
+                                        <h3 className="font-black text-lg flex items-center gap-3">
                                             <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                                 <Briefcase className="text-amrita-maroon" size={20} />
                                             </div>
@@ -599,10 +599,10 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="space-y-4">
                                         {stats.recentDrives?.slice(0, 3).map((drive, i) => (
-                                            <div key={i} className="p-4 border border-gray-100 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all group">
+                                            <div key={i} className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all group">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div>
-                                                        <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-amrita-maroon transition-colors">{drive.companyName}</h4>
+                                                        <h4 className="font-bold text-gray-900 group-hover:text-amrita-maroon transition-colors">{drive.companyName}</h4>
                                                         <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{drive.jobProfile}</p>
                                                     </div>
                                                     <span className="text-[10px] font-black bg-amrita-maroon/10 text-amrita-maroon px-2 py-0.5 rounded">NEW</span>
@@ -619,12 +619,7 @@ const AdminDashboard = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <QuickActionCard icon={<UserPlus />} label="Add Student" />
                                     <QuickActionCard icon={<Building />} label="Add Company" />
-                                    <button onClick={() => window.location.href = '/admin/prephub'} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 shadow-sm rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3 group hover:!bg-amrita-maroon transition-all">
-                                        <div className="p-3 bg-amrita-maroon/10 text-amrita-maroon rounded-xl group-hover:bg-white/20 group-hover:text-white transition-all">
-                                            <BookOpen size={24} />
-                                        </div>
-                                        <span className="text-xs font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 group-hover:text-white">Prep Hub</span>
-                                    </button>
+                                    <QuickActionCard icon={<BookOpen />} label="Prep Hub" onClick={() => navigate('/admin/prephub')} />
                                     <QuickActionCard icon={<Megaphone />} label="Broadcast" />
                                 </div>
                             </div>
@@ -640,11 +635,11 @@ const AdminDashboard = () => {
                                 <div className="space-y-4">
                                     {recentActivities.map((activity, i) => (
                                         <div key={i} className="flex items-center gap-4 p-4 !bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all group cursor-pointer border-transparent hover:border-gray-100">
-                                            <div className="p-3 bg-white dark:bg-gray-700 rounded-xl shadow-sm group-hover:scale-110 transition-transform text-amrita-maroon">
+                                            <div className="p-3 bg-white rounded-xl shadow-sm group-hover:scale-110 transition-transform text-amrita-maroon">
                                                 {activity.icon}
                                             </div>
                                             <div className="flex-1">
-                                                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{activity.message}</p>
+                                                <p className="text-sm font-bold text-gray-800">{activity.message}</p>
                                                 <p className="text-[10px] text-gray-400 mt-1 font-black">{activity.time}</p>
                                             </div>
                                             <ChevronRight size={14} className="text-gray-300" />
@@ -678,11 +673,11 @@ const AdminDashboard = () => {
                         <AIShortlistPanel />
 
                         {/* ── STUDENT DIRECTORY ── */}
-                        <div className="bg-white dark:bg-gray-800 rounded-[2.5rem] p-8 border border-gray-100 dark:border-gray-700 shadow-sm">
+                        <div className="bg-white  rounded-[2.5rem] p-8 border border-gray-100  shadow-sm">
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-black flex items-center gap-2">
                                     <Users className="text-amrita-maroon" size={24} />
-                                    <span className="text-gray-900 dark:text-white">Student</span>{' '}<span style={{ color: '#A4123F' }}>Directory</span>
+                                    <span className="text-gray-900 ">Student</span>{' '}<span style={{ color: '#A4123F' }}>Directory</span>
                                 </h2>
                                 <div className="flex gap-2">
                                     <div className="relative">
@@ -690,12 +685,12 @@ const AdminDashboard = () => {
                                         <input
                                             type="text"
                                             placeholder="Search students..."
-                                            className="pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50"
+                                            className="pl-9 pr-4 py-2 bg-gray-50  border-none rounded-xl text-xs w-48 focus:ring-1 focus:ring-amrita-maroon/50"
                                             value={filters.search}
                                             onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                                         />
                                     </div>
-                                    <button className="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100"><Filter size={14} /></button>
+                                    <button className="p-2 bg-gray-50  rounded-xl hover:bg-gray-100"><Filter size={14} /></button>
                                 </div>
                             </div>
                             <div className="overflow-x-auto">
@@ -715,15 +710,15 @@ const AdminDashboard = () => {
                                         {students.map((student, i) => (
                                             <tr key={i} className="group">
                                                 <td className="text-sm font-bold text-gray-500">{student.rollNumber}</td>
-                                                <td className="text-sm font-black text-gray-900 dark:text-white">{student.firstName} {student.lastName}</td>
+                                                <td className="text-sm font-black text-gray-900 ">{student.firstName} {student.lastName}</td>
                                                 <td className="text-xs font-bold uppercase">{student.department}</td>
-                                                <td className="text-xs font-bold text-gray-600 dark:text-gray-400">{student.batch}</td>
+                                                <td className="text-xs font-bold text-gray-600 ">{student.batch}</td>
                                                 <td className="text-sm font-black text-amrita-maroon">{student.cgpa?.toFixed(2)}</td>
                                                 <td><span className={getStatusBadge(student.placementStatus)}>{student.placementStatus?.replace('_', ' ')}</span></td>
                                                 <td>
                                                     <div className="flex gap-1">
                                                         <button
-                                                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                                                            className="p-2 hover:bg-gray-100  rounded-lg"
                                                             onClick={() => handleEditStudent(student)}
                                                         >
                                                             <Edit3 size={16} />
@@ -762,7 +757,7 @@ const AdminDashboard = () => {
                                         >
                                             <ChevronLeft size={16} /> Back to Drives
                                         </button>
-                                        <h2 className="text-2xl font-black dark:text-white flex items-center gap-3">
+                                        <h2 className="text-2xl font-black  flex items-center gap-3">
                                             {viewingDrive.companyName} <span className="text-gray-400 text-lg font-bold">| Applicants Manager</span>
                                         </h2>
                                     </div>
@@ -783,10 +778,10 @@ const AdminDashboard = () => {
                                 />
                             </div>
                         ) : (
-                            <div className="glass-card p-8 !bg-white dark:!bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl rounded-[2rem]">
+                            <div className="glass-card p-8 !bg-white  border border-gray-100  shadow-xl rounded-[2rem]">
                                 <div className="flex justify-between items-center mb-8">
                                     <div>
-                                        <h2 className="text-3xl font-black dark:text-white text-gray-900 tracking-tight">
+                                        <h2 className="text-3xl font-black  text-gray-900 tracking-tight">
                                             Placement Drives
                                         </h2>
                                         <div className="flex items-center gap-2 mt-2">
@@ -806,15 +801,15 @@ const AdminDashboard = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                     {(allDrives.length > 0 ? allDrives : stats.recentDrives)?.map((drive, i) => (
-                                        <div key={i} className="bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:shadow-amrita-maroon/5 transition-all duration-300 group overflow-hidden flex flex-col relative w-full">
+                                        <div key={i} className="bg-white  rounded-[2rem] border border-gray-100  shadow-sm hover:shadow-2xl hover:shadow-amrita-maroon/5 transition-all duration-300 group overflow-hidden flex flex-col relative w-full">
 
                                             {/* Status Badge Absolute */}
                                             <div className="absolute top-6 right-6 z-10">
                                                 <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm ${drive.status === 'upcoming'
-                                                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'
+                                                    ? 'bg-blue-50 text-blue-600  '
                                                     : drive.status === 'ongoing'
-                                                        ? 'bg-green-50 text-green-600 dark:bg-green-900/40 dark:text-green-300'
-                                                        : 'bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                                                        ? 'bg-green-50 text-green-600  '
+                                                        : 'bg-gray-50 text-gray-600  '
                                                     }`}>
                                                     {drive.status === 'upcoming' && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />}
                                                     {drive.status === 'ongoing' && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
@@ -829,7 +824,7 @@ const AdminDashboard = () => {
                                                         <CompanyLogo name={drive.companyName} size="md" className="rounded-xl w-full h-full object-contain" />
                                                     </div>
 
-                                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-1 group-hover:text-amrita-maroon transition-colors line-clamp-1" title={drive.companyName}>
+                                                    <h3 className="text-2xl font-black text-gray-900  mb-1 group-hover:text-amrita-maroon transition-colors line-clamp-1" title={drive.companyName}>
                                                         {drive.companyName}
                                                     </h3>
                                                     <p className="text-sm text-gray-500 font-bold line-clamp-1" title={drive.jobProfile}>
@@ -838,7 +833,7 @@ const AdminDashboard = () => {
 
                                                     {drive.jobType && (
                                                         <div className="mt-3 flex gap-2">
-                                                            <span className="inline-block px-3 py-1 bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-300 rounded-lg text-[10px] uppercase font-black tracking-wider">
+                                                            <span className="inline-block px-3 py-1 bg-purple-50 text-purple-600   rounded-lg text-[10px] uppercase font-black tracking-wider">
                                                                 {drive.jobType}
                                                             </span>
                                                         </div>
@@ -846,10 +841,10 @@ const AdminDashboard = () => {
                                                 </div>
 
                                                 {/* Details Grid */}
-                                                <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-dashed border-gray-200 dark:border-gray-700 mt-auto">
+                                                <div className="grid grid-cols-2 gap-y-4 gap-x-4 pt-4 border-t border-dashed border-gray-200  mt-auto">
                                                     <div>
                                                         <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Date</p>
-                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                                                        <p className="text-sm font-black text-gray-800  flex items-center gap-1.5">
                                                             {new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                                                         </p>
                                                     </div>
@@ -861,13 +856,13 @@ const AdminDashboard = () => {
                                                     </div>
                                                     <div>
                                                         <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Applicants</p>
-                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200">
+                                                        <p className="text-sm font-black text-gray-800 ">
                                                             {drive.registeredStudents?.length || 0}
                                                         </p>
                                                     </div>
                                                     <div>
                                                         <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider mb-1">Min CGPA</p>
-                                                        <p className="text-sm font-black text-gray-800 dark:text-gray-200">
+                                                        <p className="text-sm font-black text-gray-800 ">
                                                             {drive.eligibility?.minCgpa || 0}
                                                         </p>
                                                     </div>
@@ -875,22 +870,22 @@ const AdminDashboard = () => {
                                             </div>
 
                                             {/* Footer Actions */}
-                                            <div className="p-4 bg-gray-50/80 dark:bg-gray-800/80 flex gap-3 border-t border-gray-100 dark:border-gray-700 backdrop-blur-sm mt-auto">
+                                            <div className="p-4 bg-gray-50/80  flex gap-3 border-t border-gray-100  backdrop-blur-sm mt-auto">
                                                 <button
                                                     onClick={() => handleViewApplicants(drive)}
-                                                    className="flex-1 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 dark:text-blue-400 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
+                                                    className="flex-1 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600    rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
                                                 >
                                                     <Users size={14} strokeWidth={2.5} /> Applicants
                                                 </button>
                                                 <button
                                                     onClick={() => handleEditDrive(drive)}
-                                                    className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 dark:text-amber-400 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
+                                                    className="flex-1 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-600    rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-md h-10"
                                                 >
                                                     <Edit3 size={14} strokeWidth={2.5} /> Edit
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteDrive(drive._id)}
-                                                    className="px-4 bg-red-50 hover:bg-red-100 text-red-500 dark:bg-red-900/20 dark:hover:bg-red-900/30 dark:text-red-400 rounded-xl transition-all duration-300 flex items-center justify-center group-hover:shadow-md h-10"
+                                                    className="px-4 bg-red-50 hover:bg-red-100 text-red-500    rounded-xl transition-all duration-300 flex items-center justify-center group-hover:shadow-md h-10"
                                                 >
                                                     <Trash2 size={16} />
                                                 </button>
@@ -912,7 +907,7 @@ const AdminDashboard = () => {
                 {activeTab === 'alumni' && (
                     <div className="lg:col-span-3 glass-card p-8 animate-fade-in-up">
                         <div className="flex justify-between items-center mb-8">
-                            <h2 className="text-2xl font-black dark:text-white">Alumni Intelligence</h2>
+                            <h2 className="text-2xl font-black ">Alumni Intelligence</h2>
                             <button
                                 onClick={() => {
                                     setEditingAlumni(null);
@@ -931,7 +926,7 @@ const AdminDashboard = () => {
                             <input
                                 type="text"
                                 placeholder="Search by company..."
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800/50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-amrita-maroon/20 text-sm transition-all"
+                                className="w-full pl-12 pr-4 py-4 bg-gray-50  border-none rounded-2xl font-bold focus:ring-2 focus:ring-amrita-maroon/20 text-sm transition-all"
                                 value={alumniSearch}
                                 onChange={(e) => setAlumniSearch(e.target.value)}
                             />
@@ -944,49 +939,49 @@ const AdminDashboard = () => {
                                     (a.name?.toLowerCase() || '').includes(alumniSearch.toLowerCase())
                                 )
                                 .map((alum, i) => (
-                                    <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-[20px] shadow-sm hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700 group relative flex flex-col items-center text-center">
+                                    <div key={i} className="bg-white  p-6 rounded-[20px] shadow-sm hover:shadow-xl transition-all border border-gray-100  group relative flex flex-col items-center text-center">
 
                                         {/* Actions */}
                                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                                             <button
                                                 onClick={() => handleEditAlumni(alum)}
-                                                className="p-2 bg-gray-100 dark:bg-gray-700 rounded-xl text-amrita-maroon hover:bg-amrita-maroon hover:text-white transition-colors shadow-sm"
+                                                className="p-2 bg-gray-100  rounded-xl text-amrita-maroon hover:bg-amrita-maroon hover:text-white transition-colors shadow-sm"
                                             >
                                                 <Edit3 size={14} />
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteAlumni(alum._id)}
-                                                className="p-2 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors shadow-sm"
+                                                className="p-2 bg-red-50  text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-colors shadow-sm"
                                             >
                                                 <Trash2 size={14} />
                                             </button>
                                         </div>
 
                                         {/* Company Logo */}
-                                        <div className="w-20 h-20 mb-5 p-4 rounded-2xl bg-gray-50 dark:bg-gray-900 flex items-center justify-center border border-gray-100 dark:border-gray-800 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                                        <div className="w-20 h-20 mb-5 p-4 rounded-2xl bg-gray-50  flex items-center justify-center border border-gray-100  shadow-inner group-hover:scale-110 transition-transform duration-300">
                                             <CompanyLogo name={alum.company} />
                                         </div>
 
                                         {/* Details */}
-                                        <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1 line-clamp-1">{alum.name}</h3>
+                                        <h3 className="text-lg font-black text-gray-900  mb-1 line-clamp-1">{alum.name}</h3>
                                         <p className="text-xs font-bold text-amrita-maroon uppercase tracking-wider mb-4 px-3 py-1 bg-amrita-maroon/5 rounded-full">
                                             {alum.role || 'Alumni'}
                                         </p>
 
                                         {/* Meta Info */}
-                                        <div className="w-full pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center px-2">
-                                            <div className="flex flex-col items-start bg-gray-50 dark:bg-gray-800 p-2 rounded-lg min-w-[30%]">
+                                        <div className="w-full pt-4 border-t border-gray-100  flex justify-between items-center px-2">
+                                            <div className="flex flex-col items-start bg-gray-50  p-2 rounded-lg min-w-[30%]">
                                                 <span className="text-[10px] text-gray-400 font-bold uppercase">Batch</span>
-                                                <span className="text-xs font-black text-gray-700 dark:text-gray-300">{alum.batch}</span>
+                                                <span className="text-xs font-black text-gray-700 ">{alum.batch}</span>
                                             </div>
-                                            <div className="flex flex-col items-end bg-gray-50 dark:bg-gray-800 p-2 rounded-lg min-w-[30%]">
+                                            <div className="flex flex-col items-end bg-gray-50  p-2 rounded-lg min-w-[30%]">
                                                 <span className="text-[10px] text-gray-400 font-bold uppercase">Dept</span>
-                                                <span className="text-xs font-black text-gray-700 dark:text-gray-300">{alum.department || 'N/A'}</span>
+                                                <span className="text-xs font-black text-gray-700 ">{alum.department || 'N/A'}</span>
                                             </div>
                                         </div>
 
                                         <div className="mt-4 w-full">
-                                            <div className="text-xs font-bold text-gray-400 flex items-center justify-center gap-1.5 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                                            <div className="text-xs font-bold text-gray-400 flex items-center justify-center gap-1.5 py-2 bg-gray-50  rounded-xl">
                                                 <Building2 size={12} /> {alum.company}
                                             </div>
                                         </div>
@@ -1010,7 +1005,7 @@ const AdminDashboard = () => {
                             <div className="glass-card p-6">
                                 <div className="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
                                     <div>
-                                        <h2 className="text-2xl font-black text-gray-800 dark:text-white flex items-center gap-2">
+                                        <h2 className="text-2xl font-black text-gray-800  flex items-center gap-2">
                                             <Calendar className="text-amrita-maroon" /> Placement Schedule
                                         </h2>
                                         <p className="text-gray-500 text-sm mt-1">Manage all drives, workshops, and events.</p>
@@ -1175,8 +1170,8 @@ const StatCard = ({ icon, label, value, subtext, color, trend }) => {
     );
 }
 
-const QuickActionCard = ({ icon, label, color }) => (
-    <button className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center gap-3 group hover:bg-amrita-maroon transition-all">
+const QuickActionCard = ({ icon, label, color, onClick }) => (
+    <button onClick={onClick} className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center gap-3 group hover:bg-amrita-maroon transition-all">
         <div className="p-3 bg-amrita-maroon/10 text-amrita-maroon rounded-xl group-hover:bg-white/20 group-hover:text-white transition-all">
             {React.cloneElement(icon, { size: 24 })}
         </div>
@@ -1265,7 +1260,7 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                 <div className="flex gap-2">
                     <button
                         onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                        className="p-2 hover:bg-gray-100  rounded-lg"
                     >
                         <ChevronRight className="rotate-180" size={16} />
                     </button>
@@ -1274,7 +1269,7 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                     </span>
                     <button
                         onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                        className="p-2 hover:bg-gray-100  rounded-lg"
                     >
                         <ChevronRight size={16} />
                     </button>
@@ -1299,7 +1294,7 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                             {day && (
                                 <>
                                     <div className="text-right mb-1">
-                                        <span className={`text-sm font-bold ${getEventsForDay(day).length > 0 ? 'text-red-600' : 'text-gray-600 dark:text-gray-400'}`}>
+                                        <span className={`text-sm font-bold ${getEventsForDay(day).length > 0 ? 'text-red-600' : 'text-gray-600 '}`}>
                                             {day}
                                         </span>
                                     </div>
@@ -1339,3 +1334,4 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
 };
 
 export default AdminDashboard;
+
