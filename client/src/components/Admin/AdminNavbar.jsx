@@ -48,7 +48,7 @@ const AdminNavbar = ({
     };
 
     return (
-        <div className="glass-card !rounded-2xl border-white/20 bg-white shadow-xl p-3 md:px-4 md:py-2 flex flex-col justify-between sticky top-4 z-50 backdrop-blur-xl gap-y-3 md:gap-y-0">
+        <div className="!bg-white !backdrop-blur-none !rounded-2xl shadow-xl px-6 py-4 md:px-8 md:py-4 flex flex-col justify-between sticky top-4 z-50 gap-y-3 md:gap-y-0 border border-gray-100">
             <div className="flex items-center justify-between w-full">
                 {/* Amrita Branding */}
                 <div className="flex items-center gap-3 pr-2 md:pr-5 md:border-r md:border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => navigate('/admin')}>
@@ -135,7 +135,7 @@ const AdminNavbar = ({
 
             {/* Mobile Navigation Menu Dropdown */}
             {mobileMenuOpen && (
-                <nav className="md:hidden flex flex-col gap-1 w-full border-t border-gray-100 dark:border-gray-700 pt-3 mt-1 pb-2 px-1 animate-fade-in-up">
+                <nav className="md:hidden flex flex-col gap-1 w-full border-t border-gray-100 pt-3 mt-1 pb-2 px-1 animate-fade-in-up bg-white rounded-b-2xl">
                     {navItems.map((tab) => (
                         <button
                             key={tab.id}

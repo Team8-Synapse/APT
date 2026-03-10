@@ -543,7 +543,7 @@ const AdminDashboard = () => {
                         <div className="lg:col-span-2 space-y-8 animate-fade-in-up">
                             {/* Analytics Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="glass-card p-6">
+                                <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
                                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 dark:text-white">
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <PieChart className="text-amrita-maroon" size={20} />
@@ -552,7 +552,7 @@ const AdminDashboard = () => {
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.placementStats?.map((stat, i) => (
-                                            <div key={i} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                                            <div key={i} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-3 h-3 rounded-full ${stat._id === 'placed' ? 'bg-amrita-maroon' : stat._id === 'in_process' ? 'bg-gray-400' : 'bg-gray-200'}`}></div>
                                                     <span className="font-bold text-gray-700 dark:text-gray-300 capitalize">{stat._id?.replace('_', ' ')}</span>
@@ -563,7 +563,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-6">
+                                <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
                                     <h3 className="font-black text-lg mb-6 flex items-center gap-3 dark:text-white">
                                         <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                             <BarChart3 className="text-amrita-maroon" size={20} />
@@ -572,7 +572,7 @@ const AdminDashboard = () => {
                                     </h3>
                                     <div className="space-y-4">
                                         {stats.departmentStats?.slice(0, 3).map((dept, i) => (
-                                            <div key={i} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl hover:shadow-md transition-all">
+                                            <div key={i} className="p-4 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl hover:shadow-md transition-all">
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="font-black text-gray-900 dark:text-white">{dept._id}</span>
                                                     <div className="text-right">
@@ -593,7 +593,7 @@ const AdminDashboard = () => {
 
                             {/* Upcoming Drives & Shortcuts */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="glass-card p-6">
+                                <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
                                     <div className="flex justify-between items-center mb-6">
                                         <h3 className="font-black text-lg flex items-center gap-3 dark:text-white">
                                             <div className="p-2 bg-amrita-maroon/10 rounded-xl">
@@ -625,7 +625,7 @@ const AdminDashboard = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <QuickActionCard icon={<UserPlus />} label="Add Student" />
                                     <QuickActionCard icon={<Building />} label="Add Company" />
-                                    <button onClick={() => window.location.href = '/admin/prephub'} className="glass-card !bg-white/50 dark:!bg-gray-800/50 p-6 flex flex-col items-center justify-center gap-3 group hover:!bg-amrita-maroon transition-all">
+                                    <button onClick={() => window.location.href = '/admin/prephub'} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 shadow-sm rounded-[2rem] p-6 flex flex-col items-center justify-center gap-3 group hover:!bg-amrita-maroon transition-all">
                                         <div className="p-3 bg-amrita-maroon/10 text-amrita-maroon rounded-xl group-hover:bg-white/20 group-hover:text-white transition-all">
                                             <BookOpen size={24} />
                                         </div>
@@ -636,7 +636,7 @@ const AdminDashboard = () => {
                             </div>
 
                             {/* Recent Activity Feed */}
-                            <div className="glass-card p-6">
+                            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 border border-gray-100 dark:border-gray-700/50 shadow-sm">
                                 <h3 className="font-black text-lg mb-6 flex items-center gap-3 dark:text-white">
                                     <div className="p-2 bg-amrita-maroon/10 rounded-xl">
                                         <Activity className="text-amrita-maroon" size={20} />
@@ -645,7 +645,7 @@ const AdminDashboard = () => {
                                 </h3>
                                 <div className="space-y-4">
                                     {recentActivities.map((activity, i) => (
-                                        <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl hover:bg-white dark:hover:bg-gray-800 transition-all group cursor-pointer border border-transparent hover:border-gray-100">
+                                        <div key={i} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-50 dark:border-gray-700/50 rounded-2xl hover:bg-white dark:hover:bg-gray-800 transition-all group cursor-pointer border-transparent hover:border-gray-100">
                                             <div className="p-3 bg-white dark:bg-gray-700 rounded-xl shadow-sm group-hover:scale-110 transition-transform text-amrita-maroon">
                                                 {activity.icon}
                                             </div>
@@ -684,7 +684,7 @@ const AdminDashboard = () => {
                         <AIShortlistPanel />
 
                         {/* ── STUDENT DIRECTORY ── */}
-                        <div className="glass-card p-8">
+                        <div className="bg-white dark:bg-gray-800 rounded-[2.5rem] p-8 border border-gray-100 dark:border-gray-700 shadow-sm">
                             <div className="flex justify-between items-center mb-8">
                                 <h2 className="text-2xl font-black flex items-center gap-2">
                                     <Users className="text-amrita-maroon" size={24} />
