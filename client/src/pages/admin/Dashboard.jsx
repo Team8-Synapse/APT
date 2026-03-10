@@ -69,18 +69,14 @@ const theme = {
 const AdminDashboard = () => {
     const { user, logout } = useAuth();
     const [timeOfDay, setTimeOfDay] = useState('');
-    const [darkMode, setDarkMode] = useState(() => {
-        const saved = localStorage.getItem('darkMode');
-        return saved === 'true';
-    });
     const [showNotifications, setShowNotifications] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
 
-    // Apply dark mode on mount and state change
+    // Removed darkMode state and useEffect for White Theme lockdown
     useEffect(() => {
-        document.documentElement.classList.toggle('dark', darkMode);
-        localStorage.setItem('darkMode', darkMode);
-    }, [darkMode]);
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+    }, []);
 
     // Initialize time of day greeting
     useEffect(() => {
@@ -492,8 +488,6 @@ const AdminDashboard = () => {
                 setActiveTab={setActiveTab}
                 user={user}
                 logout={logout}
-                darkMode={darkMode}
-                setDarkMode={setDarkMode}
                 showNotifications={showNotifications}
                 setShowNotifications={setShowNotifications}
                 stats={stats}
@@ -1143,7 +1137,7 @@ const AdminDashboard = () => {
                 )}
             </div>
 
-        </div >
+        </div>
     );
 };
 
@@ -1182,26 +1176,26 @@ const StatCard = ({ icon, label, value, subtext, color, trend }) => {
 }
 
 const QuickActionCard = ({ icon, label, color }) => (
-    <button className="glass-card !bg-white/50 dark:!bg-gray-800/50 p-6 flex flex-col items-center justify-center gap-3 group hover:!bg-amrita-maroon transition-all">
+    <button className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 flex flex-col items-center justify-center gap-3 group hover:bg-amrita-maroon transition-all">
         <div className="p-3 bg-amrita-maroon/10 text-amrita-maroon rounded-xl group-hover:bg-white/20 group-hover:text-white transition-all">
             {React.cloneElement(icon, { size: 24 })}
         </div>
-        <span className="text-xs font-black uppercase tracking-widest text-gray-600 dark:text-gray-400 group-hover:text-white">{label}</span>
+        <span className="text-xs font-black uppercase tracking-widest text-gray-600 group-hover:text-white">{label}</span>
     </button>
 );
 
 const ReportCard = ({ icon, title, description, onExport }) => (
-    <div className="p-6 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-2xl hover:shadow-lg transition-all">
+    <div className="p-6 bg-white border border-gray-100 rounded-2xl hover:shadow-lg transition-all">
         <div className="p-3 rounded-xl mb-4 w-fit bg-amrita-maroon/10 text-amrita-maroon">
             {React.cloneElement(icon, { size: 24 })}
         </div>
-        <h3 className="font-bold text-lg mb-2 dark:text-white">{title}</h3>
+        <h3 className="font-bold text-lg mb-2 text-gray-900">{title}</h3>
         <p className="text-sm text-gray-500 mb-4">{description}</p>
         <div className="flex gap-2">
             <button onClick={onExport} className="flex-1 py-2 rounded-lg font-bold text-sm bg-amrita-maroon text-white">
                 Export
             </button>
-            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+            <button className="p-2 hover:bg-gray-100 rounded-lg">
                 <EyeIcon size={18} />
             </button>
         </div>
@@ -1256,10 +1250,10 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
     };
 
     return (
-        <div className="glass-card p-6">
+        <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                    <h3 className="font-black text-lg dark:text-white">Calendar</h3>
+                    <h3 className="font-black text-lg text-gray-900">Calendar</h3>
                     <button
                         onClick={() => onAddEvent()}
                         className="p-1.5 bg-amrita-maroon/10 text-amrita-maroon rounded-lg hover:bg-amrita-maroon hover:text-white transition-colors"
@@ -1275,7 +1269,7 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                     >
                         <ChevronRight className="rotate-180" size={16} />
                     </button>
-                    <span className="font-bold text-gray-700 dark:text-gray-300">
+                    <span className="font-bold text-gray-700">
                         {months[currentDate.getMonth()]} {currentDate.getFullYear()}
                     </span>
                     <button
@@ -1300,7 +1294,7 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                         <div
                             key={index}
                             onClick={() => day && onAddEvent(dateStr)}
-                            className={`min-h-20 p-1 border border-gray-100 dark:border-gray-700 rounded-lg ${day ? 'bg-white dark:bg-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors' : ''}`}
+                            className={`min-h-20 p-1 border border-gray-100 rounded-lg ${day ? 'bg-white cursor-pointer hover:bg-gray-50 transition-colors' : ''}`}
                         >
                             {day && (
                                 <>
@@ -1326,14 +1320,14 @@ const CalendarComponent = ({ currentDate, setCurrentDate, calendarData, onAddEve
                 })}
             </div>
 
-            <div className="border-t pt-4 dark:border-gray-700">
-                <h4 className="font-bold text-sm mb-3 dark:text-gray-300">Upcoming Events</h4>
+            <div className="border-t pt-4 border-gray-100">
+                <h4 className="font-bold text-sm mb-3 text-gray-700">Upcoming Events</h4>
                 <div className="space-y-2">
                     {calendarData.slice(0, 3).map((event, i) => (
-                        <div key={i} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
+                        <div key={i} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg">
                             <div className={`w-2 h-2 rounded-full ${getEventColor(event.type)}`}></div>
                             <div className="flex-1">
-                                <p className="text-sm font-medium dark:text-gray-300">{event.title}</p>
+                                <p className="text-sm font-medium text-gray-700">{event.title}</p>
                                 <p className="text-xs text-gray-500">{event.date} {event.time && `• ${event.time}`}</p>
                             </div>
                         </div>

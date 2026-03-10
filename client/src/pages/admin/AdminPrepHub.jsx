@@ -172,7 +172,7 @@ const AdminPrepHub = () => {
                             <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Module Title</label>
                             <input
                                 type="text" name="title" required
-                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all"
+                                className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono"
                                 placeholder="e.g., Dynamic Programming Masterclass"
                                 value={formData.title}
                                 onChange={handleInputChange}
@@ -183,7 +183,7 @@ const AdminPrepHub = () => {
                             <div className="relative">
                                 <select
                                     name="category"
-                                    className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all appearance-none cursor-pointer pr-10"
+                                    className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all appearance-none cursor-pointer pr-10"
                                     value={formData.category}
                                     onChange={handleInputChange}
                                 >
@@ -197,7 +197,7 @@ const AdminPrepHub = () => {
                             <div className="relative">
                                 <select
                                     name="type"
-                                    className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all appearance-none cursor-pointer pr-10"
+                                    className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all appearance-none cursor-pointer pr-10"
                                     value={formData.type}
                                     onChange={handleInputChange}
                                 >
@@ -213,7 +213,7 @@ const AdminPrepHub = () => {
                                     <div className="relative">
                                         <input
                                             type="file" name="file"
-                                            className="w-full p-3 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amrita-maroon/10 file:text-amrita-maroon hover:file:bg-amrita-maroon/20"
+                                            className="w-full p-3 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amrita-maroon/10 file:text-amrita-maroon hover:file:bg-amrita-maroon/20"
                                             accept={formData.type === 'PDF' ? '.pdf' : '.ppt,.pptx'}
                                             onChange={handleInputChange}
                                         />
@@ -225,7 +225,7 @@ const AdminPrepHub = () => {
                                     <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Resource Link (e.g., Drive, YouTube, Article)</label>
                                     <input
                                         type="url" name="link"
-                                        className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono"
+                                        className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all font-mono"
                                         placeholder="https://example.com/material"
                                         value={formData.link}
                                         onChange={handleInputChange}
@@ -239,7 +239,7 @@ const AdminPrepHub = () => {
                             <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Material Description & Content</label>
                             <textarea
                                 name="description" rows="5"
-                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all"
+                                className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all"
                                 placeholder="Write detailed information here. The first two lines will serve as the student summary..."
                                 value={formData.description}
                                 onChange={handleInputChange}
@@ -249,7 +249,7 @@ const AdminPrepHub = () => {
                             <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Tags (comma separated)</label>
                             <textarea
                                 name="tags" rows="2"
-                                className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all"
+                                className="w-full p-4 bg-gray-50 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20 transition-all"
                                 placeholder="dsa, algorithms, python, interviews"
                                 value={formData.tags}
                                 onChange={handleInputChange}
@@ -268,7 +268,7 @@ const AdminPrepHub = () => {
 
 
             {/* Toolbar */}
-            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between bg-gray-50/50 dark:bg-gray-800/30 p-4 rounded-3xl border border-gray-100 dark:border-gray-700">
+            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between bg-gray-50 p-4 rounded-3xl border border-gray-100">
                 <div className="w-full lg:w-auto overflow-x-auto no-scrollbar pb-2">
                     <div className="flex p-1.5 bg-white/40 border border-white rounded-2xl shadow-sm gap-1">
                         {categories.map((cat) => (
@@ -292,7 +292,7 @@ const AdminPrepHub = () => {
                         <input
                             type="text"
                             placeholder="Search by title or tags..."
-                            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20"
+                            className="w-full pl-10 pr-4 py-2.5 bg-white border-none rounded-2xl text-xs font-bold focus:ring-2 focus:ring-amrita-maroon/20"
                             value={searchTerm}
                             onChange={(e) => {
                                 setSearchTerm(e.target.value);
@@ -302,7 +302,7 @@ const AdminPrepHub = () => {
                             }}
                         />
                     </div>
-                    <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl shadow-sm">
+                    <div className="flex bg-white p-1 rounded-xl shadow-sm">
                         <button
                             onClick={() => setViewMode('grid')}
                             className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-amrita-maroon text-white' : 'text-gray-400'}`}
@@ -342,7 +342,7 @@ const AdminPrepHub = () => {
                             window.open(url, '_blank');
                         };
                         return (
-                            <div key={res._id} className="glass-card flex flex-col group h-full">
+                            <div key={res._id} className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex flex-col group h-full">
                                 <div className="p-6 flex-1 space-y-6">
                                     <div className="flex justify-between items-start">
                                         <div className="flex items-center gap-3">
@@ -403,7 +403,7 @@ const AdminPrepHub = () => {
                             </div>
                         );
                     }) : (
-                        <div className="col-span-full py-24 glass-card flex flex-col items-center justify-center text-gray-400 opacity-50">
+                        <div className="col-span-full py-24 bg-white rounded-[2rem] border border-gray-100 shadow-sm flex flex-col items-center justify-center text-gray-400 opacity-50">
                             <BookOpen size={64} className="mb-4" />
                             <p className="text-xl font-black italic">No modules found.</p>
                             <p className="text-xs font-bold mt-2 uppercase">Try adjusting your search or category filter</p>
@@ -414,7 +414,7 @@ const AdminPrepHub = () => {
                 /* List/Table View */
                 <div className="glass-card overflow-hidden">
                     <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                        <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Resource</th>
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
@@ -422,7 +422,7 @@ const AdminPrepHub = () => {
                                 <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                        <tbody className="divide-y divide-gray-50">
                             {filteredResources.map((res) => {
                                 const openResource = () => {
                                     const url = res.links?.[0] || res.link;
@@ -441,7 +441,7 @@ const AdminPrepHub = () => {
                                                 <div className="p-2 bg-amrita-maroon/5 text-amrita-maroon rounded-lg">
                                                     <BookOpen size={16} />
                                                 </div>
-                                                <span className="font-black text-gray-900 dark:text-white text-sm">{res.title}</span>
+                                                <span className="font-black text-gray-900 text-sm">{res.title}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -450,7 +450,7 @@ const AdminPrepHub = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] font-bold rounded-lg flex items-center gap-1 w-fit">
+                                            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-lg flex items-center gap-1 w-fit">
                                                 {res.type === 'PDF' && <FileText size={12} />}
                                                 {res.type === 'Link' && <LinkIcon size={12} />}
                                                 {res.type === 'Video' && <BookOpen size={12} />}
@@ -463,13 +463,13 @@ const AdminPrepHub = () => {
                                                 {res.link && (
                                                     <button
                                                         onClick={openResource}
-                                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-500 hover:text-amrita-maroon transition-colors"
+                                                        className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 hover:text-amrita-maroon transition-colors"
                                                         title="Open Link"
                                                     >
                                                         <ExternalLink size={16} />
                                                     </button>
                                                 )}
-                                                <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-gray-500 hover:text-red-500 transition-colors" title="Delete">
+                                                <button onClick={() => handleDelete(res._id)} className="p-2 hover:bg-red-50 rounded-lg text-gray-500 hover:text-red-500 transition-colors" title="Delete">
                                                     <Trash2 size={16} />
                                                 </button>
                                             </div>

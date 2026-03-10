@@ -8,7 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/logo.png';
 import NotificationsPanel from '../NotificationsPanel';
 
-stats,
+const AdminNavbar = ({
+    activeTab,
+    setActiveTab,
+    user,
+    logout,
+    showNotifications,
+    setShowNotifications,
+    stats,
     filters,
     setFilters
 }) => {
@@ -42,7 +49,7 @@ stats,
         <div className="!bg-white !backdrop-blur-none !rounded-2xl shadow-xl px-6 py-4 md:px-8 md:py-4 flex flex-col justify-between sticky top-4 z-50 gap-y-3 md:gap-y-0 border border-gray-100">
             <div className="flex items-center justify-between w-full">
                 {/* Amrita Branding */}
-                <div className="flex items-center gap-3 pr-2 md:pr-5 md:border-r md:border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => navigate('/admin')}>
+                <div className="flex items-center gap-3 pr-2 md:pr-5 md:border-r md:border-gray-200 cursor-pointer" onClick={() => navigate('/admin')}>
                     <img src={logoImg} alt="Amrita Placement Tracker" className="h-8 md:h-10 w-auto object-contain hover:scale-105 transition-transform duration-300" />
                 </div>
 
@@ -71,7 +78,7 @@ stats,
                         className="p-2 hover:bg-gray-100 rounded-xl relative transition-colors text-amrita-maroon"
                     >
                         <BellRing size={20} className="md:w-[22px] md:h-[22px]" />
-                        {stats?.announcementCount > 0 && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>}
+                        {stats?.announcementCount > 0 && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
                     </button>
 
                     {/* User Profile */}
@@ -88,7 +95,7 @@ stats,
                                 <p className="text-xs text-gray-500 uppercase font-bold mt-1">{user?.email}</p>
                             </div>
                             <div className="p-2">
-                                <button className="flex items-center gap-2 p-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg text-sm font-semibold text-gray-600 dark:text-gray-400 w-full">
+                                <button className="flex items-center gap-2 p-2.5 hover:bg-gray-50 rounded-lg text-sm font-semibold text-gray-600 w-full">
                                     <Settings size={16} /> Account Settings
                                 </button>
                                 <button
