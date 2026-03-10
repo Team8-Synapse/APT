@@ -1350,45 +1350,11 @@ const Home = () => {
                 </div>
             </nav>
 
-            <div className="mobile-app-cta" style={{
-                position: 'absolute',
-                top: '95px', /* Places it just below the 92px navbar */
-                left: 0,
-                right: 0,
-                zIndex: 999,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center', /* Centers content horizontally */
-                gap: '2rem', /* Spacing between text and button */
-                background: 'rgba(0, 0, 0, 0.4)', /* Increased translucency */
-                padding: '0.75rem 5%',
-                backdropFilter: 'blur(10px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-            }}>
-                <span style={{ color: 'white', fontWeight: 600, fontSize: '0.95rem', letterSpacing: '0.5px' }}>
+            <div className="mobile-app-cta">
+                <span className="mobile-app-cta-text">
                     CLICK HERE TO DOWNLOAD THE MOBILE APP OF AMRITA PLACEMENT TRACKER
                 </span>
-                <a style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    background: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
-                    color: 'white',
-                    padding: '0.5rem 1.25rem',
-                    borderRadius: '0.5rem',
-                    border: 'none',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 15px rgba(139, 0, 0, 0.4)',
-                    transition: 'transform 0.2s',
-                    textDecoration: 'none'
-                }}
-                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    href="https://adithyaraman7.github.io/amrita-download/" target="_blank" rel="noopener noreferrer"
-                >
+                <a className="mobile-app-cta-btn" href="https://adithyaraman7.github.io/amrita-download/" target="_blank" rel="noopener noreferrer">
                     <Smartphone size={16} /> Download App
                 </a>
             </div>
@@ -1405,9 +1371,9 @@ const Home = () => {
                                 <span>Official Placement Intelligence System</span>
                             </div>
                             <h1 className="hero-title">
-                                <div><TextCascade text="Because your" className="title-white" /></div>
-                                <div><GradientText>Placement Journey</GradientText></div>
-                                <div><TextCascade text="deserves structure" className="title-white" /></div>
+                                <div><TextCascade text="Because  your" className="title-white" /></div>
+                                <div><GradientText>Placement  Journey</GradientText></div>
+                                <div><TextCascade text="deserves  structure" className="title-white" /></div>
                             </h1>
                             <p className="hero-desc">
                                 <Typewriter texts={['Track opportunities in real-time.', 'AI-powered placement insights.', 'Connect with 500+ companies.']} />
@@ -2093,6 +2059,64 @@ h1, h2, h3, h4, h5, h6 {
     .hero-title { font-size: 2.5rem; }
     .hero-cta, .cta-buttons { flex-direction: column; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    
+    .mobile-app-cta {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem 5%;
+        text-align: center;
+        top: 80px; 
+    }
+    .mobile-app-cta-text {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    .mobile-app-cta-btn {
+        padding: 0.6rem 1.5rem;
+    }
+}
+
+/* Base styles for CTA */
+.mobile-app-cta {
+    position: absolute;
+    top: 95px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.75rem 5%;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.mobile-app-cta-text {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+.mobile-app-cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+.mobile-app-cta-btn:hover {
+    transform: scale(1.05);
 }
 
 /* ============= NEW 50 EFFECTS STYLES ============= */
