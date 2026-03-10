@@ -6,7 +6,7 @@
  * - responsive layout with glassmorphism UI design.
  */
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import {
     Target, TrendingUp, AlertCircle, Calendar, ChevronRight, Brain, Sparkles, Zap, Award,
@@ -18,9 +18,10 @@ import {
     Sun, PieChart, Activity, Cpu, Smartphone, Database, Cloud, Terminal, Wifi,
     Battery, Volume2, HelpCircle, Info, AlertTriangle, Clock3, CalendarDays,
     ChevronLeft, Maximize2, Minimize2, X, MoreVertical, ExternalLink, Copy,
-    Dribbble, Github, Linkedin, Twitter, Youtube, Instagram, Facebook, LayoutDashboard
+    Dribbble, Github, Linkedin, Twitter, Youtube, Instagram, Facebook, LayoutDashboard, MessageCircle
 } from 'lucide-react';
 import NotificationsPanel from '../../components/NotificationsPanel';
+import AIChatbot from '../../components/AIChatbot';
 import { motion } from 'framer-motion';
 
 
@@ -469,6 +470,7 @@ const StudentDashboard = () => {
     const [showNotifications, setShowNotifications] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [tickers, setTickers] = useState([]);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     // Update real-time clock every minute
     useEffect(() => {
@@ -483,17 +485,16 @@ const StudentDashboard = () => {
 
         const fetchData = async () => {
             try {
-                const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
                 const [dashboardRes, drivesRes, applicationsRes, announcementsRes, profileRes, notifRes, eventsRes, resourcesRes, tickerRes] = await Promise.all([
-                    axios.get(`${apiBase}/student/dashboard-stats/${userId}`),
-                    axios.get(`${apiBase}/student/eligible-drives/${userId}`),
-                    axios.get(`${apiBase}/applications/my-applications/${userId}`),
-                    axios.get(`${apiBase}/announcements`),
-                    axios.get(`${apiBase}/student/profile/${userId}`),
-                    axios.get(`${apiBase}/notifications`),
-                    axios.get(`${apiBase}/schedule`),
-                    axios.get(`${apiBase}/resources`),
-                    axios.get(`${apiBase}/ticker`)
+                    api.get(`/student/dashboard-stats/${userId}`),
+                    api.get(`/student/eligible-drives/${userId}`),
+                    api.get(`/applications/my-applications/${userId}`),
+                    api.get('/announcements'),
+                    api.get(`/student/profile/${userId}`),
+                    api.get('/notifications'),
+                    api.get('/schedule'),
+                    api.get('/resources'),
+                    api.get('/ticker')
                 ]);
 
                 setStats(dashboardRes.data);
@@ -886,16 +887,24 @@ const StudentDashboard = () => {
 
 
 
-            {tickers.length > 0 && (
+            {/* Combined Ticker System */}
+            {(tickers.length > 0 || announcements.some(a => a.displayInTicker)) && (
                 <div className="ticker-d">
                     <div className="ticker-content-d">
-                        {/* Loop through tickers and repeat to ensure continuous flow */}
-                        {[...Array(5)].flatMap((_, i) => (
-                            tickers.map((t, index) => (
-                                <span key={`${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
-                                    <Megaphone size={18} className="animate-pulse" /> ADMIN ALERT: {t.message} •
-                                </span>
-                            ))
+                        {/* Loop through both old tickers and new announcement-based tickers */}
+                        {[...Array(3)].flatMap((_, i) => (
+                            <>
+                                {tickers.map((t, index) => (
+                                    <span key={`old-${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
+                                        <Megaphone size={18} className="animate-pulse" /> ALERT: {t.message} •
+                                    </span>
+                                ))}
+                                {announcements.filter(a => a.displayInTicker).map((a, index) => (
+                                    <span key={`ann-${i}-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontWeight: 'bold' }}>
+                                        <Bell size={18} className="animate-pulse text-amrita-gold" /> BROADCAST: {a.content} •
+                                    </span>
+                                ))}
+                            </>
                         ))}
                     </div>
                 </div>
@@ -1150,6 +1159,31 @@ const StudentDashboard = () => {
                 isOpen={showNotifications}
                 onClose={() => setShowNotifications(false)}
             />
+
+            {/* AI Assistant Floating Action Button */}
+            <div className={`fixed bottom-8 right-8 z-[100] transition-all duration-500 flex flex-col items-end ${isChatOpen ? 'w-[450px] h-[650px]' : 'w-auto h-auto'}`}>
+                {isChatOpen ? (
+                    <div className="w-full h-full animate-fade-in-up relative">
+                        <button onClick={() => setIsChatOpen(false)} className="absolute -top-3 -right-3 p-2 bg-red-500 text-white rounded-full hover:scale-110 transition-transform shadow-lg z-50">
+                            <X size={16} />
+                        </button>
+                        <AIChatbot />
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => setIsChatOpen(true)}
+                        className="group flex items-center gap-3 bg-gradient-to-r from-[#A4123F] to-[#8A0F3C] text-white p-4 rounded-full shadow-2xl hover:shadow-[#A4123F]/40 hover:-translate-y-1 hover:scale-105 transition-all duration-300 relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                        <Sparkles size={24} className="animate-pulse relative z-10" />
+                        <span className="font-bold relative z-10 pr-2">Amrita AI Advisor</span>
+
+                        {/* Ping animation behind button */}
+                        <div className="absolute inset-0 rounded-full border border-white/50 animate-ping opacity-20" />
+                    </button>
+                )}
+            </div>
+
         </div>
     );
 };

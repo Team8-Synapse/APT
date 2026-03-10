@@ -3,11 +3,11 @@ import { vi } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import Register from '../../pages/Register';
 import axios from 'axios';
-import emailjs from 'emailjs-com';
+import emailjs from "@emailjs/browser";
 
 // Mock dependencies
 vi.mock('axios');
-vi.mock('emailjs-com');
+vi.mock('@emailjs/browser');
 vi.mock('../../assets/AB1_cbe.png', () => ({ default: 'mock-image.png' }));
 
 const mockNavigate = vi.fn();

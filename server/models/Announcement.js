@@ -23,6 +23,7 @@ const announcementSchema = new mongoose.Schema({
     scheduledDate: { type: Date },
     expiryDate: { type: Date },
     isPinned: { type: Boolean, default: false },
+    displayInTicker: { type: Boolean, default: false },
     isArchived: { type: Boolean, default: false },
     links: [{
         title: String,

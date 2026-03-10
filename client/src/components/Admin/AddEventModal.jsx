@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { Calendar, Clock, Type, FileText, XCircle } from 'lucide-react';
 
 const AddEventModal = ({ isOpen, onClose, onSuccess, initialDate }) => {
@@ -18,9 +18,7 @@ const AddEventModal = ({ isOpen, onClose, onSuccess, initialDate }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/schedule`, formData, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.post(`/schedule`, formData);
             onSuccess();
             onClose();
             setFormData({ title: '', date: '', time: '', type: 'other', description: '' });

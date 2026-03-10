@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
-import { Send, User, Bot, Sparkles, Zap } from 'lucide-react';
+import api from '../api';
+import { Send, User, Bot, Sparkles, Zap, Minimize2, Maximize2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSummary = null }) => {
+    const { token, user } = useAuth();
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: "Namaste! I am your AI PrepHub Assistant. How can I help you prepare for your placement journey today?" }
+        { role: 'assistant', content: user?.role === 'admin' ? "Greetings Admin! Ready to assist with placement insights and logistics." : "Namaste! I am your AI Career Advisor. How can I help you navigate your placement journey today?" }
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [context, setContext] = useState(initialContext);
     const [sourceName, setSourceName] = useState(initialSourceName);
+    const [isMaximized, setIsMaximized] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -24,14 +27,14 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             setContext(initialContext);
             setSourceName(initialSourceName);
             if (initialSummary) {
-                setMessages(prev => [...prev, { 
-                    role: 'assistant', 
-                    content: `📄 Summary of "${initialSourceName}":\n\n${initialSummary}\n\nYou can now ask me questions about this material!` 
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `📄 Summary of "${initialSourceName}":\n\n${initialSummary}\n\nYou can now ask me questions about this material!`
                 }]);
             } else {
-                setMessages(prev => [...prev, { 
-                    role: 'assistant', 
-                    content: `I've loaded the contents of "${initialSourceName}". You can ask me questions about it or ask for a summary!` 
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `I've loaded the contents of "${initialSourceName}". You can ask me questions about it or ask for a summary!`
                 }]);
             }
         }
@@ -47,20 +50,47 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
         setLoading(true);
 
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, { 
+            const config = {
+                headers: { Authorization: `Bearer ${token || localStorage.getItem('token')}` }
+            };
+            const res = await api.post('/ai/chat', {
                 message: input,
                 context: context,
                 sourceName: sourceName
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            }, config);
+
             setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
         } catch (err) {
             console.error(err);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Neural connection lost. Please try again.' }]);
+            const serverMsg = err.response?.data?.error || 'Neural connection lost. Please try again.';
+            setMessages(prev => [...prev, { role: 'assistant', content: serverMsg }]);
         } finally {
             setLoading(false);
         }
+    };
+
+    const formatMessage = (text) => {
+        if (!text) return null;
+        return text.split('\n').map((line, i) => {
+            if (!line.trim()) return <div key={i} className="h-1"></div>;
+            const parts = line.split(/\*\*(.*?)\*\*/g);
+            return (
+                <p key={i} className="mb-1.5 last:mb-0">
+                    {parts.map((part, index) => {
+                        if (index % 2 === 1) {
+                            return <strong key={index} className="font-extrabold text-[#8A0F3C]">{part}</strong>;
+                        }
+                        const italicParts = part.split(/\*(.*?)\*/g);
+                        if (italicParts.length > 1) {
+                            return italicParts.map((ip, iIdx) => (
+                                iIdx % 2 === 1 ? <em key={iIdx}>{ip}</em> : ip
+                            ));
+                        }
+                        return part;
+                    })}
+                </p>
+            );
+        });
     };
 
     const clearContext = () => {
@@ -70,7 +100,21 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
     }
 
     return (
-        <div className="flex flex-col h-full bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold">
+        <div className={`flex flex-col bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold transition-all duration-300 ${isMaximized ? 'fixed inset-4 z-50 h-auto' : 'h-full'}`}>
+            {/* Header with maximize toggle */}
+            <div className="px-4 py-2 bg-amrita-maroon/5 border-b border-white/40 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Sparkles size={12} className="text-amrita-maroon" />
+                    <span className="text-[10px] text-amrita-maroon uppercase tracking-wider font-black">AI Advisor</span>
+                </div>
+                <button
+                    onClick={() => setIsMaximized(!isMaximized)}
+                    className="p-1.5 hover:bg-amrita-maroon/10 rounded-lg transition-all text-amrita-maroon"
+                    title={isMaximized ? 'Minimize' : 'Maximize'}
+                >
+                    {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                </button>
+            </div>
             {sourceName && (
                 <div className="px-4 py-2 bg-amrita-maroon/10 border-b border-white/40 flex justify-between items-center">
                     <div className="flex items-center gap-2">
@@ -85,25 +129,29 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
                         <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed shadow-sm ${m.role === 'user'
                             ? 'bg-amrita-maroon text-white rounded-tr-none'
-                            : 'bg-white/80 text-gray-800 rounded-tl-none border border-white'
+                            : 'bg-white/90 text-gray-800 rounded-tl-none border border-white/50 shadow-md'
                             }`}>
-                            <div className="flex items-center gap-2 mb-1 opacity-50 text-[8px] uppercase tracking-widest font-black">
-                                {m.role === 'user' ? <User size={8} /> : <Bot size={8} />}
+                            <div className="flex items-center gap-2 mb-2 opacity-60 text-[9px] uppercase tracking-widest font-black border-b border-black/10 pb-1 w-max">
+                                {m.role === 'user' ? <User size={10} /> : <Bot size={10} />}
                                 {m.role === 'user' ? 'Candidate' : 'Neural Advisor'}
                             </div>
-                            <div className="whitespace-pre-wrap">{m.content}</div>
-                        </div>
-                    </div>
+                            <div className="whitespace-pre-wrap font-medium">
+                                {m.role === 'user' ? m.content : formatMessage(m.content)}
+                            </div>
+                        </div >
+                    </div >
                 ))}
-                {loading && (
-                    <div className="flex justify-start animate-pulse">
-                        <div className="bg-white/50 p-4 rounded-2xl rounded-tl-none">
-                            <Zap className="text-amrita-gold animate-spin" size={12} />
+                {
+                    loading && (
+                        <div className="flex justify-start animate-pulse">
+                            <div className="bg-white/50 p-4 rounded-2xl rounded-tl-none">
+                                <Zap className="text-amrita-gold animate-spin" size={12} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
                 <div ref={messagesEndRef} />
-            </div>
+            </div >
 
             <form onSubmit={handleSend} className="p-4 bg-white/40 border-t border-white/60">
                 <div className="relative group">
@@ -128,7 +176,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
                     </p>
                 </div>
             </form>
-        </div>
+        </div >
     );
 };
 

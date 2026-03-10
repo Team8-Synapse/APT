@@ -1,0 +1,7 @@
+[dotenv@17.2.3] injecting env (5) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+Supabase client initialized successfully
+Server is running on http://localhost:5005
+📧 Demo email account created: uditfysmuk3y5rt3@ethereal.email
+📧 View sent emails at: https://ethereal.email/login
+Connected to MongoDB
+2026-03-06T17:00:08.978Z - GET /api/reports/ai-insights?batch=All&department=All&placementStatus=All

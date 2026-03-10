@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import {
     BookOpen, Search, Plus, Edit3, Trash2, ExternalLink,
     Filter, LayoutGrid, List, FileText, Link as LinkIcon,
@@ -29,8 +29,8 @@ const AdminPrepHub = () => {
     const categories = [
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
         { id: 'Coding', icon: <Code size={18} />, label: 'Practice' },
-        { id: 'Aptitude', icon: <UserCheck size={18}/>, label: 'Aptitude & Logic' },
-        { id: 'Technical', icon: <Cpu size={18} /> , label: 'Core Technical' },
+        { id: 'Aptitude', icon: <UserCheck size={18} />, label: 'Aptitude & Logic' },
+        { id: 'Technical', icon: <Cpu size={18} />, label: 'Core Technical' },
         { id: 'HR', icon: <Briefcase size={18} />, label: 'HR' },
     ];
     const types = ['Link', 'PPT', 'PDF'];
@@ -42,7 +42,7 @@ const AdminPrepHub = () => {
     const fetchResources = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            const res = await api.get('/resources');
             setResources(res.data);
             setLoading(false);
         } catch (err) {
@@ -86,9 +86,9 @@ const AdminPrepHub = () => {
             };
 
             if (editingResource) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, data, config);
+                await api.put(`/resources/${editingResource._id}`, data, config);
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, data, config);
+                await api.post('/resources', data, config);
             }
 
             setEditingResource(null);
@@ -116,7 +116,7 @@ const AdminPrepHub = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this resource?')) {
             try {
-                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${id}`);
+                await api.delete(`/resources/${id}`);
                 fetchResources();
             } catch (err) {
                 console.error('Error deleting resource:', err);

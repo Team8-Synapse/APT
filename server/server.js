@@ -10,7 +10,19 @@ const PORT = (process.env.PORT || '5005').toString().trim();
 
 // Middleware
 app.use(cors({
-    origin: true, // allows localhost dev + mobile on same WiFi
+    origin: (origin, callback) => {
+        // Allow mobile apps (no origin), localhost dev, and production
+        const allowedOrigins = [
+            'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175',
+            'http://localhost:80', 'http://localhost',
+            'https://amrita-placement-tracker.vercel.app'
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, true); // allow all for mobile/dev
+        }
+    },
     credentials: true
 }));
 app.use(express.json());
@@ -59,6 +71,7 @@ app.use('/api/experiences', require('./routes/experienceRoutes'));
 app.use('/api/schedule', require('./routes/eventRoutes'));
 app.use('/api/ticker', require('./routes/tickerRoutes'));
 app.use('/api/ai-shortlist', require('./routes/aiShortlistRoutes'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/api/test-route', (req, res) => {
     res.send('Server is using the LATEST server.js file');

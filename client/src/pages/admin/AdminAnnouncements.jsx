@@ -7,12 +7,13 @@
  * - Includes advanced filtering and search capabilities.
  */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import {
     Megaphone, Send, Edit3, Trash2, Plus, Search, Filter, Calendar,
     Users, Eye, Clock, Star, Sparkles, TrendingUp, Bell, AlertCircle,
     CheckCircle, ExternalLink, Copy, MoreVertical, Pin, Archive,
-    ChevronDown, Zap, Target, MessageSquare, BarChart3, RefreshCw
+    ChevronDown, Zap, Target, MessageSquare, BarChart3, RefreshCw,
+    Briefcase, GraduationCap, Timer, Trophy, PartyPopper, X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -41,7 +42,7 @@ const theme = {
     }
 };
 
-const AdminAnnouncements = () => {
+const AdminAnnouncements = ({ isSubModule = false }) => {
     // Data State
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -63,6 +64,7 @@ const AdminAnnouncements = () => {
         expiryDate: '',
         links: [{ title: '', url: '' }],
         isPinned: false,
+        displayInTicker: false,
         category: 'general'
     });
 
@@ -81,12 +83,12 @@ const AdminAnnouncements = () => {
     ];
 
     const categories = [
-        { id: 'general', label: 'General', emoji: '📢' },
-        { id: 'placement', label: 'Placement Drive', emoji: '💼' },
-        { id: 'workshop', label: 'Workshop', emoji: '🎓' },
-        { id: 'deadline', label: 'Deadline', emoji: '⏰' },
-        { id: 'achievement', label: 'Achievement', emoji: '🏆' },
-        { id: 'event', label: 'Event', emoji: '🎉' }
+        { id: 'general', label: 'General', icon: <Megaphone size={24} /> },
+        { id: 'placement', label: 'Placement Drive', icon: <Briefcase size={24} /> },
+        { id: 'workshop', label: 'Workshop', icon: <GraduationCap size={24} /> },
+        { id: 'deadline', label: 'Deadline', icon: <Timer size={24} /> },
+        { id: 'achievement', label: 'Achievement', icon: <Trophy size={24} /> },
+        { id: 'event', label: 'Event', icon: <PartyPopper size={24} /> }
     ];
 
     const audiences = [
@@ -105,10 +107,7 @@ const AdminAnnouncements = () => {
 
     const fetchAnnouncements = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${API_URL}/announcements`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/announcements');
             setAnnouncements(res.data);
             setLoading(false);
         } catch (err) {
@@ -121,9 +120,6 @@ const AdminAnnouncements = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-
             const submissionData = { ...formData };
             if (!submissionData.scheduledDate) delete submissionData.scheduledDate;
             if (!submissionData.expiryDate) delete submissionData.expiryDate;
@@ -131,11 +127,11 @@ const AdminAnnouncements = () => {
             let res;
             if (editingAnnouncement) {
                 // Update existing
-                res = await axios.put(`${API_URL}/announcements/${editingAnnouncement._id}`, submissionData, { headers });
+                res = await api.put(`/announcements/${editingAnnouncement._id}`, submissionData);
                 setAnnouncements(prev => prev.map(a => a._id === editingAnnouncement._id ? res.data : a));
             } else {
                 // Create new
-                res = await axios.post(`${API_URL}/announcements`, submissionData, { headers });
+                res = await api.post('/announcements', submissionData);
                 setAnnouncements(prev => [res.data, ...prev]);
 
                 // Success Wow Factor
@@ -167,9 +163,7 @@ const AdminAnnouncements = () => {
     const handleBulkDelete = async () => {
         if (!window.confirm(`Delete ${selectedAnnouncements.length} announcements?`)) return;
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-            await Promise.all(selectedAnnouncements.map(id => axios.delete(`${API_URL}/announcements/${id}`, { headers })));
+            await Promise.all(selectedAnnouncements.map(id => api.delete(`/announcements/${id}`)));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
             alert('Bulk deletion successful');
@@ -181,10 +175,8 @@ const AdminAnnouncements = () => {
     // Bulk Action: Pin/Unpin Selected
     const handleBulkPin = async (status) => {
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
             await Promise.all(selectedAnnouncements.map(id =>
-                axios.put(`${API_URL}/announcements/${id}`, { isPinned: status }, { headers })
+                api.put(`/announcements/${id}`, { isPinned: status })
             ));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
@@ -196,9 +188,7 @@ const AdminAnnouncements = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this announcement?')) {
             try {
-                const token = localStorage.getItem('token');
-                const headers = { Authorization: `Bearer ${token}` };
-                await axios.delete(`${API_URL}/announcements/${id}`, { headers });
+                await api.delete(`/announcements/${id}`);
                 fetchAnnouncements();
             } catch (err) {
                 console.error('Error deleting announcement:', err);
@@ -216,6 +206,7 @@ const AdminAnnouncements = () => {
             expiryDate: announcement.expiryDate || '',
             links: announcement.links?.length > 0 ? announcement.links : [{ title: '', url: '' }],
             isPinned: announcement.isPinned || false,
+            displayInTicker: announcement.displayInTicker || false,
             category: announcement.category || 'general'
         });
         setShowForm(true);
@@ -230,6 +221,7 @@ const AdminAnnouncements = () => {
             expiryDate: '',
             links: [{ title: '', url: '' }],
             isPinned: false,
+            displayInTicker: false,
             category: 'general'
         });
         setEditingAnnouncement(null);
@@ -272,9 +264,9 @@ const AdminAnnouncements = () => {
         return styles[priority] || styles.normal;
     };
 
-    const getCategoryEmoji = (category) => {
+    const getCategoryIcon = (category) => {
         const cat = categories.find(c => c.id === category);
-        return cat?.emoji || '📢';
+        return cat?.icon || <Megaphone size={24} />;
     };
 
     if (loading) {
@@ -287,35 +279,43 @@ const AdminAnnouncements = () => {
 
     return (
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 page-enter min-h-screen" style={{ background: theme.neutral.white }}>
-            <AdminNavbar
-                activeTab="announcements"
-                user={user}
-                logout={logout}
-                showNotifications={showNotifications}
-                setShowNotifications={setShowNotifications}
-                stats={stats}
-            />
 
 
-            {/* Page Header */}
-            <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
-                <div>
-                    <h1 className="text-3xl font-black flex items-center gap-2">
-                        <Megaphone className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
-                    </h1>
-                    <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+            {/* Page Header - only show if not sub-module */}
+            {!isSubModule && (
+                <div className="flex justify-between items-center p-8 rounded-[2rem] shadow-sm" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
+                    <div>
+                        <h1 className="text-3xl font-black flex items-center gap-2">
+                            <Megaphone className="text-amrita-maroon" size={28} />
+                            <span style={{ color: '#1A1A1A' }}>Announcements</span> <span style={{ color: '#A4123F' }}>Hub</span>
+                        </h1>
+                        <p className="text-xs font-bold uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Management Domain Control</p>
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={20} /> NEW ANNOUNCEMENT
+                    </motion.button>
                 </div>
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => { resetForm(); setShowForm(true); }}
-                    className="px-8 py-4 text-white rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-3 transition-all"
-                    style={{ background: theme.maroon.gradient }}
-                >
-                    <Plus size={20} /> NEW ANNOUNCEMENT
-                </motion.button>
-            </div>
+            )}
+
+            {isSubModule && (
+                <div className="flex justify-end mb-4">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { resetForm(); setShowForm(true); }}
+                        className="px-6 py-3 text-white rounded-xl font-black text-xs shadow-lg flex items-center justify-center gap-3 transition-all"
+                        style={{ background: theme.maroon.gradient }}
+                    >
+                        <Plus size={16} /> NEW ANNOUNCEMENT
+                    </motion.button>
+                </div>
+            )}
 
 
 
@@ -422,13 +422,18 @@ const AdminAnnouncements = () => {
 
                                 {/* Category Icon / Date Block */}
                                 <div className="flex flex-col items-center gap-6 mt-12 xl:mt-0 min-w-[120px]">
-                                    <div className="w-24 h-24 rounded-3xl flex items-center justify-center text-4xl shadow-inner transition-colors" style={{ background: theme.neutral.gray50, border: `1px solid ${theme.neutral.gray100}` }}>
-                                        {getCategoryEmoji(ann.category)}
+                                    <div className="w-24 h-24 rounded-3xl flex items-center justify-center text-amrita-maroon shadow-inner transition-colors" style={{ background: theme.neutral.gray50, border: `1px solid ${theme.neutral.gray100}` }}>
+                                        {getCategoryIcon(ann.category)}
                                     </div>
                                     <div className="text-center">
                                         <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-1" style={{ color: theme.maroon.primary }}>{new Date(ann.createdAt).toLocaleDateString('en-IN', { month: 'short' })}</p>
                                         <p className="text-4xl font-black leading-none tracking-tight" style={{ color: theme.neutral.textPrimary }}>{new Date(ann.createdAt).getDate()}</p>
                                     </div>
+                                    {ann.displayInTicker && (
+                                        <div className="mt-2 px-3 py-1 bg-amrita-maroon text-white text-[8px] font-black rounded-full uppercase tracking-widest flex items-center gap-1 shadow-sm">
+                                            <TrendingUp size={10} /> Ticker
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Content Core */}
@@ -567,7 +572,9 @@ const AdminAnnouncements = () => {
                                         <p className="text-[10px] font-black uppercase tracking-widest mt-1" style={{ color: theme.neutral.textSecondary }}>Amrita Management Protocol</p>
                                     </div>
                                 </div>
-                                <button onClick={resetForm} className="w-12 h-12 flex items-center justify-center rounded-xl transition-all text-xl" style={{ background: theme.neutral.gray50, color: theme.neutral.textSecondary }}>✕</button>
+                                <button onClick={resetForm} className="w-12 h-12 flex items-center justify-center rounded-xl transition-all text-xl" style={{ background: theme.neutral.gray50, color: theme.neutral.textSecondary }}>
+                                    <X size={20} />
+                                </button>
                             </div>
 
                             <div className="flex-1 overflow-y-auto overflow-x-hidden">
@@ -591,7 +598,9 @@ const AdminAnnouncements = () => {
                                                             boxShadow: formData.category === cat.id ? '0 10px 30px rgba(139,0,0,0.2)' : 'none'
                                                         }}
                                                     >
-                                                        <span className="text-3xl">{cat.emoji}</span>
+                                                        <div style={{ color: formData.category === cat.id ? theme.neutral.white : theme.maroon.primary }}>
+                                                            {cat.icon}
+                                                        </div>
                                                         <span className="uppercase tracking-widest">{cat.label.split(' ')[0]}</span>
                                                     </motion.button>
                                                 ))}
@@ -675,6 +684,35 @@ const AdminAnnouncements = () => {
                                             </div>
                                         </div>
 
+                                        {/* Ticker Protocol */}
+                                        <div className="p-6 rounded-3xl border transition-all flex items-center justify-between"
+                                            style={{
+                                                background: formData.displayInTicker ? theme.maroon.subtle : theme.neutral.gray50,
+                                                borderColor: formData.displayInTicker ? theme.maroon.secondary : 'transparent',
+                                                boxShadow: formData.displayInTicker ? '0 5px 15px rgba(139,0,0,0.1)' : 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                                            }}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+                                                    style={{
+                                                        background: formData.displayInTicker ? theme.maroon.primary : theme.neutral.gray100,
+                                                        color: formData.displayInTicker ? theme.neutral.white : theme.neutral.textSecondary,
+                                                        boxShadow: formData.displayInTicker ? '0 4px 12px rgba(139,0,0,0.25)' : 'none'
+                                                    }}
+                                                ><TrendingUp size={20} /></div>
+                                                <div>
+                                                    <p className="font-black uppercase text-[10px] tracking-tight" style={{ color: theme.neutral.textPrimary }}>Ticker Stream</p>
+                                                    <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: theme.neutral.textSecondary }}>Display in scrolling ticker</p>
+                                                </div>
+                                            </div>
+                                            <label className="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" checked={formData.displayInTicker} onChange={(e) => setFormData({ ...formData, displayInTicker: e.target.checked })} className="sr-only peer" />
+                                                <div className="w-12 h-6 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all shadow-inner transition-all"
+                                                    style={{ background: formData.displayInTicker ? theme.maroon.primary : theme.neutral.gray100 }}
+                                                ></div>
+                                            </label>
+                                        </div>
+
                                         {/* Pin Protocol */}
                                         <div className="p-6 rounded-3xl border transition-all flex items-center justify-between"
                                             style={{
@@ -725,7 +763,7 @@ const AdminAnnouncements = () => {
                                             <div className="rounded-[2.5rem] shadow-sm p-8 space-y-6 relative overflow-hidden" style={{ background: theme.neutral.white, border: `1px solid ${theme.neutral.gray100}` }}>
                                                 <div className="absolute top-0 left-0 w-1.5 h-full" style={{ background: theme.maroon.primary }} />
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner" style={{ background: theme.neutral.gray50 }}>{getCategoryEmoji(formData.category)}</div>
+                                                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-amrita-maroon shadow-inner" style={{ background: theme.neutral.gray50 }}>{getCategoryIcon(formData.category)}</div>
                                                     <div className="space-y-1">
                                                         <div className="px-3 py-1 rounded-full text-[7px] font-black uppercase tracking-widest w-fit" style={{ background: theme.maroon.subtle, color: theme.maroon.primary, border: `1px solid ${theme.maroon.secondary}` }}>{formData.priority}</div>
                                                         <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: theme.neutral.textSecondary }}>Management HUD</p>

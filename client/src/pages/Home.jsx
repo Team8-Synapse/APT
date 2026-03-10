@@ -189,7 +189,6 @@ const MagneticButton = ({ children, className, ...props }) => {
     );
 };
 
-// ============= 8. TEXT CASCADE =============
 const TextCascade = ({ text, className }) => {
     const [visible, setVisible] = useState(false);
     const ref = useRef(null);
@@ -200,21 +199,46 @@ const TextCascade = ({ text, className }) => {
         return () => obs.disconnect();
     }, []);
 
+    let globalCharIndex = 0;
+
     return (
         <span ref={ref} className={className}>
-            {text.split('').map((char, i) => (
-                <span
-                    key={i}
-                    className="cascade-char"
-                    style={{
-                        animationDelay: `${i * 0.03}s`,
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'translateY(0)' : 'translateY(30px)'
-                    }}
-                >
-                    {char === ' ' ? '\u00A0' : char}
-                </span>
-            ))}
+            {text.split(' ').map((word, wIdx) => {
+                // If it's a space (resulting from split)
+                const isLast = wIdx === text.split(' ').length - 1;
+                return (
+                    <span key={wIdx} style={{ whiteSpace: 'nowrap', display: 'inline-flex' }}>
+                        {word.split('').map((char, cIdx) => {
+                            const delay = globalCharIndex++ * 0.03;
+                            return (
+                                <span
+                                    key={cIdx}
+                                    className="cascade-char"
+                                    style={{
+                                        animationDelay: `${delay}s`,
+                                        opacity: visible ? 1 : 0,
+                                        transform: visible ? 'translateY(0)' : 'translateY(30px)'
+                                    }}
+                                >
+                                    {char}
+                                </span>
+                            );
+                        })}
+                        {!isLast && (
+                            <span
+                                className="cascade-char"
+                                style={{
+                                    animationDelay: `${globalCharIndex++ * 0.03}s`,
+                                    opacity: visible ? 1 : 0,
+                                    transform: visible ? 'translateY(0)' : 'translateY(30px)'
+                                }}
+                            >
+                                &nbsp;
+                            </span>
+                        )}
+                    </span>
+                );
+            })}
         </span>
     );
 };
@@ -1326,21 +1350,30 @@ const Home = () => {
                 </div>
             </nav>
 
+            <div className="mobile-app-cta">
+                <span className="mobile-app-cta-text">
+                    CLICK HERE TO DOWNLOAD THE MOBILE APP OF AMRITA PLACEMENT TRACKER
+                </span>
+                <a className="mobile-app-cta-btn" href="https://adithyaraman7.github.io/amrita-download/" target="_blank" rel="noopener noreferrer">
+                    <Smartphone size={16} /> Download App
+                </a>
+            </div>
+
             {/* Hero Section */}
             <section className="hero-ultimate">
                 <div className="hero-bg">
                     <ParallaxImage src={campusImg} alt="Amrita Campus" className="hero-campus" />
                 </div>
-                <div className="hero-content">
+                <div className="hero-content" style={{ marginTop: '2rem' }}>
                     <StaggeredReveal>
                         <div className="hero-text">
                             <div className="hero-badge">
                                 <span>Official Placement Intelligence System</span>
                             </div>
                             <h1 className="hero-title">
-                                <TextCascade text="Because  your " className="title-white" />
-                                <GradientText>Placement  Journey</GradientText>
-                                <TextCascade text="     deserves  structure" className="title-white" />
+                                <div><TextCascade text="Because  your" className="title-white" /></div>
+                                <div><GradientText>Placement  Journey</GradientText></div>
+                                <div><TextCascade text="deserves  structure" className="title-white" /></div>
                             </h1>
                             <p className="hero-desc">
                                 <Typewriter texts={['Track opportunities in real-time.', 'AI-powered placement insights.', 'Connect with 500+ companies.']} />
@@ -1350,6 +1383,9 @@ const Home = () => {
                                     <Link to="/register">Get Started <ArrowRight size={20} /></Link>
                                 </RippleButton>
                             </div>
+
+
+
                             <div className="hero-badges">
                                 {trustBadges.map((b, i) => (
                                     <FloatingElement key={i} delay={i * 0.2} amplitude={8}>
@@ -1360,7 +1396,7 @@ const Home = () => {
                         </div>
                     </StaggeredReveal>
                     <StaggeredReveal delay={200} direction="right">
-                        <HolographicCard className="hero-card">
+                        <HolographicCard className="hero-card" style={{ marginTop: '1.5rem' }}>
                             <div className="hero-metrics">
                                 {metrics.map((m, i) => (
                                     <Tilt3DCard key={i} className="metric-card">
@@ -1602,9 +1638,6 @@ const Home = () => {
 
 // ============= STYLES =============
 const styles = `
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap');
-
 /* Base */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { 
@@ -2026,6 +2059,64 @@ h1, h2, h3, h4, h5, h6 {
     .hero-title { font-size: 2.5rem; }
     .hero-cta, .cta-buttons { flex-direction: column; }
     .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    
+    .mobile-app-cta {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem 5%;
+        text-align: center;
+        top: 80px; 
+    }
+    .mobile-app-cta-text {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    .mobile-app-cta-btn {
+        padding: 0.6rem 1.5rem;
+    }
+}
+
+/* Base styles for CTA */
+.mobile-app-cta {
+    position: absolute;
+    top: 95px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.75rem 5%;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.mobile-app-cta-text {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+.mobile-app-cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+.mobile-app-cta-btn:hover {
+    transform: scale(1.05);
 }
 
 /* ============= NEW 50 EFFECTS STYLES ============= */

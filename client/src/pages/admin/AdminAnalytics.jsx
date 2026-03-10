@@ -1,1063 +1,453 @@
-/**
- * Mobile: Frontend / Pages / Admin
- * Description: Admin Analytics Dashboard.
- * - Visualization powerhouse for placement data.
- * - Features: Yearly trends, Department-wise breakdown, Company insights, CGPA analysis.
- * - Components: Custom SVG and HTML/CSS charts for highly responsive and interactive visualizations.
- */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    BarChart3, PieChart, TrendingUp, Users, Briefcase, Calendar,
-    ArrowUpRight, ArrowDownRight, Activity, Target, Download,
-    Filter, MoreHorizontal, ChevronDown, Eye, EyeOff, RefreshCw,
-    CheckCircle, Clock, XCircle, TrendingDown, DollarSign,
-    Building, GraduationCap, Award, FileText, Search, Settings,
-    Bell, User, Shield, Database, Cpu, Smartphone, Globe,
-    LineChart, BarChart, PieChart as PieChartIcon, Grid,
-    LayoutDashboard, Zap, TrendingUp as TrendingUpIcon,
-    DownloadCloud, Upload, Save, Trash2, Eye as EyeIcon,
-    Maximize2, Minimize2, RotateCcw, Filter as FilterIcon,
-    Calendar as CalendarIcon, Hash, Percent, BarChart2,
-    Layers, Grid3x3, Table, Map, PieChart as PieChart2,
-    ScatterChart, Radar, Cloud, Database as DatabaseIcon,
-    Crown, BookOpen, Book, Target as TargetIcon,
-    UserCheck, UserX, UserMinus, Users as UsersIcon,
-    Award as AwardIcon, TrendingUp as TrendUpIcon,
-    TrendingDown as TrendDownIcon, School,
-    Coffee, Code, Terminal, Server, Wifi,
-    Battery, BatteryCharging, Smartphone as Phone,
-    Laptop, Monitor, Tablet, Watch
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+    PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+    FunnelChart, Funnel, LabelList
+} from 'recharts';
+import {
+    LayoutDashboard, TrendingUp, Users, Briefcase, DollarSign,
+    PieChart as PieChartIcon, Activity, Target, Award, Globe,
+    Cpu, GraduationCap, Building2, Monitor, Zap, RefreshCw,
+    Download, Calendar, Filter, MoreHorizontal, ChevronRight,
+    Search, Bell, Plus, ExternalLink, ArrowUpRight, ArrowDownRight,
+    CheckCircle2, AlertCircle, Clock, Timer, Layers, UserCheck
 } from 'lucide-react';
+import api from '../../api';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// Utility: Generate color palette based on primary brand color
-const generateColorShades = (baseColor) => {
-    return {
-        50: '#FDF2F6',
-        100: '#FAD8E4',
-        200: '#F5B0CA',
-        300: '#F089AF',
-        400: '#EB6195',
-        500: baseColor, // #B1124A
-        600: '#8D0E3B',
-        700: '#690A2C',
-        800: '#45071D',
-        900: '#22030E'
-    };
+// ============= COLORS & THEME (Dark Pastel Palette) =============
+const CHART_COLORS = [
+    '#B1124A', '#4E6C50', '#9A4444', '#4D4D7C', '#36506C',
+    '#B79471', '#8B4C33', '#517664', '#583759', '#41436A'
+];
+
+const SECONDARY_COLORS = CHART_COLORS.map(c => `${c}B3`); // 70% opacity
+
+const GRADIENTS = [
+    { start: '#B1124A', end: '#8E0E3B' },
+    { start: '#4E6C50', end: '#394A3B' },
+    { start: '#9A4444', end: '#743232' },
+    { start: '#4D4D7C', end: '#3A3A5C' },
+    { start: '#36506C', end: '#283C51' }
+];
+
+// ============= HELPER COMPONENTS =============
+const AnalyticsCard = ({ title, icon: Icon, children, className = '', delay = 0 }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: delay / 1000 }}
+        className={`bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100/50 hover:shadow-xl hover:shadow-maroon-subtle/5 transition-all duration-500 group ${className}`}
+    >
+        <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amrita-maroon/5 flex items-center justify-center text-amrita-maroon group-hover:bg-amrita-maroon group-hover:text-white transition-all duration-300">
+                    <Icon size={20} />
+                </div>
+                <h3 className="font-black text-gray-800 tracking-tight text-sm uppercase">{title}</h3>
+            </div>
+            <div className="flex gap-1">
+                <button className="p-1.5 hover:bg-gray-50 rounded-lg text-gray-300 transition-colors"><MoreHorizontal size={14} /></button>
+            </div>
+        </div>
+        <div className="h-[280px] w-full">
+            {children}
+        </div>
+    </motion.div>
+);
+
+const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-gray-900/95 backdrop-blur-md border border-gray-800 p-4 rounded-2xl shadow-2xl text-white">
+                <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2">{label}</p>
+                {payload.map((item, index) => (
+                    <p key={index} className="text-sm font-bold flex items-center gap-2" style={{ color: item.fill || item.color }}>
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.fill || item.color }}></span>
+                        {item.name}: {typeof item.value === 'number' && item.name.includes('%') ? item.value.toFixed(1) : item.value}
+                    </p>
+                ))}
+            </div>
+        );
+    }
+    return null;
 };
 
-const COLOR = generateColorShades('#B1124A');
+// ============= MAIN COMPONENT =============
+const AdminAnalytics = () => {
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
-// Process real data from backend
-const processAnalyticsData = (rawData, selectedYear) => {
-    if (!rawData || rawData.length === 0) return null;
-
-    // Filter by selected year (if needed, but we also need overall trends)
-    // rawData contains students from all available years
-
-    // 1. Year Trends
-    // 1. Year Trends Analysis
-    // Calculates placement rates and average packages for each year available in the dataset.
-    const years = [...new Set(rawData.map(s => s.batch_year))].sort();
-    const yearTrends = years.map(year => {
-        const students = rawData.filter(s => s.batch_year === year);
-        const total = students.length;
-        const placed = students.filter(s => s.placement_status === 'Placed').length;
-        const inProgress = students.filter(s => s.placement_status === 'In Process').length;
-        const notPlaced = students.filter(s => s.placement_status === 'Not Placed').length;
-        const packages = students.filter(s => s.ctc).map(s => s.ctc);
-        const avgPackage = packages.length ? (packages.reduce((a, b) => a + b, 0) / packages.length).toFixed(1) : 0;
-
-        return {
-            year,
-            total,
-            placed,
-            inProgress,
-            notPlaced,
-            avgPackage,
-            placementRate: total ? ((placed / total) * 100).toFixed(1) : 0
-        };
-    });
-
-    // Data for the Selected Year
-    const yearData = rawData.filter(s => s.batch_year === selectedYear);
-    const departments = [...new Set(yearData.map(s => s.dept_code))];
-
-    // 2. Department Analysis
-    // 2. Department Analysis
-    // Breaks down placement statistics by department code (CSE, ECE, etc.)
-    const deptPlacement = departments.map(dept => {
-        const students = yearData.filter(s => s.dept_code === dept);
-        const total = students.length;
-        const placed = students.filter(s => s.placement_status === 'Placed').length;
-        const inProgress = students.filter(s => s.placement_status === 'In Process').length;
-        const notPlaced = students.filter(s => s.placement_status === 'Not Placed').length;
-        const packages = students.filter(s => s.ctc).map(s => s.ctc);
-        const avgPackage = packages.length ? (packages.reduce((a, b) => a + b, 0) / packages.length).toFixed(1) : 0;
-
-        return {
-            department: dept,
-            placed,
-            inProgress,
-            notPlaced,
-            total,
-            placementRate: total ? ((placed / total) * 100).toFixed(1) : 0,
-            avgPackage
-        };
-    });
-
-    // 3. Company Trends (Top 10)
-    // 3. Company Trends (Top 10)
-    // Identifies top recruiters and tracks their hiring trends over years.
-    const companies = [...new Set(rawData.filter(s => s.company).map(s => s.company))];
-    let companyTrends = companies.map(company => {
-        const hires = rawData.filter(s => s.company === company);
-        const totalPlacements = hires.length;
-        const packages = hires.map(s => s.ctc);
-        const avgPackage = packages.length ? (packages.reduce((a, b) => a + b, 0) / packages.length).toFixed(1) : 0;
-
-        const trendData = years.map(year => {
-            const yearHires = hires.filter(s => s.batch_year === year);
-            const yearPackages = yearHires.map(s => s.ctc);
-            return {
-                year,
-                placements: yearHires.length,
-                avgPackage: yearPackages.length ? (yearPackages.reduce((a, b) => a + b, 0) / yearPackages.length).toFixed(1) : 0
-            };
-        });
-
-        return {
-            company,
-            totalPlacements,
-            avgPackage,
-            trendData
-        };
-    });
-    companyTrends.sort((a, b) => b.totalPlacements - a.totalPlacements); // Sort by total hires
-    companyTrends = companyTrends.slice(0, 10); // Take top 10
-
-    // 4. CGPA Analysis
-    const cgpaRanges = [
-        { label: '<7.0', min: 0, max: 6.99 },
-        { label: '7.0-7.5', min: 7.0, max: 7.49 },
-        { label: '7.5-8.0', min: 7.5, max: 7.99 },
-        { label: '8.0-8.5', min: 8.0, max: 8.49 },
-        { label: '8.5-9.0', min: 8.5, max: 8.99 },
-        { label: '9.0+', min: 9.0, max: 10 }
-    ];
-
-    const cgpaAnalysis = cgpaRanges.map(range => {
-        const students = yearData.filter(s => s.cgpa >= range.min && s.cgpa <= range.max);
-        const total = students.length;
-        const placed = students.filter(s => s.placement_status === 'Placed').length;
-        const inProgress = students.filter(s => s.placement_status === 'In Process').length;
-        const notPlaced = students.filter(s => s.placement_status === 'Not Placed').length;
-
-        return {
-            cgpaRange: range.label,
-            total,
-            placed,
-            inProgress,
-            notPlaced,
-            placementRate: total ? ((placed / total) * 100).toFixed(1) : 0
-        };
-    });
-
-    // 5. Batch Analysis (Same as Year Trends but focused structure)
-    const batchAnalysis = years.map(batch => {
-        const students = rawData.filter(s => s.batch_year === batch);
-        const total = students.length;
-        const placed = students.filter(s => s.placement_status === 'Placed').length;
-        const inProgress = students.filter(s => s.placement_status === 'In Process').length;
-        const notPlaced = students.filter(s => s.placement_status === 'Not Placed').length;
-        const maxPackage = Math.max(...students.map(s => s.ctc || 0));
-
-        return {
-            batch: batch.toString(),
-            total,
-            placed,
-            inProgress,
-            notPlaced,
-            placementRate: total ? ((placed / total) * 100).toFixed(1) : 0,
-            topPackage: maxPackage || 0
-        };
-    });
-
-    // 6. Monthly Trends (Mocked as real data doesn't have dates)
-    // We will simulate distribution for visualization
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthlyTrends = months.map((month, i) => {
-        // Pseudo-random distribution based on typical placement season (Aug-Dec peak)
-        const factor = (i >= 7) ? 1.5 : 0.5;
-        return {
-            month,
-            placed: Math.floor(Math.random() * yearData.length * 0.1 * factor),
-            inProgress: Math.floor(Math.random() * yearData.length * 0.05),
-            notPlaced: Math.floor(Math.random() * yearData.length * 0.02),
-            offers: Math.floor(Math.random() * yearData.length * 0.15 * factor)
-        };
-    });
-
-    // 7. Top Performers
-    const topPerformers = yearData
-        .filter(s => s.placement_status === 'Placed' && s.ctc > 0)
-        .sort((a, b) => b.ctc - a.ctc)
-        .slice(0, 10)
-        .map((s, i) => ({
-            id: i + 1,
-            name: s.full_name,
-            department: s.dept_code,
-            cgpa: s.cgpa.toFixed(2),
-            company: s.company,
-            package: s.ctc,
-            status: s.placement_status
-        }));
-
-    // Summary data for selected year
-    const summaryStudents = yearData;
-    const summaryPackages = summaryStudents.filter(s => s.ctc).map(s => s.ctc);
-
-    return {
-        yearTrends,
-        deptPlacement,
-        companyTrends,
-        cgpaAnalysis,
-        batchAnalysis,
-        monthlyTrends,
-        topPerformers,
-        summary: {
-            totalStudents: summaryStudents.length,
-            placed: summaryStudents.filter(s => s.placement_status === 'Placed').length,
-            inProgress: summaryStudents.filter(s => s.placement_status === 'In Process').length,
-            notPlaced: summaryStudents.filter(s => s.placement_status === 'Not Placed').length,
-            avgPlacementRate: summaryStudents.length ? ((summaryStudents.filter(s => s.placement_status === 'Placed').length / summaryStudents.length) * 100).toFixed(1) : 0,
-            avgPackage: summaryPackages.length ? (summaryPackages.reduce((a, b) => a + b, 0) / summaryPackages.length).toFixed(1) : 0,
-            topPackage: Math.max(...summaryPackages, 0).toFixed(1)
+    const fetchData = async () => {
+        try {
+            setRefreshing(true);
+            const response = await api.get('/analytics/dashboard?batch=2026');
+            setData(response.data);
+            setLoading(false);
+        } catch (err) {
+            console.error('Error fetching analytics:', err);
+        } finally {
+            setRefreshing(false);
         }
     };
-};
 
-// ============= CHART COMPONENTS =============
-// Custom built charts to avoid heavy charting libraries and allow full styling control.
-
-const YearlyTrendChart = ({ data, selectedYear }) => {
-    const maxValue = Math.max(...data.map(d => d.total));
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-                <h4 className="font-bold text-gray-900 dark:text-white">Year-over-Year Trends</h4>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[500] }}></div>
-                        <span className="text-xs text-gray-600">Total Students</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[300] }}></div>
-                        <span className="text-xs text-gray-600">Placed</span>
-                    </div>
-                </div>
-            </div>
-            <div className="flex items-end justify-between h-48 px-4">
-                {data.map((yearData, index) => {
-                    const isSelected = yearData.year === selectedYear;
-                    const totalHeight = (yearData.total / maxValue) * 100;
-                    const placedHeight = (yearData.placed / maxValue) * 100;
-
-                    return (
-                        <div key={yearData.year} className="flex flex-col items-center gap-1 w-12">
-                            <div className="relative w-8">
-                                <div
-                                    className="w-8 rounded-t-lg absolute bottom-0"
-                                    style={{
-                                        height: `${totalHeight}%`,
-                                        backgroundColor: isSelected ? COLOR[700] : COLOR[200],
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                />
-                                <div
-                                    className="w-8 rounded-t-lg absolute bottom-0"
-                                    style={{
-                                        height: `${placedHeight}%`,
-                                        backgroundColor: isSelected ? COLOR[500] : COLOR[300],
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                />
-                            </div>
-                            <span className={`text-xs font-bold ${isSelected ? 'text-[#B1124A]' : 'text-gray-500'}`}>
-                                {yearData.year}
-                            </span>
-                            <div className="text-center">
-                                <div className="text-xs font-bold text-gray-900 dark:text-white">{yearData.placementRate}%</div>
-                                <div className="text-xs text-gray-500">Rate</div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
-
-const StatusDonutChart = ({ placed, inProgress, notPlaced }) => {
-    const total = placed + inProgress + notPlaced;
-    const placedPercent = (placed / total) * 100;
-    const inProgressPercent = (inProgress / total) * 100;
-    const notPlacedPercent = (notPlaced / total) * 100;
-
-    const circumference = 2 * Math.PI * 40;
-
-    return (
-        <div className="relative w-48 h-48 mx-auto">
-            <svg className="w-full h-full" viewBox="0 0 100 100">
-                {/* Background circle */}
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="none"
-                    stroke={COLOR[100]}
-                    strokeWidth="12"
-                />
-
-                {/* Placed segment */}
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="none"
-                    stroke={COLOR[500]}
-                    strokeWidth="12"
-                    strokeDasharray={`${placedPercent * circumference / 100} ${circumference}`}
-                    strokeDashoffset="0"
-                    transform="rotate(-90 50 50)"
-                />
-
-                {/* In Progress segment */}
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="none"
-                    stroke={COLOR[300]}
-                    strokeWidth="12"
-                    strokeDasharray={`${inProgressPercent * circumference / 100} ${circumference}`}
-                    strokeDashoffset={`${-placedPercent * circumference / 100}`}
-                    transform="rotate(-90 50 50)"
-                />
-
-                {/* Not Placed segment */}
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="none"
-                    stroke={COLOR[700]}
-                    strokeWidth="12"
-                    strokeDasharray={`${notPlacedPercent * circumference / 100} ${circumference}`}
-                    strokeDashoffset={`${-(placedPercent + inProgressPercent) * circumference / 100}`}
-                    transform="rotate(-90 50 50)"
-                />
-
-                {/* Center text */}
-                <text
-                    x="50"
-                    y="45"
-                    textAnchor="middle"
-                    className="text-2xl font-bold fill-gray-900 dark:fill-white"
-                >
-                    {total}
-                </text>
-                <text
-                    x="50"
-                    y="55"
-                    textAnchor="middle"
-                    className="text-sm fill-gray-500"
-                >
-                    Total
-                </text>
-            </svg>
-
-            {/* Legend */}
-            <div className="absolute -bottom-12 left-0 right-0 flex justify-center gap-4">
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[500] }}></div>
-                    <span className="text-xs text-gray-600">Placed</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[300] }}></div>
-                    <span className="text-xs text-gray-600">In Progress</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[700] }}></div>
-                    <span className="text-xs text-gray-600">Not Placed</span>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-const DepartmentBarChart = ({ data }) => {
-    const maxTotal = Math.max(...data.map(d => d.total));
-
-    return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-                <h4 className="font-bold text-gray-900 dark:text-white">Department-wise Placement</h4>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[500] }}></div>
-                        <span className="text-xs text-gray-600">Placed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLOR[300] }}></div>
-                        <span className="text-xs text-gray-600">In Progress</span>
-                    </div>
-                </div>
-            </div>
-            <div className="space-y-3">
-                {data.map((dept, index) => {
-                    const placedWidth = (dept.placed / maxTotal) * 100;
-                    const inProgressWidth = (dept.inProgress / maxTotal) * 100;
-                    const notPlacedWidth = (dept.notPlaced / maxTotal) * 100;
-
-                    return (
-                        <div key={dept.department} className="space-y-1">
-                            <div className="flex justify-between text-xs">
-                                <span className="font-bold text-gray-900 dark:text-white w-20">{dept.department}</span>
-                                <span className="text-gray-500">{dept.placementRate}%</span>
-                            </div>
-                            <div className="flex h-6 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                <div
-                                    className="transition-all duration-500"
-                                    style={{
-                                        width: `${placedWidth}%`,
-                                        backgroundColor: COLOR[500]
-                                    }}
-                                    title={`Placed: ${dept.placed}`}
-                                />
-                                <div
-                                    className="transition-all duration-500"
-                                    style={{
-                                        width: `${inProgressWidth}%`,
-                                        backgroundColor: COLOR[300]
-                                    }}
-                                    title={`In Progress: ${dept.inProgress}`}
-                                />
-                                <div
-                                    className="transition-all duration-500"
-                                    style={{
-                                        width: `${notPlacedWidth}%`,
-                                        backgroundColor: COLOR[700]
-                                    }}
-                                    title={`Not Placed: ${dept.notPlaced}`}
-                                />
-                            </div>
-                            <div className="flex justify-between text-xs text-gray-500">
-                                <span>Total: {dept.total}</span>
-                                <span>Package: ₹{dept.avgPackage}L</span>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
-
-const CompanyTrendChart = ({ data, selectedYear }) => {
-    const selectedCompanyData = data.find(c => c.company === selectedYear) || data[0];
-
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h4 className="font-bold text-gray-900 dark:text-white">Company-wise Trends</h4>
-                <select
-                    className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-[#B1124A]"
-                    value={selectedYear}
-                    onChange={() => { }}
-                >
-                    {data.map(company => (
-                        <option key={company.company} value={company.company}>
-                            {company.company}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-                {data.slice(0, 4).map(company => (
-                    <div key={company.company} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-[#B1124A] transition-all">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                                <Building size={16} className="text-[#B1124A]" />
-                                <span className="font-bold text-gray-900 dark:text-white">{company.company}</span>
-                            </div>
-                            <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: COLOR[100], color: COLOR[700] }}>
-                                {company.totalPlacements} placed
-                            </span>
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Avg Package</span>
-                                <span className="font-bold text-gray-900 dark:text-white">₹{company.avgPackage}L</span>
-                            </div>
-                            <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                                <div
-                                    className="h-full rounded-full"
-                                    style={{
-                                        width: `${(company.totalPlacements / Math.max(...data.map(c => c.totalPlacements))) * 100}%`,
-                                        backgroundColor: COLOR[500]
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            <div className="h-48 flex items-end gap-2">
-                {selectedCompanyData.trendData.map((trend, index) => (
-                    <div key={trend.year} className="flex flex-col items-center flex-1 group">
-                        <div className="relative w-full">
-                            <div
-                                className="w-full rounded-t-lg transition-all duration-300 group-hover:opacity-80"
-                                style={{
-                                    height: `${(trend.placements / 100) * 80}%`,
-                                    backgroundColor: COLOR[500]
-                                }}
-                            />
-                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                                    {trend.placements} placements
-                                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-2 text-center">
-                            <div className="text-xs font-bold text-gray-900 dark:text-white">{trend.year}</div>
-                            <div className="text-xs text-gray-500">₹{trend.avgPackage}L</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-const CGPAAnalysisChart = ({ data }) => {
-    return (
-        <div className="space-y-4">
-            <h4 className="font-bold text-gray-900 dark:text-white">CGPA-wise Analysis</h4>
-            <div className="space-y-4">
-                {data.map((cgpa, index) => {
-                    const placedPercent = (cgpa.placed / cgpa.total) * 100;
-                    const inProgressPercent = (cgpa.inProgress / cgpa.total) * 100;
-                    const notPlacedPercent = (cgpa.notPlaced / cgpa.total) * 100;
-
-                    return (
-                        <div key={cgpa.cgpaRange} className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                                <span className="font-bold text-gray-900 dark:text-white">{cgpa.cgpaRange}</span>
-                                <span className="text-gray-500">{cgpa.placementRate}% placed</span>
-                            </div>
-                            <div className="relative h-6 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                <div
-                                    className="absolute left-0 h-full transition-all duration-500"
-                                    style={{
-                                        width: `${placedPercent}%`,
-                                        backgroundColor: COLOR[500]
-                                    }}
-                                    title={`Placed: ${cgpa.placed}`}
-                                />
-                                <div
-                                    className="absolute left-0 h-full transition-all duration-500"
-                                    style={{
-                                        width: `${placedPercent + inProgressPercent}%`,
-                                        backgroundColor: COLOR[300]
-                                    }}
-                                    title={`In Progress: ${cgpa.inProgress}`}
-                                />
-                            </div>
-                            <div className="flex justify-between text-xs text-gray-500">
-                                <span>Total: {cgpa.total}</span>
-                                <div className="flex gap-3">
-                                    <span>Placed: {cgpa.placed}</span>
-                                    <span>In Progress: {cgpa.inProgress}</span>
-                                    <span>Not Placed: {cgpa.notPlaced}</span>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
-};
-
-const BatchAnalysisChart = ({ data }) => {
-    return (
-        <div className="space-y-4">
-            <h4 className="font-bold text-gray-900 dark:text-white">Batch-wise Performance</h4>
-            <div className="space-y-6">
-                {data.map((batch, index) => (
-                    <div key={batch.batch} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <span className="font-bold text-gray-900 dark:text-white">{batch.batch}</span>
-                            <span className="text-sm" style={{ color: COLOR[700] }}>{batch.placementRate}%</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2">
-                            <div className="text-center p-3 rounded-lg" style={{ backgroundColor: COLOR[50] }}>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[500] }}>{batch.placed}</div>
-                                <div className="text-xs text-gray-600">Placed</div>
-                            </div>
-                            <div className="text-center p-3 rounded-lg" style={{ backgroundColor: COLOR[100] }}>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[500] }}>{batch.inProgress}</div>
-                                <div className="text-xs text-gray-600">In Progress</div>
-                            </div>
-                            <div className="text-center p-3 rounded-lg" style={{ backgroundColor: COLOR[200] }}>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[700] }}>{batch.notPlaced}</div>
-                                <div className="text-xs text-gray-600">Not Placed</div>
-                            </div>
-                        </div>
-                        <div className="flex justify-between text-xs text-gray-500">
-                            <span>Total: {batch.total}</span>
-                            <span>Top Package: ₹{batch.topPackage}L</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-const MonthlyTrendChart = ({ data }) => {
-    const maxValue = Math.max(...data.map(d => d.offers));
-
-    return (
-        <div className="space-y-4">
-            <h4 className="font-bold text-gray-900 dark:text-white">Monthly Trends</h4>
-            <div className="flex items-end justify-between h-48">
-                {data.map((month, index) => (
-                    <div key={month.month} className="flex flex-col items-center flex-1 group">
-                        <div className="relative w-3/4">
-                            {/* Not Placed */}
-                            <div
-                                className="w-full rounded-t transition-all duration-300"
-                                style={{
-                                    height: `${(month.notPlaced / maxValue) * 100}%`,
-                                    backgroundColor: COLOR[700],
-                                    opacity: 0.8
-                                }}
-                            />
-                            {/* In Progress */}
-                            <div
-                                className="w-full rounded-t transition-all duration-300"
-                                style={{
-                                    height: `${((month.notPlaced + month.inProgress) / maxValue) * 100}%`,
-                                    backgroundColor: COLOR[300],
-                                    opacity: 0.9
-                                }}
-                            />
-                            {/* Placed */}
-                            <div
-                                className="w-full rounded-t transition-all duration-300 group-hover:opacity-90"
-                                style={{
-                                    height: `${((month.notPlaced + month.inProgress + month.placed) / maxValue) * 100}%`,
-                                    backgroundColor: COLOR[500]
-                                }}
-                            />
-
-                            {/* Tooltip */}
-                            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                                    Offers: {month.offers}
-                                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mt-2 text-center">
-                            <div className="text-xs font-bold text-gray-900 dark:text-white">{month.month}</div>
-                            <div className="text-xs text-gray-500">{month.placed} placed</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-// Main Component
-const AdminAnalytics = () => {
-    const [selectedYear, setSelectedYear] = useState(2027); // Default to current batch
-    const [viewMode, setViewMode] = useState('overview');
-    const [data, setData] = useState(null);
-    const [rawData, setRawData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [customization, setCustomization] = useState({
-        showPercentages: true,
-        showTrendLines: true,
-        animateCharts: true,
-        compactView: false,
-        highlightThreshold: 80
-    });
-
-    // Fetch raw data once
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch('http://localhost:5005/api/admin/analytics-dataset');
-                if (!response.ok) throw new Error('Failed to fetch analytics data');
-                const result = await response.json();
-                setRawData(result);
-            } catch (err) {
-                console.error('Error fetching analytics:', err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchData();
     }, []);
 
-    // Process data when year changes or raw data loads
-    useEffect(() => {
-        if (rawData) {
-            const processed = processAnalyticsData(rawData, selectedYear);
-            setData(processed);
-        }
-    }, [rawData, selectedYear]);
-
-    // Loading State
     if (loading) return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <div className="w-16 h-16 border-4 border-[#B1124A] border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-600 font-medium">Loading placement analytics...</p>
+        <div className="flex flex-col items-center justify-center min-h-[600px] gap-4">
+            <div className="relative w-20 h-20">
+                <div className="absolute inset-0 border-4 border-amrita-maroon/20 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-t-amrita-maroon rounded-full animate-spin"></div>
+            </div>
+            <p className="text-sm font-black text-amrita-maroon uppercase tracking-widest animate-pulse">Aggregating Global Metrics...</p>
         </div>
     );
 
-    if (error) return (
-        <div className="flex flex-col items-center justify-center h-screen text-red-500">
-            <XCircle size={48} className="mb-4" />
-            <p className="text-lg font-bold">Error loading data</p>
-            <p className="text-sm opacity-80">{error}</p>
-            <button
-                onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-[#B1124A] text-white rounded-lg hover:bg-[#8D0E3B] transition-colors"
-            >
-                Retry
-            </button>
-        </div>
-    );
+    const {
+        deptPlacementData = [],
+        monthlyTrend = [],
+        avgSalaryByCompany = [],
+        salaryDistribution = [],
+        statusOverview = [],
+        topCompanies = [],
+        offersBySector = [],
+        appFunnel = [],
+        batchProgress = [],
+        deptAvgPackage = [],
+        skillDemand = [],
+        acceptanceRate = { accepted: 0, offered: 0 },
+        visitFrequency = [],
+        growthTrend = [],
+        participationRate = []
+    } = data || {};
 
-    if (!data) return null;
-
-    const summary = data.summary;
+    // Transform appFunnel for the funnel chart
+    const funnelData = [
+        { name: 'Applied', value: appFunnel.find(f => f._id === 'applied')?.count || 0, fill: '#8884d8' },
+        { name: 'Shortlisted', value: appFunnel.find(f => f._id === 'shortlisted')?.count || 0, fill: '#83a6ed' },
+        { name: 'Rounds', value: appFunnel.filter(f => ['round1', 'round2', 'round3', 'hr_round'].includes(f._id)).reduce((a, b) => a + b.count, 0), fill: '#8dd1e1' },
+        { name: 'Offered', value: appFunnel.find(f => f._id === 'offered')?.count || 0, fill: '#82ca9d' },
+        { name: 'Accepted', value: appFunnel.find(f => f._id === 'accepted')?.count || 0, fill: '#a4de6c' }
+    ].sort((a, b) => b.value - a.value);
 
     return (
-        <div className="space-y-8 page-enter">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="p-4 bg-[#F8FAFC] min-h-screen space-y-8 animate-fade-in">
+            {/* Dashboard Header */}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12">
                 <div>
-                    <h1 className="text-3xl font-black flex items-center gap-2">
-                        <Activity className="text-amrita-maroon" size={28} />
-                        <span style={{ color: '#1A1A1A' }}>Placement</span> <span style={{ color: '#A4123F' }}>Analytics Dashboard</span>
+                    <h1 className="text-4xl font-black tracking-tight text-gray-900 flex items-center gap-3">
+                        <Activity className="text-[#B1124A]" size={32} />
+                        <span className="text-[#B1124A]">Insights</span> Engine
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium mt-2">
-                        Comprehensive analysis for {selectedYear} | Fully customizable visualizations
-                    </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2">
-                        <CalendarIcon size={18} className="text-gray-500" />
-                        <select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(Number(e.target.value))}
-                            className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-sm focus:outline-none focus:ring-2 focus:ring-[#B1124A]"
-                            style={{ color: COLOR[500] }}
-                        >
-                            {data.yearTrends.map(t => t.year).map(year => (
-                                <option key={year} value={year}>{year}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                        {['overview', 'details', 'comparison'].map(mode => (
-                            <button
-                                key={mode}
-                                onClick={() => setViewMode(mode)}
-                                className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${viewMode === mode
-                                    ? 'bg-gradient-to-r from-[#B1124A] to-[#D1477C] text-white shadow-md'
-                                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700'
-                                    }`}
-                            >
-                                {mode}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="glass-card p-6" style={{ borderLeft: `4px solid ${COLOR[500]}` }}>
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 rounded-xl" style={{ backgroundColor: COLOR[50] }}>
-                            <Users size={24} style={{ color: COLOR[500] }} />
-                        </div>
-                        <div>
-                            <h3 className="text-gray-500 text-sm font-bold uppercase">Total Students</h3>
-                            <p className="text-3xl font-black" style={{ color: COLOR[500] }}>{summary.totalStudents}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="glass-card p-6" style={{ borderLeft: `4px solid ${COLOR[500]}` }}>
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 rounded-xl" style={{ backgroundColor: COLOR[100] }}>
-                            <UserCheck size={24} style={{ color: COLOR[500] }} />
-                        </div>
-                        <div>
-                            <h3 className="text-gray-500 text-sm font-bold uppercase">Placed</h3>
-                            <p className="text-3xl font-black" style={{ color: COLOR[500] }}>{summary.placed}</p>
-                        </div>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                        {((summary.placed / summary.totalStudents) * 100).toFixed(1)}% of total
-                    </div>
-                </div>
-
-                <div className="glass-card p-6" style={{ borderLeft: `4px solid ${COLOR[300]}` }}>
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 rounded-xl" style={{ backgroundColor: COLOR[50] }}>
-                            <Clock size={24} style={{ color: COLOR[300] }} />
-                        </div>
-                        <div>
-                            <h3 className="text-gray-500 text-sm font-bold uppercase">In Progress</h3>
-                            <p className="text-3xl font-black" style={{ color: COLOR[300] }}>{summary.inProgress}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="glass-card p-6" style={{ borderLeft: `4px solid ${COLOR[700]}` }}>
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-3 rounded-xl" style={{ backgroundColor: COLOR[50] }}>
-                            <UserX size={24} style={{ color: COLOR[700] }} />
-                        </div>
-                        <div>
-                            <h3 className="text-gray-500 text-sm font-bold uppercase">Not Placed</h3>
-                            <p className="text-3xl font-black" style={{ color: COLOR[700] }}>{summary.notPlaced}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Dashboard Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left Column */}
-                <div className="lg:col-span-2 space-y-8">
-                    {/* Year-over-Year Trends */}
-                    <div className="glass-card p-6">
-                        <YearlyTrendChart data={data.yearTrends} selectedYear={selectedYear} />
-                    </div>
-
-                    {/* Department-wise Analysis */}
-                    <div className="glass-card p-6">
-                        <DepartmentBarChart data={data.deptPlacement} />
-                    </div>
-
-                    {/* Company-wise Trends */}
-                    <div className="glass-card p-6">
-                        <CompanyTrendChart data={data.companyTrends} selectedYear={selectedYear} />
-                    </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-8">
-                    {/* Overall Status Donut */}
-                    <div className="glass-card p-6">
-                        <div className="text-center mb-6">
-                            <h3 className="font-bold text-lg text-gray-900 dark:text-white">Overall Placement Status</h3>
-                            <p className="text-sm text-gray-500">{selectedYear} Academic Year</p>
-                        </div>
-                        <StatusDonutChart
-                            placed={summary.placed}
-                            inProgress={summary.inProgress}
-                            notPlaced={summary.notPlaced}
-                        />
-                        <div className="mt-16 grid grid-cols-3 gap-4 text-center">
-                            <div>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[500] }}>{summary.avgPlacementRate}%</div>
-                                <div className="text-xs text-gray-500">Placement Rate</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[500] }}>₹{summary.avgPackage}L</div>
-                                <div className="text-xs text-gray-500">Avg Package</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold" style={{ color: COLOR[500] }}>₹{summary.topPackage}L</div>
-                                <div className="text-xs text-gray-500">Top Package</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CGPA Analysis */}
-                    <div className="glass-card p-6">
-                        <CGPAAnalysisChart data={data.cgpaAnalysis} />
-                    </div>
-
-                    {/* Batch Analysis */}
-                    <div className="glass-card p-6">
-                        <BatchAnalysisChart data={data.batchAnalysis} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Monthly Trends */}
-            <div className="glass-card p-6">
-                <MonthlyTrendChart data={data.monthlyTrends} />
-            </div>
-
-            {/* Customization Panel */}
-            <div className="glass-card p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white">Customization Panel</h3>
+                <div className="flex items-center gap-3">
                     <button
-                        onClick={() => setCustomization({
-                            showPercentages: true,
-                            showTrendLines: true,
-                            animateCharts: true,
-                            compactView: false,
-                            highlightThreshold: 80
-                        })}
-                        className="px-4 py-2 text-sm font-bold rounded-lg"
-                        style={{ backgroundColor: COLOR[100], color: COLOR[700] }}
+                        onClick={fetchData}
+                        className={`p-4 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all ${refreshing ? 'animate-spin' : ''}`}
                     >
-                        Reset to Default
+                        <RefreshCw size={20} className="text-[#B1124A]" />
+                    </button>
+                    <button className="flex items-center gap-2 px-6 py-3.5 bg-[#B1124A] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-maroon-subtle/40 hover:scale-105 active:scale-95 transition-all">
+                        <Download size={18} /> Export Intel
                     </button>
                 </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={customization.showPercentages}
-                                onChange={(e) => setCustomization({ ...customization, showPercentages: e.target.checked })}
-                                className="rounded border-gray-300"
-                                style={{ accentColor: COLOR[500] }}
-                            />
-                            Show Percentages
-                        </label>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={customization.showTrendLines}
-                                onChange={(e) => setCustomization({ ...customization, showTrendLines: e.target.checked })}
-                                className="rounded border-gray-300"
-                                style={{ accentColor: COLOR[500] }}
-                            />
-                            Show Trend Lines
-                        </label>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={customization.animateCharts}
-                                onChange={(e) => setCustomization({ ...customization, animateCharts: e.target.checked })}
-                                className="rounded border-gray-300"
-                                style={{ accentColor: COLOR[500] }}
-                            />
-                            Animate Charts
-                        </label>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={customization.compactView}
-                                onChange={(e) => setCustomization({ ...customization, compactView: e.target.checked })}
-                                className="rounded border-gray-300"
-                                style={{ accentColor: COLOR[500] }}
-                            />
-                            Compact View
-                        </label>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Highlight Threshold: {customization.highlightThreshold}%
-                        </label>
-                        <input
-                            type="range"
-                            min="50"
-                            max="100"
-                            value={customization.highlightThreshold}
-                            onChange={(e) => setCustomization({ ...customization, highlightThreshold: parseInt(e.target.value) })}
-                            className="w-full h-2 rounded-lg"
-                            style={{ accentColor: COLOR[500] }}
-                        />
-                    </div>
-                </div>
             </div>
 
-            {/* Top Performers */}
-            <div className="glass-card p-6">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-6">Top Performers - {selectedYear}</h3>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="text-left text-sm text-gray-500 border-b">
-                                <th className="pb-3">Student</th>
-                                <th className="pb-3">Department</th>
-                                <th className="pb-3">CGPA</th>
-                                <th className="pb-3">Company</th>
-                                <th className="pb-3">Package (LPA)</th>
-                                <th className="pb-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.topPerformers.map((student) => (
-                                <tr key={student.id} className="border-b hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <td className="py-3 font-medium">{student.name}</td>
-                                    <td className="py-3">{student.department}</td>
-                                    <td className="py-3">
-                                        <span className="px-2 py-1 rounded-full text-xs font-bold"
-                                            style={{
-                                                backgroundColor: student.cgpa >= 9 ? COLOR[100] : COLOR[50],
-                                                color: COLOR[700]
-                                            }}
-                                        >
-                                            {student.cgpa}
-                                        </span>
-                                    </td>
-                                    <td className="py-3">{student.company}</td>
-                                    <td className="py-3 font-bold" style={{ color: COLOR[500] }}>
-                                        ₹{student.package}L
-                                    </td>
-                                    <td className="py-3">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${student.status === 'Placed' ? 'bg-green-100 text-green-800' :
-                                            student.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800' :
-                                                'bg-red-100 text-red-800'
-                                            }`}>
-                                            {student.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+            {/* Top Row: Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {[
+                    { label: 'Global Placement', val: statusOverview.find(s => s.status === 'Placed')?.count || 0, icon: GraduationCap, color: '#B1124A' },
+                    { label: 'Active Pipeline', val: statusOverview.find(s => s.status === 'In Process')?.count || 0, icon: Activity, color: '#4E6C50' },
+                    { label: 'Avg Package', val: `₹${(deptAvgPackage.reduce((a, b) => a + b.avgCTC, 0) / (deptAvgPackage.length || 1) / 100000).toFixed(1)}L`, icon: DollarSign, color: '#9A4444' },
+                    { label: 'Top Drive', val: topCompanies[0]?.company || 'N/A', icon: Building2, color: '#4D4D7C' }
+                ].map((stat, i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: i * 0.1 }}
+                        className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-6"
+                    >
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-xl" style={{ background: `linear-gradient(135deg, ${stat.color}, ${stat.color}dd)` }}>
+                            <stat.icon size={28} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] mb-1">{stat.label}</p>
+                            <h4 className="text-2xl font-black text-gray-900">{stat.val}</h4>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Analytics Grid - 15 Dynamic Visualizations */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                {/* 1. Placement Rate by Department */}
+                <AnalyticsCard title="Placement Efficiency" icon={LayoutDashboard} delay={100}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={deptPlacementData}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B' }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B' }} domain={[0, 100]} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="rate" name="Rate %" radius={[10, 10, 0, 0]}>
+                                {deptPlacementData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 2. Monthly Placement Trend */}
+                <AnalyticsCard title="Temporal Momentum" icon={TrendingUp} delay={200}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={monthlyTrend}>
+                            <defs>
+                                <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#A4123F" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#A4123F" stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B' }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900, fill: '#64748B' }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Area type="monotone" dataKey="count" name="Placements" stroke="#A4123F" strokeWidth={4} fillOpacity={1} fill="url(#colorCount)" />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 3. Average Salary by Company */}
+                <AnalyticsCard title="Yield of Value" icon={DollarSign} delay={300}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={avgSalaryByCompany} layout="vertical">
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="company" type="category" axisLine={false} tickLine={false} width={80} tick={{ fontSize: 9, fontWeight: 800, fill: '#64748B' }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="avgCTC" name="Avg CTC" radius={[0, 10, 10, 0]}>
+                                {avgSalaryByCompany.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 4. Salary Distribution */}
+                <AnalyticsCard title="Wealth Spectrum" icon={PieChartIcon} delay={400}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={salaryDistribution}
+                                dataKey="count"
+                                nameKey="range"
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={80}
+                                paddingAngle={5}
+                            >
+                                {salaryDistribution.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} stroke="rgba(0,0,0,0.1)" strokeWidth={2} />
+                                ))}
+                            </Pie>
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend iconType="circle" wrapperStyle={{ fontSize: 10, fontWeight: 900, paddingTop: 20 }} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 5. Placement Status Overview */}
+                <AnalyticsCard title="Global Status" icon={PieChartIcon} delay={500}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={statusOverview}
+                                dataKey="count"
+                                nameKey="status"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                labelLine={false}
+                                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            >
+                                {statusOverview.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={SECONDARY_COLORS[index % SECONDARY_COLORS.length]} stroke="white" strokeWidth={4} />
+                                ))}
+                            </Pie>
+                            <Tooltip content={<CustomTooltip />} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 6. Top Recruiting Companies */}
+                <AnalyticsCard title="Volume Leaders" icon={Building2} delay={600}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={topCompanies}>
+                            <XAxis dataKey="company" hide />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="count" name="Hires" radius={[8, 8, 8, 8]} barSize={20}>
+                                {topCompanies.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 7. Offers by Industry Sector */}
+                <AnalyticsCard title="Sector Exposure" icon={Globe} delay={700}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={offersBySector}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={true}
+                                label={({ sector, percent }) => `${sector} ${(percent * 100).toFixed(0)}%`}
+                                outerRadius={60}
+                                fill="#8884d8"
+                                dataKey="count"
+                                nameKey="sector"
+                            >
+                                {offersBySector.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip content={<CustomTooltip />} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 8. Application Funnel */}
+                <AnalyticsCard title="Recruitment Sieve" icon={Target} delay={800}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <FunnelChart>
+                            <Tooltip content={<CustomTooltip />} />
+                            <Funnel
+                                data={funnelData}
+                                dataKey="value"
+                                nameKey="name"
+                                labelLine={true}
+                            >
+                                <LabelList position="right" fill="#4B5563" stroke="none" dataKey="name" style={{ fontSize: 10, fontWeight: 900 }} />
+                            </Funnel>
+                        </FunnelChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 9. Placement Progress by Batch */}
+                <AnalyticsCard title="Batch Progression" icon={Layers} delay={900}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={batchProgress}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="batch" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800 }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 800 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Legend wrapperStyle={{ fontSize: 10, fontWeight: 800 }} />
+                            <Bar dataKey="total" name="Total Strength" fill="#E2E8F0" radius={[4, 4, 0, 0]} />
+                            <Bar dataKey="placed" name="Confirmed Hires" fill="#A4123F" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 10. Department-wise Average Package */}
+                <AnalyticsCard title="Financial Matrix" icon={Briefcase} delay={1000}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={deptAvgPackage}>
+                            <PolarGrid stroke="#E2E8F0" />
+                            <PolarAngleAxis dataKey="department" tick={{ fontSize: 8, fontWeight: 900, fill: '#64748B' }} />
+                            <Radar name="Avg Package" dataKey="avgCTC" stroke="#A4123F" fill="#A4123F" fillOpacity={0.6} />
+                            <Tooltip content={<CustomTooltip />} />
+                        </RadarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 11. Student Skill Demand */}
+                <AnalyticsCard title="Skill Ecosystem" icon={Cpu} delay={1100}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={skillDemand} layout="vertical">
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="skill" type="category" axisLine={false} tickLine={false} width={80} tick={{ fontSize: 9, fontWeight: 800 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Bar dataKey="demand" name="Market Frequency" fill="#8B5CF6" radius={[0, 10, 10, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 12. Offer Acceptance Rate */}
+                <AnalyticsCard title="Retention Factor" icon={UserCheck} delay={1200}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={[
+                                    { name: 'Accepted', value: acceptanceRate.accepted, fill: '#10B981' },
+                                    { name: 'Declined/Pending', value: acceptanceRate.offered - acceptanceRate.accepted, fill: '#F43F5E' }
+                                ]}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={50}
+                                outerRadius={70}
+                                startAngle={90}
+                                endAngle={450}
+                            >
+                                <LabelList position="center" content={({ cx, cy }) => (
+                                    <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central">
+                                        <tspan x={cx} dy="-0.5em" fontSize="16" fontWeight="900" fill="#1A1A1A">{((acceptanceRate.accepted / (acceptanceRate.offered || 1)) * 100).toFixed(0)}%</tspan>
+                                        <tspan x={cx} dy="1.5em" fontSize="8" fontWeight="900" fill="#9CA3AF" textAnchor="middle">ACCEPTANCE</tspan>
+                                    </text>
+                                )} />
+                            </Pie>
+                            <Tooltip />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 13. Company Visit Frequency */}
+                <AnalyticsCard title="Partnership Frequency" icon={Building2} delay={1300}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={visitFrequency}>
+                            <XAxis dataKey="company" hide />
+                            <YAxis axisLine={false} tick={{ fontSize: 10 }} />
+                            <Tooltip />
+                            <Bar dataKey="visits" name="Drive Visits" fill="#4E6C50" radius={[10, 10, 0, 0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 14. Placement Growth Over Years */}
+                <AnalyticsCard title="Annual Scaling" icon={Activity} delay={1400}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={growthTrend}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900 }} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 900 }} />
+                            <Tooltip content={<CustomTooltip />} />
+                            <Line type="stepAfter" dataKey="count" name="Placed Strength" stroke="#635985" strokeWidth={4} dot={{ r: 6, fill: '#635985', strokeWidth: 3, stroke: 'white' }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
+                {/* 15. Drive Participation Rate */}
+                <AnalyticsCard title="Engagement Profile" icon={Users} delay={1500}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={participationRate}>
+                            <XAxis dataKey="name" hide />
+                            <YAxis axisLine={false} tick={{ fontSize: 10 }} />
+                            <Bar dataKey="count" name="Students Registered" fill="#4D4D7C" radius={[5, 5, 5, 5]} />
+                            <Tooltip />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </AnalyticsCard>
+
             </div>
         </div>
     );

@@ -6,7 +6,7 @@
  * - Supports searching and filtering resources.
  */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { BookOpen, ExternalLink, Search, Sparkles, Filter, Code, Cpu, UserCheck, Briefcase, LayoutGrid, List, StickyNote, Plus, Trash2, Edit, Save, X, Lock } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import AIChatbot from '../../components/AIChatbot';
@@ -21,6 +21,7 @@ const PrepHub = () => {
     const [category, setCategory] = useState('Coding');
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('grid');
+
 
     const categories = [
         { id: 'All', icon: <LayoutGrid size={18} />, label: 'All' },
@@ -60,9 +61,9 @@ const PrepHub = () => {
         setLoading(true);
         try {
             const url = category === 'All'
-                ? `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`
-                : `${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources?category=${category}`;
-            const res = await axios.get(url);
+                ? '/resources'
+                : `/resources?category=${category}`;
+            const res = await api.get(url);
             setResources(res.data);
             setLoading(false);
         } catch (err) {
@@ -75,9 +76,7 @@ const PrepHub = () => {
     const fetchNotes = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/notes');
             setNotes(res.data);
             setLoading(false);
         } catch (err) {
@@ -91,13 +90,9 @@ const PrepHub = () => {
         e.preventDefault();
         try {
             if (editingNoteId) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${editingNoteId}`, noteFormData, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
+                await api.put(`/notes/${editingNoteId}`, noteFormData);
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes`, noteFormData, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
+                await api.post('/notes', noteFormData);
             }
             setNoteFormData({ name: '', text: '' });
             setIsAddingNote(false);
@@ -121,9 +116,7 @@ const PrepHub = () => {
     const handleDeleteNote = async (id) => {
         if (!window.confirm('Are you sure?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/notes/${id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            await api.delete(`/notes/${id}`);
             fetchNotes();
         } catch (err) {
             console.error(err);
@@ -151,9 +144,7 @@ const PrepHub = () => {
     const summarizeResource = async (resource) => {
         setAiLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/summarize-resource/${resource._id}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get(`/ai/summarize-resource/${resource._id}`);
             // Combine parsed content + AI summary so Q&A has full context
             const fullContext = `AI Summary:\n${res.data.summary}\n\nOriginal Content:\n${res.data.context}`;
             setAiContext(fullContext);
@@ -171,9 +162,7 @@ const PrepHub = () => {
     const summarizeNotes = async () => {
         setAiLoading(true);
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/summarize-notes`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/ai/summarize-notes');
             const fullContext = `AI Summary:\n${res.data.summary}\n\nOriginal Content:\n${res.data.context}`;
             setAiContext(fullContext);
             setAiSourceName(res.data.sourceName);
@@ -452,13 +441,13 @@ const PrepHub = () => {
                                                 Start Learning
                                             </button>
                                             {(res.type === 'PDF' || res.type === 'PPT') && (
-                                            <button
-                                                onClick={() => summarizeResource(res)}
-                                                disabled={aiLoading}
-                                                className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-gold group-hover:text-amrita-maroon transition-all text-xs font-black uppercase tracking-widest italic rounded-br-[1.5rem] disabled:opacity-30 flex items-center justify-center gap-2"
-                                            >
-                                                <Sparkles size={14} /> Summarize
-                                            </button>
+                                                <button
+                                                    onClick={() => summarizeResource(res)}
+                                                    disabled={aiLoading}
+                                                    className="w-full py-4 bg-white/40 border-t border-white group-hover:bg-amrita-gold group-hover:text-amrita-maroon transition-all text-xs font-black uppercase tracking-widest italic rounded-br-[1.5rem] disabled:opacity-30 flex items-center justify-center gap-2"
+                                                >
+                                                    <Sparkles size={14} /> Summarize
+                                                </button>
                                             )}
                                         </div>
                                     </div>
@@ -541,6 +530,7 @@ const PrepHub = () => {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };

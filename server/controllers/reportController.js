@@ -47,10 +47,32 @@ exports.generateStudentReport = async (req, res) => {
     }
 };
 
+const getQueryFilters = (query) => {
+    const { batch, department, placementStatus } = query;
+    let filters = {};
+
+    if (batch && batch !== 'All') filters.batch = batch;
+    if (department && department !== 'All') filters.department = department;
+
+    // Mapping frontend labels to database enum
+    if (placementStatus && placementStatus !== 'All') {
+        if (placementStatus === 'Placed') filters.placementStatus = 'placed';
+        else if (placementStatus === 'Unplaced' || placementStatus === 'not_placed') filters.placementStatus = 'not_placed';
+        else filters.placementStatus = placementStatus.toLowerCase();
+    }
+
+    return filters;
+};
+
 exports.generateAdminCSV = async (req, res) => {
+    const csvPath = path.join(__dirname, `../temp_students_${Date.now()}.csv`);
     try {
-        const students = await StudentProfile.find();
-        const csvPath = path.join(__dirname, '../temp_students.csv');
+        const filters = getQueryFilters(req.query);
+        console.log('Generating admin CSV with filters:', filters);
+
+        // Performance optimization with .lean()
+        const students = await StudentProfile.find(filters).lean();
+        console.log(`Found ${students.length} students matching criteria.`);
 
         const csvWriter = createObjectCsvWriter({
             path: csvPath,
@@ -72,23 +94,38 @@ exports.generateAdminCSV = async (req, res) => {
 
         await csvWriter.writeRecords(students);
 
-        res.download(csvPath, 'student_placement_data.csv', (err) => {
-            if (err) res.status(500).send(err);
+        const filename = filters.placementStatus === 'not_placed' ? 'unplaced_talent_pool.csv' : 'student_placement_data.csv';
+
+        res.download(csvPath, filename, (err) => {
+            if (err) {
+                console.error('Error in res.download:', err);
+                if (!res.headersSent) res.status(500).send({ error: 'Failed to send file' });
+            }
             try {
-                fs.unlinkSync(csvPath); // Cleanup
+                if (fs.existsSync(csvPath)) fs.unlinkSync(csvPath);
             } catch (cleanupErr) {
                 console.error('Error deleting temp csv:', cleanupErr);
             }
         });
     } catch (e) {
         console.error('CSV Generation Error:', e);
-        res.status(500).send(e);
+        if (!res.headersSent) res.status(500).send({ error: e.message });
+        try {
+            if (fs.existsSync(csvPath)) fs.unlinkSync(csvPath);
+        } catch (cleanupErr) { }
     }
 };
 
 exports.generateCompanyCSV = async (req, res) => {
+    const csvPath = path.join(__dirname, `../temp_companies_${Date.now()}.csv`);
     try {
-        const students = await StudentProfile.find({ placementStatus: 'placed' });
+        const filters = getQueryFilters(req.query);
+        filters.placementStatus = 'placed'; // Ensure we only get placed students
+
+        console.log('Generating company CSV with filters:', filters);
+        const students = await StudentProfile.find(filters).lean();
+        console.log(`Found ${students.length} placed students for aggregation.`);
+
         const companyStats = {};
 
         // Aggregate data
@@ -113,7 +150,6 @@ exports.generateCompanyCSV = async (req, res) => {
             companyStats[company].departments[dept] = (companyStats[company].departments[dept] || 0) + 1;
         });
 
-        // Format for CSV
         const records = Object.values(companyStats).map(c => ({
             name: c.name,
             count: c.count,
@@ -123,7 +159,6 @@ exports.generateCompanyCSV = async (req, res) => {
             deptBreakdown: Object.entries(c.departments).map(([d, n]) => `${d}:${n}`).join('; ')
         }));
 
-        const csvPath = path.join(__dirname, '../temp_companies.csv');
         const csvWriter = createObjectCsvWriter({
             path: csvPath,
             header: [
@@ -139,9 +174,12 @@ exports.generateCompanyCSV = async (req, res) => {
         await csvWriter.writeRecords(records);
 
         res.download(csvPath, 'company_placement_stats.csv', (err) => {
-            if (err) res.status(500).send(err);
+            if (err) {
+                console.error('Error in res.download companies:', err);
+                if (!res.headersSent) res.status(500).send({ error: 'Failed to send file' });
+            }
             try {
-                fs.unlinkSync(csvPath);
+                if (fs.existsSync(csvPath)) fs.unlinkSync(csvPath);
             } catch (cleanupErr) {
                 console.error('Error deleting temp csv:', cleanupErr);
             }
@@ -149,6 +187,40 @@ exports.generateCompanyCSV = async (req, res) => {
 
     } catch (e) {
         console.error('Company CSV Error:', e);
-        res.status(500).send(e.message);
+        if (!res.headersSent) res.status(500).send({ error: e.message });
+        try {
+            if (fs.existsSync(csvPath)) fs.unlinkSync(csvPath);
+        } catch (cleanupErr) { }
+    }
+};
+
+exports.getAIInsights = async (req, res) => {
+    try {
+        const filters = getQueryFilters(req.query);
+        const startTime = Date.now();
+        console.log(`[AI-INSIGHTS] Starting analysis for filters:`, filters);
+
+        const students = await StudentProfile.find(filters).lean();
+        const fetchTime = Date.now();
+        console.log(`[AI-INSIGHTS] Successfully fetched ${students.length} students in ${fetchTime - startTime}ms`);
+
+        const insights = aiService.generateReportInsights(students, req.query);
+        const processingTime = Date.now();
+        console.log(`[AI-INSIGHTS] Analysis completed in ${processingTime - fetchTime}ms`);
+
+        res.json(insights);
+    } catch (e) {
+        console.error('[AI-INSIGHTS] CRITICAL ERROR:', e);
+        res.status(500).send({ error: 'Failed to generate AI insights' });
+    }
+};
+
+exports.getReportCount = async (req, res) => {
+    try {
+        const filters = getQueryFilters(req.query);
+        const count = await StudentProfile.countDocuments(filters);
+        res.json({ count });
+    } catch (e) {
+        res.status(500).send({ error: 'Failed to fetch count' });
     }
 };
