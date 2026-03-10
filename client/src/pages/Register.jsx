@@ -7,7 +7,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import emailjs from "@emailjs/browser";
 import {
     Mail, Lock, ArrowRight, ShieldCheck, ArrowLeft,
@@ -197,7 +197,7 @@ const Register = () => {
         setError('');
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+            const response = await api.post('/auth/register', {
                 email,
                 password,
                 role: 'student'

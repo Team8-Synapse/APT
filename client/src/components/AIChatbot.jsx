@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Send, User, Bot, Sparkles, Zap } from 'lucide-react';
 
 const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSummary = null }) => {
@@ -24,14 +24,14 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             setContext(initialContext);
             setSourceName(initialSourceName);
             if (initialSummary) {
-                setMessages(prev => [...prev, { 
-                    role: 'assistant', 
-                    content: `📄 Summary of "${initialSourceName}":\n\n${initialSummary}\n\nYou can now ask me questions about this material!` 
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `📄 Summary of "${initialSourceName}":\n\n${initialSummary}\n\nYou can now ask me questions about this material!`
                 }]);
             } else {
-                setMessages(prev => [...prev, { 
-                    role: 'assistant', 
-                    content: `I've loaded the contents of "${initialSourceName}". You can ask me questions about it or ask for a summary!` 
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `I've loaded the contents of "${initialSourceName}". You can ask me questions about it or ask for a summary!`
                 }]);
             }
         }
@@ -47,12 +47,10 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
         setLoading(true);
 
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, { 
+            const res = await api.post('/ai/chat', {
                 message: input,
                 context: context,
                 sourceName: sourceName
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
         } catch (err) {
