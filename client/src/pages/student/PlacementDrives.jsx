@@ -11,7 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
     Calendar, Building2, Clock, MapPin, DollarSign, Users, Filter, Search,
     ChevronRight, CheckCircle, XCircle, AlertCircle, Briefcase, GraduationCap,
-    ExternalLink, ChevronDown, List, Grid3X3, TrendingUp, Target, Award, Timer
+    ExternalLink, ChevronDown, List, Grid3X3, TrendingUp, Target, Award, Timer, Brain, Sparkles, RefreshCw
 } from 'lucide-react';
 import CompanyLogo from '../../components/CompanyLogo';
 
@@ -404,13 +404,48 @@ const PlacementDrives = () => {
 // ============= DRIVE CARD COMPONENT =============
 const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
     const [expanded, setExpanded] = useState(false);
+    const [researching, setResearching] = useState(false);
+    const [researchData, setResearchData] = useState(null);
     const deadlineBadge = getDeadlineBadge ? getDeadlineBadge(drive.date) : null;
 
+    const handleResearch = async (e) => {
+        e.stopPropagation();
+        if (researchData) return;
+
+        setResearching(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/company-research`,
+                { companyName: drive.companyName, role: drive.jobProfile },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setResearchData(res.data);
+            setExpanded(true); // make sure details are visible
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setResearching(false);
+        }
+    };
+
     return (
-        <div className={`glass-card overflow-hidden transition-all duration-300 hover:shadow-xl ${expanded ? 'row-span-2' : ''}`}>
+        <div className={`glass-card overflow-hidden transition-all duration-300 hover:shadow-xl relative ${expanded ? 'row-span-2' : ''}`}>
+            {/* AI Research Button Float */}
+            <button
+                onClick={handleResearch}
+                disabled={researching}
+                className="absolute top-4 right-4 z-10 w-9 h-9 bg-gradient-to-br from-amrita-maroon to-amrita-burgundy text-white rounded-xl shadow-lg flex items-center justify-center hover:scale-110 transition-transform group disabled:opacity-70 disabled:hover:scale-100 border border-white/20"
+                title="AI Company Insights"
+            >
+                {researching ? <RefreshCw size={16} className="animate-spin" /> : <Brain size={16} />}
+                <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-transform bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap">
+                    Neural Insights
+                </span>
+            </button>
+
             {/* Deadline Badge - Top ribbon */}
             {deadlineBadge && (
-                <div className="px-4 py-2 flex items-center gap-2" style={{ backgroundColor: deadlineBadge.bg }}>
+                <div className="px-4 py-2 flex items-center gap-2" style={{ backgroundColor: deadlineBadge.bg, paddingRight: '4rem' }}>
                     <Clock size={14} style={{ color: deadlineBadge.color }} />
                     <span className="text-xs font-bold" style={{ color: deadlineBadge.color }}>{deadlineBadge.text}</span>
                 </div>
@@ -421,50 +456,44 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
                 <div className="flex flex-col gap-4 mb-4">
                     <div className="flex items-start gap-3">
                         <CompanyLogo name={drive.companyName} size="md" className="rounded-xl shadow-lg" />
-                        <div className="flex-1 min-w-0">
-                            <h3 className="font-black text-lg truncate" style={{ color: '#1f2937' }} title={drive.companyName}>
+                        <div className="flex-1 min-w-[120px]">
+                            <h3 className="font-black text-lg truncate pr-8" style={{ color: '#1f2937' }} title={drive.companyName}>
                                 {drive.companyName || 'Unknown Company'}
                             </h3>
                             <p className="text-sm font-medium truncate" style={{ color: '#6b7280' }}>{drive.jobProfile || 'Position'}</p>
                         </div>
-                        {drive.ctcDetails?.ctc && (
-                            <div className="text-right flex-shrink-0">
-                                <p className="text-xl font-black" style={{ color: '#16a34a' }}>₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L</p>
-                                <p className="text-[10px] font-bold uppercase" style={{ color: '#9ca3af' }}>CTC</p>
-                            </div>
-                        )}
                     </div>
                     {/* Job Type & Posted Date */}
                     <div className="flex items-center gap-2 flex-wrap">
                         {drive.jobType && (
-                            <span className="px-2 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: drive.jobType === 'Internship' ? '#dbeafe' : '#f3e8ff', color: drive.jobType === 'Internship' ? '#2563eb' : '#7c3aed' }}>
+                            <span className="px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-wider" style={{ backgroundColor: drive.jobType === 'Internship' ? '#dbeafe' : '#f3e8ff', color: drive.jobType === 'Internship' ? '#2563eb' : '#7c3aed' }}>
                                 {drive.jobType}
                             </span>
                         )}
-                        {drive.createdAt && (
-                            <span className="text-xs" style={{ color: '#9ca3af' }}>
-                                Posted: {new Date(drive.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                        {drive.ctcDetails?.ctc && (
+                            <span className="px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-50 text-green-700 border border-green-100">
+                                ₹{(drive.ctcDetails.ctc / 100000).toFixed(1)}L CTC
                             </span>
                         )}
                     </div>
                 </div>
 
                 {/* Quick Info */}
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="grid grid-cols-2 gap-3 text-xs font-medium">
                     <div className="flex items-center gap-2">
-                        <Calendar size={14} style={{ color: '#6b7280' }} />
+                        <Calendar size={14} className="text-amrita-maroon" />
                         <span style={{ color: '#4b5563' }}>{new Date(drive.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <MapPin size={14} style={{ color: '#6b7280' }} />
-                        <span style={{ color: '#4b5563' }}>{drive.workLocation || 'TBD'}</span>
+                        <MapPin size={14} className="text-amrita-maroon" />
+                        <span className="truncate" style={{ color: '#4b5563' }}>{drive.workLocation || 'TBD'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Users size={14} style={{ color: '#6b7280' }} />
-                        <span style={{ color: '#4b5563' }}>{drive.totalPositions || 'N/A'} positions</span>
+                        <Users size={14} className="text-amrita-maroon" />
+                        <span style={{ color: '#4b5563' }}>{drive.totalPositions ? `${drive.totalPositions} positions` : 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <GraduationCap size={14} style={{ color: '#6b7280' }} />
+                        <GraduationCap size={14} className="text-amrita-maroon" />
                         <span style={{ color: '#4b5563' }}>Min {drive.eligibility?.minCgpa || 0} CGPA</span>
                     </div>
                 </div>
@@ -487,44 +516,83 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
                         )}
                     </div>
                     {!drive.isEligible && drive.eligibilityReasons && (
-                        <span className="text-xs text-red-500">{drive.eligibilityReasons[0]}</span>
+                        <span className="text-[10px] uppercase font-black tracking-widest text-red-500">{drive.eligibilityReasons[0]}</span>
                     )}
                 </div>
             </div>
 
+            {/* AI Research Data Section (if exists) */}
+            {researchData && expanded && (
+                <div className="px-6 py-5 bg-gradient-to-br from-gray-900 to-black text-white relative overflow-hidden">
+                    <div className="absolute top-0 right-0 opacity-10 pointer-events-none p-4">
+                        <Brain size={80} />
+                    </div>
+                    <h4 className="text-[10px] font-black uppercase text-amrita-gold tracking-widest mb-4 flex items-center gap-2 relative z-10">
+                        <Sparkles size={14} /> AI Company Intel
+                    </h4>
+
+                    <div className="space-y-4 text-xs font-medium opacity-90 relative z-10">
+                        <div>
+                            <span className="text-amrita-maroon font-black mr-2">› Culture:</span>
+                            {researchData.culture}
+                        </div>
+                        <div>
+                            <span className="text-amrita-maroon font-black mb-1 block">› Expected Process:</span>
+                            <ul className="pl-4 border-l-2 border-amrita-maroon/30 space-y-1">
+                                {(researchData.interviewProcess || []).map((p, i) => <li key={i}>{p}</li>)}
+                            </ul>
+                        </div>
+                        <div>
+                            <span className="text-amrita-maroon font-black mb-1 block">› Common Topics:</span>
+                            <div className="flex flex-wrap gap-1">
+                                {(researchData.commonTopics || []).map((t, i) => (
+                                    <span key={i} className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{t}</span>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-amrita-maroon/20 p-3 rounded-xl border border-amrita-maroon/30">
+                            <span className="text-amrita-gold font-black mb-1 block text-[10px] uppercase">Pro Tips</span>
+                            <ul className="space-y-1">
+                                {(researchData.tips || []).map((t, i) => <li key={i} className="flex gap-2"><span className="text-amrita-gold">▸</span> {t}</li>)}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Expand Toggle */}
             <button
                 onClick={() => setExpanded(!expanded)}
-                className="w-full px-6 py-3 flex items-center justify-center gap-2 text-sm font-bold text-gray-500 hover:text-amrita-maroon hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                className="w-full px-6 py-3 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-gray-500 hover:text-amrita-maroon hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border-t border-gray-100 dark:border-gray-700"
             >
-                {expanded ? 'Show Less' : 'View Details'}
+                {expanded ? 'Hide Details' : 'View Details'}
                 <ChevronDown size={16} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Expanded Details */}
-            {expanded && (
-                <div className="px-6 pb-6 space-y-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+            {expanded && !researchData && (
+                <div className="px-6 pb-6 space-y-5 pt-2">
                     {drive.eligibility?.allowedDepartments && (
                         <div>
-                            <p className="text-xs font-black uppercase mb-2" style={{ color: '#6b7280' }}>Eligible Departments</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#6b7280' }}>Departments</p>
                             <div className="flex flex-wrap gap-2">
                                 {drive.eligibility.allowedDepartments.map((dept, i) => (
-                                    <span key={i} className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#e5e7eb', color: '#374151' }}>{dept}</span>
+                                    <span key={i} className="px-2 py-1 rounded-md text-[10px] font-bold bg-gray-100 text-gray-600 border border-gray-200">{dept}</span>
                                 ))}
                             </div>
                         </div>
                     )}
                     {drive.selectionProcess && drive.selectionProcess.length > 0 && (
                         <div>
-                            <p className="text-xs font-black uppercase mb-2" style={{ color: '#6b7280' }}>Selection Process</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#6b7280' }}>Selection Rounds</p>
                             <div className="flex items-center gap-2 flex-wrap">
                                 {drive.selectionProcess.map((round, i) => (
                                     <React.Fragment key={i}>
-                                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: '#fce4ec', color: '#B1124A' }}>
+                                        <span className="px-2 py-1 rounded-md text-[10px] font-bold bg-amrita-maroon/10 text-amrita-maroon">
                                             {round.roundName || round}
                                         </span>
                                         {i < drive.selectionProcess.length - 1 && (
-                                            <ChevronRight size={14} style={{ color: '#9ca3af' }} />
+                                            <ChevronRight size={12} className="text-gray-300" />
                                         )}
                                     </React.Fragment>
                                 ))}
@@ -535,24 +603,24 @@ const DriveCard = ({ drive, onApply, getDeadlineBadge }) => {
             )}
 
             {/* Action Button */}
-            <div className="px-6 pb-6">
+            <div className={`px-6 pb-6 ${expanded ? 'pt-2' : 'pt-4 border-t border-gray-100 dark:border-gray-700'}`}>
                 {drive.hasApplied ? (
-                    <div className="w-full py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center font-black flex items-center justify-center gap-2">
-                        <CheckCircle size={18} /> Applied Successfully
+                    <div className="w-full py-4 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-xl text-center text-xs tracking-widest uppercase font-black flex items-center justify-center gap-2 border border-green-200">
+                        <CheckCircle size={16} /> Applied
                     </div>
                 ) : deadlineBadge?.text === 'Expired' ? (
-                    <div className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-xl text-center font-black flex items-center justify-center gap-2 cursor-not-allowed border-2 border-dashed border-gray-300">
-                        <Clock size={18} /> Application Closed
+                    <div className="w-full py-4 bg-gray-50 dark:bg-gray-800 text-gray-400 rounded-xl text-center text-xs tracking-widest uppercase font-black flex items-center justify-center gap-2 border border-gray-200">
+                        <Clock size={16} /> Closed
                     </div>
                 ) : drive.isEligible ? (
                     <button
                         onClick={() => onApply(drive._id)}
-                        className="w-full py-3 bg-gradient-to-r from-amrita-maroon to-amrita-burgundy text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg"
+                        className="w-full py-4 bg-gray-900 text-white rounded-xl text-xs tracking-widest uppercase font-black flex items-center justify-center gap-2 hover:bg-black transition-colors shadow-xl shadow-gray-900/20"
                     >
-                        <Briefcase size={18} /> Apply Now
+                        <Briefcase size={16} /> Apply Now
                     </button>
                 ) : (
-                    <div className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-xl text-center font-bold">
+                    <div className="w-full py-4 bg-gray-50 dark:bg-gray-800 text-gray-400 rounded-xl text-center text-xs tracking-widest uppercase font-black border border-gray-200">
                         Not Eligible
                     </div>
                 )}
