@@ -10,6 +10,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
     const [loading, setLoading] = useState(false);
     const [context, setContext] = useState(initialContext);
     const [sourceName, setSourceName] = useState(initialSourceName);
+    const [isMaximized, setIsMaximized] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -36,6 +37,16 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             }
         }
     }, [initialContext, initialSourceName, initialSummary]);
+
+    // Lock body scroll when maximized
+    useEffect(() => {
+        if (isMaximized) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMaximized]);
 
     const handleSend = async (e) => {
         if (e) e.preventDefault();
@@ -67,10 +78,25 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
         setMessages(prev => [...prev, { role: 'assistant', content: "Context cleared. I'm now back to general mode." }]);
     }
 
-    return (
-        <div className="flex flex-col h-full bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold">
+    const chatContent = (
+        <div className={`flex flex-col bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold ${isMaximized ? 'h-full' : 'h-full'}`}>
+            {/* Header bar with title and maximize/minimize toggle */}
+            <div className="px-4 py-2.5 bg-amrita-maroon/10 border-b border-white/40 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <Sparkles size={12} className="text-amrita-maroon" />
+                    <span className="text-[10px] text-amrita-maroon uppercase tracking-wider font-black">AI Assistant</span>
+                </div>
+                <button
+                    onClick={() => setIsMaximized(prev => !prev)}
+                    className="p-1.5 hover:bg-amrita-maroon/10 rounded-lg transition-all text-amrita-maroon"
+                    title={isMaximized ? 'Restore' : 'Maximize'}
+                >
+                    {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                </button>
+            </div>
+
             {sourceName && (
-                <div className="px-4 py-2 bg-amrita-maroon/10 border-b border-white/40 flex justify-between items-center">
+                <div className="px-4 py-2 bg-amrita-gold/10 border-b border-white/40 flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         <Zap size={10} className="text-amrita-maroon" />
                         <span className="text-[10px] text-amrita-maroon uppercase tracking-wider line-clamp-1">Focusing on: {sourceName}</span>
@@ -81,7 +107,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {messages.map((m, i) => (
                     <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-                        <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed shadow-sm ${m.role === 'user'
+                        <div className={`${isMaximized ? 'max-w-[60%]' : 'max-w-[85%]'} p-4 rounded-2xl text-xs leading-relaxed shadow-sm ${m.role === 'user'
                             ? 'bg-amrita-maroon text-white rounded-tr-none'
                             : 'bg-white/80 text-gray-800 rounded-tl-none border border-white'
                             }`}>
@@ -128,6 +154,23 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
             </form>
         </div>
     );
+
+    // When maximized, render as a fixed full-screen overlay
+    if (isMaximized) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 lg:p-8" style={{ animation: 'fadeIn 0.2s ease-out' }}>
+                <div className="w-full h-full max-w-4xl max-h-full flex flex-col" style={{ animation: 'scaleIn 0.2s ease-out' }}>
+                    {chatContent}
+                </div>
+                <style>{`
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+                `}</style>
+            </div>
+        );
+    }
+
+    return chatContent;
 };
 
 export default AIChatbot;
