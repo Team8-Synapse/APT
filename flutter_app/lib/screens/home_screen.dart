@@ -12,6 +12,8 @@ import 'announcements_screen.dart';
 import 'applications_screen.dart';
 import 'experiences_screen.dart';
 import 'alumni_insights_screen.dart';
+import 'notifications_screen.dart';
+import 'prep_hub_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadProfile() async {
     try {
-      final data = await _api.getStudentProfile();
+      final userId = context.read<AuthService>().user?.id ?? '';
+      if (userId.isEmpty) { setState(() => _profileLoading = false); return; }
+      final data = await _api.getStudentProfile(userId);
       setState(() {
         _profile = StudentProfileModel.fromJson(data);
         _profileLoading = false;
@@ -55,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const ChatbotScreen(),
       const CalendarScreen(),
       const _MoreTab(),
-      ProfileScreen(profile: _profile),
+      const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -117,12 +121,18 @@ class _DashboardTab extends StatefulWidget {
 class _DashboardTabState extends State<_DashboardTab> {
   List<dynamic> _announcements = [];
   bool _announcementsLoading = true;
+  List<dynamic> _ticker = [];
+  List<dynamic> _notifications = [];
+  int _unreadCount = 0;
   final _api = ApiService();
+  int _tickerIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _loadAnnouncements();
+    _loadTicker();
+    _loadNotifications();
   }
 
   Future<void> _loadAnnouncements() async {
@@ -135,6 +145,23 @@ class _DashboardTabState extends State<_DashboardTab> {
     } catch (_) {
       setState(() => _announcementsLoading = false);
     }
+  }
+
+  Future<void> _loadTicker() async {
+    try {
+      final data = await _api.getTicker();
+      setState(() => _ticker = data);
+    } catch (_) {}
+  }
+
+  Future<void> _loadNotifications() async {
+    try {
+      final data = await _api.getAppNotifications();
+      setState(() {
+        _notifications = data;
+        _unreadCount = data.where((n) => n['isRead'] == false).length;
+      });
+    } catch (_) {}
   }
 
   @override
@@ -175,6 +202,27 @@ class _DashboardTabState extends State<_DashboardTab> {
               ),
             ),
             actions: [
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                    ).then((_) => _loadNotifications()),
+                  ),
+                  if (_unreadCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
+                        child: Text('$_unreadCount', style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700)),
+                      ),
+                    ),
+                ],
+              ),
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: Colors.white),
                 onPressed: () async {
@@ -201,6 +249,12 @@ class _DashboardTabState extends State<_DashboardTab> {
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
+                // Ticker
+                if (_ticker.isNotEmpty) ...[
+                  _TickerBanner(messages: _ticker),
+                  const SizedBox(height: 12),
+                ],
+
                 // Stats cards
                 if (!widget.profileLoading && widget.profile != null) ...[
                   _StatsRow(profile: widget.profile!),
@@ -371,8 +425,22 @@ class _MoreTab extends StatelessWidget {
         icon: Icons.people_rounded,
         color: AppColors.gold,
         title: 'Alumni Insights',
-        subtitle: 'Strategy reports from alumni',
+        subtitle: 'Directory & strategy reports',
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AlumniInsightsScreen())),
+      ),
+      _MoreItem(
+        icon: Icons.menu_book_rounded,
+        color: Colors.teal,
+        title: 'PrepHub',
+        subtitle: 'Resources, notes & AI prep',
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrepHubScreen())),
+      ),
+      _MoreItem(
+        icon: Icons.notifications_rounded,
+        color: Colors.deepPurple,
+        title: 'Notifications',
+        subtitle: 'Stay updated on new activity',
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen())),
       ),
     ];
 
@@ -497,8 +565,7 @@ class _AnnouncementCard extends StatelessWidget {
 }
 
 class _EmptyCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
+  final IconData icon;  final String label;
   const _EmptyCard({required this.icon, required this.label});
 
   @override
@@ -519,3 +586,70 @@ class _EmptyCard extends StatelessWidget {
     );
   }
 }
+
+// ─── Ticker Banner ────────────────────────────────────────────────────────────
+class _TickerBanner extends StatefulWidget {
+  final List<dynamic> messages;
+  const _TickerBanner({required this.messages});
+
+  @override
+  State<_TickerBanner> createState() => _TickerBannerState();
+}
+
+class _TickerBannerState extends State<_TickerBanner> {
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startCycle();
+  }
+
+  void _startCycle() {
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 4));
+      if (!mounted || widget.messages.isEmpty) return false;
+      setState(() => _index = (_index + 1) % widget.messages.length);
+      return true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.messages.isEmpty) return const SizedBox.shrink();
+    final msg = widget.messages[_index];
+    final text = (msg is String) ? msg : (msg['message'] ?? msg['content'] ?? '').toString();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.maroon.withOpacity(0.85), AppColors.gold.withOpacity(0.85)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.campaign_rounded, color: Colors.white, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (widget.messages.length > 1) ...[
+            const SizedBox(width: 8),
+            Text('${_index + 1}/${widget.messages.length}',
+                style: const TextStyle(color: Colors.white70, fontSize: 10)),
+          ],
+        ],
+      ),
+    );
+  }
+}
+

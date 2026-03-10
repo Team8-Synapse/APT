@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/colors.dart';
 import '../services/auth_service.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -210,6 +211,27 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   color: Colors.grey.shade500,
                                   fontSize: 12,
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Register link
+                            Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text('New user? ', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                                  GestureDetector(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                                    ),
+                                    child: const Text(
+                                      'Create Account',
+                                      style: TextStyle(color: AppColors.maroon, fontSize: 13, fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

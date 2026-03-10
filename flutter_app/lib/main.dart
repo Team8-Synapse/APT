@@ -6,6 +6,7 @@ import 'constants/colors.dart';
 import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/admin/admin_dashboard_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -102,7 +103,12 @@ class AuthGate extends StatelessWidget {
             ),
           );
         }
-        return auth.isLoggedIn ? const HomeScreen() : const LoginScreen();
+        if (auth.isLoggedIn) {
+          return auth.user?.role == 'admin'
+              ? const AdminDashboardScreen()
+              : const HomeScreen();
+        }
+        return const LoginScreen();
       },
     );
   }

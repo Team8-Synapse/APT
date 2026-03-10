@@ -9,48 +9,83 @@ class AlumniInsightsScreen extends StatefulWidget {
   State<AlumniInsightsScreen> createState() => _AlumniInsightsScreenState();
 }
 
-class _AlumniInsightsScreenState extends State<AlumniInsightsScreen> {
+class _AlumniInsightsScreenState extends State<AlumniInsightsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   final _api = ApiService();
-  List<dynamic> _insights = [];
-  List<dynamic> _filtered = [];
-  bool _isLoading = true;
-  String _searchQuery = '';
-  String _selectedDifficulty = 'All';
+  final _searchCtrl = TextEditingController();
 
+  // Insights tab state
+  List<dynamic> _insights = [];
+  List<dynamic> _filteredInsights = [];
+  bool _insightsLoading = true;
+  String _selectedDifficulty = 'All';
   final _difficulties = ['All', 'Easy', 'Medium', 'Hard', 'Very Hard'];
+
+  // Directory tab state
+  List<dynamic> _directory = [];
+  bool _directoryLoading = true;
+  String _directorySearch = '';
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) setState(() {});
+    });
+    _loadInsights();
+    _loadDirectory();
   }
 
-  Future<void> _load() async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  // ── Insights ──────────────────────────────────────────────────────────────
+
+  Future<void> _loadInsights() async {
+    setState(() => _insightsLoading = true);
     try {
       final data = await _api.getAlumniInsights();
       setState(() {
         _insights = data;
-        _applyFilters();
-        _isLoading = false;
+        _applyInsightFilters();
+        _insightsLoading = false;
       });
     } catch (_) {
-      setState(() => _isLoading = false);
+      setState(() => _insightsLoading = false);
     }
   }
 
-  void _applyFilters() {
+  void _applyInsightFilters() {
+    final q = _searchCtrl.text.toLowerCase();
     setState(() {
-      _filtered = _insights.where((ins) {
-        final matchSearch = _searchQuery.isEmpty ||
-            (ins['company'] ?? '').toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            (ins['alumniName'] ?? '').toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            (ins['currentRole'] ?? '').toLowerCase().contains(_searchQuery.toLowerCase());
+      _filteredInsights = _insights.where((ins) {
+        final matchSearch = q.isEmpty ||
+            (ins['company'] ?? '').toLowerCase().contains(q) ||
+            (ins['alumniName'] ?? '').toLowerCase().contains(q) ||
+            (ins['currentRole'] ?? '').toLowerCase().contains(q);
         final matchDiff = _selectedDifficulty == 'All' ||
             (ins['difficultyLevel'] ?? '') == _selectedDifficulty;
         return matchSearch && matchDiff;
       }).toList();
     });
+  }
+
+  // ── Directory ─────────────────────────────────────────────────────────────
+
+  Future<void> _loadDirectory({String company = ''}) async {
+    setState(() => _directoryLoading = true);
+    try {
+      final data = await _api.getAlumniDirectory(company: company.isEmpty ? null : company);
+      setState(() { _directory = data; _directoryLoading = false; });
+    } catch (_) {
+      setState(() => _directoryLoading = false);
+    }
   }
 
   Color _difficultyColor(String? d) {
@@ -68,91 +103,265 @@ class _AlumniInsightsScreenState extends State<AlumniInsightsScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Alumni Insights', style: TextStyle(fontWeight: FontWeight.w700)),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(110),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: TextField(
-                  onChanged: (v) {
-                    _searchQuery = v;
-                    _applyFilters();
-                  },
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Search company, alumni or role...',
-                    hintStyle: const TextStyle(color: Colors.white60),
-                    prefixIcon: const Icon(Icons.search_rounded, color: Colors.white60),
-                    filled: true,
-                    fillColor: Colors.white.withOpacity(0.15),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 40,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: _difficulties.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (_, i) {
-                    final d = _difficulties[i];
-                    final sel = _selectedDifficulty == d;
-                    return ChoiceChip(
-                      label: Text(d),
-                      selected: sel,
-                      onSelected: (_) {
-                        _selectedDifficulty = d;
-                        _applyFilters();
-                      },
-                      selectedColor: AppColors.gold,
-                      labelStyle: TextStyle(
-                        color: sel ? AppColors.maroon : Colors.white70,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                      backgroundColor: Colors.white.withOpacity(0.15),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
+        title: const Text('Alumni', style: TextStyle(fontWeight: FontWeight.w700)),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: AppColors.gold,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: AppColors.gold,
+          tabs: const [
+            Tab(icon: Icon(Icons.people_alt_rounded), text: 'Directory'),
+            Tab(icon: Icon(Icons.insights_rounded), text: 'Insights'),
+          ],
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _filtered.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.people_outline_rounded, size: 64, color: AppColors.textSecondary.withOpacity(0.4)),
-                      const SizedBox(height: 16),
-                      const Text('No insights found', style: TextStyle(color: AppColors.textSecondary, fontSize: 15)),
-                    ],
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _load,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filtered.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (_, i) => _InsightCard(
-                      insight: _filtered[i],
-                      difficultyColor: _difficultyColor(_filtered[i]['difficultyLevel']),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildDirectoryTab(),
+          _buildInsightsTab(),
+        ],
+      ),
+    );
+  }
+
+  // ── Directory Tab ─────────────────────────────────────────────────────────
+
+  Widget _buildDirectoryTab() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(14),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Find mentors by company (e.g. Google)...',
+              prefixIcon: const Icon(Icons.search_rounded),
+              suffixIcon: _directorySearch.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() => _directorySearch = '');
+                        _loadDirectory();
+                      })
+                  : null,
+            ),
+            onChanged: (v) {
+              _directorySearch = v;
+              Future.delayed(const Duration(milliseconds: 500), () {
+                if (_directorySearch == v) _loadDirectory(company: v);
+              });
+            },
+          ),
+        ),
+        Expanded(
+          child: _directoryLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _directory.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.people_outline_rounded, size: 56, color: Colors.grey.shade300),
+                          const SizedBox(height: 12),
+                          Text(
+                            _directorySearch.isEmpty
+                                ? 'No alumni in the directory yet.'
+                                : 'No alumni found for "$_directorySearch".',
+                            style: TextStyle(color: Colors.grey.shade500),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () => _loadDirectory(company: _directorySearch),
+                      child: ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(14, 0, 14, 16),
+                        itemCount: _directory.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (_, i) => _DirectoryCard(person: _directory[i]),
+                      ),
                     ),
+        ),
+      ],
+    );
+  }
+
+  // ── Insights Tab ─────────────────────────────────────────────────────────
+
+  Widget _buildInsightsTab() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+          child: TextField(
+            controller: _searchCtrl,
+            onChanged: (_) => _applyInsightFilters(),
+            decoration: const InputDecoration(
+              hintText: 'Search company, alumni or role...',
+              prefixIcon: Icon(Icons.search_rounded),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 48,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            itemCount: _difficulties.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (_, i) {
+              final d = _difficulties[i];
+              final sel = _selectedDifficulty == d;
+              return GestureDetector(
+                onTap: () {
+                  setState(() => _selectedDifficulty = d);
+                  _applyInsightFilters();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: sel ? AppColors.maroon : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: sel ? AppColors.maroon : Colors.grey.shade200),
                   ),
+                  child: Text(d, style: TextStyle(
+                    color: sel ? Colors.white : AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  )),
                 ),
+              );
+            },
+          ),
+        ),
+        Expanded(
+          child: _insightsLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _filteredInsights.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.insights_outlined, size: 56, color: Colors.grey.shade300),
+                          const SizedBox(height: 12),
+                          Text('No insights found', style: TextStyle(color: Colors.grey.shade500)),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadInsights,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(14),
+                        itemCount: _filteredInsights.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (_, i) => _InsightCard(
+                          insight: _filteredInsights[i],
+                          difficultyColor: _difficultyColor(_filteredInsights[i]['difficultyLevel']),
+                        ),
+                      ),
+                    ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Directory Card ───────────────────────────────────────────────────────────
+class _DirectoryCard extends StatelessWidget {
+  final dynamic person;
+  const _DirectoryCard({required this.person});
+
+  @override
+  Widget build(BuildContext context) {
+    final name = person['name'] ?? person['studentName'] ?? 'Alumni';
+    final company = person['company'] ?? person['offeredCompany'] ?? '';
+    final role = person['role'] ?? person['offeredRole'] ?? '';
+    final batch = person['batch'] ?? person['graduationYear'] ?? '';
+    final dept = person['department'] ?? '';
+    final avatar = (name as String).isNotEmpty ? name[0].toUpperCase() : 'A';
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 6)],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: AppColors.maroon.withOpacity(0.1),
+            child: Text(avatar, style: const TextStyle(color: AppColors.maroon, fontWeight: FontWeight.w700, fontSize: 18)),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: AppColors.textPrimary)),
+                if (company.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Row(children: [
+                    const Icon(Icons.business_rounded, size: 13, color: AppColors.maroon),
+                    const SizedBox(width: 4),
+                    Text(company, style: const TextStyle(fontSize: 12, color: AppColors.maroon, fontWeight: FontWeight.w600)),
+                  ]),
+                ],
+                if (role.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(role, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                ],
+                if (batch.isNotEmpty || dept.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text('${dept.isNotEmpty ? dept : ''}${dept.isNotEmpty && batch.isNotEmpty ? ' • ' : ''}${batch.isNotEmpty ? batch : ''}',
+                      style: TextStyle(fontSize: 11, color: Colors.grey.shade400)),
+                ],
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.message_rounded, color: AppColors.info),
+            onPressed: () => _showMessageDialog(context, name, company, role),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMessageDialog(BuildContext context, String name, String company, String role) {
+    final firstName = name.split(' ')[0];
+    final msg = 'Hi $firstName, I am a junior at Amrita. I saw you are working as $role at $company. I would love to connect and learn from your experience.\n\nThanks!';
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Message Template', style: TextStyle(fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(msg, style: const TextStyle(fontSize: 13, color: AppColors.textPrimary)),
+            const SizedBox(height: 12),
+            const Text('Copy this message to reach out on LinkedIn or email.',
+                style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Show snack after copy (clipboard API not always available)
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Message template ready to use!'), behavior: SnackBarBehavior.floating),
+              );
+            },
+            icon: const Icon(Icons.copy_rounded, size: 16),
+            label: const Text('Copy'),
+          ),
+        ],
+      ),
     );
   }
 }

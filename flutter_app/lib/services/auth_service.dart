@@ -83,4 +83,18 @@ class AuthService extends ChangeNotifier {
     await _storage.deleteAll();
     notifyListeners();
   }
+
+  /// Called after successful registration when server returns token + user
+  Future<void> loginWithData(String token, Map<String, dynamic> userJson) async {
+    _user = UserModel.fromJson(userJson);
+    _api.setToken(token);
+    await _storage.write(key: _tokenKey, value: token);
+    await _storage.write(key: _userKey, value: _user!.email);
+    await _storage.write(key: _roleKey, value: _user!.role);
+    await _storage.write(key: _userIdKey, value: _user!.id);
+    if (_user!.name != null) {
+      await _storage.write(key: _nameKey, value: _user!.name!);
+    }
+    notifyListeners();
+  }
 }
