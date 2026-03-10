@@ -6,7 +6,7 @@
  * - responsive layout with glassmorphism UI design.
  */
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import {
     Target, TrendingUp, AlertCircle, Calendar, ChevronRight, Brain, Sparkles, Zap, Award,
@@ -483,17 +483,16 @@ const StudentDashboard = () => {
 
         const fetchData = async () => {
             try {
-                const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
                 const [dashboardRes, drivesRes, applicationsRes, announcementsRes, profileRes, notifRes, eventsRes, resourcesRes, tickerRes] = await Promise.all([
-                    axios.get(`${apiBase}/student/dashboard-stats/${userId}`),
-                    axios.get(`${apiBase}/student/eligible-drives/${userId}`),
-                    axios.get(`${apiBase}/applications/my-applications/${userId}`),
-                    axios.get(`${apiBase}/announcements`),
-                    axios.get(`${apiBase}/student/profile/${userId}`),
-                    axios.get(`${apiBase}/notifications`),
-                    axios.get(`${apiBase}/schedule`),
-                    axios.get(`${apiBase}/resources`),
-                    axios.get(`${apiBase}/ticker`)
+                    api.get(`/student/dashboard-stats/${userId}`),
+                    api.get(`/student/eligible-drives/${userId}`),
+                    api.get(`/applications/my-applications/${userId}`),
+                    api.get('/announcements'),
+                    api.get(`/student/profile/${userId}`),
+                    api.get('/notifications'),
+                    api.get('/schedule'),
+                    api.get('/resources'),
+                    api.get('/ticker')
                 ]);
 
                 setStats(dashboardRes.data);

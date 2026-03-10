@@ -7,7 +7,7 @@
  * - Includes advanced filtering and search capabilities.
  */
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import {
     Megaphone, Send, Edit3, Trash2, Plus, Search, Filter, Calendar,
     Users, Eye, Clock, Star, Sparkles, TrendingUp, Bell, AlertCircle,
@@ -105,10 +105,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
 
     const fetchAnnouncements = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${API_URL}/announcements`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/announcements');
             setAnnouncements(res.data);
             setLoading(false);
         } catch (err) {
@@ -121,9 +118,6 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-
             const submissionData = { ...formData };
             if (!submissionData.scheduledDate) delete submissionData.scheduledDate;
             if (!submissionData.expiryDate) delete submissionData.expiryDate;
@@ -131,11 +125,11 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
             let res;
             if (editingAnnouncement) {
                 // Update existing
-                res = await axios.put(`${API_URL}/announcements/${editingAnnouncement._id}`, submissionData, { headers });
+                res = await api.put(`/announcements/${editingAnnouncement._id}`, submissionData);
                 setAnnouncements(prev => prev.map(a => a._id === editingAnnouncement._id ? res.data : a));
             } else {
                 // Create new
-                res = await axios.post(`${API_URL}/announcements`, submissionData, { headers });
+                res = await api.post('/announcements', submissionData);
                 setAnnouncements(prev => [res.data, ...prev]);
 
                 // Success Wow Factor
@@ -167,9 +161,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
     const handleBulkDelete = async () => {
         if (!window.confirm(`Delete ${selectedAnnouncements.length} announcements?`)) return;
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-            await Promise.all(selectedAnnouncements.map(id => axios.delete(`${API_URL}/announcements/${id}`, { headers })));
+            await Promise.all(selectedAnnouncements.map(id => api.delete(`/announcements/${id}`)));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
             alert('Bulk deletion successful');
@@ -181,10 +173,8 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
     // Bulk Action: Pin/Unpin Selected
     const handleBulkPin = async (status) => {
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
             await Promise.all(selectedAnnouncements.map(id =>
-                axios.put(`${API_URL}/announcements/${id}`, { isPinned: status }, { headers })
+                api.put(`/announcements/${id}`, { isPinned: status })
             ));
             setSelectedAnnouncements([]);
             fetchAnnouncements();
@@ -196,9 +186,7 @@ const AdminAnnouncements = ({ isSubModule = false }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this announcement?')) {
             try {
-                const token = localStorage.getItem('token');
-                const headers = { Authorization: `Bearer ${token}` };
-                await axios.delete(`${API_URL}/announcements/${id}`, { headers });
+                await api.delete(`/announcements/${id}`);
                 fetchAnnouncements();
             } catch (err) {
                 console.error('Error deleting announcement:', err);
