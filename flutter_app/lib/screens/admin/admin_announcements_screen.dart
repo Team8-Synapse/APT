@@ -33,6 +33,7 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
     final contentCtrl = TextEditingController(text: existing?['content'] ?? '');
     String priority = existing?['priority'] ?? 'normal';
     String category = existing?['category'] ?? 'general';
+    bool displayInTicker = existing?['displayInTicker'] ?? false;
     bool saving = false;
 
     final priorities = ['normal', 'high', 'urgent', 'low'];
@@ -72,7 +73,7 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
                 const SizedBox(height: 12),
                 // Priority dropdown
                 DropdownButtonFormField<String>(
-                  value: priority,
+                  initialValue: priority,
                   items: priorities.map((p) => DropdownMenuItem(value: p, child: Text(p.toUpperCase()))).toList(),
                   onChanged: (v) => setModalState(() => priority = v!),
                   decoration: const InputDecoration(labelText: 'Priority'),
@@ -80,10 +81,20 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
                 const SizedBox(height: 12),
                 // Category dropdown
                 DropdownButtonFormField<String>(
-                  value: category,
+                  initialValue: category,
                   items: categories.map((c) => DropdownMenuItem(value: c, child: Text(c.toUpperCase()))).toList(),
                   onChanged: (v) => setModalState(() => category = v!),
                   decoration: const InputDecoration(labelText: 'Category'),
+                ),
+                const SizedBox(height: 12),
+                // Display in ticker toggle
+                SwitchListTile.adaptive(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Display in Ticker', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                  subtitle: const Text('Show as scrolling ticker on home screen', style: TextStyle(fontSize: 12)),
+                  value: displayInTicker,
+                  activeColor: AppColors.maroon,
+                  onChanged: (v) => setModalState(() => displayInTicker = v),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -98,6 +109,7 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
                                 'content': contentCtrl.text.trim(),
                                 'priority': priority,
                                 'category': category,
+                                'displayInTicker': displayInTicker,
                               };
                               if (existing == null) {
                                 final created = await _api.createAnnouncement(payload);
@@ -235,6 +247,20 @@ class _AdminAnnouncementsScreenState extends State<AdminAnnouncementsScreen> {
                                     style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
                                   ),
                                 ),
+                                if (a['displayInTicker'] == true) ...[
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.gold.withOpacity(0.15),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: const Text(
+                                      'TICKER',
+                                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.gold),
+                                    ),
+                                  ),
+                                ],
                                 const Spacer(),
                                 IconButton(
                                   icon: const Icon(Icons.edit_outlined, size: 17),

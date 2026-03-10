@@ -275,13 +275,13 @@ class _ExperienceCard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.thumb_up_outlined, size: 15, color: AppColors.textSecondary),
+                  const Icon(Icons.thumb_up_outlined, size: 15, color: AppColors.textSecondary),
                   const SizedBox(width: 4),
                   Text('${likes.length}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                   const Spacer(),
-                  Text(
+                  const Text(
                     'Tap to read more',
-                    style: const TextStyle(fontSize: 12, color: AppColors.info),
+                    style: TextStyle(fontSize: 12, color: AppColors.info),
                   ),
                   const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.info),
                 ],

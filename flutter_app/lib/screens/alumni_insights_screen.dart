@@ -496,7 +496,7 @@ class _InsightCard extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Icon(Icons.format_list_bulleted_rounded, size: 13, color: AppColors.textSecondary),
+                  const Icon(Icons.format_list_bulleted_rounded, size: 13, color: AppColors.textSecondary),
                   const SizedBox(width: 4),
                   Text('${rounds.length} round${rounds.length == 1 ? '' : 's'}',
                       style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),

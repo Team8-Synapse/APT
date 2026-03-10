@@ -14,6 +14,8 @@ import 'experiences_screen.dart';
 import 'alumni_insights_screen.dart';
 import 'notifications_screen.dart';
 import 'prep_hub_screen.dart';
+import 'ai_mock_interview_screen.dart';
+import 'ai_resume_analyzer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -125,7 +127,7 @@ class _DashboardTabState extends State<_DashboardTab> {
   List<dynamic> _notifications = [];
   int _unreadCount = 0;
   final _api = ApiService();
-  int _tickerIndex = 0;
+  final int _tickerIndex = 0;
 
   @override
   void initState() {
@@ -286,7 +288,7 @@ class _DashboardTabState extends State<_DashboardTab> {
                 if (_announcementsLoading)
                   const Center(child: CircularProgressIndicator())
                 else if (_announcements.isEmpty)
-                  _EmptyCard(icon: Icons.campaign_outlined, label: 'No announcements yet')
+                  const _EmptyCard(icon: Icons.campaign_outlined, label: 'No announcements yet')
                 else
                   ..._announcements.map((a) => _AnnouncementCard(announcement: a)),
               ]),
@@ -434,6 +436,20 @@ class _MoreTab extends StatelessWidget {
         title: 'PrepHub',
         subtitle: 'Resources, notes & AI prep',
         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrepHubScreen())),
+      ),
+      _MoreItem(
+        icon: Icons.psychology_rounded,
+        color: Colors.indigo,
+        title: 'AI Mock Interview',
+        subtitle: 'Practice interviews with AI',
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AiMockInterviewScreen())),
+      ),
+      _MoreItem(
+        icon: Icons.description_rounded,
+        color: Colors.deepOrange,
+        title: 'AI Resume Analyzer',
+        subtitle: 'Get AI feedback on your resume',
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AiResumeAnalyzerScreen())),
       ),
       _MoreItem(
         icon: Icons.notifications_rounded,

@@ -23,7 +23,7 @@ class _PrepHubScreenState extends State<PrepHubScreen> with SingleTickerProvider
   // Notes tab
   List<dynamic> _notes = [];
   bool _notesLoading = true;
-  bool _notesSaving = false;
+  final bool _notesSaving = false;
 
   @override
   void initState() {

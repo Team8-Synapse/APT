@@ -265,7 +265,7 @@ class _ChatBubble extends StatelessWidget {
             Container(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: AppColors.maroonGradient,
                 shape: BoxShape.circle,
               ),
@@ -361,7 +361,9 @@ class _TypingIndicatorState extends State<_TypingIndicator> with TickerProviderS
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -373,7 +375,7 @@ class _TypingIndicatorState extends State<_TypingIndicator> with TickerProviderS
         children: [
           Container(
             width: 32, height: 32,
-            decoration: BoxDecoration(gradient: AppColors.maroonGradient, shape: BoxShape.circle),
+            decoration: const BoxDecoration(gradient: AppColors.maroonGradient, shape: BoxShape.circle),
             child: const Icon(Icons.smart_toy_rounded, color: AppColors.gold, size: 16),
           ),
           const SizedBox(width: 8),

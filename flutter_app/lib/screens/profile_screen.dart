@@ -562,7 +562,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _labeled(
           'Department *',
           DropdownButtonFormField<String>(
-            value: _department.isEmpty ? '' : _department,
+            initialValue: _department.isEmpty ? '' : _department,
             onChanged: (v) => setState(() => _department = v ?? ''),
             items: const [
               DropdownMenuItem(value: '', child: Text('Select Department', style: TextStyle(fontSize: 13))),
@@ -581,7 +581,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _labeled(
             'Course',
             DropdownButtonFormField<String>(
-              value: _course,
+              initialValue: _course,
               onChanged: (v) => setState(() => _course = v ?? 'B.Tech'),
               items: const [
                 DropdownMenuItem(value: 'B.Tech', child: Text('B.Tech', style: TextStyle(fontSize: 13))),
@@ -595,7 +595,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ]),
         const SizedBox(height: 14),
         _rowN([
-          _labeled('CGPA *', _tf(_cgpaCtrl, '8.5', type: TextInputType.numberWithOptions(decimal: true))),
+          _labeled('CGPA *', _tf(_cgpaCtrl, '8.5', type: const TextInputType.numberWithOptions(decimal: true))),
           _labeled('Batch *', _tf(_batchCtrl, '2026')),
           _labeled('Backlogs', _tf(_backlogsCtrl, '0', type: TextInputType.number)),
           _labeled('Gap Yrs', _tf(_gapCtrl, '0', type: TextInputType.number)),
@@ -605,9 +605,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
         const SizedBox(height: 10),
         _rowN([
-          _labeled('10th %', _tf(_tenthCtrl, '92.5', type: TextInputType.numberWithOptions(decimal: true))),
-          _labeled('12th %', _tf(_twelfthCtrl, '89.0', type: TextInputType.numberWithOptions(decimal: true))),
-          _labeled('Diploma %', _tf(_diplomaCtrl, 'N/A', type: TextInputType.numberWithOptions(decimal: true))),
+          _labeled('10th %', _tf(_tenthCtrl, '92.5', type: const TextInputType.numberWithOptions(decimal: true))),
+          _labeled('12th %', _tf(_twelfthCtrl, '89.0', type: const TextInputType.numberWithOptions(decimal: true))),
+          _labeled('Diploma %', _tf(_diplomaCtrl, 'N/A', type: const TextInputType.numberWithOptions(decimal: true))),
         ]),
       ],
     );
@@ -630,7 +630,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   flex: 2,
                   child: DropdownButtonFormField<String>(
-                    value: _newSkillLevel,
+                    initialValue: _newSkillLevel,
                     onChanged: (v) =>
                         setState(() => _newSkillLevel = v ?? 'Intermediate'),
                     items: const [
@@ -1035,7 +1035,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         _labeled('Expected CTC (LPA)',
             _tf(_expectedCtcCtrl, '6.5',
-                type: TextInputType.numberWithOptions(decimal: true))),
+                type: const TextInputType.numberWithOptions(decimal: true))),
         const SizedBox(height: 14),
         const Text('Preferred Roles',
             style: TextStyle(

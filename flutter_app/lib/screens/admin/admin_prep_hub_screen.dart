@@ -72,7 +72,7 @@ class _AdminPrepHubScreenState extends State<AdminPrepHubScreen> {
                 TextField(controller: linkCtrl, decoration: const InputDecoration(labelText: 'Link (optional)')),
                 const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
-                  value: category,
+                  initialValue: category,
                   items: ['Coding', 'Aptitude', 'Technical', 'HR']
                       .map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                   onChanged: (v) => setModalState(() => category = v!),

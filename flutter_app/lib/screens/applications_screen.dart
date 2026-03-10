@@ -130,7 +130,7 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
   }
 }
 
-class _ApplicationCard extends StatelessWidget {
+class _ApplicationCard extends StatefulWidget {
   final dynamic application;
   final Color statusColor;
   final String statusLabel;
@@ -142,15 +142,83 @@ class _ApplicationCard extends StatelessWidget {
   });
 
   @override
+  State<_ApplicationCard> createState() => _ApplicationCardState();
+}
+
+class _ApplicationCardState extends State<_ApplicationCard> {
+  late Map<String, dynamic> _app;
+  bool _responding = false;
+  final _api = ApiService();
+
+  @override
+  void initState() {
+    super.initState();
+    _app = Map<String, dynamic>.from(widget.application as Map);
+  }
+
+  Future<void> _respondToOffer(String response) async {
+    setState(() => _responding = true);
+    try {
+      await _api.respondToOffer(_app['_id'], response);
+      setState(() {
+        _app['status'] = response == 'accept' ? 'accepted' : 'declined';
+        _responding = false;
+      });
+    } catch (_) {
+      setState(() => _responding = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to respond. Please try again.')),
+        );
+      }
+    }
+  }
+
+  Color _statusColor(String? status) {
+    switch (status) {
+      case 'offered':
+      case 'accepted':
+        return AppColors.success;
+      case 'shortlisted':
+      case 'round1':
+      case 'round2':
+      case 'round3':
+      case 'hr_round':
+        return AppColors.info;
+      case 'rejected':
+      case 'declined':
+        return AppColors.error;
+      default:
+        return AppColors.warning;
+    }
+  }
+
+  String _statusLabel(String? status) {
+    switch (status) {
+      case 'hr_round': return 'HR Round';
+      case 'round1': return 'Round 1';
+      case 'round2': return 'Round 2';
+      case 'round3': return 'Round 3';
+      case 'declined': return 'Declined';
+      default:
+        if (status == null || status.isEmpty) return 'Applied';
+        return status[0].toUpperCase() + status.substring(1);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final drive = application['driveId'] as Map<String, dynamic>?;
-    final companyName = drive?['companyName'] ?? application['companyName'] ?? 'Unknown Company';
-    final jobProfile = drive?['jobProfile'] ?? application['jobProfile'] ?? '';
-    final appliedDate = application['appliedDate'] != null
-        ? DateTime.tryParse(application['appliedDate'])
+    final drive = _app['driveId'] as Map<String, dynamic>?;
+    final companyName = drive?['companyName'] ?? _app['companyName'] ?? 'Unknown Company';
+    final jobProfile = drive?['jobProfile'] ?? _app['jobProfile'] ?? '';
+    final appliedDate = _app['appliedDate'] != null
+        ? DateTime.tryParse(_app['appliedDate'])
         : null;
-    final rounds = (application['rounds'] as List<dynamic>?) ?? [];
-    final offeredCTC = application['offeredCTC'];
+    final rounds = (_app['rounds'] as List<dynamic>?) ?? [];
+    final offeredCTC = _app['offeredCTC'];
+    final currentStatus = _app['status'] as String?;
+    final statusColor = _statusColor(currentStatus);
+    final statusLabel = _statusLabel(currentStatus);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -217,7 +285,7 @@ class _ApplicationCard extends StatelessWidget {
               if (offeredCTC != null) ...[
                 const Icon(Icons.currency_rupee_rounded, size: 13, color: AppColors.success),
                 Text(
-                  '${offeredCTC} LPA',
+                  '$offeredCTC LPA',
                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.success),
                 ),
               ],
@@ -231,6 +299,48 @@ class _ApplicationCard extends StatelessWidget {
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
             const SizedBox(height: 8),
             _RoundPipeline(rounds: rounds),
+          ],
+
+          // Accept / Decline offer buttons
+          if (currentStatus == 'offered') ...[
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            const Text('You have received an offer!',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.success)),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _responding ? null : () => _respondToOffer('accept'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    icon: _responding
+                        ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Icon(Icons.check_rounded, size: 16),
+                    label: const Text('Accept', style: TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _responding ? null : () => _respondToOffer('decline'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.error,
+                      side: const BorderSide(color: AppColors.error),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    icon: const Icon(Icons.close_rounded, size: 16),
+                    label: const Text('Decline', style: TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ),
+              ],
+            ),
           ],
         ],
       ),

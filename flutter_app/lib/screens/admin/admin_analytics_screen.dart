@@ -53,7 +53,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Placement gauge
-                    _SectionTitle('Placement Overview'),
+                    const _SectionTitle('Placement Overview'),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(20),
@@ -96,16 +96,16 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
                     const SizedBox(height: 20),
 
                     // Key stats
-                    _SectionTitle('Key Metrics'),
+                    const _SectionTitle('Key Metrics'),
                     const SizedBox(height: 12),
                     _buildMetricsGrid(ctcStats),
                     const SizedBox(height: 20),
 
                     // Department stats
                     if (deptStats.isNotEmpty) ...[
-                      _SectionTitle('Department Breakdown'),
+                      const _SectionTitle('Department Breakdown'),
                       const SizedBox(height: 12),
-                      ...deptStats.map((d) => _DeptRow(stat: d)).toList(),
+                      ...deptStats.map((d) => _DeptRow(stat: d)),
                     ],
                   ],
                 ),

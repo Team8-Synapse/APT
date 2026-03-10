@@ -106,6 +106,68 @@ class ApiService {
     return res.data as Map<String, dynamic>;
   }
 
+  Future<Map<String, dynamic>> respondToOffer(String applicationId, String response) async {
+    final res = await _dio.post('/applications/respond', data: {
+      'applicationId': applicationId,
+      'response': response,
+    });
+    return res.data as Map<String, dynamic>;
+  }
+
+  // ---------- AI Mock Interview ----------
+  Future<Map<String, dynamic>> startMockInterview({
+    required String company,
+    required String role,
+    required String type,
+  }) async {
+    final res = await _dio.post('/ai/mock-interview', data: {
+      'company': company,
+      'role': role,
+      'type': type,
+    });
+    return res.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> sendMockInterviewMessage({
+    required List<dynamic> history,
+    required String message,
+    required String company,
+    required String role,
+  }) async {
+    final res = await _dio.post('/ai/mock-interview-chat', data: {
+      'history': history,
+      'message': message,
+      'company': company,
+      'role': role,
+    });
+    return res.data as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> finishMockInterview(List<dynamic> history) async {
+    final res = await _dio.post('/ai/mock-evaluate', data: {'history': history});
+    return res.data as Map<String, dynamic>;
+  }
+
+  // ---------- AI Resume Analyzer ----------
+  Future<Map<String, dynamic>> analyzeResume({
+    required List<int> pdfBytes,
+    required String fileName,
+    required String targetRole,
+  }) async {
+    final formData = FormData.fromMap({
+      'resume': MultipartFile.fromBytes(pdfBytes, filename: fileName),
+      'targetRole': targetRole,
+    });
+    final res = await _dio.post('/ai/analyze-resume', data: formData);
+    return res.data as Map<String, dynamic>;
+  }
+
+  // ---------- AI Company Research ----------
+  Future<Map<String, dynamic>> companyResearch(String company) async {
+    final res = await _dio.post('/ai/company-research', data: {'company': company});
+    return res.data as Map<String, dynamic>;
+  }
+
   // ---------- Experiences ----------
   Future<List<dynamic>> getExperiences({String? company}) async {
     final res = await _dio.get(
