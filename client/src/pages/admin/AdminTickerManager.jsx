@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { Megaphone, Save, Trash2, AlertCircle, CheckCircle, Smartphone, Plus } from 'lucide-react';
 
 const AdminTickerManager = ({ isSubModule = false }) => {
@@ -16,7 +16,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
 
     const fetchTickers = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ticker`);
+            const res = await api.get('/ticker');
             setTickers(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             console.error(err);
@@ -30,7 +30,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
         setSuccess('');
 
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ticker`, {
+            const res = await api.post('/ticker', {
                 message,
                 priority
             });
@@ -50,7 +50,7 @@ const AdminTickerManager = ({ isSubModule = false }) => {
         if (!confirm('Are you sure you want to remove this ticker message?')) return;
 
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ticker/${id}`);
+            await api.delete(`/ticker/${id}`);
             setTickers(tickers.filter(t => t._id !== id));
             setSuccess('Ticker message removed.');
             setTimeout(() => setSuccess(''), 3000);

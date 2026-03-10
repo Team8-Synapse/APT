@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api';
 import { saveAs } from 'file-saver';
 import {
     Download,
@@ -119,8 +119,6 @@ const AdminReports = () => {
     const [recordCount, setRecordCount] = useState(null);
     const [countLoading, setCountLoading] = useState(false);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
-
     // Report Definitions
     const reportOptions = [
         {
@@ -164,7 +162,6 @@ const AdminReports = () => {
 
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
             const params = new URLSearchParams();
 
             // Add user selected filters
@@ -180,8 +177,7 @@ const AdminReports = () => {
                 params.append('placementStatus', selectedStatus);
             }
 
-            const response = await axios.get(`${API_URL}/reports/${selectedReport.endpoint}`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await api.get(`/reports/${selectedReport.endpoint}`, {
                 params: params,
                 responseType: 'blob'
             });
@@ -203,14 +199,12 @@ const AdminReports = () => {
         }
         setAiLoading(true);
         try {
-            const token = localStorage.getItem('token');
             const params = new URLSearchParams();
             if (selectedBatch !== 'All') params.append('batch', selectedBatch);
             if (selectedDept !== 'All') params.append('department', selectedDept);
             if (selectedStatus !== 'All') params.append('placementStatus', selectedStatus);
 
-            const response = await axios.get(`${API_URL}/reports/ai-insights`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await api.get('/reports/ai-insights', {
                 params: params
             });
 
@@ -227,14 +221,12 @@ const AdminReports = () => {
     const fetchReportCount = async () => {
         setCountLoading(true);
         try {
-            const token = localStorage.getItem('token');
             const params = new URLSearchParams();
             if (selectedBatch !== 'All') params.append('batch', selectedBatch);
             if (selectedDept !== 'All') params.append('department', selectedDept);
             if (selectedStatus !== 'All') params.append('placementStatus', selectedStatus);
 
-            const response = await axios.get(`${API_URL}/reports/count`, {
-                headers: { Authorization: `Bearer ${token}` },
+            const response = await api.get('/reports/count', {
                 params: params
             });
             setRecordCount(response.data.count);
