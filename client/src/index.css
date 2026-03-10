@@ -13,6 +13,11 @@
   --color-glass: rgba(255, 255, 255, 0.8);
 }
 
+html {
+  /* Scales the global rem size down from 16px to 13px (~80% scale) */
+  font-size: 13px;
+}
+
 :root {
   --amrita-primary: #B1124A;
   --amrita-maroon: #B1124A;
