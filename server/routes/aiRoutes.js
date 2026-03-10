@@ -16,5 +16,7 @@ router.post('/mock-interview-chat', auth, aiController.interviewChat);
 router.post('/analyze-resume', auth, upload.single('resume'), aiController.analyzeResume);
 router.post('/company-research', auth, aiController.companyResearch);
 router.get('/admin-insights', auth, aiController.adminInsights);
+router.get('/summarize-resource/:id', auth, aiController.summarizeResource);
+router.get('/summarize-notes', auth, aiController.summarizeNotes);
 
 module.exports = router;
