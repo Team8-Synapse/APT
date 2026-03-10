@@ -49,16 +49,20 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
         setLoading(true);
 
         try {
-            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+            const config = {
+                headers: { Authorization: `Bearer ${token || localStorage.getItem('token')}` }
+            };
             const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/ai/chat`, {
                 message: input,
                 context: context,
                 sourceName: sourceName
             }, config);
+
             setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
         } catch (err) {
             console.error(err);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Neural connection lost. Please try again.' }]);
+            const serverMsg = err.response?.data?.error || 'Neural connection lost. Please try again.';
+            setMessages(prev => [...prev, { role: 'assistant', content: serverMsg }]);
         } finally {
             setLoading(false);
         }
@@ -67,9 +71,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
     const formatMessage = (text) => {
         if (!text) return null;
         return text.split('\n').map((line, i) => {
-            // Keep empty lines as br or just skip if multiple
             if (!line.trim()) return <div key={i} className="h-1"></div>;
-            // Split by ** for bold
             const parts = line.split(/\*\*(.*?)\*\*/g);
             return (
                 <p key={i} className="mb-1.5 last:mb-0">
@@ -77,7 +79,6 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
                         if (index % 2 === 1) {
                             return <strong key={index} className="font-extrabold text-[#8A0F3C]">{part}</strong>;
                         }
-                        // Handle single * for italics
                         const italicParts = part.split(/\*(.*?)\*/g);
                         if (italicParts.length > 1) {
                             return italicParts.map((ip, iIdx) => (
@@ -95,7 +96,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
         setContext(null);
         setSourceName(null);
         setMessages(prev => [...prev, { role: 'assistant', content: "Context cleared. I'm now back to general mode." }]);
-    };
+    }
 
     return (
         <div className="flex flex-col h-full bg-white/20 backdrop-blur-md rounded-2xl border border-white/40 overflow-hidden shadow-inner font-bold">
@@ -122,18 +123,20 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
                             <div className="whitespace-pre-wrap font-medium">
                                 {m.role === 'user' ? m.content : formatMessage(m.content)}
                             </div>
-                        </div>
-                    </div>
+                        </div >
+                    </div >
                 ))}
-                {loading && (
-                    <div className="flex justify-start animate-pulse">
-                        <div className="bg-white/50 p-4 rounded-2xl rounded-tl-none">
-                            <Zap className="text-amrita-gold animate-spin" size={12} />
+                {
+                    loading && (
+                        <div className="flex justify-start animate-pulse">
+                            <div className="bg-white/50 p-4 rounded-2xl rounded-tl-none">
+                                <Zap className="text-amrita-gold animate-spin" size={12} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
                 <div ref={messagesEndRef} />
-            </div>
+            </div >
 
             <form onSubmit={handleSend} className="p-4 bg-white/40 border-t border-white/60">
                 <div className="relative group">
@@ -158,7 +161,7 @@ const AIChatbot = ({ initialContext = null, initialSourceName = null, initialSum
                     </p>
                 </div>
             </form>
-        </div>
+        </div >
     );
 };
 

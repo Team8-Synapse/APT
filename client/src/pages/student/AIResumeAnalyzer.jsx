@@ -46,7 +46,8 @@ const AIResumeAnalyzer = () => {
             setAnalysis(res.data);
         } catch (err) {
             console.error(err);
-            alert("Failed to analyze resume. Please try again.");
+            const errorMessage = err.response?.data?.error || "Failed to analyze resume. Please try again.";
+            alert(errorMessage);
         } finally {
             setLoading(false);
         }

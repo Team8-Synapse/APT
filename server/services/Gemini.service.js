@@ -10,7 +10,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
  */
 class GeminiService {
   constructor() {
-    this.model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    this.modelName = "gemini-2.5-flash";
+    this.model = genAI.getGenerativeModel({ model: this.modelName });
   }
 
   /**
@@ -20,17 +21,17 @@ class GeminiService {
    */
   async generateSummary(text) {
     console.log("DEBUG_MARKER: GeminiService.generateSummary called");
-    
+
     // Total protection: Convert any input to string and then trim
     const textToProcess = String(text || '').trim();
-    
+
     if (textToProcess.length === 0) {
       console.warn("DEBUG_MARKER: No content to summarize");
       return "No content to summarize found in the document.";
     }
-    
+
     const prompt = `Please provide a concise summary in bullet points for the following content. Keep it professional and focused on key learning points for a student:\n\n${textToProcess}`;
-    
+
     try {
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
@@ -65,7 +66,7 @@ class GeminiService {
     const questionStr = String(question || '').trim();
 
     if (contextStr.length === 0) {
-        return this.askGeneral(questionStr);
+      return this.askGeneral(questionStr);
     }
 
     const prompt = `You are an AI Career Advisor at Amrita Vishwa Vidyapeetham. 
