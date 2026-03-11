@@ -209,7 +209,8 @@ const AdminReports = () => {
             const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/reports/ai-analyze`, {
                 type: reportType,
                 batch: selectedBatch,
-                department: selectedDept
+                department: selectedDept,
+                status: selectedStatus
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });

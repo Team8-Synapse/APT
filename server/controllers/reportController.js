@@ -48,17 +48,18 @@ exports.generateStudentReport = async (req, res) => {
 };
 
 const getQueryFilters = (query) => {
-    const { batch, department, placementStatus } = query;
+    const { batch, department, placementStatus, status } = query;
     let filters = {};
 
     if (batch && batch !== 'All') filters.batch = batch;
     if (department && department !== 'All') filters.department = department;
 
     // Mapping frontend labels to database enum
-    if (placementStatus && placementStatus !== 'All') {
-        if (placementStatus === 'Placed') filters.placementStatus = 'placed';
-        else if (placementStatus === 'Unplaced' || placementStatus === 'not_placed') filters.placementStatus = 'not_placed';
-        else filters.placementStatus = placementStatus.toLowerCase();
+    const currentStatus = placementStatus || status;
+    if (currentStatus && currentStatus !== 'All') {
+        if (currentStatus === 'Placed') filters.placementStatus = 'placed';
+        else if (currentStatus === 'Unplaced' || currentStatus === 'not_placed') filters.placementStatus = 'not_placed';
+        else filters.placementStatus = currentStatus.toLowerCase();
     }
 
     return filters;
@@ -212,6 +213,28 @@ exports.getAIInsights = async (req, res) => {
     } catch (e) {
         console.error('[AI-INSIGHTS] CRITICAL ERROR:', e);
         res.status(500).send({ error: 'Failed to generate AI insights' });
+    }
+};
+
+exports.aiAnalyze = async (req, res) => {
+    try {
+        const filters = getQueryFilters(req.body); // Use req.body for POST
+        const students = await StudentProfile.find(filters).lean();
+        const insights = aiService.generateReportInsights(students, req.body);
+        res.json(insights);
+    } catch (e) {
+        console.error('[AI-ANALYZE] Error:', e);
+        res.status(500).send({ error: 'Failed to analyze reports with AI' });
+    }
+};
+
+exports.generateReport = async (req, res) => {
+    const { type } = req.query;
+    if (type === 'company_stats') {
+        return exports.generateCompanyCSV(req, res);
+    } else {
+        // Default to admin/student CSV
+        return exports.generateAdminCSV(req, res);
     }
 };
 

@@ -9,4 +9,8 @@ router.get('/company-csv', auth, authorize('admin'), reportController.generateCo
 router.get('/ai-insights', auth, authorize('admin'), reportController.getAIInsights);
 router.get('/count', auth, authorize('admin'), reportController.getReportCount);
 
+// New endpoints for AdminReports.jsx
+router.get('/generate', auth, authorize('admin'), reportController.generateReport);
+router.post('/ai-analyze', auth, authorize('admin'), reportController.aiAnalyze);
+
 module.exports = router;

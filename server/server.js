@@ -49,8 +49,9 @@ app.use('/api/alumni', alumniRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin/reports', reportRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/reports', reportRoutes);
+app.use('/api/reports', reportRoutes); // Keep for compatibility
 app.use('/api/applications', applicationRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/announcements', announcementRoutes);
