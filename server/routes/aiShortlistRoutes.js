@@ -143,29 +143,40 @@ function parsePromptLocally(prompt) {
     return filters;
 }
 
-// ─── Helper: Read & parse CSV ─────────────────────────────────────────────────
+// ─── Helper: Read & parse Excel dataset ───────────────────────────────────────
 function readStudentsCSV() {
-    const csvPath = path.join(__dirname, '../data/students.csv');
-    const content = fs.readFileSync(csvPath, 'utf-8');
-    const lines = content.split('\n').filter(l => l.trim());
-    const headers = lines[0].split(',').map(h => h.trim());
+    try {
+        const filePath = path.join(__dirname, '../data/amrita_batches_2023_2027.xlsx');
+        if (!fs.existsSync(filePath)) {
+            console.error(`[AI Helper] File not found at: ${filePath}`);
+            return [];
+        }
 
-    return lines.slice(1).map(line => {
-        const vals = line.split(',').map(v => v.trim());
-        const obj = {};
-        headers.forEach((h, idx) => obj[h] = vals[idx] || '');
-        return {
-            rollNumber: obj.roll_no,
-            fullName: obj.full_name,
-            email: obj.email,
-            department: obj.dept_code,
-            section: obj.section,
-            batch: obj.batch_year,
-            cgpa: parseFloat(obj.cgpa) || 0,
-            backlogs: parseInt(obj.backlogs) || 0,
-            placementStatus: obj.placement_status,
-        };
-    });
+        const workbook = XLSX.readFile(filePath);
+        let allStudents = [];
+
+        workbook.SheetNames.forEach(sheetName => {
+            const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            const sheetStudents = rawData.map(s => ({
+                rollNumber: s['Roll Number'] || '',
+                fullName: s['Name'] || '',
+                email: s['University Email ID'] || '',
+                department: s['Dept'] || '',
+                section: s['Section'] || '',
+                batch: String(s['Year of Grad'] || '').trim(),
+                cgpa: parseFloat(s['CGPA']) || 0,
+                backlogs: 0, // Not explicitly in the provided keys
+                placementStatus: s['Placement Status'] === 'Placed' || s['Placement Status'] === 'Yes' ? 'Placed' : 'Not Placed',
+                originalData: s
+            }));
+            allStudents = allStudents.concat(sheetStudents);
+        });
+
+        return allStudents;
+    } catch (err) {
+        console.error('AI Data Parse Error:', err);
+        return [];
+    }
 }
 
 // ─── Apply filters to student list ───────────────────────────────────────────
@@ -176,10 +187,10 @@ function applyFilters(students, filters) {
         result = result.filter(s => String(s.batch) === String(filters.batch));
     }
     if (filters.department) {
-        result = result.filter(s => s.department.toUpperCase() === filters.department.toUpperCase());
+        result = result.filter(s => String(s.department || '').toUpperCase() === String(filters.department).toUpperCase());
     }
     if (filters.section) {
-        result = result.filter(s => s.section.toUpperCase() === filters.section.toUpperCase());
+        result = result.filter(s => String(s.section || '').toUpperCase() === String(filters.section).toUpperCase());
     }
     if (filters.minCgpa != null) {
         result = result.filter(s => s.cgpa >= parseFloat(filters.minCgpa));
@@ -195,7 +206,7 @@ function applyFilters(students, filters) {
     }
     if (filters.placementStatus) {
         result = result.filter(s =>
-            s.placementStatus.toLowerCase() === filters.placementStatus.toLowerCase()
+            String(s.placementStatus || '').toLowerCase() === String(filters.placementStatus).toLowerCase()
         );
     }
 

@@ -167,9 +167,7 @@ const AdminDashboard = () => {
 
     const fetchSchedule = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/schedule`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
+            const res = await api.get('/schedule');
             setCalendarEvents(res.data);
         } catch (err) {
             console.error(err);
@@ -180,7 +178,7 @@ const AdminDashboard = () => {
 
     const fetchStats = async (batch = '2026') => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/stats?batch=${batch}`);
+            const res = await api.get(`/admin/stats?batch=${batch}`);
             setStats(res.data);
             setLoading(false);
         } catch (err) {
@@ -216,7 +214,7 @@ const AdminDashboard = () => {
 
     const fetchStudents = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/students`, {
+            const res = await api.get('/admin/students', {
                 params: filters
             });
             setStudents(res.data.students || res.data);
@@ -227,7 +225,7 @@ const AdminDashboard = () => {
 
     const fetchCompanies = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/companies`);
+            const res = await api.get('/admin/companies');
             setCompanies(res.data);
         } catch (err) {
             console.error(err);
@@ -243,7 +241,7 @@ const AdminDashboard = () => {
 
     const fetchAnnouncements = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`);
+            const res = await api.get('/announcements');
             setAnnouncements(res.data);
         } catch (err) {
             console.error(err);
@@ -284,7 +282,7 @@ const AdminDashboard = () => {
 
     const handleUpdateStudent = async (updatedData) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/student/csv/${updatedData.rollNumber}`, updatedData);
+            await api.put(`/admin/student/csv/${updatedData.rollNumber}`, updatedData);
             setShowEditStudentModal(false);
             fetchStudents(); // Refresh table
             alert('Student updated successfully!');
@@ -301,7 +299,7 @@ const AdminDashboard = () => {
 
     const fetchAllDrives = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drives`);
+            const res = await api.get('/admin/drives');
             setAllDrives(res.data);
         } catch (err) {
             console.error(err);
@@ -310,7 +308,7 @@ const AdminDashboard = () => {
 
     const fetchDriveApplications = async (driveId) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${driveId}/applications`);
+            const res = await api.get(`/admin/drive/${driveId}/applications`);
             setDriveApplications(res.data);
         } catch (err) {
             console.error(err);
@@ -332,7 +330,7 @@ const AdminDashboard = () => {
     const handleDeleteDrive = async (id) => {
         if (!window.confirm('Are you sure you want to delete this drive?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/drive/${id}`);
+            await api.delete(`/admin/drive/${id}`);
             fetchAllDrives();
             fetchStats(); // Update global stats
         } catch (err) {
@@ -343,7 +341,7 @@ const AdminDashboard = () => {
 
     const handleShortlist = async () => {
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/shortlist`, filters);
+            const res = await api.post('/admin/shortlist', filters);
             setShortlist(res.data);
         } catch (err) {
             console.error(err);
@@ -352,7 +350,7 @@ const AdminDashboard = () => {
 
     const handleExport = async (type) => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/admin/export/${type}`);
+            const res = await api.get(`/admin/export/${type}`);
             const dataStr = JSON.stringify(res.data, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -368,7 +366,7 @@ const AdminDashboard = () => {
 
     const fetchAdminResources = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`);
+            const res = await api.get('/resources');
             setAdminResources(res.data);
         } catch (err) {
             console.error(err);
@@ -391,10 +389,10 @@ const AdminDashboard = () => {
             };
 
             if (editingResource) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${editingResource._id}`, payload);
+                await api.put(`/resources/${editingResource._id}`, payload);
                 alert('Resource updated successfully!');
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources`, payload);
+                await api.post('/resources', payload);
                 alert('Resource deployed successfully!');
             }
 
@@ -410,7 +408,7 @@ const AdminDashboard = () => {
     const handleResourceDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this resource?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/resources/${id}`);
+            await api.delete(`/resources/${id}`);
             alert('Resource deleted!');
             fetchAdminResources();
         } catch (err) {
@@ -437,14 +435,11 @@ const AdminDashboard = () => {
     const handleAnnouncementSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const headers = { Authorization: `Bearer ${token}` };
-
             if (editingAnnouncement) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${editingAnnouncement._id}`, newAnnouncement, { headers });
+                await api.put(`/announcements/${editingAnnouncement._id}`, newAnnouncement);
                 alert('Announcement updated!');
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements`, newAnnouncement, { headers });
+                await api.post('/announcements', newAnnouncement);
                 alert('Announcement posted!');
             }
             setNewAnnouncement({ content: '', links: [{ title: '', url: '' }] });
@@ -459,7 +454,7 @@ const AdminDashboard = () => {
     const handleAnnouncementDelete = async (id) => {
         if (!window.confirm('Are you sure?')) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5005/api'}/announcements/${id}`);
+            await api.delete(`/announcements/${id}`);
             fetchAnnouncements();
         } catch (err) {
             console.error(err);

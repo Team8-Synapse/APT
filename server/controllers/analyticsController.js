@@ -5,36 +5,35 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 
+const xlsx = require('xlsx');
+
 const getDataset = () => {
     try {
-        const csvPath = path.join(__dirname, '../data/students.csv');
-        if (!fs.existsSync(csvPath)) return [];
+        const filePath = path.join(__dirname, '../data/amrita_batches_2023_2027.xlsx');
+        if (!fs.existsSync(filePath)) return [];
 
-        const content = fs.readFileSync(csvPath, 'utf-8').replace(/^\uFEFF/, '');
-        const lines = content.split('\n').filter(line => line.trim());
-        if (lines.length < 2) return [];
+        const workbook = xlsx.readFile(filePath);
+        let allStudents = [];
 
-        const headers = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h => h.trim().replace(/^\uFEFF/, '').replace(/^"(.*)"$/, '$1'));
-        return lines.slice(1).map(line => {
-            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"(.*)"$/, '$1'));
-            const obj = {};
-            headers.forEach((h, i) => obj[h] = values[i]);
-            return {
-                roll_no: obj.roll_no,
-                dept: obj.dept_code,
-                batch: obj.batch_year,
-                cgpa: parseFloat(obj.cgpa) || 0,
-                status: obj.placement_status === 'Placed' ? 'placed' :
-                    obj.placement_status === 'In Process' ? 'in_process' : 'not_placed',
+        workbook.SheetNames.forEach(sheetName => {
+            const rawData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+            const sheetStudents = rawData.map(s => ({
+                roll_no: String(s['Roll Number'] || ''),
+                dept: String(s['Dept'] || ''),
+                batch: String(s['Year of Grad'] || '').trim(),
+                cgpa: parseFloat(s['CGPA']) || 0,
+                status: (s['Placement Status'] === 'Placed' || s['Placement Status'] === 'Yes') ? 'placed' : 'not_placed',
                 // Deterministic mock data for analytics if not in CSV
-                // Using hash of roll_no for stable "random" values
-                mockCTC: obj.placement_status === 'Placed' ? (5 + (obj.roll_no.length % 15)) * 100000 : 0,
-                mockCompany: obj.placement_status === 'Placed' ?
-                    ['Google', 'Microsoft', 'Amazon', 'Apple', 'Meta'][obj.roll_no.length % 5] : null
-            };
+                mockCTC: (s['Placement Status'] === 'Placed' || s['Placement Status'] === 'Yes') ? (5 + (String(s['Roll Number'] || '').length % 15)) * 100000 : 0,
+                mockCompany: (s['Placement Status'] === 'Placed' || s['Placement Status'] === 'Yes') ?
+                    ['Google', 'Microsoft', 'Amazon', 'Apple', 'Meta'][String(s['Roll Number'] || '').length % 5] : null
+            }));
+            allStudents = allStudents.concat(sheetStudents);
         });
+
+        return allStudents;
     } catch (err) {
-        console.error('CSV Parse Error:', err);
+        console.error('Data Parse Error:', err);
         return [];
     }
 };

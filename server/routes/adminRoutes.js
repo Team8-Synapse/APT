@@ -8,44 +8,47 @@ const AlumniInsight = require('../models/AlumniInsight');
 const Application = require('../models/Application');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const xlsx = require('xlsx');
 
-// Helper to parse CSV robustly
+// Helper to parse the correct Excel dataset
 const parseStudentCsv = () => {
     try {
-        const csvPath = path.join(__dirname, '../data/students.csv');
-        console.log(`[CSV Helper] Trying path: ${csvPath}`);
-        if (!fs.existsSync(csvPath)) {
-            console.error(`[CSV Helper] File not found at: ${csvPath}`);
+        const filePath = path.join(__dirname, '../data/amrita_batches_2023_2027.xlsx');
+        if (!fs.existsSync(filePath)) {
+            console.error(`[Data Helper] File not found at: ${filePath}`);
             return [];
         }
-        const content = fs.readFileSync(csvPath, 'utf-8').replace(/^\uFEFF/, '');
-        const lines = content.split('\n').filter(line => line.trim());
-        console.log(`[CSV Helper] Headers line: ${lines[0]}`);
-        if (lines.length < 2) return [];
 
-        const headers = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(h => h.trim().replace(/^\uFEFF/, '').replace(/^"(.*)"$/, '$1'));
-        return lines.slice(1).map((line, index) => {
-            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"(.*)"$/, '$1'));
-            const student = {};
-            headers.forEach((header, i) => student[header] = values[i] || '');
+        const workbook = xlsx.readFile(filePath);
+        let allStudents = [];
+        let indexCounter = 0;
 
-            return {
-                _id: `csv_${index}`,
-                rollNumber: student.roll_no,
-                firstName: student.full_name?.split(' ')[0] || '',
-                lastName: student.full_name?.split(' ').slice(1).join(' ') || '',
-                email: student.email,
-                department: student.dept_code,
-                section: student.section,
-                batch: String(student.batch_year || '').trim(),
-                cgpa: parseFloat(student.cgpa) || 0,
-                backlogs: parseInt(student.backlogs) || 0,
-                placementStatus: (student.placement_status || '').toLowerCase().replace(' ', '_'),
-                originalData: student
-            };
+        workbook.SheetNames.forEach(sheetName => {
+            const rawData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+            const sheetStudents = rawData.map(s => {
+                const student = {
+                    _id: `xls_${indexCounter++}`,
+                    rollNumber: s['Roll Number'] || '',
+                    firstName: s['Name']?.split(' ')[0] || '',
+                    lastName: s['Name']?.split(' ').slice(1).join(' ') || '',
+                    email: s['University Email ID'] || '',
+                    department: s['Dept'] || '',
+                    section: s['Section'] || '',
+                    batch: String(s['Year of Grad'] || '').trim(),
+                    cgpa: parseFloat(s['CGPA']) || 0,
+                    backlogs: 0,
+                    placementStatus: s['Placement Status'] === 'Placed' || s['Placement Status'] === 'Yes' ? 'placed' : 'not_placed',
+                    originalData: s
+                };
+                return student;
+            });
+            allStudents = allStudents.concat(sheetStudents);
         });
+
+        return allStudents;
     } catch (err) {
-        console.error('CSV Parse Helper Error:', err);
+        console.error('Data Parse Helper Error:', err);
         return [];
     }
 };
@@ -202,41 +205,8 @@ router.get('/students', async (req, res) => {
     try {
         const { department, minCgpa, maxCgpa, placementStatus, batch, search, page = 1, limit = 50 } = req.query;
 
-        // Read CSV file
-        const csvPath = path.join(__dirname, '../data/students.csv');
-        const csvContent = fs.readFileSync(csvPath, 'utf-8');
-        const lines = csvContent.split('\n').filter(line => line.trim());
-
-        // Parse header
-        const headers = lines[0].split(',').map(h => h.trim());
-
-        // Parse all students
-        let students = lines.slice(1).map((line, index) => {
-            const values = line.split(',').map(v => v.trim());
-            const student = {};
-            headers.forEach((header, i) => {
-                student[header] = values[i] || '';
-            });
-
-            // Standard mapped object
-            const mappedStudent = {
-                _id: `csv_${index}`,
-                rollNumber: student.roll_no,
-                firstName: student.full_name?.split(' ')[0] || '',
-                lastName: student.full_name?.split(' ').slice(1).join(' ') || '',
-                email: student.email,
-                department: student.dept_code,
-                section: student.section,
-                batch: student.batch_year,
-                cgpa: parseFloat(student.cgpa) || 0,
-                backlogs: parseInt(student.backlogs) || 0,
-                placementStatus: student.placement_status === 'Placed' ? 'placed' :
-                    student.placement_status === 'In Process' ? 'in_process' : 'not_placed',
-                // Preserve all original CSV data
-                originalData: student
-            };
-            return mappedStudent;
-        });
+        // Parse all students using robust helper
+        let students = parseStudentCsv();
 
         // Apply filters
         if (department) {
