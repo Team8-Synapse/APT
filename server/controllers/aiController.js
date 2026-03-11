@@ -20,7 +20,7 @@ exports.getInsights = async (req, res) => {
         if (process.env.GEMINI_API_KEY) {
             try {
                 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
                 const prompt = `You are an AI Career Advisor for Amrita Vishwa Vidyapeetham students. 
                 A student has a placement readiness score of ${readinessScore}/100.
@@ -114,7 +114,7 @@ exports.getChatResponse = async (req, res) => {
         contextText += amritaContext;
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         const prompt = `${sysPrompt}
         
@@ -140,7 +140,7 @@ exports.generateMockInterview = async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         const prompt = `You are an expert technical interviewer at ${company || 'a top tech company'} for the role of ${role || 'Software Engineer'}.
         Generate 5 tailored interview questions for a university student applying for this role.
@@ -179,7 +179,7 @@ exports.evaluateMockAnswer = async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         const prompt = `You are an expert technical interviewer at ${company || 'a top tech company'} for the role of ${role || 'Software Engineer'}.
         The candidate was asked: "${question}"
@@ -216,7 +216,7 @@ exports.interviewChat = async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         // If it's the very first question, we just ask a question.
         // Otherwise, we evaluate the previous answer and ask the next question.
@@ -347,7 +347,7 @@ exports.analyzeResume = async (req, res) => {
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         // Using 2.5-flash as the primary, but we'll try to handle quota errors
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
 
         const prompt = `Act as an expert ATS(Applicant Tracking System) and Senior Technical Recruiter.
@@ -397,7 +397,7 @@ exports.companyResearch = async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         const prompt = `Act as an expert career counselor. Provide a brief research summary for a student interviewing at ${companyName} for the role of ${role || 'Software Engineer'}.
         Provide:
@@ -436,7 +436,7 @@ exports.adminInsights = async (req, res) => {
         const activeDrives = await PlacementDrive.countDocuments({ status: { $in: ['active', 'upcoming'] } });
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
 
         const prompt = `Act as a Head of Placements (Director) AI.
         Here are the current stats of the placements:
