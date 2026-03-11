@@ -8,49 +8,17 @@ const XLSX = require('xlsx');
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-// ─── Helper: Call Gemini with retry ──────────────────────────────────────────
-async function callGemini(prompt, retries = 2) {
-    return new Promise(async (resolve, reject) => {
-        const attempt = async (attemptsLeft) => {
-            const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] });
-            const url = new URL(GEMINI_URL);
-            const options = {
-                hostname: url.hostname,
-                path: url.pathname + url.search,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': Buffer.byteLength(body),
-                },
-            };
-            const req = https.request(options, (res) => {
-                let data = '';
-                res.on('data', chunk => data += chunk);
-                res.on('end', async () => {
-                    try {
-                        const json = JSON.parse(data);
-                        if (json.error) {
-                            const code = json.error.code;
-                            if ((code === 429 || code === 500 || code === 503) && attemptsLeft > 0) {
-                                const delay = code === 429 ? 5000 : 2000;
-                                console.log(`Gemini ${code}, retrying after ${delay}ms...`);
-                                await new Promise(r => setTimeout(r, delay));
-                                attempt(attemptsLeft - 1);
-                            } else {
-                                reject(new Error(`Gemini API error ${code}: ${json.error.message}`));
-                            }
-                        } else {
-                            resolve(json);
-                        }
-                    } catch (e) { reject(e); }
-                });
-            });
-            req.on('error', reject);
-            req.write(body);
-            req.end();
-        };
-        attempt(retries);
-    });
+const geminiService = require('../services/Gemini.service');
+
+// ─── Helper: Call AI (supports Gemini & OpenRouter via service) ────────────────
+async function callAI(prompt) {
+    try {
+        const result = await geminiService.generateContent(prompt, "You are a student filter assistant. Extract filter criteria.", true);
+        return { candidates: [{ content: { parts: [{ text: result }] } }] };
+    } catch (err) {
+        console.error('AI Service Error:', err);
+        throw err;
+    }
 }
 
 // ─── Local fallback parser (no Gemini needed) ────────────────────────────────
@@ -248,7 +216,7 @@ User query: "${prompt}"
 
 Return ONLY the JSON:`;
 
-                const geminiResp = await callGemini(systemPrompt);
+                const geminiResp = await callAI(systemPrompt);
                 const rawText = geminiResp?.candidates?.[0]?.content?.parts?.[0]?.text || '';
                 if (rawText) {
                     const cleanJson = rawText
