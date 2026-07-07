@@ -14,7 +14,7 @@ class AIService {
     this.apiKey = process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;
     
     // Default models
-    this.geminiModel = "gemini-1.5-flash"; // Stable version
+    this.geminiModel = "gemini-2.5-flash"; // Stable version
     this.openRouterModel = process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-001";
 
     if (!this.apiKey) {
@@ -35,8 +35,7 @@ class AIService {
       console.log("AI SERVICE: Initialized using Official Gemini SDK");
       this.genAI = new GoogleGenerativeAI(this.apiKey || "");
       this.model = this.genAI.getGenerativeModel(
-        { model: this.geminiModel },
-        { apiVersion: 'v1' }
+        { model: this.geminiModel }
       );
     }
   }
