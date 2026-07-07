@@ -10,12 +10,13 @@ dotenv.config();
  */
 class AIService {
   constructor() {
-    this.useOpenRouter = !!process.env.OPENROUTER_API_KEY;
-    this.apiKey = process.env.OPENROUTER_API_KEY || process.env.GEMINI_API_KEY;
+    // Prioritize Gemini API Key if both exist
+    this.useOpenRouter = !!process.env.OPENROUTER_API_KEY && !process.env.GEMINI_API_KEY;
+    this.apiKey = this.useOpenRouter ? process.env.OPENROUTER_API_KEY : process.env.GEMINI_API_KEY;
     
     // Default models
-    this.geminiModel = "gemini-2.5-flash"; // Stable version
-    this.openRouterModel = process.env.OPENROUTER_MODEL || "google/gemini-2.0-flash-001";
+    this.geminiModel = process.env.GEMINI_MODEL || "gemini-1.5-flash"; 
+    this.openRouterModel = process.env.OPENROUTER_MODEL || "google/gemini-1.5-flash";
 
     if (!this.apiKey) {
       console.warn("AI SERVICE: No API Key found in .env (GEMINI_API_KEY or OPENROUTER_API_KEY)");
