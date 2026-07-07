@@ -47,7 +47,7 @@ exports.generateStudentReport = async (req, res) => {
     }
 };
 
-const getQueryFilters = (query) => {
+const getQueryFilters = (query = {}) => {
     const { batch, department, placementStatus, status } = query;
     let filters = {};
 

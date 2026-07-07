@@ -102,9 +102,10 @@ describe('Report Controller Test', () => {
         it('should generate and download CSV successfully', async () => {
             req = mockRequest({});
             const mockStudents = [{ firstName: 'Test' }];
-            StudentProfile.find.mockResolvedValue(mockStudents);
+            StudentProfile.find.mockReturnValue({ lean: jest.fn().mockResolvedValue(mockStudents) });
 
             res.download.mockImplementation((path, filename, cb) => {
+                fs.existsSync.mockReturnValue(true);
                 cb(null);
             });
 
@@ -118,7 +119,7 @@ describe('Report Controller Test', () => {
 
         it('should handle errors', async () => {
             req = mockRequest({});
-            StudentProfile.find.mockRejectedValue(new Error('DB Error'));
+            StudentProfile.find.mockReturnValue({ lean: jest.fn().mockRejectedValue(new Error('DB Error')) });
 
             await reportController.generateAdminCSV(req, res);
 

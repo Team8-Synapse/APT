@@ -23,8 +23,8 @@ exports.getInsights = async (req, res) => {
         const recommendations = await aiService.getRecommendations(profile);
 
         const prompt = `A student has a placement readiness score of ${readinessScore}/100.
-        Their CGPA is ${profile.cgpa}. Skills: ${profile.skills.map(s => s.name).join(', ')}.
-        Eligible companies: ${recommendations.slice(0, 3).map(r => r.company).join(', ')}.
+        Their CGPA is ${profile.cgpa || 'N/A'}. Skills: ${(profile.skills || []).map(s => s.name).join(', ') || 'N/A'}.
+        Eligible companies: ${(recommendations || []).slice(0, 3).map(r => r.company).join(', ') || 'N/A'}.
         Give a short, encouraging 2-sentence paragraph on focus areas.`;
 
         const insightsText = await geminiService.generateContent(prompt, "You are an AI Career Advisor for Amrita University.");

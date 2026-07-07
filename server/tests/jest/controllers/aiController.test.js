@@ -5,6 +5,8 @@ const aiService = require('../../../services/AI.service');
 // Mock dependencies
 jest.mock('../../../models/StudentProfile');
 jest.mock('../../../services/AI.service');
+jest.mock('../../../services/Gemini.service');
+const geminiService = require('../../../services/Gemini.service');
 
 const mockRequest = (user, body) => ({
     user,
@@ -33,6 +35,7 @@ describe('AI Controller Test', () => {
             StudentProfile.findOne.mockResolvedValue(mockProfile);
             aiService.calculateReadinessScore.mockReturnValue(80);
             aiService.getRecommendations.mockResolvedValue([{ company: 'Google' }]);
+            geminiService.generateContent.mockResolvedValue('Here are some insights');
 
             await aiController.getInsights(req, res);
 
@@ -58,6 +61,7 @@ describe('AI Controller Test', () => {
     describe('getChatResponse', () => {
         it('should return generic response', async () => {
             req = mockRequest({ _id: 'userId' }, { message: 'How to prepare?' });
+            geminiService.generateContent.mockResolvedValue('Based on your query, here is how to prepare');
 
             await aiController.getChatResponse(req, res);
 

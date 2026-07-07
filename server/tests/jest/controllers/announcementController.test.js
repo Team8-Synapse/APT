@@ -27,6 +27,7 @@ describe('Announcement Controller Test', () => {
 
     describe('getAnnouncements', () => {
         it('should return announcements sorted by date', async () => {
+            req = mockRequest({ _id: 'userId', role: 'admin' });
             const mockAnnouncements = [{ title: 'News' }];
             const sortMock = jest.fn().mockResolvedValue(mockAnnouncements);
             Announcement.find.mockReturnValue({ sort: sortMock });
@@ -34,7 +35,7 @@ describe('Announcement Controller Test', () => {
             await announcementController.getAnnouncements(req, res);
 
             expect(Announcement.find).toHaveBeenCalled();
-            expect(sortMock).toHaveBeenCalledWith({ createdAt: -1 });
+            expect(sortMock).toHaveBeenCalledWith({ isPinned: -1, createdAt: -1 });
             expect(res.send).toHaveBeenCalledWith(mockAnnouncements);
         });
     });
