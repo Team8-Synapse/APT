@@ -70,8 +70,30 @@ class AIService {
       } else {
         // Gemini SDK
         const fullPrompt = systemInstruction ? `${systemInstruction}\n\nUser Query: ${prompt}` : prompt;
-        const result = await this.model.generateContent(fullPrompt);
-        return result.response.text();
+        try {
+            const result = await this.model.generateContent(fullPrompt);
+            return result.response.text();
+        } catch (err) {
+            if (err.status === 404) {
+                console.log("Model not found, fetching available models to fallback...");
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${this.apiKey}`);
+                const data = await response.json();
+                const availableModels = data.models || [];
+                const targetModel = availableModels.find(m => m.name.includes("flash") && m.supportedGenerationMethods.includes("generateContent")) 
+                                 || availableModels.find(m => m.name.includes("pro") && m.supportedGenerationMethods.includes("generateContent"))
+                                 || availableModels[0];
+                
+                if (targetModel) {
+                    const newModelName = targetModel.name.replace('models/', '');
+                    console.log(`Falling back to model: ${newModelName}`);
+                    this.geminiModel = newModelName;
+                    this.model = this.genAI.getGenerativeModel({ model: newModelName });
+                    const result = await this.model.generateContent(fullPrompt);
+                    return result.response.text();
+                }
+            }
+            throw err;
+        }
       }
     } catch (error) {
       console.error("AI Generation Error:", error);
